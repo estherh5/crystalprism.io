@@ -1,27 +1,30 @@
-var svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-document.getElementById('text').oninput = displayMessage;
-document.getElementById('space').onclick = createCircle;
-function displayMessage() {
-  document.getElementById('message').innerHTML = document.getElementById('text').value;
+document.getElementById('button').onmousedown = createCircle;
+var canvas = document.getElementById('canvas');
+function canvasSize() {
+  window.addEventListener('resize', resize, false);
+  function resize() {
+    canvas.setAttribute('width', window.innerWidth);
+    canvas.setAttribute('height', window.innerHeight);
+  }
+  resize();
 }
-function createCircle(e) {
-  var canvas = document.getElementById('space');
+function createCircle() {
   var shape = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
-  var x = e.x - e.target.getBoundingClientRect().left;
-  var y = e.y - e.target.getBoundingClientRect().top;
   shape.setAttribute('class', 'circle');
-  shape.setAttribute('cx', x + 'px');
-  shape.setAttribute('cy', y + 'px');
+  shape.setAttribute('cx', '1px');
+  shape.setAttribute('cy', '1px');
   shape.setAttribute('r', '10px');
-  shape.setAttribute('fill', 'lightblue');
+  shape.setAttribute('fill', document.getElementById('text').value);
   canvas.appendChild(shape);
 }
 setInterval(function () {
   var circles = document.getElementsByClassName('circle');
   for(var i = 0; i < circles.length; i++){
+    var randomNumberOne = Math.random() * 100;
+    var randomNumberTwo = Math.random() * 100;
     var intcx = parseInt(circles[i].getAttribute('cx'));
     var intcy = parseInt(circles[i].getAttribute('cy'));
-    circles[i].setAttribute('cx', intcx + 1 + 'px');
-    circles[i].setAttribute('cy', intcy - 1 + 'px');
+    circles[i].setAttribute('cx', intcx + randomNumberOne + 'px');
+    circles[i].setAttribute('cy', intcy + randomNumberTwo + 'px');
   }
-}, 1);
+}, 75);

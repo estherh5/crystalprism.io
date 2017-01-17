@@ -3,10 +3,12 @@
   <head>
     <link href="style.css" rel="stylesheet">
   </head>
-  <body>
+  <body onload="canvasSize()">
+    <h1>What is your favorite color?</h1>
     <input type="text" id="text">
-    <p id="message"></p>
-    <svg id="space" width="500px" height="500px"></svg>
+    <button type="button" id="button">Enter</button>
+    <br>
+    <svg id="canvas"></svg>
     <script src="main.js"></script>
   </body>
 </html>

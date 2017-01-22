@@ -28,10 +28,3 @@ function everySecond(){
     document.getElementById('circle-four').style.left = digitOne + digitFour * digitThree + "px";
     document.getElementById('circle-four').style.background = "#" + circleFourColor;
 }
-
-
-// document.body.style.background = '#' + hex;
-// document.getElementById('time').style.color = '#' + hex;
-// document.getElementById('clockbox').style.outlineColor = '#' + hex;
-// document.getElementById('hex').innerHTML = "#" + hex;
-// document.getElementById('fulltime').innerHTML = time;

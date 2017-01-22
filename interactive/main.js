@@ -1,5 +1,6 @@
 var canvas = document.getElementById('canvas');
-document.getElementById('canvas').onclick = createBlast;
+
+// Resize canvas to full screen
 function canvasSize() {
   window.addEventListener('resize', resize, false);
   function resize() {
@@ -8,15 +9,19 @@ function canvasSize() {
   }
   resize();
 }
+
+// Create heart rain
 function createHeart() {
   var heart = document.getElementById('heart').cloneNode(true);
   heart.setAttribute('class', 'heart');
   heart.setAttribute('height', '40px');
   heart.setAttribute('width', '40px');
-  heart.setAttribute('x', '10px');
-  heart.setAttribute('y', '10px');
-  heart.setAttribute('fill', document.getElementById('text').value);
+  heart.setAttribute('x', '0px');
+  heart.setAttribute('y', '0px');
   canvas.appendChild(heart);
+  setTimeout(function () {
+    heart.remove();
+  }, 10000);
   return heart;
 }
 function createRain() {
@@ -33,31 +38,38 @@ setInterval(function () {
     hearts[i].setAttribute('y', inty + 1 + 'px');
   }
 }, 10);
+
+// Create random shapes
 function createRandomShape() {
   var shape = document.getElementsByClassName('shape');
   var randomxIncrement = Math.random() * 1000;
   var randomyIncrement = Math.random() * 1000;
   z = Math.floor(Math.random() * 10);
   var randomShape = shape[z].cloneNode(true);
-  randomShape.setAttribute('height', '70px');
-  randomShape.setAttribute('width', '70px');
+  randomShape.setAttribute('height', '100px');
+  randomShape.setAttribute('width', '100px');
   randomShape.setAttribute('x', randomxIncrement + 'px');
   randomShape.setAttribute('y', randomyIncrement + 'px');
   canvas.appendChild(randomShape);
   randomShape.onclick = function () {
     randomShape.remove();
   };
+  setTimeout(function () {
+    randomShape.remove();
+  }, 10000);
 }
 setInterval(createRandomShape, 3000);
+
+// Create blast on click
+document.getElementById('canvas').onclick = createBlast;
 function createBlast(e) {
   var blast = document.getElementById('blast').cloneNode(true);
-  var x = (e.x - e.target.getBoundingClientRect().left - 32) + 'px';
-  var y = (e.y - e.target.getBoundingClientRect().top - 25) + 'px';
-  blast.setAttribute('height', '70px');
-  blast.setAttribute('width', '70px');
+  var x = (e.x - e.target.getBoundingClientRect().left - 25) + 'px';
+  var y = (e.y - e.target.getBoundingClientRect().top - 20) + 'px';
+  blast.setAttribute('height', '50px');
+  blast.setAttribute('width', '50px');
   blast.setAttribute('x', x);
   blast.setAttribute('y', y);
-  blast.setAttribute('fill', document.getElementById('text').value);
   canvas.appendChild(blast);
   setTimeout(function () {
     blast.remove();

@@ -7,7 +7,7 @@ function resize() {
 }
 window.addEventListener('resize', resize, false);
 
-// Create heart rain
+// Create heart shapes that are positioned 200 px apart on the x-axis
 function createHeart() {
   var heart = document.getElementById('heart').cloneNode(true);
   heart.setAttribute('class', 'heart');
@@ -21,13 +21,15 @@ function createHeart() {
   }, 10000);
   return heart;
 }
-function createRain() {
+function cloneHearts() {
   for(var i = 0; i < 10; i++){
     var heart = createHeart();
     heart.setAttribute('x', i*200 + 'px');
   };
 }
-setInterval(createRain, 1500);
+setInterval(cloneHearts, 1500);
+
+// Move heart shapes doesn the page like rain
 setInterval(function () {
   var hearts = document.getElementsByClassName('heart');
   for(var i = 0; i < hearts.length; i++){
@@ -36,7 +38,7 @@ setInterval(function () {
   }
 }, 10);
 
-// Create random shapes
+// Create random shapes at random x and y coordinates
 function createRandomShape() {
   var shape = document.getElementsByClassName('shape');
   var randomxIncrement = Math.random() * 1000;

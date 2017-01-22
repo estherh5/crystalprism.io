@@ -1,8 +1,19 @@
-h1 {
-  font-size: 15px;
+body {
+  background-image: url("http://revelwallpapers.net/d/725A356F5A5A484C7A3533616333566D70705A6C7A6548577671746767513D3D/nature-graffiti-drawing-rain-background.jpg");
 }
-#blast
-{
+#heart {
+  opacity: .5;
+}
+#blast {
+  fill: #ffccb3;
   height: 10%;
   width: 10%;
+}
+h1 {
+  font-family: Bungee Shade;
+  font-style: italic;
+  font-size: 15px;
+  text-align: center;
+  vertical-align: middle;
+  margin: auto;
 }

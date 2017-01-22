@@ -1,14 +1,11 @@
 var canvas = document.getElementById('canvas');
 
 // Resize canvas to full screen
-function canvasSize() {
-  window.addEventListener('resize', resize, false);
-  function resize() {
-    canvas.setAttribute('width', window.innerWidth);
-    canvas.setAttribute('height', window.innerHeight);
-  }
-  resize();
+function resize() {
+  canvas.setAttribute('width', window.innerWidth);
+  canvas.setAttribute('height', window.innerHeight);
 }
+window.addEventListener('resize', resize, false);
 
 // Create heart rain
 function createHeart() {

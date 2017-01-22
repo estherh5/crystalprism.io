@@ -11,15 +11,12 @@ function canvasSize() {
 function createHeart() {
   var heart = document.getElementById('heart').cloneNode(true);
   heart.setAttribute('class', 'heart');
-  heart.setAttribute('height', '70px');
-  heart.setAttribute('width', '70px');
+  heart.setAttribute('height', '40px');
+  heart.setAttribute('width', '40px');
   heart.setAttribute('x', '10px');
   heart.setAttribute('y', '10px');
   heart.setAttribute('fill', document.getElementById('text').value);
   canvas.appendChild(heart);
-  heart.onclick = function () {
-    heart.remove();
-  };
   return heart;
 }
 function createRain() {
@@ -36,6 +33,22 @@ setInterval(function () {
     hearts[i].setAttribute('y', inty + 1 + 'px');
   }
 }, 10);
+function createRandomShape() {
+  var shape = document.getElementsByClassName('shape');
+  var randomxIncrement = Math.random() * 1000;
+  var randomyIncrement = Math.random() * 1000;
+  z = Math.floor(Math.random() * 10);
+  var randomShape = shape[z].cloneNode(true);
+  randomShape.setAttribute('height', '70px');
+  randomShape.setAttribute('width', '70px');
+  randomShape.setAttribute('x', randomxIncrement + 'px');
+  randomShape.setAttribute('y', randomyIncrement + 'px');
+  canvas.appendChild(randomShape);
+  randomShape.onclick = function () {
+    randomShape.remove();
+  };
+}
+setInterval(createRandomShape, 3000);
 function createBlast(e) {
   var blast = document.getElementById('blast').cloneNode(true);
   var x = (e.x - e.target.getBoundingClientRect().left - 32) + 'px';

@@ -1,4 +1,4 @@
-#rig {
+#grid {
     max-width: 900px;
     margin: 0 auto;
     padding: 0;
@@ -6,7 +6,7 @@
     list-style: none;
 }
 
-#rig li {
+#grid li {
     display: inline-block;
     width: 33%;
     vertical-align: middle;
@@ -15,13 +15,13 @@
     padding: 0;
 }
 
-.rig-cell {
+.container {
     display: block;
     position: relative;
     overflow: hidden;
 }
 
-.rig-img {
+.image {
     display: block;
     width: 100%;
     height: auto;
@@ -30,11 +30,11 @@
     transition: all 1s;
 }
 
-#rig li:hover .rig-img {
+#grid li:hover .image {
     transform: scale(1.05);
 }
 
-.rig-overlay {
+.overlay {
     position: absolute;
     display: block;
     top: 0;
@@ -48,11 +48,11 @@
     transition: all 0.6s;
 }
 
-#rig li:hover .rig-overlay {
+#grid li:hover .overlay {
     opacity: 0.95;
 }
 
-.rig-text {
+.title {
     display: block;
     padding: 0 30px;
     box-sizing: border-box;
@@ -67,12 +67,11 @@
     top: 40%;
     color: orange;
     opacity: 0;
-    /*-webkit-text-stroke: 0.01px black;*/
     transform: translateY(-20px);
     transition: all .3s;
 }
 
-#rig li:hover .rig-text {
+#grid li:hover .title {
     transform: translateY(0px);
     opacity: 1;
 }
@@ -82,42 +81,3 @@ h1 {
   font-family: 'Amatic SC', cursive;
   text-align: center;
 }
-
-/*font-family: 'Raleway', sans-serif;
-font-family: 'Open Sans Condensed', sans-serif;
-font-family: 'Overpass Mono', monospace;
-font-family: 'VT323', monospace;
-font-family: 'Amatic SC', cursive;
-font-family: 'Poiret One', cursive;
-font-family: 'Cormorant', serif;
-font-family: 'Yanone Kaffeesatz', sans-serif;
-font-family: 'Josefin Sans', sans-serif;
-font-family: 'News Cycle', sans-serif;
-font-family: 'Quattrocento Sans', sans-serif;
-font-family: 'BenchNine', sans-serif;
-font-family: 'Special Elite', cursive;
-font-family: 'Reenie Beanie', cursive;
-font-family: 'Cabin Sketch', cursive;
-font-family: 'Advent Pro', sans-serif;
-font-family: 'Marvel', sans-serif;
-font-family: 'Fredericka the Great', cursive;
-font-family: 'Sue Ellen Francisco', cursive;
-font-family: 'Pompiere', cursive;
-font-family: 'Ewert', cursive;
-font-family: 'Londrina Outline', cursive;
-font-family: 'Chathura', sans-serif;
-font-family: 'Amatica SC', cursive;
-font-family: 'Codystar', cursive;
-font-family: 'Bungee Hairline', cursive;
-font-family: 'Bungee Outline', cursive;
-font-family: 'Nosifer', cursive;
-font-family: 'Tulpen One', cursive;
-font-family: 'Akronim', cursive;
-font-family: 'Monofett', cursive;
-font-family: 'Bubbler One', sans-serif;
-font-family: 'Snippet', sans-serif;
-font-family: 'Fascinate', cursive;
-font-family: 'Princess Sofia', cursive;
-font-family: 'Bigelow Rules', cursive;
-font-family: 'Fascinate Inline', cursive;
-font-family: 'Hanalei', cursive;*/

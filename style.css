@@ -1,0 +1,123 @@
+#rig {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0;
+    font-size: 0;
+    list-style: none;
+}
+
+#rig li {
+    display: inline-block;
+    width: 33%;
+    vertical-align: middle;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+.rig-cell {
+    display: block;
+    position: relative;
+    overflow: hidden;
+}
+
+.rig-img {
+    display: block;
+    width: 100%;
+    height: auto;
+    border: none;
+    transform: scale(1);
+    transition: all 1s;
+}
+
+#rig li:hover .rig-img {
+    transform: scale(1.05);
+}
+
+.rig-overlay {
+    position: absolute;
+    display: block;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: auto;
+    background: #e2e2e2 no-repeat center 20%;
+    background-size: 50px 50px;
+    opacity: 0;
+    transition: all 0.6s;
+}
+
+#rig li:hover .rig-overlay {
+    opacity: 0.95;
+}
+
+.rig-text {
+    display: block;
+    padding: 0 30px;
+    box-sizing: border-box;
+    position: absolute;
+    left: 0;
+    width: 100%;
+    text-align: center;
+    text-transform: capitalize;
+    font-size: 30px;
+    font-weight: bolder;
+    font-family: 'Overpass Mono', monospace;
+    top: 40%;
+    color: orange;
+    opacity: 0;
+    /*-webkit-text-stroke: 0.01px black;*/
+    transform: translateY(-20px);
+    transition: all .3s;
+}
+
+#rig li:hover .rig-text {
+    transform: translateY(0px);
+    opacity: 1;
+}
+
+h1 {
+  font-size: 45px;
+  font-family: 'Amatic SC', cursive;
+  text-align: center;
+}
+
+/*font-family: 'Raleway', sans-serif;
+font-family: 'Open Sans Condensed', sans-serif;
+font-family: 'Overpass Mono', monospace;
+font-family: 'VT323', monospace;
+font-family: 'Amatic SC', cursive;
+font-family: 'Poiret One', cursive;
+font-family: 'Cormorant', serif;
+font-family: 'Yanone Kaffeesatz', sans-serif;
+font-family: 'Josefin Sans', sans-serif;
+font-family: 'News Cycle', sans-serif;
+font-family: 'Quattrocento Sans', sans-serif;
+font-family: 'BenchNine', sans-serif;
+font-family: 'Special Elite', cursive;
+font-family: 'Reenie Beanie', cursive;
+font-family: 'Cabin Sketch', cursive;
+font-family: 'Advent Pro', sans-serif;
+font-family: 'Marvel', sans-serif;
+font-family: 'Fredericka the Great', cursive;
+font-family: 'Sue Ellen Francisco', cursive;
+font-family: 'Pompiere', cursive;
+font-family: 'Ewert', cursive;
+font-family: 'Londrina Outline', cursive;
+font-family: 'Chathura', sans-serif;
+font-family: 'Amatica SC', cursive;
+font-family: 'Codystar', cursive;
+font-family: 'Bungee Hairline', cursive;
+font-family: 'Bungee Outline', cursive;
+font-family: 'Nosifer', cursive;
+font-family: 'Tulpen One', cursive;
+font-family: 'Akronim', cursive;
+font-family: 'Monofett', cursive;
+font-family: 'Bubbler One', sans-serif;
+font-family: 'Snippet', sans-serif;
+font-family: 'Fascinate', cursive;
+font-family: 'Princess Sofia', cursive;
+font-family: 'Bigelow Rules', cursive;
+font-family: 'Fascinate Inline', cursive;
+font-family: 'Hanalei', cursive;*/

@@ -29,3 +29,8 @@ h1 {
   color: white;
   opacity: .8;
 }
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}

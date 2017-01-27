@@ -5,7 +5,6 @@
   font-size: 0;
   list-style: none;
 }
-
 #grid li {
   display: inline-block;
   width: 33%;
@@ -14,13 +13,11 @@
   margin: 0;
   padding: 0;
 }
-
 .container {
   display: block;
   position: relative;
   overflow: hidden;
 }
-
 .image {
   display: block;
   width: 100%;
@@ -29,11 +26,9 @@
   transform: scale(1);
   transition: all 0.5s;
 }
-
 #grid li:hover .image {
   transform: scale(1.05);
 }
-
 .overlay {
   position: absolute;
   display: block;
@@ -47,11 +42,9 @@
   opacity: 0;
   transition: all 0.3s;
 }
-
 #grid li:hover .overlay {
   opacity: 0.85;
 }
-
 .title {
   display: block;
   padding: 0 30px;
@@ -70,14 +63,19 @@
   transform: translateY(-20px);
   transition: all 0.3s;
 }
-
 #grid li:hover .title {
   transform: translateY(0px);
   opacity: 1;
 }
-
 h1 {
   font-size: 45px;
   font-family: 'Amatic SC', cursive;
+  text-align: center;
+}
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
   text-align: center;
 }

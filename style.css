@@ -1,3 +1,9 @@
+h1 {
+  font-size: 45px;
+  font-family: 'Amatic SC', cursive;
+  text-align: center;
+}
+
 #grid {
   max-width: 900px;
   margin: 0 auto;
@@ -5,6 +11,7 @@
   font-size: 0;
   list-style: none;
 }
+
 #grid li {
   display: inline-block;
   width: 33%;
@@ -13,11 +20,13 @@
   margin: 0;
   padding: 0;
 }
+
 .container {
   display: block;
   position: relative;
   overflow: hidden;
 }
+
 .image {
   display: block;
   width: 100%;
@@ -26,9 +35,11 @@
   transform: scale(1);
   transition: all 0.5s;
 }
+
 #grid li:hover .image {
   transform: scale(1.05);
 }
+
 .overlay {
   position: absolute;
   display: block;
@@ -42,9 +53,26 @@
   opacity: 0;
   transition: all 0.3s;
 }
+
+.preview {
+  text-align: center;
+  opacity: 0.5;
+}
+
+.icon {
+  position: absolute;
+  left: 40%;
+  top: 17%;
+  width: 20%;
+  height: 20%;
+  transform: translateY(-20px);
+  transition: all 0.3s;
+}
+
 #grid li:hover .overlay {
   opacity: 0.85;
 }
+
 .title {
   display: block;
   padding: 0 30px;
@@ -58,20 +86,21 @@
   font-weight: bolder;
   font-family: 'Poiret One', cursive;
   top: 40%;
-  color: red;
+  color: black;
   opacity: 0;
   transform: translateY(-20px);
   transition: all 0.3s;
 }
+
 #grid li:hover .title {
   transform: translateY(0px);
   opacity: 1;
 }
-h1 {
-  font-size: 45px;
-  font-family: 'Amatic SC', cursive;
-  text-align: center;
+
+#grid li:hover .icon {
+  transform: translateY(0px);
 }
+
 #homepage {
   position: fixed;
   bottom: 0px;

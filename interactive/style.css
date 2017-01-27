@@ -17,3 +17,8 @@ h1 {
   vertical-align: middle;
   margin: auto;
 }
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}

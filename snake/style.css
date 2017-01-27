@@ -1,3 +1,8 @@
 #canvas {
   background-color: #9c857d;
 }
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}

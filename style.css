@@ -1,79 +1,79 @@
 #grid {
-    max-width: 900px;
-    margin: 0 auto;
-    padding: 0;
-    font-size: 0;
-    list-style: none;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0;
+  font-size: 0;
+  list-style: none;
 }
 
 #grid li {
-    display: inline-block;
-    width: 33%;
-    vertical-align: middle;
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  display: inline-block;
+  width: 33%;
+  vertical-align: middle;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 .container {
-    display: block;
-    position: relative;
-    overflow: hidden;
+  display: block;
+  position: relative;
+  overflow: hidden;
 }
 
 .image {
-    display: block;
-    width: 100%;
-    height: auto;
-    border: none;
-    transform: scale(1);
-    transition: all 0.5s;
+  display: block;
+  width: 100%;
+  height: auto;
+  border: none;
+  transform: scale(1);
+  transition: all 0.5s;
 }
 
 #grid li:hover .image {
-    transform: scale(1.05);
+  transform: scale(1.05);
 }
 
 .overlay {
-    position: absolute;
-    display: block;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    margin: auto;
-    background: #e8e8e8 no-repeat center 20%;
-    background-size: 50px 50px;
-    opacity: 0;
-    transition: all 0.3s;
+  position: absolute;
+  display: block;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  margin: auto;
+  background: #e8e8e8 no-repeat center 20%;
+  background-size: 50px 50px;
+  opacity: 0;
+  transition: all 0.3s;
 }
 
 #grid li:hover .overlay {
-    opacity: 0.85;
+  opacity: 0.85;
 }
 
 .title {
-    display: block;
-    padding: 0 30px;
-    box-sizing: border-box;
-    position: absolute;
-    left: 0;
-    width: 100%;
-    text-align: center;
-    text-transform: capitalize;
-    font-size: 30px;
-    font-weight: bolder;
-    font-family: 'Overpass Mono', monospace;
-    top: 40%;
-    color: red;
-    opacity: 0;
-    transform: translateY(-20px);
-    transition: all 0.3s;
+  display: block;
+  padding: 0 30px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  text-transform: capitalize;
+  font-size: 30px;
+  font-weight: bolder;
+  font-family: 'Poiret One', cursive;
+  top: 40%;
+  color: red;
+  opacity: 0;
+  transform: translateY(-20px);
+  transition: all 0.3s;
 }
 
 #grid li:hover .title {
-    transform: translateY(0px);
-    opacity: 1;
+  transform: translateY(0px);
+  opacity: 1;
 }
 
 h1 {

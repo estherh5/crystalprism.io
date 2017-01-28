@@ -29,7 +29,7 @@ function cloneHearts() {
 }
 setInterval(cloneHearts, 1500);
 
-// Move heart shapes doesn the page like rain
+// Move heart shapes down the page like rain
 setInterval(function () {
   var hearts = document.getElementsByClassName('heart');
   for(var i = 0; i < hearts.length; i++){

@@ -5,6 +5,15 @@ h1 {
   margin-bottom: 0;
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:hover {
+  color: grey;
+}
+
 .contact {
   text-align: center;
 }

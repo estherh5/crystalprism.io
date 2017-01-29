@@ -5,6 +5,7 @@ function resize() {
   canvas.setAttribute('width', window.innerWidth);
   canvas.setAttribute('height', window.innerHeight);
 }
+
 window.addEventListener('resize', resize, false);
 
 // Create heart shapes that are positioned 200 px apart on the x-axis
@@ -21,12 +22,14 @@ function createHeart() {
   }, 10000);
   return heart;
 }
+
 function cloneHearts() {
   for(var i = 0; i < 10; i++){
     var heart = createHeart();
     heart.setAttribute('x', i*200 + 'px');
   };
 }
+
 setInterval(cloneHearts, 1500);
 
 // Move heart shapes down the page like rain
@@ -57,10 +60,12 @@ function createRandomShape() {
     randomShape.remove();
   }, 10000);
 }
+
 setInterval(createRandomShape, 3000);
 
 // Create blast on click
 document.getElementById('canvas').onclick = createBlast;
+
 function createBlast(e) {
   var blast = document.getElementById('blast').cloneNode(true);
   var x = (e.x - e.target.getBoundingClientRect().left - 25) + 'px';

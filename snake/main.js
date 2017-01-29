@@ -27,11 +27,13 @@ function gameLoop() {
     food.remove();
     food = null;
     score++;
+    speed = speed/1.01;
   }
   scoreboard.innerHTML = "Score: " + score;
+  setTimeout(gameLoop, speed);
 }
 
-setInterval(gameLoop, speed);
+setTimeout(gameLoop, speed);
 
 // Define game functions
 function move(obj, direction) {

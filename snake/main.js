@@ -1,15 +1,18 @@
 // Game settings
 var sizeX = 500;
 var sizeY = 500;
-var scale = 10;
-var speed = 100;
+var scale = 50;
+var speed = 200;
+var score = 0;
 var canvas = Snap('#canvas');
+var scoreboard = document.getElementById('scoreboard');
 var direction = 'ArrowDown';
 
 // Define pieces
 var snake = canvas.rect(0, 0, scale, scale);
-snake.attr({fill: 'lightblue'});
+snake.attr({fill: '#fffa92'});
 var food = placeFood();
+canvas.attr({width: sizeX, height: sizeY});
 
 // Define events
 document.body.onkeydown = function (e) {
@@ -23,7 +26,9 @@ function gameLoop() {
   if (didSnakeEat(food)) {
     food.remove();
     food = null;
+    score++;
   }
+  scoreboard.innerHTML = "Score: " + score;
 }
 
 setInterval(gameLoop, speed);
@@ -41,8 +46,8 @@ function move(obj, direction) {
 function placeFood() {
   var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
   var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
-  var food = canvas.rect(randX, randY, scale, scale, 3, 3);
-  food.attr({fill: 'green'});
+  var food = canvas.rect(randX, randY, scale, scale, scale/10, scale/10);
+  food.attr({fill: '#ceffe8'});
   return food;
 }
 function didSnakeEat() {

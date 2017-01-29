@@ -1,5 +1,13 @@
 #canvas {
-  background-color: #9c857d;
+  background-color: #efbfff;
+}
+
+h1 {
+  font-family: Wire One, sans-serif;
+  background-color: #e0e0e0;
+  color: black;
+  width: 500px;
+  text-align: center;
 }
 
 #homepage {

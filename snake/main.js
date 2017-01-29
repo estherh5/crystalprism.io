@@ -42,7 +42,20 @@ function move(obj, direction) {
     'ArrowLeft' : {'x': parseFloat(obj.attr('x')) - scale},
   };
   obj.attr(possibleDirections[direction]);
+  if (obj.attr('x') >= sizeX) {
+    obj.attr({'x': 0});
+  }
+  if (obj.attr('x') < 0) {
+    obj.attr({'x': sizeX});
+  }
+  if (obj.attr('y') >= sizeY) {
+    obj.attr({'y': 0});
+  }
+  if (obj.attr('y') < 0) {
+    obj.attr({'y': sizeY});
+  }
 }
+
 function placeFood() {
   var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
   var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
@@ -50,6 +63,7 @@ function placeFood() {
   food.attr({fill: '#ceffe8'});
   return food;
 }
+
 function didSnakeEat() {
   if (snake.attr('x') == food.attr('x') && snake.attr('y') == food.attr('y')) {
     return true;

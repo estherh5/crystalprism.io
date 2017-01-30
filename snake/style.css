@@ -1,4 +1,15 @@
-h1 {
+#scoreboard {
+  margin: 0 auto;
+  font-family: Wire One, sans-serif;
+  background-color: #e0e0e0;
+  color: black;
+  width: 500px;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+#leaderboard {
   margin: 0 auto;
   font-family: Wire One, sans-serif;
   background-color: #e0e0e0;

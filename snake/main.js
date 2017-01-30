@@ -12,6 +12,7 @@ var direction = 'ArrowDown';
 var snake = canvas.rect(0, 0, scale, scale);
 snake.attr({fill: '#fffa92'});
 var food = placeFood();
+var enemy = placeEnemy();
 canvas.attr({width: sizeX, height: sizeY});
 
 // Define events
@@ -23,17 +24,39 @@ document.body.onkeydown = function (e) {
 function gameLoop() {
   move(snake, direction);
   if (!food) {food = placeFood();}
+  if (!enemy) {enemy = placeEnemy();}
   if (didSnakeEat(food)) {
     food.remove();
     food = null;
     score++;
     speed = speed/1.01;
   }
+  if (didSnakeCollide(enemy)) {
+    var name = prompt("Game over. What is your name?");
+    if (name != null) {
+      leaderboard.appendChild(document.createElement("br"));
+      leaderboard.appendChild(document.createTextNode("Name: " + name + " Score: " + score));
+      score = 0;
+      snake.attr({'x': 0, 'y': 0});
+      speed = 200;
+      direction = 'ArrowDown';
+    }
+  }
   scoreboard.innerHTML = "Score: " + score;
   setTimeout(gameLoop, speed);
 }
 
 setTimeout(gameLoop, speed);
+
+function moveEnemy() {
+  var possibleDirections = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+  z = Math.floor(Math.random() * 3);
+  var randDirection = possibleDirections[z];
+  move(enemy, randDirection);
+  setTimeout(moveEnemy, speed*2);
+}
+
+setTimeout(moveEnemy, speed*2);
 
 // Define game functions
 function move(obj, direction) {
@@ -66,6 +89,14 @@ function placeFood() {
   return food;
 }
 
+function placeEnemy() {
+  var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
+  var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
+  var enemy = canvas.rect(randX, randY, scale, scale);
+  enemy.attr({fill: '#f11111'});
+  return enemy;
+}
+
 function didSnakeEat() {
   if (snake.attr('x') == food.attr('x') && snake.attr('y') == food.attr('y')) {
     return true;
@@ -73,10 +104,9 @@ function didSnakeEat() {
   return false;
 }
 
-
-
-
-
-
-// var circle = canvas.circle(100, 100, 30, 30);
-// circle.animate({cx: 300, cy: 300, r: 5}, 5000);
+function didSnakeCollide() {
+  if (snake.attr('x') == enemy.attr('x') && snake.attr('y') == enemy.attr('y')) {
+    return true;
+  }
+  return false;
+}

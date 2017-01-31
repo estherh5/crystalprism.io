@@ -9,6 +9,19 @@
   margin-bottom: 10px;
 }
 
+#leader-title {
+  font-size: 40px;
+}
+
+th {
+  text-decoration: underline;
+  width: 50%;
+}
+
+td {
+  width: 50%;
+}
+
 #leaderboard {
   margin: 0 auto;
   font-family: Wire One, sans-serif;

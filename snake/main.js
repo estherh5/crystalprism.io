@@ -6,6 +6,7 @@ var speed = 200;
 var score = 0;
 var canvas = Snap('#canvas');
 var scoreboard = document.getElementById('scoreboard');
+var leaders = document.getElementById('leaders');
 var direction = 'ArrowDown';
 
 // Define pieces
@@ -14,6 +15,7 @@ snake.attr({fill: '#fffa92'});
 var food = placeFood();
 var enemy = placeEnemy();
 canvas.attr({width: sizeX, height: sizeY});
+var scoresNames = [];
 
 // Define events
 document.body.onkeydown = function (e) {
@@ -29,18 +31,55 @@ function gameLoop() {
     food.remove();
     food = null;
     score++;
-    speed = speed/1.01;
+    speed /= 1.01;
   }
   if (didSnakeCollide(enemy)) {
     var name = prompt("Game over. What is your name?");
-    if (name != null) {
-      leaderboard.appendChild(document.createElement("br"));
-      leaderboard.appendChild(document.createTextNode("Name: " + name + " Score: " + score));
-      score = 0;
-      snake.attr({'x': 0, 'y': 0});
-      speed = 200;
-      direction = 'ArrowDown';
+    var scoreName = {
+      score: score,
+      name: name,
+    };
+    scoresNames.push(scoreName);
+    scoresNames.sort(function (a, b) {
+        return b.score - a.score;
+      }
+    );
+    leaders.innerHTML = "";
+    var tableHeaderOne = document.createElement("th");
+    var tableHeaderTwo = document.createElement("th");
+    var tableRow = document.createElement("tr");
+    leaders.appendChild(tableRow);
+    tableRow.appendChild(tableHeaderOne);
+    tableHeaderOne.appendChild(document.createTextNode("Score"));
+    tableRow.appendChild(tableHeaderTwo);
+    tableHeaderTwo.appendChild(document.createTextNode("Name"));
+    if (scoresNames.length < 5) {
+      for (var i = 0; i < scoresNames.length; i++) {
+        var tableRowNew = document.createElement("tr");
+        var tableContainerOne = document.createElement("td");
+        var tableContainerTwo = document.createElement("td");
+        leaders.appendChild(tableRowNew);
+        tableRowNew.appendChild(tableContainerOne);
+        tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
+        tableRowNew.appendChild(tableContainerTwo);
+        tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+      }
+    } else {
+      for (var i = 0; i < 5; i++) {
+        var tableRowNew = document.createElement("tr");
+        var tableContainerOne = document.createElement("td");
+        var tableContainerTwo = document.createElement("td");
+        leaders.appendChild(tableRowNew);
+        tableRowNew.appendChild(tableContainerOne);
+        tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
+        tableRowNew.appendChild(tableContainerTwo);
+        tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+      }
     }
+    score = 0;
+    snake.attr({'x': 0, 'y': 0});
+    speed = 200;
+    direction = 'ArrowDown';
   }
   scoreboard.innerHTML = "Score: " + score;
   setTimeout(gameLoop, speed);
@@ -53,10 +92,10 @@ function moveEnemy() {
   z = Math.floor(Math.random() * 3);
   var randDirection = possibleDirections[z];
   move(enemy, randDirection);
-  setTimeout(moveEnemy, speed*2);
+  setTimeout(moveEnemy, speed * 2);
 }
 
-setTimeout(moveEnemy, speed*2);
+setTimeout(moveEnemy, speed * 2);
 
 // Define game functions
 function move(obj, direction) {

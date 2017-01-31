@@ -14,7 +14,17 @@
     <div id="game">
       <svg id="canvas" width="500px" height="500px"></svg>
     </div>
-    <h1 id="leaderboard"><u>Leaderboard</u></h1>
+    <h1 id="leaderboard">
+      <text id="leader-title">Leaderboard</text>
+      <table style="width:100%">
+        <tbody id="leaders">
+          <tr>
+            <th>Score</th>
+            <th>Name</th>
+          </tr>
+        </tbody>
+      </table>
+    </h1>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script src="main.js"></script>
     <div id="homepage">

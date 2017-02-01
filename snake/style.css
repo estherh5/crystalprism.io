@@ -6,6 +6,7 @@ button {
   color: black;
   font-family: Wire One, sans-serif;
   font-size: 25px;
+  border: none;
   border-radius: 5px;
   background: #e0e0e0;
   text-shadow: 0 -1px 0 rgba(0, 0, 0, 1);
@@ -13,7 +14,6 @@ button {
 
 button:hover {
   background: #d4d4d4;
-  text-decoration: none;
 }
 
 button:active {

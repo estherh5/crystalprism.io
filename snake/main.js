@@ -14,7 +14,7 @@ var paused = false;
 var snake = canvas.rect(0, 0, scale, scale);
 snake.attr({fill: '#fffa92'});
 var food = placeFood();
-var enemy = canvas.rect(sizeX - scale, sizeY - scale, scale, scale);
+var enemy = canvas.rect(sizeX / 2 + scale * 2, sizeY / 2 + scale * 2, scale, scale);
 enemy.attr({fill: '#f11111'});
 canvas.attr({width: sizeX, height: sizeY});
 var scoresNames = [];
@@ -39,13 +39,14 @@ document.getElementById('pause').onclick = function () {
 document.getElementById('restart').onclick = function () {
   paused = false;
   document.getElementById('pause').innerHTML = "Pause";
-  score = 0;
   snake.attr({'x': 0, 'y': 0});
-  enemy.attr({'x': sizeX - scale, 'y': sizeY - scale});
+  enemy.attr({'x': sizeX / 2 + scale * 2, 'y': sizeY / 2 + scale * 2});
   speed = 200;
   direction = 'ArrowDown';
   food.remove();
   food = null;
+  score = 0;
+  food = placeFood();
 }
 
 // Game loop
@@ -55,13 +56,20 @@ function gameLoop() {
     return;
   } else if (!paused) {
     move(snake, direction);
-    if (!food) {food = placeFood();}
-    if (didSnakeCollide(food)) {
+    if (didCollide(snake, food)) {
       food.remove();
       food = null;
       score++;
       speed /= 1.01;
-      }
+      food = placeFood();
+    }
+    if (didCollide(enemy, food)) {
+      food.remove();
+      food = null;
+      score--;
+      speed /= 1.01;
+      food = placeFood();
+    }
   }
   scoreboard.innerHTML = "Score: " + score;
 }
@@ -79,7 +87,7 @@ function moveEnemy() {
 }
 
 function updateLeaderboard() {
-  if (didSnakeCollide(enemy)) {
+  if (didCollide(snake, enemy)) {
     var name = prompt("Game over. What is your name?");
     var scoreName = {
       score: score,
@@ -160,8 +168,8 @@ function placeFood() {
   return food;
 }
 
-function didSnakeCollide(a) {
-  if (snake.attr('x') == a.attr('x') && snake.attr('y') == a.attr('y')) {
+function didCollide(objA, objB) {
+  if (objA.attr('x') == objB.attr('x') && objA.attr('y') == objB.attr('y')) {
     return true;
   }
   return false;

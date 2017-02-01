@@ -6,33 +6,79 @@ var speed = 200;
 var score = 0;
 var canvas = Snap('#canvas');
 var scoreboard = document.getElementById('scoreboard');
-var leaders = document.getElementById('leaders');
+var leaders = [document.getElementById('first'), document.getElementById('second'), document.getElementById('third'), document.getElementById('fourth'), document.getElementById('fifth')];
 var direction = 'ArrowDown';
+var paused = false;
 
 // Define pieces
 var snake = canvas.rect(0, 0, scale, scale);
 snake.attr({fill: '#fffa92'});
 var food = placeFood();
-var enemy = placeEnemy();
+var enemy = canvas.rect(sizeX - scale, sizeY - scale, scale, scale);
+enemy.attr({fill: '#f11111'});
 canvas.attr({width: sizeX, height: sizeY});
 var scoresNames = [];
 
 // Define events
 document.body.onkeydown = function (e) {
-  direction = e.key;
+  if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
+    direction = e.key;
+  }
+}
+
+document.getElementById('pause').onclick = function () {
+  if (paused) {
+    paused = false;
+    document.getElementById('pause').innerHTML = "Pause";
+  } else if (!paused) {
+    paused = true;
+    document.getElementById('pause').innerHTML = "Resume";
+  }
+}
+
+document.getElementById('restart').onclick = function () {
+  paused = false;
+  document.getElementById('pause').innerHTML = "Pause";
+  score = 0;
+  snake.attr({'x': 0, 'y': 0});
+  enemy.attr({'x': sizeX - scale, 'y': sizeY - scale});
+  speed = 200;
+  direction = 'ArrowDown';
+  food.remove();
+  food = null;
 }
 
 // Game loop
 function gameLoop() {
-  move(snake, direction);
-  if (!food) {food = placeFood();}
-  if (!enemy) {enemy = placeEnemy();}
-  if (didSnakeEat(food)) {
-    food.remove();
-    food = null;
-    score++;
-    speed /= 1.01;
+  setTimeout(gameLoop, speed);
+  if (paused) {
+    return;
+  } else if (!paused) {
+    move(snake, direction);
+    if (!food) {food = placeFood();}
+    if (didSnakeCollide(food)) {
+      food.remove();
+      food = null;
+      score++;
+      speed /= 1.01;
+      }
   }
+  scoreboard.innerHTML = "Score: " + score;
+}
+
+function moveEnemy() {
+  var possibleDirections = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
+  z = Math.floor(Math.random() * 3);
+  var randDirection = possibleDirections[z];
+  setTimeout(moveEnemy, speed * 2);
+  if (paused) {
+    return;
+  } else if (!paused) {
+  move(enemy, randDirection);
+  }
+}
+
+function updateLeaderboard() {
   if (didSnakeCollide(enemy)) {
     var name = prompt("Game over. What is your name?");
     var scoreName = {
@@ -44,56 +90,39 @@ function gameLoop() {
         return b.score - a.score;
       }
     );
-    leaders.innerHTML = "";
-    var tableHeaderOne = document.createElement("th");
-    var tableHeaderTwo = document.createElement("th");
-    var tableRow = document.createElement("tr");
-    leaders.appendChild(tableRow);
-    tableRow.appendChild(tableHeaderOne);
-    tableHeaderOne.appendChild(document.createTextNode("Score"));
-    tableRow.appendChild(tableHeaderTwo);
-    tableHeaderTwo.appendChild(document.createTextNode("Name"));
-    if (scoresNames.length < 5) {
+    if (scoresNames.length <= 5) {
       for (var i = 0; i < scoresNames.length; i++) {
-        var tableRowNew = document.createElement("tr");
         var tableContainerOne = document.createElement("td");
         var tableContainerTwo = document.createElement("td");
-        leaders.appendChild(tableRowNew);
-        tableRowNew.appendChild(tableContainerOne);
+        leaders[i].innerHTML = "";
+        leaders[i].appendChild(tableContainerOne);
         tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
-        tableRowNew.appendChild(tableContainerTwo);
+        leaders[i].appendChild(tableContainerTwo);
         tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
       }
     } else {
-      for (var i = 0; i < 5; i++) {
-        var tableRowNew = document.createElement("tr");
+      for (var i = 0; i <= 4; i++) {
         var tableContainerOne = document.createElement("td");
         var tableContainerTwo = document.createElement("td");
-        leaders.appendChild(tableRowNew);
-        tableRowNew.appendChild(tableContainerOne);
+        leaders[i].innerHTML = "";
+        leaders[i].appendChild(tableContainerOne);
         tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
-        tableRowNew.appendChild(tableContainerTwo);
+        leaders[i].appendChild(tableContainerTwo);
         tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
       }
     }
     score = 0;
     snake.attr({'x': 0, 'y': 0});
+    enemy.attr({'x': sizeX - scale, 'y': sizeY - scale});
     speed = 200;
     direction = 'ArrowDown';
   }
-  scoreboard.innerHTML = "Score: " + score;
-  setTimeout(gameLoop, speed);
+  setTimeout(updateLeaderboard, speed);
 }
 
 setTimeout(gameLoop, speed);
 
-function moveEnemy() {
-  var possibleDirections = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
-  z = Math.floor(Math.random() * 3);
-  var randDirection = possibleDirections[z];
-  move(enemy, randDirection);
-  setTimeout(moveEnemy, speed * 2);
-}
+setTimeout(updateLeaderboard, speed);
 
 setTimeout(moveEnemy, speed * 2);
 
@@ -105,6 +134,9 @@ function move(obj, direction) {
     'ArrowRight': {'x': parseFloat(obj.attr('x')) + scale},
     'ArrowLeft' : {'x': parseFloat(obj.attr('x')) - scale},
   };
+  if (possibleDirections[direction] === undefined) {
+    return null;
+  }
   obj.attr(possibleDirections[direction]);
   if (obj.attr('x') >= sizeX) {
     obj.attr({'x': 0});
@@ -128,23 +160,8 @@ function placeFood() {
   return food;
 }
 
-function placeEnemy() {
-  var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
-  var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
-  var enemy = canvas.rect(randX, randY, scale, scale);
-  enemy.attr({fill: '#f11111'});
-  return enemy;
-}
-
-function didSnakeEat() {
-  if (snake.attr('x') == food.attr('x') && snake.attr('y') == food.attr('y')) {
-    return true;
-  }
-  return false;
-}
-
-function didSnakeCollide() {
-  if (snake.attr('x') == enemy.attr('x') && snake.attr('y') == enemy.attr('y')) {
+function didSnakeCollide(a) {
+  if (snake.attr('x') == a.attr('x') && snake.attr('y') == a.attr('y')) {
     return true;
   }
   return false;

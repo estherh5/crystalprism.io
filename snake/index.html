@@ -7,21 +7,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Wire+One" rel="stylesheet">
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-91236421-1', 'auto');
+      ga('send', 'pageview');
+    </script>
     <title>Snake</title>
   </head>
   <body>
+    <div id="buttons">
+      <button id="pause" type="button">Pause</button>
+      <button id="restart" type="button">Start Over</button>
+    </div>
     <h1 id="scoreboard"></h1>
     <div id="game">
       <svg id="canvas" width="500px" height="500px"></svg>
     </div>
     <h1 id="leaderboard">
       <text id="leader-title">Leaderboard</text>
-      <table style="width:100%">
-        <tbody id="leaders">
+      <table style="width:100%" height="236px">
+        <thead>
           <tr>
             <th>Score</th>
             <th>Name</th>
           </tr>
+        </thead>
+        <tbody>
+          <tr id="first"></tr>
+          <tr id="second"></tr>
+          <tr id="third"></tr>
+          <tr id="fourth"></tr>
+          <tr id="fifth"></tr>
         </tbody>
       </table>
     </h1>

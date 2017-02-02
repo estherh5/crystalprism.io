@@ -5,8 +5,9 @@ var scale = 50;
 var speed = 200;
 var score = 0;
 var canvas = Snap('#canvas');
+var game = document.getElementById('game');
 var scoreboard = document.getElementById('scoreboard');
-var leaders = [document.getElementById('first'), document.getElementById('second'), document.getElementById('third'), document.getElementById('fourth'), document.getElementById('fifth')];
+var leaders = document.getElementsByClassName('leaders');
 var direction = 'ArrowDown';
 var paused = false;
 
@@ -18,6 +19,14 @@ var enemy = canvas.rect(sizeX / 2 + scale * 2, sizeY / 2 + scale * 2, scale, sca
 enemy.attr({fill: '#f11111'});
 canvas.attr({width: sizeX, height: sizeY});
 var scoresNames = [];
+var input = document.createElement("input");
+var submit = document.createElement("button");
+var div = document.createElement("div");
+var breakOne = document.createElement("br");
+var text = document.createElement("h1");
+var breakTwo = document.createElement("br");
+var breakThree = document.createElement("br");
+var name = "";
 
 // Define events
 document.body.onkeydown = function (e) {
@@ -27,26 +36,53 @@ document.body.onkeydown = function (e) {
 }
 
 document.getElementById('pause').onclick = function () {
-  if (paused) {
-    paused = false;
-    document.getElementById('pause').innerHTML = "Pause";
-  } else if (!paused) {
-    paused = true;
-    document.getElementById('pause').innerHTML = "Resume";
+  if (div != null) {
+    return;
+  } else {
+    if (paused) {
+      paused = false;
+      document.getElementById('pause').innerHTML = "Pause";
+    } else if (!paused) {
+      paused = true;
+      document.getElementById('pause').innerHTML = "Resume";
+    }
   }
 }
 
-document.getElementById('restart').onclick = function () {
-  paused = false;
-  document.getElementById('pause').innerHTML = "Pause";
-  snake.attr({'x': 0, 'y': 0});
-  enemy.attr({'x': sizeX / 2 + scale * 2, 'y': sizeY / 2 + scale * 2});
-  speed = 200;
-  direction = 'ArrowDown';
-  food.remove();
-  food = null;
-  score = 0;
-  food = placeFood();
+document.getElementById('restart').onclick = function() {
+  if (div != null) {
+    return;
+  } else {
+    restartGame();
+  }
+}
+
+submit.onclick = function () {
+  if (input.value == "") {
+    return;
+  } else {
+    name = input.value;
+    var scoreName = {
+      score: score,
+      name: name,
+    };
+    scoresNames.push(scoreName);
+    updateLeaderboard();
+    div.remove();
+    div = null;
+    paused = false;
+    input.value = "";
+    document.getElementById('pause').className = "button";
+    document.getElementById('restart').className = "button";
+  }
+}
+
+input.oninput = function () {
+  if (input.value == "") {
+    submit.className = "inactive";
+  } else {
+    submit.className = "button";
+  }
 }
 
 // Game loop
@@ -70,6 +106,25 @@ function gameLoop() {
       speed /= 1.01;
       food = placeFood();
     }
+    if (didCollide(snake, enemy)) {
+      paused = true;
+      div = document.createElement("div");
+      game.appendChild(div);
+      div.id = "game-over";
+      div.appendChild(text);
+      text.id = "game-over-text";
+      text.innerHTML = "Game Over.";
+      text.appendChild(breakOne);
+      text.appendChild(document.createTextNode("What is your name?"));
+      div.appendChild(breakTwo);
+      div.appendChild(input);
+      div.appendChild(breakThree);
+      div.appendChild(submit);
+      submit.className = "inactive";
+      document.getElementById('pause').className = "inactive";
+      document.getElementById('restart').className = "inactive";
+      submit.innerHTML = "Submit";
+    }
   }
   scoreboard.innerHTML = "Score: " + score;
 }
@@ -86,51 +141,7 @@ function moveEnemy() {
   }
 }
 
-function updateLeaderboard() {
-  if (didCollide(snake, enemy)) {
-    var name = prompt("Game over. What is your name?");
-    var scoreName = {
-      score: score,
-      name: name,
-    };
-    scoresNames.push(scoreName);
-    scoresNames.sort(function (a, b) {
-        return b.score - a.score;
-      }
-    );
-    if (scoresNames.length <= 5) {
-      for (var i = 0; i < scoresNames.length; i++) {
-        var tableContainerOne = document.createElement("td");
-        var tableContainerTwo = document.createElement("td");
-        leaders[i].innerHTML = "";
-        leaders[i].appendChild(tableContainerOne);
-        tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
-        leaders[i].appendChild(tableContainerTwo);
-        tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-      }
-    } else {
-      for (var i = 0; i <= 4; i++) {
-        var tableContainerOne = document.createElement("td");
-        var tableContainerTwo = document.createElement("td");
-        leaders[i].innerHTML = "";
-        leaders[i].appendChild(tableContainerOne);
-        tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
-        leaders[i].appendChild(tableContainerTwo);
-        tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-      }
-    }
-    score = 0;
-    snake.attr({'x': 0, 'y': 0});
-    enemy.attr({'x': sizeX - scale, 'y': sizeY - scale});
-    speed = 200;
-    direction = 'ArrowDown';
-  }
-  setTimeout(updateLeaderboard, speed);
-}
-
 setTimeout(gameLoop, speed);
-
-setTimeout(updateLeaderboard, speed);
 
 setTimeout(moveEnemy, speed * 2);
 
@@ -173,4 +184,46 @@ function didCollide(objA, objB) {
     return true;
   }
   return false;
+}
+
+function restartGame() {
+  paused = false;
+  document.getElementById('pause').innerHTML = "Pause";
+  snake.attr({'x': 0, 'y': 0});
+  enemy.attr({'x': sizeX / 2 + scale * 2, 'y': sizeY / 2 + scale * 2});
+  speed = 200;
+  direction = 'ArrowDown';
+  food.remove();
+  food = null;
+  score = 0;
+  food = placeFood();
+}
+
+function updateLeaderboard() {
+  scoresNames.sort(function (a, b) {
+    return b.score - a.score;
+  }
+  );
+  if (scoresNames.length <= 5) {
+    for (var i = 0; i < scoresNames.length; i++) {
+      var tableContainerOne = document.createElement("td");
+      var tableContainerTwo = document.createElement("td");
+      leaders[i].innerHTML = "";
+      leaders[i].appendChild(tableContainerOne);
+      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
+      leaders[i].appendChild(tableContainerTwo);
+      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+    }
+  } else {
+      for (var i = 0; i <= 4; i++) {
+      var tableContainerOne = document.createElement("td");
+      var tableContainerTwo = document.createElement("td");
+      leaders[i].innerHTML = "";
+      leaders[i].appendChild(tableContainerOne);
+      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].score));
+      leaders[i].appendChild(tableContainerTwo);
+      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+    }
+  }
+  restartGame();
 }

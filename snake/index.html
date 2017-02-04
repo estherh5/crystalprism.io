@@ -19,21 +19,20 @@
     <title>Snake</title>
   </head>
   <body>
-    <div id="buttons">
-      <button id="pause" type="button" class="button">Pause</button>
-      <button id="restart" type="button" class="button">Start Over</button>
+    <div>
+      <button id="pause" class="button">Pause</button>
+      <button id="restart" class="button">Start Over</button>
     </div>
-    <h1 id="scoreboard"></h1>
+    <h1 id="blood-pressure">BP: <text id="systolic"></text>/<text id="diastolic"></text></h1>
+    <h1 id="lifespan"></h1>
     <div class="container">
-      <div id="left" class="flex-item">
-        <svg id="items" width="500px" height="500px"></svg>
+      <div id="left">
+        <svg id="items"></svg>
       </div>
-      <div id="board">
-        <div id="game">
-          <svg id="canvas" width="500px" height="500px"></svg>
-        </div>
+      <div id="game">
+        <svg id="canvas"></svg>
       </div>
-      <div id="right" class="flex-item">
+      <div id="right">
         <div id="ranges">
           <table style="width:100%">
             <text id="table-title">Blood Pressure Ranges</text>
@@ -44,19 +43,19 @@
               </tr>
             </thead>
             <tbody>
-              <tr id="green" class="range-row">
+              <tr id="green">
                 <td><120</td>
                 <td><80</td>
               </tr>
-              <tr id="yellow" class="range-row">
+              <tr id="yellow">
                 <td>120-139</td>
                 <td>80-89</td>
               </tr>
-              <tr id="orange" class="range-row">
+              <tr id="orange">
                 <td>140-159</td>
                 <td>90-99</td>
               </tr>
-              <tr id="red" class="range-row">
+              <tr id="red">
                 <td>160+</td>
                 <td>100+</td>
               </tr>

@@ -24,27 +24,65 @@
       <button id="restart" type="button" class="button">Start Over</button>
     </div>
     <h1 id="scoreboard"></h1>
-    <div id="game">
-      <svg id="canvas" width="500px" height="500px"></svg>
+    <div class="container">
+      <div id="left" class="flex-item">
+        <svg id="items" width="500px" height="500px"></svg>
+      </div>
+      <div id="board">
+        <div id="game">
+          <svg id="canvas" width="500px" height="500px"></svg>
+        </div>
+      </div>
+      <div id="right" class="flex-item">
+        <div id="ranges">
+          <table style="width:100%">
+            <text id="table-title">Blood Pressure Ranges</text>
+            <thead>
+              <tr>
+                <th>Systolic</th>
+                <th>Diastolic</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="green" class="range-row">
+                <td><120</td>
+                <td><80</td>
+              </tr>
+              <tr id="yellow" class="range-row">
+                <td>120-139</td>
+                <td>80-89</td>
+              </tr>
+              <tr id="orange" class="range-row">
+                <td>140-159</td>
+                <td>90-99</td>
+              </tr>
+              <tr id="red" class="range-row">
+                <td>160+</td>
+                <td>100+</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div id="leaderboard">
+          <text id="table-title">Leaderboard</text>
+          <table style="width:100%">
+            <thead>
+              <tr>
+                <th>Score</th>
+                <th>Name</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr id="first" class="leaders"></tr>
+              <tr id="second" class="leaders"></tr>
+              <tr id="third" class="leaders"></tr>
+              <tr id="fourth" class="leaders"></tr>
+              <tr id="fifth" class="leaders"></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <h1 id="leaderboard">
-      <text id="leader-title">Leaderboard</text>
-      <table style="width:100%" height="236px">
-        <thead>
-          <tr>
-            <th>Score</th>
-            <th>Name</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr id="first" class="leaders"></tr>
-          <tr id="second" class="leaders"></tr>
-          <tr id="third" class="leaders"></tr>
-          <tr id="fourth" class="leaders"></tr>
-          <tr id="fifth" class="leaders"></tr>
-        </tbody>
-      </table>
-    </h1>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script src="main.js"></script>
     <div id="homepage">

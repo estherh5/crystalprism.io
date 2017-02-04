@@ -1,9 +1,10 @@
 // Game settings
-var sizeX = 500;
-var sizeY = 500;
+var sizeX = 600;
+var sizeY = 600;
 var scale = 50;
 var speed = 200;
 var score = 0;
+var items = Snap('#items');
 var canvas = Snap('#canvas');
 var game = document.getElementById('game');
 var scoreboard = document.getElementById('scoreboard');
@@ -18,10 +19,11 @@ var food = placeFood();
 var enemy = canvas.rect(sizeX / 2 + scale * 2, sizeY / 2 + scale * 2, scale, scale);
 enemy.attr({fill: '#f11111'});
 canvas.attr({width: sizeX, height: sizeY});
+items.attr({width: sizeX / 2, height: sizeY});
 var scoresNames = [];
 var input = document.createElement("input");
 var submit = document.createElement("button");
-var div = document.createElement("div");
+var div = null;
 var breakOne = document.createElement("br");
 var text = document.createElement("h1");
 var breakTwo = document.createElement("br");

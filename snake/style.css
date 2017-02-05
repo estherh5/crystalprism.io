@@ -61,20 +61,6 @@ h1 {
   flex-direction: column;
 }
 
-#items {
-  margin-top: 0;
-  background-color: #e0e0e0;
-  font-family: Wire One, sans-serif;
-  font-size: 40px;
-  color: black;
-  text-align: center;
-  opacity: 0.5;
-}
-
-#items:hover {
-  opacity: 1;
-}
-
 #canvas {
   background-color: #ceebff;
 }
@@ -97,6 +83,18 @@ h1 {
   background-color: rgba(0, 0, 0, 0);
   font-size: 50px;
   color: red;
+}
+
+.hidden {
+  width: 115px;
+  height: 100px;
+  font-size: 17px;
+  position: absolute;
+  visibility: hidden;
+}
+
+td:hover .hidden {
+  visibility: visible;
 }
 
 input {

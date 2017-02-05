@@ -103,7 +103,7 @@ function gameLoop() {
       reliever.remove();
       reliever = null;
       reliever = placeReliever();
-      if (systolic > 110) {
+      if (systolic > 100) {
         systolic = systolic - 2;
       }
       if (diastolic > 70) {
@@ -116,7 +116,7 @@ function gameLoop() {
     if (didCollide(stressor, reliever)) {
       reliever.remove();
       reliever = null;
-      speed /= 1.04;
+      speed /= 1.03;
       reliever = placeReliever();
     }
     if (didCollide(heart, stressor)) {
@@ -124,7 +124,7 @@ function gameLoop() {
       diastolic = diastolic + 2;
       stressor.remove();
       stressor = null;
-      speed /= 1.04;
+      speed /= 1.03;
       stressor = placeStressor();
     }
     if (systolic < 120 && diastolic < 80) {

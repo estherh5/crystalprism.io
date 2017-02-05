@@ -1,12 +1,12 @@
 // Game settings
 var sizeX = 600;
 var sizeY = 600;
-var scale = 50;
+var scale = 60;
 var speed = 200;
 var hours = 0;
 var minutes = 0;
 var seconds = 0;
-var systolic = 110;
+var systolic = 100;
 var diastolic = 70;
 var paused = false;
 var direction = 'ArrowDown';
@@ -14,15 +14,13 @@ var name = '';
 var scoresNames = [];
 
 // Define pieces
-var items = Snap('#items');
-items.attr({width: sizeX / 2, height: sizeY});
 var canvas = Snap('#canvas');
 canvas.attr({width: sizeX, height: sizeY});
-var snake = canvas.rect(0, 0, scale, scale);
-snake.attr({fill: '#fffa92'});
-var food = placeFood();
-var enemy = canvas.rect(sizeX / 2 + scale * 2, sizeY / 2 + scale * 2, scale, scale);
-enemy.attr({fill: '#f11111'});
+var heart = Snap('#heart');
+canvas.append(heart);
+heart.attr({'x': 0, 'y': 0, width: scale, height: scale});
+var reliever = placeReliever();
+var stressor = placeStressor();
 var game = document.getElementById('game');
 var systolicText = document.getElementById('systolic');
 var diastolicText = document.getElementById('diastolic');
@@ -100,32 +98,39 @@ function gameLoop() {
   if (paused) {
     return;
   } else if (!paused) {
-    move(snake, direction);
-    if (didCollide(snake, food)) {
-      food.remove();
-      food = null;
-      speed /= 1.01;
-      food = placeFood();
+    move(heart, direction);
+    if (didCollide(heart, reliever)) {
+      reliever.remove();
+      reliever = null;
+      reliever = placeReliever();
+      if (systolic > 110) {
+        systolic = systolic - 2;
+      }
       if (diastolic > 70) {
         diastolic--;
       }
-      if (systolic > 110) {
-        systolic--;
+      if (speed < 200) {
+        speed *= 1.01;
       }
     }
-    if (didCollide(enemy, food)) {
-      food.remove();
-      food = null;
-      speed /= 1.01;
-      food = placeFood();
+    if (didCollide(stressor, reliever)) {
+      reliever.remove();
+      reliever = null;
+      speed /= 1.04;
+      reliever = placeReliever();
     }
-    if (didCollide(snake, enemy)) {
-      diastolic++;
-      systolic++;
+    if (didCollide(heart, stressor)) {
+      systolic = systolic + 4;
+      diastolic = diastolic + 2;
+      stressor.remove();
+      stressor = null;
+      speed /= 1.04;
+      stressor = placeStressor();
     }
     if (systolic < 120 && diastolic < 80) {
       systolicText.style.color = '#56d056';
       diastolicText.style.color = '#56d056';
+      heart.attr({fill: '#56d056'});
     }
     if (systolic >= 120 && systolic < 140) {
       systolicText.style.color = '#ffff00';
@@ -133,11 +138,17 @@ function gameLoop() {
     if (diastolic >= 80 && diastolic < 90) {
       diastolicText.style.color = '#ffff00';
     }
+    if (systolic >= 120 && systolic < 140 || diastolic >= 80 && diastolic < 90) {
+      heart.attr({fill: '#ffff00'});
+    }
     if (systolic >= 140 && systolic < 160) {
       systolicText.style.color = '#ffc107';
     }
     if (diastolic >= 90 && diastolic < 100) {
       diastolicText.style.color = '#ffc107';
+    }
+    if (systolic >= 140 && systolic < 160 || diastolic >= 90 && diastolic < 100) {
+      heart.attr({fill: '#ffc107'});
     }
     if (systolic >= 160) {
       systolicText.style.color = '#ff2020';
@@ -145,7 +156,13 @@ function gameLoop() {
     if (diastolic >= 100) {
       diastolicText.style.color = '#ff2020';
     }
+    if (systolic >= 160 || diastolic >= 100) {
+      heart.attr({fill: '#ff2020'});
+    }
     if (systolic > 160 || diastolic > 100) {
+      systolicText.style.color = '#ff2020';
+      diastolicText.style.color = '#ff2020';
+      heart.attr({fill: '##ff2020'});
       paused = true;
       div = document.createElement('div');
       game.appendChild(div);
@@ -170,21 +187,21 @@ function gameLoop() {
   lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
 }
 
-function moveEnemy() {
+function moveStressor() {
+  setTimeout(moveStressor, speed * 2);
   var possibleDirections = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
-  z = Math.floor(Math.random() * 3);
+  z = Math.floor(Math.random() * 4);
   var randDirection = possibleDirections[z];
-  setTimeout(moveEnemy, speed * 2);
   if (paused) {
     return;
   } else if (!paused) {
-  move(enemy, randDirection);
+  move(stressor, randDirection);
   }
 }
 
 setTimeout(gameLoop, speed);
 
-setTimeout(moveEnemy, speed * 2);
+setTimeout(moveStressor, speed * 2)
 
 setInterval(getHours, 3600000);
 
@@ -218,12 +235,28 @@ function move(obj, direction) {
   }
 }
 
-function placeFood() {
+function placeReliever() {
+  var relievers = [Snap('#bicycle'), Snap('#yoga'), Snap('#fruit'), Snap('#pill')];
   var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
   var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
-  var food = canvas.rect(randX, randY, scale, scale, scale/10, scale/10);
-  food.attr({fill: '#ceffe8'});
-  return food;
+  a = Math.floor(Math.random() * 4);
+  b = Math.floor(Math.random() * 3);
+  var reliever = relievers[a].clone();
+  canvas.append(reliever);
+  reliever.attr({'x': randX, 'y': randY, width: scale, height: scale});
+  return reliever;
+}
+
+function placeStressor() {
+  var stressors = [Snap('#alcohol'), Snap('#salt'), Snap('#cigarette'), Snap('#stress')];
+  var randX = Math.floor((sizeX/2/scale) * Math.random()) * scale;
+  var randY = Math.floor((sizeY/2/scale) * Math.random()) * scale;
+  a = Math.floor(Math.random() * 4);
+  b = Math.floor(Math.random() * 3);
+  var stressor = stressors[a].clone();
+  canvas.append(stressor);
+  stressor.attr({'x': randX + 3 * scale, 'y': randY + 3 * scale, width: scale, height: scale});
+  return stressor;
 }
 
 function didCollide(objA, objB) {
@@ -293,16 +326,17 @@ function restartGame() {
   hours = 0;
   minutes = 0;
   seconds = 0;
-  systolic = 110;
+  systolic = 100;
   diastolic = 70;
   paused = false;
   document.getElementById('pause').innerHTML = 'Pause';
-  snake.attr({'x': 0, 'y': 0});
-  enemy.attr({'x': sizeX / 2 + scale * 2, 'y': sizeY / 2 + scale * 2});
+  heart.attr({'x': 0, 'y': 0});
   speed = 200;
   direction = 'ArrowDown';
-  food.remove();
-  food = null;
-  score = 0;
-  food = placeFood();
+  reliever.remove();
+  reliever = null;
+  reliever = placeReliever();
+  stressor.remove();
+  stressor = null;
+  stressor = placeStressor();
 }

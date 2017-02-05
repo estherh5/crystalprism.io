@@ -76,7 +76,7 @@ h1 {
 }
 
 #canvas {
-  background-color: #efbfff;
+  background-color: #ceebff;
 }
 
 #game {
@@ -105,21 +105,20 @@ input {
   color: black;
 }
 
-#ranges, #leaderboard {
+.table {
   font-family: Wire One, sans-serif;
   background-color: #e0e0e0;
   height: 290px;
   width: 300px;
   margin-bottom: 20px;
   opacity: 0.5;
-  line-height: 30px;
 }
 
-#ranges:hover, #leaderboard:hover {
+.table:hover {
   opacity: 1;
 }
 
-#table-title {
+.table-title {
   font-size: 40px;
   font-weight: bolder;
   line-height: 50px;
@@ -136,7 +135,10 @@ td, tr {
   font-size: 30px;
   font-weight: bold;
   width: 50%;
-  height: 20%;
+}
+
+#ranges td {
+  font-size: 35px;
 }
 
 #green {

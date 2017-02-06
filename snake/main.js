@@ -12,6 +12,15 @@ var paused = true;
 var direction = '';
 var name = '';
 var scoresNames = [];
+var sound = new Howl({
+  src: ['sounds/heartbeat.mp3'],
+  loop: true,
+});
+if (paused) {
+  sound.stop();
+} else if (!paused){
+  sound.play();
+}
 
 // Define pieces
 var canvas = Snap('#canvas');
@@ -39,6 +48,7 @@ document.body.onkeydown = function (e) {
     if (startScreen.style.visibility == 'visible') {
       startScreen.style.visibility = 'hidden';
       paused = false;
+      sound.play();
     }
   }
 }
@@ -50,7 +60,9 @@ document.getElementById('pause').onclick = function () {
     if (paused) {
       paused = false;
       document.getElementById('pause').innerHTML = 'Pause';
+      sound.play();
     } else if (!paused) {
+      sound.stop();
       paused = true;
       document.getElementById('pause').innerHTML = 'Resume';
     }
@@ -131,6 +143,7 @@ function gameLoop() {
       systolicText.style.color = '#56d056';
       diastolicText.style.color = '#56d056';
       heart.attr({fill: '#56d056'});
+      sound.rate(1.0);
     }
     if (systolic >= 120 && systolic < 140) {
       systolicText.style.color = '#ffff00';
@@ -140,6 +153,7 @@ function gameLoop() {
     }
     if (systolic >= 120 && systolic < 140 || diastolic >= 80 && diastolic < 90) {
       heart.attr({fill: '#ffff00'});
+      sound.rate(1.3);
     }
     if (systolic >= 140 && systolic < 160) {
       systolicText.style.color = '#ffc107';
@@ -149,6 +163,7 @@ function gameLoop() {
     }
     if (systolic >= 140 && systolic < 160 || diastolic >= 90 && diastolic < 100) {
       heart.attr({fill: '#ffc107'});
+      sound.rate(1.6);
     }
     if (systolic >= 160) {
       systolicText.style.color = '#ff2020';
@@ -157,6 +172,7 @@ function gameLoop() {
       diastolicText.style.color = '#ff2020';
     }
     if (systolic >= 160 || diastolic >= 100) {
+      sound.rate(2.0);
       heart.attr({fill: '#ff2020'});
     }
     if (systolic > 160 || diastolic > 100) {
@@ -168,6 +184,7 @@ function gameLoop() {
       submit.className = 'inactive';
       document.getElementById('pause').className = 'inactive';
       document.getElementById('restart').className = 'inactive';
+      sound.stop();
     }
   }
   systolicText.innerHTML = systolic;
@@ -311,19 +328,22 @@ function updateLeaderboard() {
 }
 
 function restartGame() {
-    hours = 0;
-    minutes = 0;
-    seconds = 0;
-    systolic = 100;
-    diastolic = 70;
-    paused = false;
-    document.getElementById('pause').innerHTML = 'Pause';
-    heart.attr({'x': 0, 'y': 0});
-    speed = 200;
-    reliever.remove();
-    reliever = null;
-    reliever = placeReliever();
-    stressor.remove();
-    stressor = null;
-    stressor = placeStressor();
+  if (sound.playing() == false) {
+    sound.play();
+  }
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
+  systolic = 100;
+  diastolic = 70;
+  paused = false;
+  document.getElementById('pause').innerHTML = 'Pause';
+  heart.attr({'x': 0, 'y': 0});
+  speed = 200;
+  reliever.remove();
+  reliever = null;
+  reliever = placeReliever();
+  stressor.remove();
+  stressor = null;
+  stressor = placeStressor();
 }

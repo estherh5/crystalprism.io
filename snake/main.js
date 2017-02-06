@@ -8,8 +8,8 @@ var minutes = 0;
 var seconds = 0;
 var systolic = 100;
 var diastolic = 70;
-var paused = false;
-var direction = 'ArrowDown';
+var paused = true;
+var direction = '';
 var name = '';
 var scoresNames = [];
 
@@ -19,6 +19,10 @@ canvas.attr({width: sizeX, height: sizeY});
 var heart = Snap('#heart');
 canvas.append(heart);
 heart.attr({'x': 0, 'y': 0, width: scale, height: scale});
+var startScreen = document.getElementById('start-screen');
+var gameOverScreen = document.getElementById('game-over');
+var input = document.getElementById('input');
+var submit = document.getElementById('submit');
 var reliever = placeReliever();
 var stressor = placeStressor();
 var game = document.getElementById('game');
@@ -26,23 +30,21 @@ var systolicText = document.getElementById('systolic');
 var diastolicText = document.getElementById('diastolic');
 var lifespan = document.getElementById('lifespan');
 var leaders = document.getElementsByClassName('leaders');
-var div = null;
-var input = document.createElement('input');
-var submit = document.createElement('button');
-var breakOne = document.createElement('br');
-var text = document.createElement('h1');
-var breakTwo = document.createElement('br');
-var breakThree = document.createElement('br');
+startScreen.style.visibility = 'visible';
 
 // Define events
 document.body.onkeydown = function (e) {
   if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
     direction = e.key;
+    if (startScreen.style.visibility == 'visible') {
+      startScreen.style.visibility = 'hidden';
+      paused = false;
+    }
   }
 }
 
 document.getElementById('pause').onclick = function () {
-  if (div != null) {
+  if (gameOverScreen.style.visibility == 'visible' || startScreen.style.visibility == 'visible') {
     return;
   } else {
     if (paused) {
@@ -56,7 +58,7 @@ document.getElementById('pause').onclick = function () {
 }
 
 document.getElementById('restart').onclick = function() {
-  if (div != null) {
+  if (gameOverScreen.style.visibility == 'visible' || startScreen.style.visibility == 'visible') {
     return;
   } else {
     restartGame();
@@ -67,7 +69,7 @@ input.oninput = function () {
   if (input.value == '') {
     submit.className = 'inactive';
   } else {
-    submit.className = 'button';
+    submit.className = '';
   }
 }
 
@@ -83,12 +85,10 @@ submit.onclick = function () {
     };
     scoresNames.push(scoreName);
     updateLeaderboard();
-    div.remove();
-    div = null;
-    paused = false;
+    gameOverScreen.style.visibility = 'hidden';
     input.value = '';
-    document.getElementById('pause').className = 'button';
-    document.getElementById('restart').className = 'button';
+    document.getElementById('pause').className = '';
+    document.getElementById('restart').className = '';
   }
 }
 
@@ -164,22 +164,10 @@ function gameLoop() {
       diastolicText.style.color = '#ff2020';
       heart.attr({fill: '##ff2020'});
       paused = true;
-      div = document.createElement('div');
-      game.appendChild(div);
-      div.id = 'game-over';
-      div.appendChild(text);
-      text.id = 'game-over-text';
-      text.innerHTML = 'Game Over.';
-      text.appendChild(breakOne);
-      text.appendChild(document.createTextNode('What is your name?'));
-      div.appendChild(breakTwo);
-      div.appendChild(input);
-      div.appendChild(breakThree);
-      div.appendChild(submit);
-      submit.className = '';
+      gameOverScreen.style.visibility = 'visible';
+      submit.className = 'inactive';
       document.getElementById('pause').className = 'inactive';
       document.getElementById('restart').className = 'inactive';
-      submit.innerHTML = 'Submit';
     }
   }
   systolicText.innerHTML = systolic;
@@ -323,20 +311,19 @@ function updateLeaderboard() {
 }
 
 function restartGame() {
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-  systolic = 100;
-  diastolic = 70;
-  paused = false;
-  document.getElementById('pause').innerHTML = 'Pause';
-  heart.attr({'x': 0, 'y': 0});
-  speed = 200;
-  direction = 'ArrowDown';
-  reliever.remove();
-  reliever = null;
-  reliever = placeReliever();
-  stressor.remove();
-  stressor = null;
-  stressor = placeStressor();
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+    systolic = 100;
+    diastolic = 70;
+    paused = false;
+    document.getElementById('pause').innerHTML = 'Pause';
+    heart.attr({'x': 0, 'y': 0});
+    speed = 200;
+    reliever.remove();
+    reliever = null;
+    reliever = placeReliever();
+    stressor.remove();
+    stressor = null;
+    stressor = placeStressor();
 }

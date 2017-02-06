@@ -6,6 +6,7 @@
     <meta name="keywords" content="snake">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Aldrich|Codystar|Allerta+Stencil|Bungee|Bungee+Hairline|Bungee+Inline|Bungee+Outline|Bungee+Shade|Cherry+Swash|Fascinate|Fascinate+Inline|Geo|Macondo|Megrim|Montserrat+Subrayada|Nova+Mono|Quantico|Share+Tech+Mono|Snippet|Tangerine" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Wire+One" rel="stylesheet">
     <svg id="heart" height="0" width="0" viewBox="0 0 438 438" style="enable-background:new 0 0 492.719 492.719" xml:space="preserve">
       <g transform="translate(0.000000,438.000000) scale(0.100000,-0.100000)" stroke="none">
@@ -29,12 +30,12 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
-    <title>Snake</title>
+    <title>Rhythm of Life</title>
   </head>
   <body>
     <div>
-      <button id="pause" class="button">Pause</button>
-      <button id="restart" class="button">Start Over</button>
+      <button id="pause">Pause</button>
+      <button id="restart">Start Over</button>
     </div>
     <h1 id="blood-pressure">BP: <text id="systolic"></text>/<text id="diastolic"></text></h1>
     <h1 id="lifespan"></h1>
@@ -312,6 +313,24 @@
       </div>
       <div id="game">
         <svg id="canvas"></svg>
+        <div id="start-screen" class="hidden-screen">
+          <text id="start-title">Rhythm of Life</text>
+          <br>
+          Use the arrow keys to move your heart.
+          <br>
+          Avoid stressors and seek relievers to keep your blood pressure low.
+          <br>
+          Click an arrow key to start.
+        </div>
+        <div id="game-over" class="hidden-screen">
+          <text id="game-over-text">Game Over</text>
+          <br>
+          <text>Name:</text>
+          <br>
+          <input id="input"></input>
+          <br>
+          <button id="submit">Submit</button>
+        </div>
       </div>
       <div id="right">
         <div id="ranges" class="table">

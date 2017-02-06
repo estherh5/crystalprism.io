@@ -61,48 +61,6 @@ h1 {
   flex-direction: column;
 }
 
-#canvas {
-  background-color: #ceebff;
-}
-
-#game {
-  display: flex;
-  position: relative;
-}
-
-#game-over {
-  font-family: Wire One, sans-serif;
-  position: absolute;
-  background: #e8e8e8 no-repeat center 20%;
-  width: 600px;
-  height: 600px;
-  opacity: 0.85;
-}
-
-#game-over-text {
-  background-color: rgba(0, 0, 0, 0);
-  font-size: 50px;
-  color: red;
-}
-
-.hidden {
-  width: 115px;
-  height: 100px;
-  font-size: 17px;
-  position: absolute;
-  visibility: hidden;
-}
-
-td:hover .hidden {
-  visibility: visible;
-}
-
-input {
-  font-family: Wire One, sans-serif;
-  font-size: 30px;
-  color: black;
-}
-
 .table {
   font-family: Wire One, sans-serif;
   background-color: #e0e0e0;
@@ -133,6 +91,59 @@ td, tr {
   font-size: 30px;
   font-weight: bold;
   width: 50%;
+}
+
+.hidden {
+  width: 115px;
+  height: 100px;
+  font-size: 17px;
+  position: absolute;
+  visibility: hidden;
+}
+
+td:hover .hidden {
+  visibility: visible;
+}
+
+#canvas {
+  background-color: #ceebff;
+}
+
+#game {
+  display: flex;
+  position: relative;
+}
+
+.hidden-screen {
+  visibility: hidden;
+  font-family: Wire One, sans-serif;
+  font-size: 35px;
+  position: absolute;
+  background: #e8e8e8 no-repeat center 20%;
+  width: 600px;
+  height: 600px;
+  line-height: 50px;
+}
+
+#start-title {
+  font-size: 80px;
+  font-family: Tangerine, cursive;
+  line-height: 150px;
+}
+
+#game-over-text {
+  line-height: 150px;
+  background-color: rgba(0, 0, 0, 0);
+  font-family: Codystar, cursive;
+  font-weigth: bold;
+  font-size: 80px;
+  color: red;
+}
+
+input {
+  font-family: Wire One, sans-serif;
+  font-size: 30px;
+  color: black;
 }
 
 #ranges td {

@@ -23,6 +23,7 @@ canvas.attr({width: sizeX, height: sizeY});
 var heart = Snap('#heart');
 canvas.append(heart);
 heart.attr({'x': 0, 'y': 0, width: scale, height: scale});
+var game = document.getElementById('game');
 var startScreen = document.getElementById('start-screen');
 var pauseScreen = document.getElementById('pause-screen');
 var gameOverScreen = document.getElementById('game-over-screen');
@@ -30,7 +31,6 @@ var input = document.getElementById('input');
 var submit = document.getElementById('submit');
 var reliever = placeReliever();
 var stressor = placeStressor();
-var game = document.getElementById('game');
 var systolicText = document.getElementById('systolic');
 var diastolicText = document.getElementById('diastolic');
 var lifespan = document.getElementById('lifespan');
@@ -40,8 +40,8 @@ startScreen.style.visibility = 'visible';
 // Define events
 document.body.onkeydown = function (e) {
   if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
-  e.preventDefault();
-  direction = e.key;
+    e.preventDefault();
+    direction = e.key;
     if (startScreen.style.visibility == 'visible') {
       startScreen.style.visibility = 'hidden';
       sound.play();

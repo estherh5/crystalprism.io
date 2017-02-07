@@ -17,7 +17,7 @@ button {
   border: none;
   border-radius: 5px;
   background: #e0e0e0;
-  text-shadow: 0 -1px 0 rgba(0, 0, 0, 1);
+  text-shadow: 0 -1px 0 #000000;
   opacity: 1;
   cursor: default;
 }
@@ -28,7 +28,6 @@ button:hover {
 
 button:active {
   box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
-  background: #d4d4d4;
 }
 
 button.inactive {
@@ -39,9 +38,7 @@ button.inactive {
 h1 {
   margin: 0 auto;
   background-color: #e0e0e0;
-  color: black;
   width: 600px;
-  text-align: center;
 }
 
 #blood-pressure {
@@ -50,7 +47,7 @@ h1 {
 }
 
 #systolic, #diastolic {
-color: #56d056;
+  color: #56d056;
 }
 
 #lifespan {
@@ -93,7 +90,6 @@ th {
 td, tr {
   font-size: 30px;
   font-weight: bold;
-  width: 50%;
 }
 
 .hidden {
@@ -159,7 +155,6 @@ td:hover .hidden {
 input {
   font-family: Wire One, sans-serif;
   font-size: 30px;
-  color: black;
 }
 
 #ranges td {
@@ -184,6 +179,10 @@ input {
 #red {
   background-color: #ff2020;
   opacity: 0.7;
+}
+
+#leaderboard td {
+  line-height: 30px;
 }
 
 #homepage {

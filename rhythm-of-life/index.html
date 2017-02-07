@@ -2,23 +2,22 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Personal take on the classic Snake game">
-    <meta name="keywords" content="snake">
+    <meta name="description" content="Educational blood pressure game about stressors and relievers">
+    <meta name="keywords" content="heart,blood pressure,game,rhythm,life">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Aldrich|Codystar|Allerta+Stencil|Bungee|Bungee+Hairline|Bungee+Inline|Bungee+Outline|Bungee+Shade|Cherry+Swash|Fascinate|Fascinate+Inline|Geo|Macondo|Megrim|Montserrat+Subrayada|Nova+Mono|Quantico|Share+Tech+Mono|Snippet|Tangerine" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Wire+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Poiret+One|Ribeye|Tangerine|Wire+One" rel="stylesheet">
     <svg id="heart" height="0" width="0" viewBox="0 0 438 438" style="enable-background:new 0 0 492.719 492.719" xml:space="preserve">
       <g transform="translate(0.000000,438.000000) scale(0.100000,-0.100000)" stroke="none">
         <path d="M895 4345 c-316 -70 -580 -288 -744 -613 -207 -412 -192 -937 39
-      -1339 59 -102 99 -153 360 -459 113 -132 329 -386 480 -564 151 -178 370 -435
-      485 -570 116 -135 314 -368 440 -518 127 -149 232 -271 235 -271 3 0 95 107
-      205 237 110 130 292 344 405 476 113 133 271 317 350 411 80 93 203 237 273
-      320 71 82 174 204 231 270 56 66 169 199 252 295 236 276 285 346 355 510 136
-      316 151 698 39 1031 -122 365 -394 652 -715 753 -129 41 -194 49 -328 43 -144
-      -6 -257 -35 -382 -98 -164 -84 -252 -165 -510 -469 -87 -102 -161 -189 -165
-      -193 -4 -5 -101 100 -216 233 -236 275 -322 351 -479 430 -146 72 -265 100
-      -424 99 -69 0 -153 -7 -186 -14z"/>
+        -1339 59 -102 99 -153 360 -459 113 -132 329 -386 480 -564 151 -178 370 -435
+        485 -570 116 -135 314 -368 440 -518 127 -149 232 -271 235 -271 3 0 95 107
+        205 237 110 130 292 344 405 476 113 133 271 317 350 411 80 93 203 237 273
+        320 71 82 174 204 231 270 56 66 169 199 252 295 236 276 285 346 355 510 136
+        316 151 698 39 1031 -122 365 -394 652 -715 753 -129 41 -194 49 -328 43 -144
+        -6 -257 -35 -382 -98 -164 -84 -252 -165 -510 -469 -87 -102 -161 -189 -165
+        -193 -4 -5 -101 100 -216 233 -236 275 -322 351 -479 430 -146 72 -265 100
+        -424 99 -69 0 -153 -7 -186 -14z"/>
       </g>
     </svg>
     <script>
@@ -37,8 +36,8 @@
       <button id="pause">Pause</button>
       <button id="restart">Start Over</button>
     </div>
-    <h1 id="blood-pressure">BP: <text id="systolic"></text>/<text id="diastolic"></text></h1>
-    <h1 id="lifespan"></h1>
+    <h1 id="blood-pressure">BP: <text id="systolic">100</text>/<text id="diastolic">70</text></h1>
+    <h1 id="lifespan">Lifespan: 00:00:00</h1>
     <div class="container">
       <div id="left">
         <div id="stressboard" class="table">
@@ -322,8 +321,13 @@
           <br>
           Click an arrow key to start.
         </div>
-        <div id="game-over" class="hidden-screen">
-          <text id="game-over-text">Game Over</text>
+        <div id="pause-screen" class="hidden-screen">
+          <text id="pause-title">Paused</text>
+          <br>
+          Click Resume or an arrow key to continue.
+        </div>
+        <div id="game-over-screen" class="hidden-screen">
+          <text id="game-over-title">Game Over</text>
           <br>
           <text>Name:</text>
           <br>

@@ -1,5 +1,6 @@
 body {
   text-align: center;
+  font-family: Wire One, sans-serif;
 }
 
 .container {
@@ -37,7 +38,6 @@ button.inactive {
 
 h1 {
   margin: 0 auto;
-  font-family: Wire One, sans-serif;
   background-color: #e0e0e0;
   color: black;
   width: 600px;
@@ -47,6 +47,10 @@ h1 {
 #blood-pressure {
   font-size: 40px;
   margin-top: 20px;
+}
+
+#systolic, #diastolic {
+color: #56d056;
 }
 
 #lifespan {
@@ -62,7 +66,6 @@ h1 {
 }
 
 .table {
-  font-family: Wire One, sans-serif;
   background-color: #e0e0e0;
   height: 290px;
   width: 300px;
@@ -116,7 +119,6 @@ td:hover .hidden {
 
 .hidden-screen {
   visibility: hidden;
-  font-family: Wire One, sans-serif;
   font-size: 35px;
   position: absolute;
   background: #e8e8e8 no-repeat center 20%;
@@ -131,13 +133,27 @@ td:hover .hidden {
   line-height: 150px;
 }
 
-#game-over-text {
-  line-height: 150px;
-  background-color: rgba(0, 0, 0, 0);
-  font-family: Codystar, cursive;
+#pause-title {
+  font-size: 100px;
+  font-family: Poiret One, cursive;
   font-weight: bold;
+  line-height: 210px;
+}
+
+#pause-screen, #game-over-screen {
+  opacity: 0.85;
+}
+
+#game-over-title {
+  background-color: rgba(0, 0, 0, 0);
   font-size: 80px;
+  font-family: Ribeye, cursive;
+  line-height: 150px;
   color: red;
+}
+
+#game-over-screen {
+  font-weight: bold;
 }
 
 input {

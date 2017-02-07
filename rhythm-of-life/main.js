@@ -16,11 +16,6 @@ var sound = new Howl({
   src: ['sounds/heartbeat.mp3'],
   loop: true,
 });
-if (paused) {
-  sound.stop();
-} else if (!paused){
-  sound.play();
-}
 
 // Define pieces
 var canvas = Snap('#canvas');
@@ -29,7 +24,8 @@ var heart = Snap('#heart');
 canvas.append(heart);
 heart.attr({'x': 0, 'y': 0, width: scale, height: scale});
 var startScreen = document.getElementById('start-screen');
-var gameOverScreen = document.getElementById('game-over');
+var pauseScreen = document.getElementById('pause-screen');
+var gameOverScreen = document.getElementById('game-over-screen');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
 var reliever = placeReliever();
@@ -47,7 +43,13 @@ document.body.onkeydown = function (e) {
     direction = e.key;
     if (startScreen.style.visibility == 'visible') {
       startScreen.style.visibility = 'hidden';
+      sound.play();
+      restartGame();
+    }
+    if (pauseScreen.style.visibility == 'visible') {
       paused = false;
+      pauseScreen.style.visibility = 'hidden';
+      document.getElementById('pause').innerHTML = 'Pause';
       sound.play();
     }
   }
@@ -59,12 +61,14 @@ document.getElementById('pause').onclick = function () {
   } else {
     if (paused) {
       paused = false;
+      pauseScreen.style.visibility = 'hidden';
       document.getElementById('pause').innerHTML = 'Pause';
       sound.play();
     } else if (!paused) {
-      sound.stop();
       paused = true;
+      pauseScreen.style.visibility = 'visible';
       document.getElementById('pause').innerHTML = 'Resume';
+      sound.stop();
     }
   }
 }
@@ -73,7 +77,20 @@ document.getElementById('restart').onclick = function() {
   if (gameOverScreen.style.visibility == 'visible' || startScreen.style.visibility == 'visible') {
     return;
   } else {
-    restartGame();
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+    systolic = 100;
+    diastolic = 70;
+    systolicText.innerHTML = systolic;
+    diastolicText.innerHTML = diastolic;
+    lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+    paused = true;
+    startScreen.style.visibility = 'visible';
+    pauseScreen.style.visibility = 'hidden';
+    document.getElementById('pause').innerHTML = 'Pause';
+    systolicText.style.color = '#56d056';
+    diastolicText.style.color = '#56d056';
   }
 }
 
@@ -101,6 +118,17 @@ submit.onclick = function () {
     input.value = '';
     document.getElementById('pause').className = '';
     document.getElementById('restart').className = '';
+    startScreen.style.visibility = 'visible';
+    hours = 0;
+    minutes = 0;
+    seconds = 0;
+    systolic = 100;
+    diastolic = 70;
+    systolicText.innerHTML = systolic;
+    diastolicText.innerHTML = diastolic;
+    lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+    systolicText.style.color = '#56d056';
+    diastolicText.style.color = '#56d056';
   }
 }
 
@@ -324,7 +352,6 @@ function updateLeaderboard() {
       tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
     }
   }
-  restartGame();
 }
 
 function restartGame() {
@@ -337,7 +364,7 @@ function restartGame() {
   systolic = 100;
   diastolic = 70;
   paused = false;
-  document.getElementById('pause').innerHTML = 'Pause';
+  pauseScreen.style.visibility = 'hidden';
   heart.attr({'x': 0, 'y': 0});
   speed = 200;
   reliever.remove();

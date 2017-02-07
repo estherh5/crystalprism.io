@@ -40,7 +40,8 @@ startScreen.style.visibility = 'visible';
 // Define events
 document.body.onkeydown = function (e) {
   if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
-    direction = e.key;
+  e.preventDefault();
+  direction = e.key;
     if (startScreen.style.visibility == 'visible') {
       startScreen.style.visibility = 'hidden';
       sound.play();

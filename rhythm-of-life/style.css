@@ -113,8 +113,7 @@ td:hover .hidden {
   position: relative;
 }
 
-.hidden-screen {
-  visibility: hidden;
+.screen {
   font-size: 35px;
   position: absolute;
   background: #e8e8e8 no-repeat center 20%;
@@ -137,6 +136,7 @@ td:hover .hidden {
 }
 
 #pause-screen, #game-over-screen {
+  visibility: hidden;
   opacity: 0.85;
 }
 

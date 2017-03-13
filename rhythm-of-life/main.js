@@ -12,46 +12,37 @@ var paused = true;
 var direction = '';
 var name = '';
 var scoresNames = [];
+var relievers = [Snap('#bicycle'), Snap('#yoga'), Snap('#fruit'), Snap('#pill')];
+var stressors = [Snap('#alcohol'), Snap('#salt'), Snap('#cigarette'), Snap('#stress')];
 var sound = new Howl({
   src: ['sounds/heartbeat.mp3'],
   loop: true,
 });
 
 // Define pieces
-var canvas = Snap('#canvas');
-canvas.attr({width: sizeX, height: sizeY});
-var heart = Snap('#heart');
+var canvas = Snap('#canvas').attr({width: sizeX, height: sizeY});
+var heart = Snap('#heart').attr({fill: '#56d056', 'x': 0, 'y': 0, width: scale, height: scale});
 canvas.append(heart);
-heart.attr({'x': 0, 'y': 0, width: scale, height: scale});
 var game = document.getElementById('game');
 var startScreen = document.getElementById('start-screen');
 var pauseScreen = document.getElementById('pause-screen');
 var gameOverScreen = document.getElementById('game-over-screen');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
-var reliever = placeReliever();
-var stressor = placeStressor();
+var reliever = place(relievers);
+var stressor = place(stressors);
 var systolicText = document.getElementById('systolic');
 var diastolicText = document.getElementById('diastolic');
 var lifespan = document.getElementById('lifespan');
 var leaders = document.getElementsByClassName('leaders');
-startScreen.style.visibility = 'visible';
 
 // Define events
 document.body.onkeydown = function (e) {
   if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
     e.preventDefault();
     direction = e.key;
-    if (startScreen.style.visibility == 'visible') {
-      startScreen.style.visibility = 'hidden';
-      sound.play();
-      restartGame();
-    }
-    if (pauseScreen.style.visibility == 'visible') {
-      paused = false;
-      pauseScreen.style.visibility = 'hidden';
-      document.getElementById('pause').innerHTML = 'Pause';
-      sound.play();
+    if (startScreen.style.visibility == 'visible' || startScreen.style.visibility == '' || pauseScreen.style.visibility == 'visible') {
+      resume();
     }
   }
 }
@@ -61,15 +52,9 @@ document.getElementById('pause').onclick = function () {
     return;
   } else {
     if (paused) {
-      paused = false;
-      pauseScreen.style.visibility = 'hidden';
-      document.getElementById('pause').innerHTML = 'Pause';
-      sound.play();
-    } else if (!paused) {
-      paused = true;
-      pauseScreen.style.visibility = 'visible';
-      document.getElementById('pause').innerHTML = 'Resume';
-      sound.stop();
+      resume();
+    } else {
+      pause();
     }
   }
 }
@@ -77,22 +62,8 @@ document.getElementById('pause').onclick = function () {
 document.getElementById('restart').onclick = function() {
   if (gameOverScreen.style.visibility == 'visible' || startScreen.style.visibility == 'visible') {
     return;
-  } else {
-    hours = 0;
-    minutes = 0;
-    seconds = 0;
-    systolic = 100;
-    diastolic = 70;
-    systolicText.innerHTML = systolic;
-    diastolicText.innerHTML = diastolic;
-    lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
-    paused = true;
-    startScreen.style.visibility = 'visible';
-    pauseScreen.style.visibility = 'hidden';
-    document.getElementById('pause').innerHTML = 'Pause';
-    systolicText.style.color = '#56d056';
-    diastolicText.style.color = '#56d056';
   }
+  reset();
 }
 
 input.oninput = function () {
@@ -107,29 +78,8 @@ submit.onclick = function () {
   if (input.value == '') {
     return;
   } else {
-    name = input.value;
-    var scoreName = {
-      score: hours * 3600 + minutes * 60 + seconds,
-      lifespan: ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2),
-      name: name,
-    };
-    scoresNames.push(scoreName);
     updateLeaderboard();
-    gameOverScreen.style.visibility = 'hidden';
-    input.value = '';
-    document.getElementById('pause').className = '';
-    document.getElementById('restart').className = '';
-    startScreen.style.visibility = 'visible';
-    hours = 0;
-    minutes = 0;
-    seconds = 0;
-    systolic = 100;
-    diastolic = 70;
-    systolicText.innerHTML = systolic;
-    diastolicText.innerHTML = diastolic;
-    lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
-    systolicText.style.color = '#56d056';
-    diastolicText.style.color = '#56d056';
+    reset();
   }
 }
 
@@ -138,104 +88,18 @@ function gameLoop() {
   setTimeout(gameLoop, speed);
   if (paused) {
     return;
-  } else if (!paused) {
+  } else {
     move(heart, direction);
-    if (didCollide(heart, reliever)) {
-      reliever.remove();
-      reliever = null;
-      reliever = placeReliever();
-      if (systolic > 100) {
-        systolic = systolic - 2;
-      }
-      if (diastolic > 70) {
-        diastolic--;
-      }
-      if (speed < 200) {
-        speed *= 1.01;
-      }
-    }
-    if (didCollide(stressor, reliever)) {
-      reliever.remove();
-      reliever = null;
-      speed /= 1.03;
-      reliever = placeReliever();
-    }
-    if (didCollide(heart, stressor)) {
-      systolic = systolic + 4;
-      diastolic = diastolic + 2;
-      stressor.remove();
-      stressor = null;
-      speed /= 1.03;
-      stressor = placeStressor();
-    }
-    if (systolic < 120 && diastolic < 80) {
-      systolicText.style.color = '#56d056';
-      diastolicText.style.color = '#56d056';
-      heart.attr({fill: '#56d056'});
-      sound.rate(1.0);
-    }
-    if (systolic >= 120 && systolic < 140) {
-      systolicText.style.color = '#ffff00';
-    }
-    if (diastolic >= 80 && diastolic < 90) {
-      diastolicText.style.color = '#ffff00';
-    }
-    if (systolic >= 120 && systolic < 140 || diastolic >= 80 && diastolic < 90) {
-      heart.attr({fill: '#ffff00'});
-      sound.rate(1.3);
-    }
-    if (systolic >= 140 && systolic < 160) {
-      systolicText.style.color = '#ffc107';
-    }
-    if (diastolic >= 90 && diastolic < 100) {
-      diastolicText.style.color = '#ffc107';
-    }
-    if (systolic >= 140 && systolic < 160 || diastolic >= 90 && diastolic < 100) {
-      heart.attr({fill: '#ffc107'});
-      sound.rate(1.6);
-    }
-    if (systolic >= 160) {
-      systolicText.style.color = '#ff2020';
-    }
-    if (diastolic >= 100) {
-      diastolicText.style.color = '#ff2020';
-    }
-    if (systolic >= 160 || diastolic >= 100) {
-      sound.rate(2.0);
-      heart.attr({fill: '#ff2020'});
-    }
-    if (systolic > 160 || diastolic > 100) {
-      systolicText.style.color = '#ff2020';
-      diastolicText.style.color = '#ff2020';
-      heart.attr({fill: '##ff2020'});
-      paused = true;
-      gameOverScreen.style.visibility = 'visible';
-      submit.className = 'inactive';
-      document.getElementById('pause').className = 'inactive';
-      document.getElementById('restart').className = 'inactive';
-      sound.stop();
-    }
+    didCollide(heart, reliever, relieveHeart);
+    didCollide(stressor, reliever, replaceReliever);
+    didCollide(heart, stressor, stressHeart);
   }
-  systolicText.innerHTML = systolic;
-  diastolicText.innerHTML = diastolic;
   lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
-}
-
-function moveStressor() {
-  setTimeout(moveStressor, speed * 2);
-  var possibleDirections = ['ArrowUp', 'ArrowDown', 'ArrowRight', 'ArrowLeft'];
-  z = Math.floor(Math.random() * 4);
-  var randDirection = possibleDirections[z];
-  if (paused) {
-    return;
-  } else if (!paused) {
-  move(stressor, randDirection);
-  }
 }
 
 setTimeout(gameLoop, speed);
 
-setTimeout(moveStressor, speed * 2)
+setTimeout(moveStressor, speed * 1.5)
 
 setInterval(getHours, 3600000);
 
@@ -244,6 +108,65 @@ setInterval(getMinutes, 60000);
 setInterval(getSeconds, 1000);
 
 // Define game functions
+function place(objs) {
+  randNum = Math.floor(Math.random() * 4);
+  if (objs == relievers) {
+    var obj = objs[randNum].clone();
+    var ratio = sizeX/scale;
+  } else {
+    var obj = objs[randNum].clone();
+    var ratio = sizeX/2/scale;
+  }
+  var randX = Math.floor(ratio * Math.random()) * scale;
+  var randY = Math.floor(ratio * Math.random()) * scale;
+  obj.attr({'x': randX, 'y': randY, width: scale, height: scale});
+  canvas.append(obj);
+  return obj;
+}
+
+function resume() {
+  paused = false;
+  startScreen.style.visibility = 'hidden';
+  pauseScreen.style.visibility = 'hidden';
+  sound.play();
+  document.getElementById('pause').innerHTML = 'Pause';
+}
+
+function pause() {
+  paused = true;
+  pauseScreen.style.visibility = 'visible';
+  sound.stop();
+  document.getElementById('pause').innerHTML = 'Resume';
+}
+
+function reset() {
+  hours = 0;
+  minutes = 0;
+  seconds = 0;
+  systolic = 100;
+  diastolic = 70;
+  speed = 200;
+  systolicText.innerHTML = systolic;
+  diastolicText.innerHTML = diastolic;
+  lifespan.innerHTML = 'Lifespan: ' + ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2);
+  systolicText.style.color = '#56d056';
+  diastolicText.style.color = '#56d056';
+  heart.attr({'x': 0, 'y': 0, fill: '#56d056'});
+  stressor.remove();
+  stressor = place(stressors);
+  reliever.remove();
+  reliever = place(relievers);
+  paused = true;
+  gameOverScreen.style.visibility = 'hidden';
+  pauseScreen.style.visibility = 'hidden';
+  startScreen.style.visibility = 'visible';
+  input.value = '';
+  document.getElementById('pause').innerHTML = 'Pause';
+  document.getElementById('pause').className = '';
+  document.getElementById('restart').className = '';
+  sound.stop();
+}
+
 function move(obj, direction) {
   var possibleDirections = {
     'ArrowUp': {'y': parseFloat(obj.attr('y')) - scale},
@@ -269,35 +192,111 @@ function move(obj, direction) {
   }
 }
 
-function placeReliever() {
-  var relievers = [Snap('#bicycle'), Snap('#yoga'), Snap('#fruit'), Snap('#pill')];
-  var randX = Math.floor((sizeX/scale) * Math.random()) * scale;
-  var randY = Math.floor((sizeY/scale) * Math.random()) * scale;
-  a = Math.floor(Math.random() * 4);
-  b = Math.floor(Math.random() * 3);
-  var reliever = relievers[a].clone();
-  canvas.append(reliever);
-  reliever.attr({'x': randX, 'y': randY, width: scale, height: scale});
-  return reliever;
+function moveStressor() {
+  setTimeout(moveStressor, speed * 1.5);
+  if (paused) {
+    return;
+  } else if (!paused) {
+    if (parseFloat(heart.attr('x')) < parseFloat(stressor.attr('x'))) {
+      move(stressor, 'ArrowLeft');
+    } else if (parseFloat(heart.attr('x')) > parseFloat(stressor.attr('x'))) {
+      move(stressor, 'ArrowRight');
+    } else {
+      if (parseFloat(heart.attr('y')) < parseFloat(stressor.attr('y'))) {
+        move(stressor, 'ArrowUp');
+      } else {
+        move(stressor, 'ArrowDown');
+      }
+    }
+  }
 }
 
-function placeStressor() {
-  var stressors = [Snap('#alcohol'), Snap('#salt'), Snap('#cigarette'), Snap('#stress')];
-  var randX = Math.floor((sizeX/2/scale) * Math.random()) * scale;
-  var randY = Math.floor((sizeY/2/scale) * Math.random()) * scale;
-  a = Math.floor(Math.random() * 4);
-  b = Math.floor(Math.random() * 3);
-  var stressor = stressors[a].clone();
-  canvas.append(stressor);
-  stressor.attr({'x': randX + 3 * scale, 'y': randY + 3 * scale, width: scale, height: scale});
-  return stressor;
-}
-
-function didCollide(objA, objB) {
+function didCollide(objA, objB, action) {
   if (objA.attr('x') == objB.attr('x') && objA.attr('y') == objB.attr('y')) {
-    return true;
+    setHeartAttr();
+    return action();
   }
   return false;
+}
+
+function setHeartAttr() {
+  if (systolic < 120 && diastolic < 80) {
+    systolicText.style.color = '#56d056';
+    diastolicText.style.color = '#56d056';
+    heart.attr({fill: '#56d056'});
+    sound.rate(1.0);
+  }
+  if (systolic >= 120 && systolic < 140) {
+    systolicText.style.color = '#ffff00';
+  }
+  if (diastolic >= 80 && diastolic < 90) {
+    diastolicText.style.color = '#ffff00';
+  }
+  if (systolic >= 120 && systolic < 140 || diastolic >= 80 && diastolic < 90) {
+    heart.attr({fill: '#ffff00'});
+    sound.rate(1.3);
+  }
+  if (systolic >= 140 && systolic < 160) {
+    systolicText.style.color = '#ffc107';
+  }
+  if (diastolic >= 90 && diastolic < 100) {
+    diastolicText.style.color = '#ffc107';
+  }
+  if (systolic >= 140 && systolic < 160 || diastolic >= 90 && diastolic < 100) {
+    heart.attr({fill: '#ffc107'});
+    sound.rate(1.6);
+  }
+  if (systolic >= 160) {
+    systolicText.style.color = '#ff2020';
+  }
+  if (diastolic >= 100) {
+    diastolicText.style.color = '#ff2020';
+  }
+  if (systolic >= 160 || diastolic >= 100) {
+    sound.rate(2.0);
+    heart.attr({fill: '#ff2020'});
+  }
+  if (systolic > 160 || diastolic > 100) {
+    systolicText.style.color = '#ff2020';
+    diastolicText.style.color = '#ff2020';
+    heart.attr({fill: '##ff2020'});
+    paused = true;
+    gameOverScreen.style.visibility = 'visible';
+    submit.className = 'inactive';
+    document.getElementById('pause').className = 'inactive';
+    document.getElementById('restart').className = 'inactive';
+    sound.stop();
+  }
+  systolicText.innerHTML = systolic;
+  diastolicText.innerHTML = diastolic;
+}
+
+function relieveHeart() {
+  reliever.remove();
+  reliever = place(relievers);
+  if (systolic > 100) {
+    systolic = systolic - 2;
+  }
+  if (diastolic > 70) {
+    diastolic--;
+  }
+  if (speed < 200) {
+    speed *= 1.01;
+  }
+}
+
+function replaceReliever() {
+  reliever.remove();
+  reliever = place(relievers);
+  speed /= 1.03;
+}
+
+function stressHeart() {
+  systolic += 4;
+  diastolic += 2;
+  stressor.remove();
+  stressor = place(stressors);
+  speed /= 1.03;
 }
 
 function getHours() {
@@ -329,6 +328,13 @@ function getSeconds() {
 }
 
 function updateLeaderboard() {
+  name = input.value;
+  var scoreName = {
+    score: hours * 3600 + minutes * 60 + seconds,
+    lifespan: ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2),
+    name: name,
+  };
+  scoresNames.push(scoreName);
   scoresNames.sort(function (a, b) {
     return b.score - a.score;
   });
@@ -353,25 +359,4 @@ function updateLeaderboard() {
       tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
     }
   }
-}
-
-function restartGame() {
-  if (sound.playing() == false) {
-    sound.play();
-  }
-  hours = 0;
-  minutes = 0;
-  seconds = 0;
-  systolic = 100;
-  diastolic = 70;
-  paused = false;
-  pauseScreen.style.visibility = 'hidden';
-  heart.attr({'x': 0, 'y': 0});
-  speed = 200;
-  reliever.remove();
-  reliever = null;
-  reliever = placeReliever();
-  stressor.remove();
-  stressor = null;
-  stressor = placeStressor();
 }

@@ -17,11 +17,11 @@ var currentPalette;
 var currentPaint;
 var paintChoice;
 var clickedButton;
-var cursorCanvas;
+var brushCanvas;
 var ctx;
 var XMLS;
-var cursorCircle;
-var cursorSVG;
+var brushCircle;
+var brushSVG;
 
 function setStage() {
   canvas = document.getElementById('canvas');
@@ -59,10 +59,10 @@ function setStage() {
   document.getElementById('current-palette').onclick = updatePaint;
   clickedButton = document.getElementsByTagName('button')[0];
   clickedButton.classList.add('clicked');
-  cursorCanvas = document.getElementById('cursor');
-  ctx = cursorCanvas.getContext('2d');
+  brushCanvas = document.getElementById('brush');
+  ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
-  updateCursor();
+  updateBrush();
 }
 
 function whenMouseDown(event) {
@@ -90,6 +90,7 @@ function whenMouseUp(event) {
 
 function updatePalette(e) {
   if (e.target.nodeName == 'BUTTON') {
+    stagePalette.node.innerHTML = '';
     clickedButton.classList.remove('clicked');
     clickedButton = e.target;
     clickedButton.classList.add('clicked');
@@ -104,7 +105,7 @@ function updatePalette(e) {
     }
     currentPaint = stagePalette.circle(125, 20, 10).attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
     currentPaint.classList.add('chosen');
-    updateCursor();
+    updateBrush();
   }
 }
 
@@ -113,15 +114,15 @@ function updatePaint(e) {
     currentPaint.classList.remove('chosen');
     currentPaint = e.target;
     currentPaint.classList.add('chosen');
-    updateCursor();
+    updateBrush();
   }
 }
 
-function updateCursor() {
-  cursorCircle = document.getElementById('circle');
-  cursorCircle.style.fill = currentPaint.dataset.color;
-  cursorCircle.setAttribute('r', stroke/2);
-  cursorSVG = XMLS.serializeToString(document.getElementById('svg'));
-  canvg(cursorCanvas, cursorSVG);
-  canvas.style.cursor = 'url(' + cursorCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
+function updateBrush() {
+  brushCircle = document.getElementById('circle');
+  brushCircle.style.fill = currentPaint.dataset.color;
+  brushCircle.setAttribute('r', stroke/2);
+  brushSVG = XMLS.serializeToString(document.getElementById('svg'));
+  canvg(brushCanvas, brushSVG);
+  canvas.style.cursor = 'url(' + brushCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
 }

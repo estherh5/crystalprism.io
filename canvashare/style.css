@@ -1,0 +1,13 @@
+body {
+  text-align: center;
+}
+
+#canvas {
+  border: 20px solid rgba(0, 0, 0, 0.08);
+}
+
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}

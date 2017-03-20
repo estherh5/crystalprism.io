@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="Interactive drawing tool">
+    <meta name="keywords" content="drawing,canvas,pallet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="style.css" rel="stylesheet">
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+    <script src="main.js"></script>
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-91236421-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+    <title>CanvaShare</title>
+  </head>
+  <body onload="setStage();">
+    <div>
+      <canvas id="canvas" width="400" height="400"></canvas>
+    </div>
+    <div>
+      <svg id="pallet" width="200" height="200"></svg>
+    </div>
+    <div id="homepage">
+      <a href="../index.html">
+        <img src="../homepage.ico">
+      </a>
+    </div>
+  </body>
+</html>

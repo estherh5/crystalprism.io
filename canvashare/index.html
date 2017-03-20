@@ -8,6 +8,9 @@
     <link href="style.css" rel="stylesheet">
     <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
     <script src="main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -17,11 +20,17 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+    <div class="hidden">
+      <canvas id="cursor" width="20" height="20"></canvas>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg" width="20" height="20" xml:space="preserve">
+        <circle id="circle" cx="10" cy="10" r="10">
+      </svg>
+    </div>
     <title>CanvaShare</title>
   </head>
   <body onload="setStage();">
     <div>
-      <canvas id="canvas" width="400" height="400"></canvas>
+      <canvas id="canvas" width="400" height="400" class="on-canvas"></canvas>
     </div>
     <div>
       <svg id="pallet" width="400" height="200"></svg>

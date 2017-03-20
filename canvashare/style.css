@@ -2,6 +2,10 @@ body {
   text-align: center;
 }
 
+.hidden {
+  visibility: hidden;
+}
+
 #canvas {
   border: 20px solid rgba(0, 0, 0, 0.08);
 }

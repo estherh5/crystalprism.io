@@ -1,17 +1,18 @@
 var canvas;
 var stageCanvas;
 var stagePallet;
-var red;
-var orange;
-var yellow;
-var green;
-var blue;
-var purple;
+var basicPallet;
 var drawing;
 var oldPt;
 var oldMidPt;
 var paint;
+var paintClone;
 var stroke;
+var cursorCanvas;
+var cursorSVG;
+var cursorCircle;
+var ctx;
+var XMLS;
 
 function setStage() {
   canvas = document.getElementById('canvas');
@@ -26,22 +27,31 @@ function setStage() {
   stageCanvas.addChild(drawing);
   stageCanvas.update();
   stagePallet = Snap('#pallet');
-  red = stagePallet.circle(115, 20, 10).attr({fill: 'red', 'data-color': 'red'}).addClass('stroke');
-  orange = stagePallet.circle(145, 20, 10).attr({fill: 'orange', 'data-color': 'orange'});
-  yellow = stagePallet.circle(175, 20, 10).attr({fill: 'yellow', 'data-color': 'yellow'});
-  green = stagePallet.circle(205, 20, 10).attr({fill: 'green', 'data-color': 'green'});
-  blue = stagePallet.circle(235, 20, 10).attr({fill: 'blue', 'data-color': 'blue'});
-  purple = stagePallet.circle(265, 20, 10).attr({fill: 'purple', 'data-color': 'purple'});
+  basicPallet = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
+  paint = stagePallet.circle(115, 20, 10).attr({fill: basicPallet[0], 'data-color': basicPallet[0]}).node;
+  for (var i = 1; i < basicPallet.length; i++) {
+    paintClone = paint.cloneNode(true);
+    paintClone.setAttribute('cx', parseInt(paint.getAttribute('cx')) + 30*i);
+    paintClone.setAttribute('fill', basicPallet[i]);
+    paintClone.setAttribute('data-color', basicPallet[i]);
+    stagePallet.append(paintClone);
+  }
+  paint.classList.add('stroke');
   document.getElementById('pallet').onclick = updatePaint;
-  paint = red.node;
   stroke = 10;
+  updateCursor();
 }
 
-function whenMouseDown(event) {
-  if (!event.primary) { return; }
-  oldPt = new createjs.Point(stageCanvas.mouseX, stageCanvas.mouseY);
-  oldMidPt = oldPt.clone();
-  stageCanvas.addEventListener('stagemousemove', whenMouseMove);
+function updateCursor() {
+  cursorCanvas = document.getElementById('cursor');
+  ctx = cursorCanvas.getContext('2d');
+  XMLS = new XMLSerializer();
+  cursorCircle = document.getElementById('circle');
+  cursorCircle.style.fill = paint.dataset.color;
+  cursorCircle.setAttribute('r', stroke/2);
+  cursorSVG = XMLS.serializeToString(document.getElementById('svg'));
+  canvg(cursorCanvas, cursorSVG);
+  canvas.style.cursor = 'url(' + cursorCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
 }
 
 function updatePaint(e) {
@@ -49,7 +59,15 @@ function updatePaint(e) {
     paint.classList.remove('stroke');
     paint = e.target;
     paint.classList.add('stroke');
+    updateCursor();
   }
+}
+
+function whenMouseDown(event) {
+  if (!event.primary) { return; }
+  oldPt = new createjs.Point(stageCanvas.mouseX, stageCanvas.mouseY);
+  oldMidPt = oldPt.clone();
+  stageCanvas.addEventListener('stagemousemove', whenMouseMove);
 }
 
 function whenMouseMove(event) {

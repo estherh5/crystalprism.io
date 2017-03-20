@@ -6,6 +6,11 @@ body {
   border: 20px solid rgba(0, 0, 0, 0.08);
 }
 
+.stroke {
+  stroke: black;
+  stroke-width: 3px;
+}
+
 #homepage {
   position: fixed;
   bottom: 0px;

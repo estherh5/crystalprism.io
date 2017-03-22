@@ -22,6 +22,7 @@ var ctx;
 var XMLS;
 var brushCircle;
 var brushSVG;
+var data;
 
 function setStage() {
   canvas = document.getElementById('canvas');
@@ -63,6 +64,7 @@ function setStage() {
   ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
   updateBrush();
+  document.getElementById('save').onclick = saveImage;
 }
 
 function whenMouseDown(event) {
@@ -125,4 +127,11 @@ function updateBrush() {
   brushSVG = XMLS.serializeToString(document.getElementById('svg'));
   canvg(brushCanvas, brushSVG);
   canvas.style.cursor = 'url(' + brushCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
+}
+
+function saveImage() {
+  return fetch('http://localhost:5000/api/drawing', {
+    method: 'POST',
+    body: stageCanvas.toDataURL(),
+  })
 }

@@ -1,3 +1,4 @@
+import json
 import base64
 
 from flask import Flask, request
@@ -17,12 +18,10 @@ def drawing():
 
 
 def add_drawing():
+    data = request.get_json()
+    filename = data['filename'] + '.png'
     # Remove 'data:image/png;base64'
-    data = request.data.decode('utf-8').split(',')[1].encode('utf-8')
-    with open('drawing.png', 'wb') as drawing_file:
-        drawing_file.write(base64.decodestring(data))
+    image = data['image'].split(',')[1].encode('utf-8')
+    with open(filename, 'wb') as drawing_file:
+        drawing_file.write(base64.decodestring(image))
     return "Success!"
-
-
-def get_drawing():
-    return open('drawing.png').read()

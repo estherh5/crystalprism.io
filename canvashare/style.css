@@ -6,6 +6,18 @@ body {
   visibility: hidden;
 }
 
+#file-name {
+  outline: none;
+  border: none;
+  font-family: 'Chathura', sans-serif;
+  opacity: 1;
+  text-align: center;
+  font-size: 30px;
+  line-height: 31px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
 #canvas {
   border: 20px solid rgba(0, 0, 0, 0.08);
 }
@@ -30,21 +42,22 @@ button:focus {
   outline: none;
 }
 
+button:hover, #save:hover {
+  color: #ff8282;
+}
+
 .clicked {
   text-shadow: 0.2px -0.2px 0px #000000;
 }
 
 #save {
-  border-style: solid;
   color: grey;
-  background: #EBEBEB;
-  font-size: 50px;
-  line-height: 35px;
-  border-radius: 5px;
+  font-size: 32px;
+  line-height: 25px;
 }
 
 #save:active {
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
+  text-shadow: 0.2px -0.2px 0px
 }
 
 

@@ -130,8 +130,11 @@ function updateBrush() {
 }
 
 function saveImage() {
+  data = {'filename': document.getElementById('file-name').value, 'image': stageCanvas.toDataURL()};
+  data = JSON.stringify(data);
   return fetch('http://localhost:5000/api/drawing', {
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
-    body: stageCanvas.toDataURL(),
+    body: data,
   })
 }

@@ -1,0 +1,68 @@
+body {
+  text-align: center;
+}
+
+.hidden {
+  visibility: hidden;
+}
+
+#file-name {
+  outline: none;
+  border: none;
+  font-family: 'Chathura', sans-serif;
+  opacity: 1;
+  text-align: center;
+  font-size: 30px;
+  line-height: 31px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+#canvas {
+  border: 20px solid rgba(0, 0, 0, 0.08);
+}
+
+.chosen {
+  r: 11.5;
+  stroke: darkslategrey;
+  stroke-width: 2px;
+}
+
+button {
+  color: grey;
+  font-family: 'Chathura', sans-serif;
+  font-size: 25px;
+  line-height: 55px;
+  border: 0px;
+  border-radius: 5px;
+  background: transparent;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:hover, #save:hover {
+  color: #ff8282;
+}
+
+.clicked {
+  text-shadow: 0.2px -0.2px 0px #000000;
+}
+
+#save {
+  color: grey;
+  font-size: 32px;
+  line-height: 25px;
+}
+
+#save:active {
+  text-shadow: 0.2px -0.2px 0px
+}
+
+
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+}

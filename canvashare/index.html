@@ -2,17 +2,11 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Interactive drawing tool">
-    <meta name="keywords" content="drawing,canvas,palette">
+    <meta name="description" content="Interactive drawing tool gallery">
+    <meta name="keywords" content="gallery,drawing,canvas">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Chathura|League+Script" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=League+Script" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
-    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
-    <script src="main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -23,10 +17,10 @@
     </script>
     <title>CanvaShare</title>
   </head>
-  <body>
+  <body onload="getImages();">
     <div id="title">CanvaShare</div>
     <div id="container">
-      <div id="container-two">
+      <div id="images">
       </div>
     </div>
     <div id="homepage">
@@ -34,5 +28,6 @@
         <img src="../homepage.ico">
       </a>
     </div>
+    <script src="main.js"></script>
   </body>
 </html>

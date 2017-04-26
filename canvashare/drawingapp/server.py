@@ -11,7 +11,7 @@ cors = CORS(app, resources = {r"/api/*": {"origins": "*"}})
 @app.route('/api/drawing/<image>', methods = ['POST', 'GET'])
 def drawing(image):
     if request.method == 'POST':
-        return add_drawing()
+        return add_drawing(image)
     if request.method == 'GET':
         return get_drawing(image)
 
@@ -22,9 +22,9 @@ def gallery():
         return get_all_drawings()
 
 
-def add_drawing():
+def add_drawing(image):
     data = request.get_json()
-    filename = data['filename'] + '.png'
+    filename = image + '.png'
     # Remove 'data:image/png;base64'
     image = data['image'].split(',')[1].encode('utf-8')
     with open('drawings/' + filename, 'wb') as drawing_file:

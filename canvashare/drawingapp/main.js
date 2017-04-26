@@ -1,4 +1,6 @@
 var canvas;
+var context;
+var startingImage;
 var stageCanvas;
 var oldPt;
 var oldMidPt;
@@ -24,8 +26,16 @@ var brushCircle;
 var brushSVG;
 var data;
 
+
 function setStage() {
   canvas = document.getElementById('canvas');
+  context = canvas.getContext('2d');
+  startingImage = new Image;
+  startingImage.crossOrigin = 'Anonymous';
+  setInterval(function() {
+    startingImage.src = sessionStorage.getItem('imageSrc');
+    context.drawImage(startingImage, 0, 0);
+  }, 50);
   stageCanvas = new createjs.Stage(canvas);
   stageCanvas.autoClear = false;
   stageCanvas.enableDOMEvents(true);
@@ -130,9 +140,9 @@ function updateBrush() {
 }
 
 function saveImage() {
-  data = {'filename': document.getElementById('file-name').value, 'image': stageCanvas.toDataURL()};
+  data = {'image': stageCanvas.toDataURL()};
   data = JSON.stringify(data);
-  fetch('http://localhost:5000/api/drawing/<image>', {
+  fetch('http://localhost:5000/api/drawing/' + document.getElementById('file-name').value, {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,

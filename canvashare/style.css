@@ -34,6 +34,11 @@ a:hover {
   height: 200px;
   display: inline-block;
   margin: 10px;
+  opacity: 0.7;
+}
+
+.image:hover {
+  opacity: 1;
 }
 
 #homepage {

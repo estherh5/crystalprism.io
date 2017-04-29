@@ -2,6 +2,24 @@ body {
   text-align: center;
 }
 
+#gallery {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  height: 0px;
+  width: 0px;
+  margin: 5px;
+}
+
+#gallery-link {
+  font-size: 30px;
+  font-family: 'League Script', cursive;
+}
+
+#gallery-link:hover {
+  font-weight: bold;
+}
+
 .hidden {
   visibility: hidden;
 }

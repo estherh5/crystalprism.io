@@ -12,8 +12,8 @@ body {
   font-family: 'Chathura', sans-serif;
   opacity: 1;
   text-align: center;
-  font-size: 30px;
-  line-height: 31px;
+  font-size: 50px;
+  line-height: 51px;
   border-radius: 5px;
   margin-bottom: 10px;
 }
@@ -50,16 +50,15 @@ button:hover, #save:hover {
   text-shadow: 0.2px -0.2px 0px #000000;
 }
 
-#save {
+.action {
   color: grey;
   font-size: 32px;
   line-height: 25px;
 }
 
-#save:active {
+.action:active {
   text-shadow: 0.2px -0.2px 0px
 }
-
 
 #homepage {
   position: fixed;

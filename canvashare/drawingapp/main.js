@@ -32,10 +32,10 @@ function setStage() {
   context = canvas.getContext('2d');
   startingImage = new Image;
   startingImage.crossOrigin = 'Anonymous';
-  setInterval(function() {
-    startingImage.src = sessionStorage.getItem('imageSrc');
+  startingImage.src = sessionStorage.getItem('imageSrc');
+  setTimeout(function() {
     context.drawImage(startingImage, 0, 0);
-  }, 50);
+  }, 10);
   stageCanvas = new createjs.Stage(canvas);
   stageCanvas.autoClear = false;
   stageCanvas.enableDOMEvents(true);

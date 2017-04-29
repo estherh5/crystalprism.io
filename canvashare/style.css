@@ -1,8 +1,5 @@
-#title {
-  font-size: 100px;
-  font-family: 'League Script', cursive;
+div {
   text-align: center;
-  line-height: 150px;
 }
 
 a {
@@ -10,7 +7,13 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+#title {
+  font-size: 100px;
+  font-family: 'League Script', cursive;
+  line-height: 150px;
+}
+
+#title:hover {
   font-weight: bold;
 }
 
@@ -18,14 +21,32 @@ a:hover {
   width: 100%;
   height: 100%;
   position: absolute;
-  text-align: center;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
+  align-items: flex-start;
 }
 
 #images {
+  display: flex;
+  position: relative;
+  flex-flow: row wrap;
+  justify-content: center;
   max-width: 750px;
+}
+
+.image-div {
+  font-family: 'Chathura', sans-serif;
+  font-size: 30px;
+  line-height: 31px;
+  position: relative;
+  width: 240px;
+  height: 300px;
+  opacity: 0.7;
+}
+
+.image-div:hover {
+  opacity: 1;
 }
 
 .image {
@@ -34,11 +55,6 @@ a:hover {
   height: 200px;
   display: inline-block;
   margin: 10px;
-  opacity: 0.7;
-}
-
-.image:hover {
-  opacity: 1;
 }
 
 #homepage {

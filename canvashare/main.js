@@ -7,14 +7,22 @@ function getImages() {
   return fetch('http://localhost:5000/api/gallery').then(function (response) {
     response.json().then(function (images) {
       for (i = 0; i < images.length; i++) {
+        imageDiv = document.createElement('div');
+        imageDiv.className = 'image-div';
+        imageLink = document.createElement('a');
+        imageLink.href = 'drawingapp/index.html';
+        imageLink.className = 'image-link';
+        imageName = document.createElement('div');
+        imageName.innerHTML = images[i].split('.png')[0];
+        imageName.className = 'image-name';
         image = document.createElement('img');
         image.src = 'http://localhost:5000/api/drawing/' + images[i];
         image.className = 'image';
         image.onclick = setImageSrc;
-        link = document.createElement('a');
-        link.href = 'drawingapp/index.html';
-        canvas.append(link);
-        link.append(image);
+        canvas.append(imageDiv);
+        imageDiv.append(imageLink);
+        imageLink.append(imageName);
+        imageLink.append(image);
       }
     })
   })

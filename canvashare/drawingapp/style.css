@@ -60,6 +60,11 @@ button:hover, #save:hover {
   text-shadow: 0.2px -0.2px 0px
 }
 
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
 #homepage {
   position: fixed;
   bottom: 0px;

@@ -74,7 +74,8 @@ function setStage() {
   ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
   updateBrush();
-  document.getElementById('save').onclick = saveImage;
+  document.getElementById('post').onclick = postImage;
+  document.getElementById('download').onclick = downloadImage;
 }
 
 function whenMouseDown(event) {
@@ -139,7 +140,7 @@ function updateBrush() {
   canvas.style.cursor = 'url(' + brushCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
 }
 
-function saveImage() {
+function postImage() {
   data = {'image': stageCanvas.toDataURL()};
   data = JSON.stringify(data);
   fetch('http://localhost:5000/api/drawing/' + document.getElementById('file-name').value, {
@@ -147,5 +148,12 @@ function saveImage() {
     method: 'POST',
     body: data,
   })
-  setTimeout(function () {window.location.href = '../index.html'}, 1000);
+  setTimeout(function () {
+    window.location.href = '../index.html'
+  }, 700);
+}
+
+function downloadImage(e) {
+  e.target.href = stageCanvas.toDataURL();
+  e.target.download = document.getElementById('file-name').value;
 }

@@ -82,6 +82,8 @@ function whenMouseDown(event) {
   if (!event.primary) { return; }
   oldPt = new createjs.Point(stageCanvas.mouseX, stageCanvas.mouseY);
   oldMidPt = oldPt.clone();
+  drawing.graphics.clear().setStrokeStyle(stroke, 'round', 'round').beginStroke(currentPaint.dataset.color).moveTo(oldPt.x, oldPt.y).curveTo(oldPt.x - 1, oldPt.y, oldPt.x, oldPt.y);
+  stageCanvas.update();
   stageCanvas.addEventListener('stagemousemove', whenMouseMove);
 }
 

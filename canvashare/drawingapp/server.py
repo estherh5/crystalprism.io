@@ -1,4 +1,4 @@
-import base64, glob, json, os
+import base64, glob, json, os, time
 
 from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
@@ -24,7 +24,11 @@ def gallery():
 
 def add_drawing(image):
     data = request.get_json()
-    filename = image + '.png'
+    if os.path.exists('drawings/' + image + '.png'):
+        same_name = image + '`{}' + '.png'
+        filename = same_name.format(int(time.time()))
+    else:
+        filename = image + '.png'
     # Remove 'data:image/png;base64'
     image = data['image'].split(',')[1].encode('utf-8')
     with open('drawings/' + filename, 'wb') as drawing_file:

@@ -13,7 +13,7 @@ function getImages() {
         imageLink.href = 'drawingapp/index.html';
         imageLink.className = 'image-link';
         imageName = document.createElement('div');
-        imageName.innerHTML = images[i].split('.png')[0];
+        imageName.innerHTML = images[i].split(/`|.png/)[0];
         imageName.className = 'image-name';
         image = document.createElement('img');
         image.src = 'http://localhost:5000/api/drawing/' + images[i];

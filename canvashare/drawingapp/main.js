@@ -24,6 +24,8 @@ var ctx;
 var XMLS;
 var brushCircle;
 var brushSVG;
+var filename;
+var enteredName;
 var data;
 
 
@@ -74,6 +76,7 @@ function setStage() {
   ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
   updateBrush();
+  filename = document.getElementById('file-name');
   window.onclick = enterTitle;
   document.getElementById('post').onclick = postImage;
   document.getElementById('download').onclick = downloadImage;
@@ -144,31 +147,55 @@ function updateBrush() {
 }
 
 function enterTitle(e) {
-  if (document.getElementById('file-name').contains(e.target)) {
-    if (document.getElementById('file-name').value == '[title]') {
-      document.getElementById('file-name').value = '';
+  if (filename.contains(e.target)) {
+    if (filename.value == '[title]') {
+      filename.value = '';
     }
   } else {
-    if (document.getElementById('file-name').value == '') {
-      document.getElementById('file-name').value = '[title]';
+    if (filename.value == '') {
+      filename.value = '[title]';
     }
   }
 }
 
 function postImage() {
-  data = {'image': stageCanvas.toDataURL()};
-  data = JSON.stringify(data);
-  fetch('http://localhost:5000/api/drawing/' + document.getElementById('file-name').value, {
-    headers: {'Content-Type': 'application/json'},
-    method: 'POST',
-    body: data,
-  })
-  setTimeout(function () {
-    window.location.href = '../index.html'
-  }, 700);
+  while (filename.value == '[title]' || filename.value == '') {
+    enteredName = prompt('Enter a title for your drawing.');
+    if (enteredName == '') {
+      evaluateTitle;
+    } else if (enteredName == null) {
+      return;
+    } else {
+      filename.value = enteredName;
+    }
+  }
+  if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
+    data = {'image': stageCanvas.toDataURL()};
+    data = JSON.stringify(data);
+    fetch('http://localhost:5000/api/drawing/' + filename.value, {
+      headers: {'Content-Type': 'application/json'},
+      method: 'POST',
+      body: data,
+    })
+    setTimeout(function () {
+      window.location.href = '../index.html'
+    }, 700);
+  }
 }
 
 function downloadImage(e) {
-  e.target.href = stageCanvas.toDataURL();
-  e.target.download = document.getElementById('file-name').value;
+  while (filename.value == '[title]' || filename.value == '') {
+    enteredName = prompt('Enter a title for your drawing.');
+    if (enteredName == '') {
+      evaluateTitle;
+    } else if (enteredName == null) {
+      return;
+    } else {
+      filename.value = enteredName;
+    }
+  }
+  if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
+    e.target.href = stageCanvas.toDataURL();
+    e.target.download = filename.value;
+  }
 }

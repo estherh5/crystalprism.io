@@ -74,6 +74,7 @@ function setStage() {
   ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
   updateBrush();
+  window.onclick = enterTitle;
   document.getElementById('post').onclick = postImage;
   document.getElementById('download').onclick = downloadImage;
 }
@@ -140,6 +141,18 @@ function updateBrush() {
   brushSVG = XMLS.serializeToString(document.getElementById('svg'));
   canvg(brushCanvas, brushSVG);
   canvas.style.cursor = 'url(' + brushCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
+}
+
+function enterTitle(e) {
+  if (document.getElementById('file-name').contains(e.target)) {
+    if (document.getElementById('file-name').value == '[title]') {
+      document.getElementById('file-name').value = '';
+    }
+  } else {
+    if (document.getElementById('file-name').value == '') {
+      document.getElementById('file-name').value = '[title]';
+    }
+  }
 }
 
 function postImage() {

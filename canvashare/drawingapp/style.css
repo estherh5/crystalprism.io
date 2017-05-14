@@ -66,6 +66,7 @@ button:hover, #save:hover {
 
 .clicked {
   text-shadow: 0.2px -0.2px 0px #000000;
+  color: #ff8282;
 }
 
 .action {

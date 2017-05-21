@@ -39,7 +39,10 @@ def get_drawing(image):
     return send_file('drawings/' + image)
 
 def get_all_drawings():
-    image_list = glob.glob('drawings/*')
-    image_list.sort(key = os.path.getctime, reverse = True)
-    images = [os.path.basename(i) for i in image_list]
+    request_start = int(request.args.get('start'))
+    request_end = int(request.args.get('end'))
+    all_drawings = glob.glob('drawings/*')
+    all_drawings.sort(key = os.path.getctime, reverse = True)
+    requested_drawings = all_drawings[request_start:request_end]
+    images = [os.path.basename(i) for i in requested_drawings]
     return jsonify(images)

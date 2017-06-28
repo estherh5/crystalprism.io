@@ -12,7 +12,8 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      (i[r].q=i[r].q||[]).push(arguments)}
+      ,i[r].l=1*new Date();a=s.createElement(o),
       m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
       })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
@@ -22,15 +23,16 @@
   </head>
   <body>
     <iframe width="0" height="0" src="https://www.youtube.com/embed/lhonQGHFG44?autoplay=1&loop=1&playlist=lhonQGHFG44" frameborder="0"></iframe>
-    <div id="circle-one" class="circle"></div>
-    <div id="circle-two" class="circle"></div>
-    <div id="circle-three" class="circle"></div>
-    <div id="circle-four" class="circle"></div>
-    <h1>What time is it?</h1>
-    <h1>It's time to relax and be ourselves.</h1>
-    <div id="clockbox">
-      <h1 id="time"></h1>
-      <h1 id="quote">"It is only in the world of objects that we have time and space and selves."<br>-T. S. Eliot</h1>
+    <div id="container">
+      <div id="circle-one" class="circle"></div>
+      <div id="circle-two" class="circle"></div>
+      <div id="circle-three" class="circle"></div>
+      <div id="circle-four" class="circle"></div>
+      <div class="message">What time is it?<br>It's time to relax and be ourselves.</div>
+      <div id="clockbox">
+        <div id="time" class="message"></div>
+        <div id="quote" class="message">"It is only in the world of objects that we have time and space and selves."<br>-T. S. Eliot</div>
+      </div>
     </div>
     <div id="homepage">
       <a href="../index.html">

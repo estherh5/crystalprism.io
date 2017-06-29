@@ -8,29 +8,29 @@ function resize() {
 
 window.addEventListener('resize', resize, false);
 
-// Create heart shapes that are positioned 200 px apart on the x-axis
+// Create heart shapes that are positioned a distance apart on the x-axis
 function createHeart() {
   var heart = document.getElementById('heart').cloneNode(true);
   heart.setAttribute('class', 'heart');
-  heart.setAttribute('height', '40px');
-  heart.setAttribute('width', '40px');
+  heart.setAttribute('height', '10%');
+  heart.setAttribute('width', '10%');
   heart.setAttribute('x', '0px');
   heart.setAttribute('y', '0px');
   canvas.appendChild(heart);
   setTimeout(function () {
     heart.remove();
-  }, 10000);
+  }, 15000);
   return heart;
 }
 
 function cloneHearts() {
-  for(var i = 0; i < 10; i++){
+  for(var i = 0; i < 6; i++){
     var heart = createHeart();
-    heart.setAttribute('x', i*200 + 'px');
+    heart.setAttribute('x', i*18.8 + '%');
   };
 }
 
-setInterval(cloneHearts, 1500);
+setInterval(cloneHearts, 2500);
 
 // Move heart shapes down the page like rain
 setInterval(function () {
@@ -39,19 +39,23 @@ setInterval(function () {
     var inty = parseFloat(hearts[i].getAttribute('y'));
     hearts[i].setAttribute('y', inty + 1 + 'px');
   }
-}, 10);
+}, 15);
 
 // Create random shapes at random x and y coordinates
 function createRandomShape() {
   var shape = document.getElementsByClassName('shape');
-  var randomxIncrement = Math.random() * 1000;
-  var randomyIncrement = Math.random() * 1000;
+  var randomyIncrement = Math.random() * 60 + 20;
+  if (randomyIncrement > 35 && randomyIncrement < 55) {
+    var randomxIncrement = Math.random() * 3;
+  } else {
+    randomxIncrement = Math.random() * 60 + 20;
+  }
   z = Math.floor(Math.random() * 10);
   var randomShape = shape[z].cloneNode(true);
-  randomShape.setAttribute('height', '100px');
-  randomShape.setAttribute('width', '100px');
-  randomShape.setAttribute('x', randomxIncrement + 'px');
-  randomShape.setAttribute('y', randomyIncrement + 'px');
+  randomShape.setAttribute('height', '20%');
+  randomShape.setAttribute('width', '20%');
+  randomShape.setAttribute('x', randomxIncrement + '%');
+  randomShape.setAttribute('y', randomyIncrement + '%');
   canvas.appendChild(randomShape);
   randomShape.onclick = function () {
     randomShape.remove();

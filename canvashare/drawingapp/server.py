@@ -8,12 +8,12 @@ app = Flask(__name__)
 cors = CORS(app, resources = {r"/api/*": {"origins": "*"}})
 
 
-@app.route('/api/drawing/<image>', methods = ['POST', 'GET'])
-def drawing(image):
+@app.route('/api/drawing/<image_name>', methods = ['POST', 'GET'])
+def drawing(image_name):
     if request.method == 'POST':
-        return add_drawing(image)
+        return add_drawing(image_name)
     if request.method == 'GET':
-        return get_drawing(image)
+        return get_drawing(image_name)
 
 
 @app.route('/api/gallery', methods = ['GET'])
@@ -22,21 +22,22 @@ def gallery():
         return get_all_drawings()
 
 
-def add_drawing(image):
+def add_drawing(image_name):
+    # Get JSON image data URL in base64 format
     data = request.get_json()
-    if os.path.exists('drawings/' + image + '.png'):
-        same_name = image + '`{}' + '.png'
-        filename = same_name.format(int(time.time()))
-    else:
-        filename = image + '.png'
     # Remove 'data:image/png;base64'
     image = data['image'].split(',')[1].encode('utf-8')
+    if os.path.exists('drawings/' + image_name + '.png'):
+        same_name = image_name + '`{}' + '.png'
+        filename = same_name.format(int(time.time()))
+    else:
+        filename = image_name + '.png'
     with open('drawings/' + filename, 'wb') as drawing_file:
         drawing_file.write(base64.decodestring(image))
     return "Success!"
 
-def get_drawing(image):
-    return send_file('drawings/' + image)
+def get_drawing(image_name):
+    return send_file('drawings/' + image_name)
 
 def get_all_drawings():
     request_start = int(request.args.get('start'))

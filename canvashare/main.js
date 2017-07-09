@@ -8,7 +8,6 @@ title.onclick = sessionStorage.setItem('imageSrc', '');
 function getImages() {
   return fetch('http://localhost:5000/api/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
     response.json().then(function (images) {
-      console.log(images.length);
       if (images.length != 0) {
         for (i = 0; i < images.length; i++) {
           imageDiv = document.createElement('div');

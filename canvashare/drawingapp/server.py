@@ -22,6 +22,14 @@ def gallery():
         return get_all_drawings()
 
 
+@app.route('/api/drawinginfo/<info_name>', methods = ['POST', 'GET'])
+def drawing_info(info_name):
+    if request.method == 'POST':
+        return add_drawing_info(info_name)
+    if request.method == 'GET':
+        return get_drawing_info(info_name)
+
+
 def add_drawing(image_name):
     # Get JSON image data URL in base64 format
     data = request.get_json()
@@ -47,3 +55,14 @@ def get_all_drawings():
     requested_drawings = all_drawings[request_start:request_end]
     images = [os.path.basename(i) for i in requested_drawings]
     return jsonify(images)
+
+def add_drawing_info(info_name):
+    info = request.get_json()
+    views = info['views']
+    with open('drawinginfo/' + info_name + '.csv', 'w') as info_file:
+        info_file.write(views)
+    return "Success!"
+
+def get_drawing_info(info_name):
+    with open('drawinginfo/' + info_name, 'r') as info_file:
+        return jsonify(info_file.read())

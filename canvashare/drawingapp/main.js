@@ -170,19 +170,12 @@ function postImage() {
     }
   }
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
-    data = {'image': stageCanvas.toDataURL()};
+    data = {'image': stageCanvas.toDataURL(), 'views': '0'};
     data = JSON.stringify(data);
-    views = {'views': '0'};
-    views = JSON.stringify(views);
     fetch('http://localhost:5000/api/drawing/' + filename.value, {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
-    })
-    fetch('http://localhost:5000/api/drawinginfo/' + filename.value + '.png', {
-      headers: {'Content-Type': 'application/json'},
-      method: 'POST',
-      body: views,
     })
     setTimeout(function () {
       window.location.href = '../index.html'
@@ -204,6 +197,5 @@ function downloadImage(e) {
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
     e.target.href = stageCanvas.toDataURL();
     e.target.download = filename.value;
-    console.log(e.target);
   }
 }

@@ -41,7 +41,7 @@ function getImages() {
 }
 
 function getViews(name) {
-  return fetch('http://localhost:5000/api/drawinginfo/' + name + '.csv').then(function (response) {
+  return fetch('http://localhost:5000/api/drawinginfo/' + name.split('.png')[0]).then(function (response) {
     response.json().then(function (info) {
       document.getElementById(name).innerHTML = info;
     })
@@ -49,15 +49,15 @@ function getViews(name) {
 }
 
 function delay(URL) {
-  setTimeout(function() {window.location = URL}, 500);
+  setTimeout(function() {window.location = URL}, 800);
 }
 
 function setImageValues(e) {
   sessionStorage.setItem('imageSrc', e.target.src);
-  currentViews = document.getElementById(e.target.src.split("/drawing/")[1]).innerHTML;
+  currentViews = document.getElementById(e.target.src.split('/drawing/')[1]).innerHTML;
   data = {'views': (parseInt(currentViews) + 1).toString()};
   data = JSON.stringify(data);
-  fetch('http://localhost:5000/api/drawinginfo/' + e.target.src.split("/drawing/")[1], {
+  fetch('http://localhost:5000/api/drawinginfo/' + e.target.src.split('/drawing/')[1].split('.png')[0], {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,

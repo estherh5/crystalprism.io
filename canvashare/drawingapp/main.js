@@ -60,10 +60,10 @@ function setStage() {
   mauve = ['#413E4A', '#73626E', '#B38184', '#F0B49E', '#F7E4BE', '#BCE4BF'];
   currentPalette = basic;
   document.getElementById('palette-choices').onclick = updatePalette;
-  currentPaint = stagePalette.circle(125, 20, 10).attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
+  currentPaint = stagePalette.circle('30%', '50%', '4%').attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
   for (var i = 1; i < currentPalette.length; i++) {
     paintChoice = currentPaint.cloneNode(true);
-    paintChoice.setAttribute('cx', parseInt(currentPaint.getAttribute('cx')) + 30*i);
+    paintChoice.setAttribute('cx', parseInt(currentPaint.getAttribute('cx')) + 8*i + '%');
     paintChoice.setAttribute('fill', currentPalette[i]);
     paintChoice.setAttribute('data-color', currentPalette[i]);
     stagePalette.append(paintChoice);
@@ -117,12 +117,12 @@ function updatePalette(e) {
     currentPaint.classList.remove('chosen');
     for (var i = 0; i < currentPalette.length; i++) {
       paintChoice = currentPaint.cloneNode(true);
-      paintChoice.setAttribute('cx', parseInt(125 + 30*i));
+      paintChoice.setAttribute('cx', parseInt(30 + 8*i) + '%');
       paintChoice.setAttribute('fill', currentPalette[i]);
       paintChoice.setAttribute('data-color', currentPalette[i]);
       stagePalette.append(paintChoice);
     }
-    currentPaint = stagePalette.circle(125, 20, 10).attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
+    currentPaint = stagePalette.circle('30%', '50%', '4%').attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
     currentPaint.classList.add('chosen');
     updateBrush();
   }
@@ -179,7 +179,7 @@ function postImage() {
       method: 'POST',
       body: data,
     })
-    fetch('http://localhost:5000/api/drawinginfo/' + filename.value + '.png.csv', {
+    fetch('http://localhost:5000/api/drawinginfo/' + filename.value + '.png', {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: views,
@@ -204,5 +204,6 @@ function downloadImage(e) {
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
     e.target.href = stageCanvas.toDataURL();
     e.target.download = filename.value;
+    console.log(e.target);
   }
 }

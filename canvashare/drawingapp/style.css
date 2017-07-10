@@ -1,18 +1,16 @@
-body {
+html, body {
   text-align: center;
+  height: 100%;
+  width: 100%;
+  margin: 0;
 }
 
 #gallery {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  height: 0px;
-  width: 0px;
-  margin: 5px;
+  margin: 0.5%;
 }
 
 #gallery-link {
-  font-size: 30px;
+  font-size: 2em;
   font-family: 'League Script', cursive;
 }
 
@@ -22,6 +20,8 @@ body {
 
 .hidden {
   visibility: hidden;
+  height: 0;
+  width: 0;
 }
 
 #file-name {
@@ -30,29 +30,38 @@ body {
   font-family: 'Chathura', sans-serif;
   opacity: 1;
   text-align: center;
-  font-size: 50px;
-  line-height: 51px;
-  border-radius: 5px;
-  margin-bottom: 10px;
+  font-size: 3em;
+  line-height: 1.3em;
 }
 
 #canvas {
-  border: 20px solid rgba(0, 0, 0, 0.08);
+  border: 1.1em solid rgba(0, 0, 0, 0.08);
+  width: 80%;
+  height: 80%;
+  max-width: 400px;
+  max-height: 400px;
+}
+
+#current-palette {
+  width: 80%;
+  height: 80%;
+  max-width: 400px;
+  max-height: 40px;
+  margin-bottom: 1%;
 }
 
 .chosen {
-  r: 11.5;
+  r: 4%;
   stroke: darkslategrey;
-  stroke-width: 2px;
+  stroke-width: 0.5%;
 }
 
 button {
   color: grey;
   font-family: 'Chathura', sans-serif;
-  font-size: 25px;
-  line-height: 55px;
-  border: 0px;
-  border-radius: 5px;
+  font-size: 2em;
+  line-height: 1em;
+  border: 0;
   background: transparent;
 }
 
@@ -65,18 +74,18 @@ button:hover, #save:hover {
 }
 
 .clicked {
-  text-shadow: 0.2px -0.2px 0px #000000;
+  text-shadow: 0.01em -0.01em 0em #000000;
   color: #ff8282;
 }
 
 .action {
   color: grey;
-  font-size: 32px;
-  line-height: 25px;
+  font-size: 3em;
+  line-height: 1.5em;
 }
 
 .action:active {
-  text-shadow: 0.2px -0.2px 0px
+  text-shadow: 0.01em -0.01em 0em
 }
 
 a {
@@ -86,6 +95,23 @@ a {
 
 #homepage {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
+}
+
+@media only screen and (min-width: 768px) {
+  #current-palette {
+    margin-bottom: 0;
+  }
+
+  button {
+    font-size: 1.6em;
+    line-height: 1.8em;
+  }
+
+  .action {
+    font-size: 2.5em;
+    line-height: 1em;
+  }
+
 }

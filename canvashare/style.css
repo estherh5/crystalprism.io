@@ -1,6 +1,7 @@
 html, body {
   height: 100%;
   width: 100%;
+  margin: 0;
 }
 
 div {
@@ -13,9 +14,9 @@ a {
 }
 
 #title {
-  font-size: 100px;
+  font-size: 3em;
   font-family: 'League Script', cursive;
-  line-height: 150px;
+  line-height: 1.5em;
 }
 
 #title:hover {
@@ -37,18 +38,17 @@ a {
   position: relative;
   flex-flow: row wrap;
   justify-content: center;
-  max-width: 750px;
 }
 
 .image-div {
   font-family: 'Chathura', sans-serif;
-  font-size: 30px;
-  line-height: 31px;
+  font-size: 2em;
+  line-height: 0.5em;
   position: relative;
-  width: 240px;
-  height: 300px;
+  max-width: 240px;
+  max-height: 300px;
   opacity: 0.7;
-  margin-bottom: 10px;
+  margin-bottom: 5%;
 }
 
 .image-div:hover {
@@ -56,25 +56,54 @@ a {
 }
 
 .image {
-  border: 10px solid rgba(0, 0, 0, 0.08);
-  width: 200px;
-  height: 200px;
+  border: 0.3em solid rgba(0, 0, 0, 0.08);
+  width: 85%;
+  height: 70%;
   display: inline-block;
-  margin-top: 10px;
+  margin-top: 5%;
 }
 
 .image-views {
-  font-size: 25px;
-  line-height: 10px;
-  color: transparent;
-}
-
-.image-div:hover > .image-views {
-  color: black;
+  font-size: 0.8em;
+  line-height: 0.8em;
 }
 
 #homepage {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
+  bottom: 0;
+  right: 0;
+}
+
+@media only screen and (min-width: 400px) {
+  #title {
+    font-size: 4em;
+  }
+
+  #images {
+    max-width: 90%;
+  }
+
+  .image-views {
+    color: transparent;
+  }
+
+  .image-div:hover > .image-views {
+    color: black;
+  }
+
+}
+
+@media only screen and (min-width: 768px) {
+  #title {
+    font-size: 6em;
+  }
+
+  #images {
+    max-width: 85%;
+  }
+
+  .image-div {
+    margin-bottom: 2%;
+  }
+
 }

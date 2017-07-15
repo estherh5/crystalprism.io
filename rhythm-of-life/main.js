@@ -1,6 +1,6 @@
 // Game settings
-var sizeX = 600;
-var sizeY = 600;
+var sizeX = document.getElementById('game').offsetWidth;
+var sizeY = document.getElementById('game').offsetHeight;
 var scale = 60;
 var speed = 200;
 var hours = 0;
@@ -10,6 +10,7 @@ var systolic = 100;
 var diastolic = 70;
 var paused = true;
 var direction = '';
+var mobile = '';
 var name = '';
 var scoresNames = [];
 var relievers = [Snap('#bicycle'), Snap('#yoga'), Snap('#fruit'), Snap('#pill')];
@@ -20,12 +21,15 @@ var sound = new Howl({
 });
 
 // Define pieces
-var canvas = Snap('#canvas').attr({width: sizeX, height: sizeY});
+var canvas = Snap('#canvas');
 var heart = Snap('#heart').attr({fill: '#56d056', 'x': 0, 'y': 0, width: scale, height: scale});
 canvas.append(heart);
 var game = document.getElementById('game');
 var startScreen = document.getElementById('start-screen');
+startScreen.style.visibility = 'visible';
 var pauseScreen = document.getElementById('pause-screen');
+var infoScreen = document.getElementById('information-screen');
+var leaderScreen = document.getElementById('leader-screen');
 var gameOverScreen = document.getElementById('game-over-screen');
 var input = document.getElementById('input');
 var submit = document.getElementById('submit');
@@ -35,15 +39,51 @@ var systolicText = document.getElementById('systolic');
 var diastolicText = document.getElementById('diastolic');
 var lifespan = document.getElementById('lifespan');
 var leaders = document.getElementsByClassName('leaders');
+var leadersMobile = document.getElementsByClassName('leaders-mobile');
+var left = document.getElementById('left-panel');
+var right = document.getElementById('right-panel');
+var sideTables = document.getElementsByClassName('side-table');
 
 // Define events
-document.body.onkeydown = function (e) {
+document.body.onkeydown = function(e) {
   if (e.key == 'ArrowUp' || e.key == 'ArrowDown' || e.key == 'ArrowRight' || e.key == 'ArrowLeft') {
     e.preventDefault();
     direction = e.key;
-    if (startScreen.style.visibility == 'visible' || startScreen.style.visibility == '' || pauseScreen.style.visibility == 'visible') {
+    if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility != 'visible' && leaderScreen.style.visibility != 'visible' || pauseScreen.style.visibility == 'visible' || infoScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden' || leaderScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden') {
       resume();
     }
+  }
+}
+
+document.getElementById('left-arrow').onclick = function() {
+  direction = 'ArrowLeft';
+  mobile = 'Yes';
+  if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility != 'visible' && leaderScreen.style.visibility != 'visible' || pauseScreen.style.visibility == 'visible' || infoScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden' || leaderScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden') {
+    resume();
+  }
+}
+
+document.getElementById('up-arrow').onclick = function() {
+  direction = 'ArrowUp';
+  mobile = 'Yes';
+  if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility != 'visible' && leaderScreen.style.visibility != 'visible' || pauseScreen.style.visibility == 'visible' || infoScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden' || leaderScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden') {
+    resume();
+  }
+}
+
+document.getElementById('right-arrow').onclick = function() {
+  direction = 'ArrowRight';
+  mobile = 'Yes';
+  if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility != 'visible' && leaderScreen.style.visibility != 'visible' || pauseScreen.style.visibility == 'visible' || infoScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden' || leaderScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden') {
+    resume();
+  }
+}
+
+document.getElementById('down-arrow').onclick = function() {
+  direction = 'ArrowDown';
+  mobile = 'Yes';
+  if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility != 'visible' && leaderScreen.style.visibility != 'visible' || pauseScreen.style.visibility == 'visible' || infoScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden' || leaderScreen.style.visibility == 'visible' && startScreen.style.visibility == 'hidden') {
+    resume();
   }
 }
 
@@ -66,6 +106,57 @@ document.getElementById('restart').onclick = function() {
   reset();
 }
 
+document.getElementById('display-info').onclick = function() {
+  if (gameOverScreen.style.visibility == 'visible') {
+    return;
+  } else if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+  } else if (paused && infoScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+    resume();
+  } else if (startScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'visible';
+    leaderScreen.style.visibility = 'hidden';
+  } else {
+    infoScreen.style.visibility = 'visible';
+    pauseScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+    paused = true;
+    sound.stop();
+    document.getElementById('pause').innerHTML = 'Resume';
+  }
+}
+
+document.getElementById('display-leaders').onclick = function() {
+  if (gameOverScreen.style.visibility == 'visible') {
+    return;
+  } else if (startScreen.style.visibility == 'visible' && leaderScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+  } else if (paused && leaderScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+    resume();
+  } else if (startScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'visible';
+    infoScreen.style.visibility = 'hidden';
+  } else {
+    leaderScreen.style.visibility = 'visible';
+    pauseScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+    paused = true;
+    sound.stop();
+    document.getElementById('pause').innerHTML = 'Resume';
+  }
+}
+
+document.getElementById('close').onclick = function() {
+  leaderScreen.style.visibility = 'hidden';
+  document.getElementById('close').style.visibility = 'hidden';
+}
+
 input.oninput = function () {
   if (input.value == '') {
     submit.className = 'inactive';
@@ -77,15 +168,26 @@ input.oninput = function () {
 submit.onclick = function () {
   if (input.value == '') {
     return;
+  } else if (mobile == 'Yes') {
+    updateLeaderboard();
+    leaderScreen.style.visibility = 'visible';
+    document.getElementById('close').style.visibility = 'visible';
+    reset();
   } else {
     updateLeaderboard();
     reset();
   }
 }
 
+left.onclick = collapseTables;
+
+right.onclick = collapseTables;
+
 // Game loop
 function gameLoop() {
   setTimeout(gameLoop, speed);
+  sizeX = document.getElementById('game').offsetWidth;
+  sizeY = document.getElementById('game').offsetHeight;
   if (paused) {
     return;
   } else {
@@ -128,6 +230,8 @@ function resume() {
   paused = false;
   startScreen.style.visibility = 'hidden';
   pauseScreen.style.visibility = 'hidden';
+  infoScreen.style.visibility = 'hidden';
+  leaderScreen.style.visibility = 'hidden';
   sound.play();
   document.getElementById('pause').innerHTML = 'Pause';
 }
@@ -159,11 +263,14 @@ function reset() {
   paused = true;
   gameOverScreen.style.visibility = 'hidden';
   pauseScreen.style.visibility = 'hidden';
+  infoScreen.style.visibility = 'hidden';
   startScreen.style.visibility = 'visible';
   input.value = '';
   document.getElementById('pause').innerHTML = 'Pause';
   document.getElementById('pause').className = '';
   document.getElementById('restart').className = '';
+  document.getElementById('display-info').className = '';
+  document.getElementById('display-leaders').className = '';
   sound.stop();
 }
 
@@ -265,6 +372,8 @@ function setHeartAttr() {
     submit.className = 'inactive';
     document.getElementById('pause').className = 'inactive';
     document.getElementById('restart').className = 'inactive';
+    document.getElementById('display-info').className = 'inactive';
+    document.getElementById('display-leaders').className = 'inactive';
     sound.stop();
   }
   systolicText.innerHTML = systolic;
@@ -338,7 +447,7 @@ function updateLeaderboard() {
   scoresNames.sort(function (a, b) {
     return b.score - a.score;
   });
-  if (scoresNames.length <= 5) {
+  if (scoresNames.length <= 5 && mobile == '') {
     for (var i = 0; i < scoresNames.length; i++) {
       var tableContainerOne = document.createElement('td');
       var tableContainerTwo = document.createElement('td');
@@ -348,8 +457,18 @@ function updateLeaderboard() {
       leaders[i].appendChild(tableContainerTwo);
       tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
     }
-  } else {
-      for (var i = 0; i <= 4; i++) {
+  } else if (scoresNames.length <= 5 && mobile == 'Yes') {
+    for (var i = 0; i < scoresNames.length; i++) {
+      var tableContainerOne = document.createElement('td');
+      var tableContainerTwo = document.createElement('td');
+      leadersMobile[i].innerHTML = '';
+      leadersMobile[i].appendChild(tableContainerOne);
+      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
+      leadersMobile[i].appendChild(tableContainerTwo);
+      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+    }
+  } else if (mobile == '') {
+    for (var i = 0; i <= 4; i++) {
       var tableContainerOne = document.createElement('td');
       var tableContainerTwo = document.createElement('td');
       leaders[i].innerHTML = '';
@@ -357,6 +476,32 @@ function updateLeaderboard() {
       tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
       leaders[i].appendChild(tableContainerTwo);
       tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+    }
+  } else if (mobile != 'Yes') {
+    for (var i = 0; i <= 4; i++) {
+      var tableContainerOne = document.createElement('td');
+      var tableContainerTwo = document.createElement('td');
+      leadersMobile[i].innerHTML = '';
+      leadersMobile[i].appendChild(tableContainerOne);
+      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
+      leadersMobile[i].appendChild(tableContainerTwo);
+      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
+    }
+  }
+}
+
+function collapseTables() {
+  if (left.style.width == '40px' || right.style.width == '40px') {
+    left.style.width = '160px';
+    right.style.width = '160px';
+    for (var i = 0; i < sideTables.length; i++) {
+      sideTables[i].style.display = 'table';
+    }
+  } else {
+    left.style.width = '40px';
+    right.style.width = '40px';
+    for (var i = 0; i < sideTables.length; i++) {
+      sideTables[i].style.display = 'none';
     }
   }
 }

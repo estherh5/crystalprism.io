@@ -1,6 +1,100 @@
+/* iPhone 5 */
+html {
+  width: 100%;
+  height: 100%;
+}
+
 body {
   text-align: center;
   font-family: Wire One, sans-serif;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+}
+
+#warning {
+  display: none;
+}
+
+#control-buttons {
+  position: absolute;
+  left: 20px;
+  width: 150px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+button {
+  margin: 1%;
+  color: black;
+  font-family: Wire One, sans-serif;
+  font-size: 21px;
+  border: none;
+  border-radius: 5px;
+  background: #e8e8e8;
+  text-shadow: 0 -0.1px 0 #000000;
+  opacity: 1;
+  cursor: default;
+}
+
+button:active {
+  box-shadow: inset 0 0.1px 1.1px rgba(0, 0, 0, 0.6);
+}
+
+button.inactive {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+#display-leaders {
+  visibility: visible;
+}
+
+h1 {
+  margin: 0 auto;
+  background-color: #e8e8e8;
+}
+
+#blood-pressure {
+  font-size: 24px;
+  width: 180px;
+  margin-top: 1%;
+}
+
+#systolic, #diastolic {
+  color: #56d056;
+}
+
+#lifespan {
+  font-size: 24px;
+  width: 180px;
+  margin-bottom: 1%;
+}
+
+#mobile-arrows {
+  position: absolute;
+  margin-top: 0.5%;
+  top: 0;
+  right: 75px;
+  width: 100px;
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: center;
+}
+
+.arrow {
+  margin: 3%;
+  width: 25px;
+  height: 25px;
+}
+
+#left-arrow, #right-arrow {
+  margin-top: 18%;
+}
+
+#down-arrow {
+  margin-top: -13%;
 }
 
 .container {
@@ -9,184 +103,782 @@ body {
   justify-content: center;
 }
 
-button {
-  margin-top: 5px;
-  color: black;
-  font-family: Wire One, sans-serif;
-  font-size: 25px;
-  border: none;
-  border-radius: 5px;
-  background: #e0e0e0;
-  text-shadow: 0 -1px 0 #000000;
-  opacity: 1;
-  cursor: default;
-}
-
-button:hover {
-  background: #d4d4d4;
-}
-
-button:active {
-  box-shadow: inset 0 1px 4px rgba(0, 0, 0, 0.6);
-}
-
-button.inactive {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-h1 {
-  margin: 0 auto;
-  background-color: #e0e0e0;
-  width: 600px;
-}
-
-#blood-pressure {
-  font-size: 40px;
-  margin-top: 20px;
-}
-
-#systolic, #diastolic {
-  color: #56d056;
-}
-
-#lifespan {
-  font-size: 30px;
-  margin-bottom: 20px;
-}
-
-#left, #right {
-  padding-left: 20px;
-  padding-right: 20px;
-  display: flex;
-  flex-direction: column;
-}
-
-.table {
-  background-color: #e0e0e0;
-  height: 290px;
-  width: 300px;
-  margin-bottom: 20px;
-  opacity: 0.5;
-}
-
-.table:hover {
-  opacity: 1;
-}
-
-.table-title {
-  font-size: 40px;
-  font-weight: bolder;
-  line-height: 50px;
-}
-
-th {
-  text-decoration: underline;
-  font-size: 35px;
-  width: 50%;
-  line-height: 50px;
-}
-
-td, tr {
-  font-size: 30px;
-  font-weight: bold;
-}
-
-.hidden {
-  width: 115px;
-  height: 50px;
-  font-size: 16px;
-  position: absolute;
-  visibility: hidden;
-}
-
-td:hover .hidden {
-  visibility: visible;
-}
-
-#canvas {
-  background-color: #ceebff;
+#left-panel, #right-panel {
+  display: none;
 }
 
 #game {
   display: flex;
   position: relative;
+  width: 540px;
+  height: 240px;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+#canvas {
+  background-color: #ceebff;
+  width: 100%;
+  height: 100%;
 }
 
 .screen {
-  font-size: 35px;
+  font-size: 29px;
   position: absolute;
   background: #e8e8e8 no-repeat center 20%;
-  width: 600px;
-  height: 600px;
-  line-height: 50px;
+  width: 100%;
+  height: 100%;
+  line-height: 32px;
+  display: flex;
+  flex-flow: column;
 }
 
 #start-title {
-  font-size: 80px;
+  font-size: 55px;
   font-family: Tangerine, cursive;
-  line-height: 150px;
+  line-height: 105px;
 }
 
 #pause-title {
-  font-size: 100px;
+  margin-top: 10%;
+  font-size: 55px;
   font-family: Poiret One, cursive;
   font-weight: bold;
-  line-height: 210px;
+  line-height: 50px;
 }
 
 #pause-screen, #game-over-screen {
+  display: flex;
+  flex-flow: column;
+  align-items: center;
   visibility: hidden;
   opacity: 0.85;
 }
 
-#game-over-title {
-  background-color: rgba(0, 0, 0, 0);
-  font-size: 80px;
-  font-family: Ribeye, cursive;
-  line-height: 150px;
-  color: red;
+#information-screen {
+  display: flex;
+  flex-flow: row;
+  visibility: hidden;
+  opacity: 1;
+}
+
+#stress-description, #relief-description {
+  width: 47%;
+}
+
+.description-title {
+  font-size: 25px;
+  text-shadow: 0 -0.1px 0 #000000;
+}
+
+.description {
+  font-size: 16px;
+  line-height: 20px;
+}
+
+.description-image {
+  width: 42px;
+}
+
+#relief-description {
+  margin-left: 6%;
+}
+
+#leader-screen {
+  align-items: center;
+  visibility: hidden;
+}
+
+#leader-title {
+  font-size: 30px;
+  line-height: 30px;
+  text-shadow: 0 -0.1px 0 #000000;
+}
+
+#leader-screen th {
+  width: 50%;
+  font-size: 28px;
+  line-height: 26px;
+  text-decoration: underline;
+  text-shadow: 0 -0.1px 0 #000000;
+  font-weight: 100;
+}
+
+#leader-screen td {
+  font-size: 24px;
+  line-height: 26px;
+}
+
+#close {
+  position: fixed;
+  bottom: 15px;
+  visibility: hidden;
 }
 
 #game-over-screen {
   font-weight: bold;
 }
 
+#game-over-title {
+  margin-top: 6%;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 55px;
+  line-height: 45px;
+  font-family: Ribeye, cursive;
+  color: red;
+}
+
 input {
+  margin: 2%;
   font-family: Wire One, sans-serif;
-  font-size: 30px;
+  font-size: 24px;
+  width: 75%;
 }
 
-#ranges td {
-  font-size: 35px;
-}
-
-#green {
-  background-color: #56d056;
-  opacity: 0.7;
-}
-
-#yellow {
-  background-color: #ffff00;
-  opacity: 0.7;
-}
-
-#orange {
-  background-color: #ffc107;
-  opacity: 0.7;
-}
-
-#red {
-  background-color: #ff2020;
-  opacity: 0.7;
-}
-
-#leaderboard td {
-  line-height: 30px;
+#submit {
+  font-size: 20px;
 }
 
 #homepage {
   position: fixed;
-  bottom: 0px;
-  right: 0px;
+  top: 0;
+  right: 0;
+  margin-top: 0.5%;
+  margin-right: 0.5%;
+}
+
+/* Galaxy S5 */
+@media only screen and (min-width: 640px) and (min-height: 360px) and (orientation: landscape) {
+  #control-buttons {
+    width: 210px;
+    margin-top: 1.5%;
+    justify-content: left;
+  }
+
+  button {
+    font-size: 17px;
+  }
+
+  #blood-pressure, #lifespan {
+    font-size: 18px;
+    width: 160px;
+  }
+
+  #mobile-arrows {
+    margin-top: 0.25%;
+    right: 95px;
+  }
+
+  .arrow {
+    width: 22px;
+    height: 21px;
+  }
+
+  #left-arrow, #right-arrow {
+    margin-top: 15%;
+  }
+
+  #down-arrow {
+    margin-top: -12%;
+  }
+
+  #game {
+    width: 600px;
+    height: 300px;
+  }
+
+  .screen {
+    line-height: 38px;
+  }
+
+  #start-title {
+    font-size: 65px;
+    margin-top: 2%;
+  }
+
+  .description-title {
+    font-size: 30px;
+  }
+
+  .description {
+    font-size: 19px;
+    line-height: 22px;
+  }
+
+  .description-image {
+    width: 52px;
+  }
+
+  #relief-description {
+    margin-left: 5%;
+  }
+
+  #leader-screen th {
+    font-size: 30px;
+    line-height: 38px;
+  }
+
+  #leader-screen td {
+    font-size: 31px;
+    line-height: 36px;
+  }
+
+  #close {
+    bottom: 10px;
+    font-size: 25px;
+  }
+
+  #game-over-title {
+    margin-top: 8%;
+  }
+}
+
+/* iPhone 6, Nexus 5X */
+@media only screen and (min-width: 667px) and (min-height: 375px) and (orientation: landscape) {
+  #control-buttons {
+    width: 150px;
+    margin-top: 0;
+    left: 55px;
+    justify-content: center;
+  }
+
+  button {
+    font-size: 21px;
+  }
+
+  #blood-pressure, #lifespan {
+    font-size: 24px;
+  }
+
+  #mobile-arrows {
+    margin-top: 0.5%;
+    right: 105px;
+  }
+
+  .arrow {
+    width: 25px;
+    height: 25px;
+  }
+
+  #leader-title {
+    font-size: 35px;
+  }
+
+  #close {
+    bottom: 18px;
+  }
+}
+
+/* Nexus 6P, iPhone 6 Plus */
+@media only screen and (min-width: 732px) and (min-height: 412px) and (orientation: landscape) {
+  #control-buttons {
+    top: 10px;
+    left: 95px;
+  }
+
+  button {
+    font-size: 25px;
+  }
+
+  #blood-pressure {
+    margin-top: 2%;
+  }
+
+  #lifespan {
+    margin-bottom: 2%;
+  }
+
+  #mobile-arrows {
+    width: 150px;
+  }
+
+  .arrow {
+    width: 32px;
+    height: 32px;
+    line-height: 34px;
+  }
+
+  #left-arrow, #right-arrow {
+    margin-top: 15%;
+  }
+
+  #down-arrow {
+    margin-top: -11%;
+  }
+
+  #close {
+    bottom: 30px;
+  }
+}
+
+/* Screens that are too small */
+@media only screen and (max-width: 767px) and (orientation: portrait), (min-height: 415px) and (max-height: 767px) and (orientation: landscape), (max-height: 319px) and (orientation: landscape), (min-height: 320px) and (max-height: 414px) and (min-width: 737px) and (orientation: landscape) {
+  body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  body *:not(#warning) {
+    display: none;
+  }
+
+  #warning {
+    display: block;
+    position: absolute;
+    font-size: 5vh;
+    font-family: 'Londrina Outline', cursive;
+    font-weight: bold;
+  }
+}
+
+/* Laptop and desktop screens */
+@media only screen and (min-width: 768px) and (min-height: 768px) and (orientation: portrait), (min-width: 800px) and (min-height: 768px) and (orientation: landscape) {
+  body {
+    display: flex;
+    flex-flow: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  #control-buttons {
+    width: 300px;
+    left: 0;
+    top: 0;
+    position: relative;
+    margin-top: -3%;
+  }
+
+  button {
+    font-size: 25px;
+  }
+
+  button:hover {
+    background: #d4d4d4;
+  }
+
+  #display-leaders {
+    display: none;
+  }
+
+  #blood-pressure {
+    font-size: 34px;
+    margin-top: 0.5%;
+    width: 420px;
+  }
+
+  #lifespan {
+    font-size: 34px;
+    margin-bottom: 0.5%;
+    width: 420px;
+  }
+
+  #mobile-arrows {
+    display: none;
+  }
+
+  #left-panel, #right-panel {
+    width: 160px;
+    padding-left: 5px;
+    padding-right: 5px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  .side-board {
+    background-color: #e8e8e8;
+    height: 297.5px;
+    opacity: 0.5;
+  }
+
+  .side-board:hover {
+    opacity: 1;
+  }
+
+  .side-table-title {
+    font-size: 30px;
+    font-weight: bold;
+    line-height: 45px;
+  }
+
+  th {
+    text-decoration: underline;
+    font-size: 28px;
+    width: 50%;
+    line-height: 45px;
+  }
+
+  td, tr {
+    font-size: 28px;
+    font-weight: bold;
+  }
+
+  .stressor, .reliever {
+    height: 53.75px;
+    width: 53.75px;
+  }
+
+  #stressboard, #ranges {
+    margin-bottom: 2.5px;
+  }
+
+  #reliefboard, #leaderboard {
+    margin-top: 2.5px;
+  }
+
+  #game {
+    width: 420px;
+    height: 600px;
+    margin-left: 0%;
+    margin-right: 0%;
+  }
+
+  .screen {
+    line-height: 38px;
+  }
+
+  #start-title {
+    font-size: 80px;
+    margin-top: 20%;
+    line-height: 120px;
+  }
+
+  #pause-title {
+    margin-top: 30%;
+  }
+
+  #information-screen {
+    flex-flow: column;
+  }
+
+  #stress-description, #relief-description {
+    width: 100%;
+    margin-top: 5%;
+  }
+
+  .description-title {
+    font-size: 30px;
+    font-weight: bold;
+    opacity: 0.7;
+  }
+
+  .description {
+    font-size: 18px;
+    margin-left: 3%;
+    font-weight: 100;
+    text-align: left;
+  }
+
+  .description-image {
+    width: 45px;
+    margin-right: 3%;
+  }
+
+  #relief-description {
+    margin-left: 0%;
+  }
+
+  #game-over-title {
+    margin-top: 40%;
+  }
+
+  #ranges td {
+    font-size: 32px;
+    line-height: 40px;
+  }
+
+  #green {
+    background-color: #56d056;
+    opacity: 0.7;
+  }
+
+  #yellow {
+    background-color: #ffff00;
+    opacity: 0.7;
+  }
+
+  #orange {
+    background-color: #ffc107;
+    opacity: 0.7;
+  }
+
+  #red {
+    background-color: #ff2020;
+    opacity: 0.7;
+  }
+
+  #leaderboard td {
+    line-height: 36px;
+  }
+}
+
+/* iPad portrait and larger */
+@media only screen and (min-width: 768px) and (min-height: 1024px) and (orientation: portrait) {
+  #control-buttons {
+    font-size: 20px;
+  }
+
+  .side-board {
+    height: 387.5px;
+  }
+
+  .side-table-title {
+    font-size: 35px;
+  }
+
+  th {
+    font-size: 32px;
+    line-height: 55px;
+  }
+
+  td, tr {
+    font-size: 32px;
+  }
+
+  .stressor, .reliever {
+    height: 76.75px;
+    width: 62px;
+  }
+
+  #game {
+    height: 780px;
+  }
+
+  .screen {
+    font-size: 35px;
+  }
+
+  #start-title, #pause-title {
+    font-size: 90px;
+    margin-top: 30%;
+  }
+
+  #stress-description {
+    margin-top: 10%;
+  }
+
+  #relief-description {
+    margin-top: 20%;
+  }
+
+  #leaderboard td {
+    font-size: 30px;
+    line-height: 46px;
+  }
+}
+
+/* iPad landscape and larger */
+@media only screen and (min-width: 1024px) and (min-height: 768px) and (orientation: landscape) {
+  #control-buttons {
+    margin-top: -2%;
+    font-size: 20px;
+  }
+
+  #blood-pressure, #lifespan {
+    width: 540px;
+  }
+
+  #game {
+    width: 540px;
+  }
+}
+
+/* iPad Pro portrait and larger */
+@media only screen and (min-width: 1024px) and (min-height: 1366px) and (orientation: portrait) {
+  #control-buttons {
+    width: 380px;
+    margin-top: -3%;
+  }
+
+  #blood-pressure, #lifespan {
+    font-size: 50px;
+    width: 600px;
+  }
+
+  button {
+    font-size: 45px;
+  }
+
+  .side-board {
+    height: 537.5px;
+  }
+
+  .side-table-title {
+    font-size: 47px;
+    line-height: 50px;
+  }
+
+  th {
+    font-size: 40px;
+    line-height: 90px;
+  }
+
+  td, tr {
+    font-size: 38px;
+  }
+
+  .stressor, .reliever {
+    height: 108px;
+    width: 90px;
+  }
+
+  #game {
+    height: 1080px;
+    width: 600px;
+  }
+
+  .screen {
+    font-size: 60px;
+    line-height: 70px;
+  }
+
+  #start-title, #pause-title {
+    font-size: 130px;
+    line-height: 200px;
+  }
+
+  #stress-description {
+    margin-top: 5%;
+  }
+
+  .description-title {
+    font-size: 60px;
+  }
+
+  .description {
+    font-size: 26px;
+  }
+
+  .description-image {
+    width: 70px;
+  }
+
+  #relief-description {
+    margin-top: 10%;
+  }
+
+  #game-over-title {
+    font-size: 95px;
+  }
+
+  #input {
+    font-size: 60px;
+  }
+
+  #submit {
+    font-size: 45px;
+  }
+
+  #ranges td {
+    font-size: 38px;
+    line-height: 60px;
+  }
+
+  #leaderboard td {
+    font-size: 36px;
+    line-height: 70px;
+  }
+}
+
+/* iPad Pro landscape and larger */
+@media only screen and (min-width: 1366px) and (min-height: 1024px) and (orientation: landscape) {
+  #control-buttons {
+    width: 500px;
+  }
+
+  button {
+    margin-top: 5%;
+    font-size: 40px;
+  }
+
+  #blood-pressure, #lifespan {
+    font-size: 40px;
+    width: 960px;
+  }
+
+  #left-panel, #right-panel {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+
+  .side-board {
+    height: 415px;
+  }
+
+  .side-table-title {
+    font-size: 45px;
+    line-height: 48px;
+  }
+
+  .stressor, .reliever {
+    height: 83px;
+    width: 76px;
+  }
+
+  #stressboard, #ranges {
+    margin-bottom: 5px;
+  }
+
+  #reliefboard, #leaderboard {
+    margin-top: 5px;
+  }
+
+  #game {
+    width: 960px;
+    height: 840px;
+  }
+
+  .screen {
+    font-size: 50px;
+    line-height: 65px;
+  }
+
+  #start-title {
+    margin-top: 10%;
+    font-size: 120px;
+    line-height: 185px;
+  }
+
+  #stress-description, #relief-description {
+    margin-top: 1%;
+  }
+
+  .description-title {
+    font-size: 50px;
+  }
+
+  .description {
+    font-size: 35px;
+  }
+
+  .description-image {
+    width: 58px;
+  }
+
+  #pause-title, #game-over-title {
+    margin-top: 20%;
+  }
+
+  #input {
+    font-size: 55px;
+  }
+
+  #submit {
+    font-size: 50px;
+  }
+
+  th {
+    font-size: 36px;
+    line-height: 65px;
+  }
+
+  #ranges td {
+    font-size: 38px;
+    line-height: 53px;
+  }
+
+  #leaderboard td {
+    font-size: 32px;
+    line-height: 54px;
+  }
 }

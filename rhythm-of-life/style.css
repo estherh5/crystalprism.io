@@ -162,6 +162,12 @@ h1 {
   opacity: 1;
 }
 
+.close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
 #stress-description, #relief-description {
   width: 47%;
 }
@@ -207,12 +213,6 @@ h1 {
 #leader-screen td {
   font-size: 24px;
   line-height: 26px;
-}
-
-#close {
-  position: fixed;
-  bottom: 15px;
-  visibility: hidden;
 }
 
 #game-over-screen {
@@ -323,11 +323,6 @@ input {
     line-height: 36px;
   }
 
-  #close {
-    bottom: 10px;
-    font-size: 25px;
-  }
-
   #game-over-title {
     margin-top: 8%;
   }
@@ -362,10 +357,6 @@ input {
 
   #leader-title {
     font-size: 35px;
-  }
-
-  #close {
-    bottom: 18px;
   }
 }
 
@@ -404,10 +395,6 @@ input {
 
   #down-arrow {
     margin-top: -11%;
-  }
-
-  #close {
-    bottom: 30px;
   }
 }
 

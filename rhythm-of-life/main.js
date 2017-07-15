@@ -106,56 +106,13 @@ document.getElementById('restart').onclick = function() {
   reset();
 }
 
-document.getElementById('display-info').onclick = function() {
-  if (gameOverScreen.style.visibility == 'visible') {
-    return;
-  } else if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility == 'visible') {
-    infoScreen.style.visibility = 'hidden';
-    leaderScreen.style.visibility = 'hidden';
-  } else if (paused && infoScreen.style.visibility == 'visible') {
-    infoScreen.style.visibility = 'hidden';
-    leaderScreen.style.visibility = 'hidden';
-    resume();
-  } else if (startScreen.style.visibility == 'visible') {
-    infoScreen.style.visibility = 'visible';
-    leaderScreen.style.visibility = 'hidden';
-  } else {
-    infoScreen.style.visibility = 'visible';
-    pauseScreen.style.visibility = 'hidden';
-    leaderScreen.style.visibility = 'hidden';
-    paused = true;
-    sound.stop();
-    document.getElementById('pause').innerHTML = 'Resume';
-  }
-}
+document.getElementById('display-info').onclick = displayInfo;
 
-document.getElementById('display-leaders').onclick = function() {
-  if (gameOverScreen.style.visibility == 'visible') {
-    return;
-  } else if (startScreen.style.visibility == 'visible' && leaderScreen.style.visibility == 'visible') {
-    leaderScreen.style.visibility = 'hidden';
-    infoScreen.style.visibility = 'hidden';
-  } else if (paused && leaderScreen.style.visibility == 'visible') {
-    leaderScreen.style.visibility = 'hidden';
-    infoScreen.style.visibility = 'hidden';
-    resume();
-  } else if (startScreen.style.visibility == 'visible') {
-    leaderScreen.style.visibility = 'visible';
-    infoScreen.style.visibility = 'hidden';
-  } else {
-    leaderScreen.style.visibility = 'visible';
-    pauseScreen.style.visibility = 'hidden';
-    infoScreen.style.visibility = 'hidden';
-    paused = true;
-    sound.stop();
-    document.getElementById('pause').innerHTML = 'Resume';
-  }
-}
+document.getElementById('display-leaders').onclick = displayLeaders;
 
-document.getElementById('close').onclick = function() {
-  leaderScreen.style.visibility = 'hidden';
-  document.getElementById('close').style.visibility = 'hidden';
-}
+document.getElementById('info-close').onclick = displayInfo;
+
+document.getElementById('leader-close').onclick = displayLeaders;
 
 input.oninput = function () {
   if (input.value == '') {
@@ -171,7 +128,6 @@ submit.onclick = function () {
   } else if (mobile == 'Yes') {
     updateLeaderboard();
     leaderScreen.style.visibility = 'visible';
-    document.getElementById('close').style.visibility = 'visible';
     reset();
   } else {
     updateLeaderboard();
@@ -272,6 +228,68 @@ function reset() {
   document.getElementById('display-info').className = '';
   document.getElementById('display-leaders').className = '';
   sound.stop();
+}
+
+function displayInfo() {
+  if (gameOverScreen.style.visibility == 'visible') {
+    return;
+  } else if (startScreen.style.visibility == 'visible' && infoScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+  } else if (paused && infoScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+    resume();
+  } else if (startScreen.style.visibility == 'visible') {
+    infoScreen.style.visibility = 'visible';
+    leaderScreen.style.visibility = 'hidden';
+  } else {
+    infoScreen.style.visibility = 'visible';
+    pauseScreen.style.visibility = 'hidden';
+    leaderScreen.style.visibility = 'hidden';
+    paused = true;
+    sound.stop();
+    document.getElementById('pause').innerHTML = 'Resume';
+  }
+}
+
+function displayLeaders() {
+  if (gameOverScreen.style.visibility == 'visible') {
+    return;
+  } else if (startScreen.style.visibility == 'visible' && leaderScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+  } else if (paused && leaderScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+    resume();
+  } else if (startScreen.style.visibility == 'visible') {
+    leaderScreen.style.visibility = 'visible';
+    infoScreen.style.visibility = 'hidden';
+  } else {
+    leaderScreen.style.visibility = 'visible';
+    pauseScreen.style.visibility = 'hidden';
+    infoScreen.style.visibility = 'hidden';
+    paused = true;
+    sound.stop();
+    document.getElementById('pause').innerHTML = 'Resume';
+  }
+}
+
+function collapseTables() {
+  if (left.style.width == '40px' || right.style.width == '40px') {
+    left.style.width = '160px';
+    right.style.width = '160px';
+    for (var i = 0; i < sideTables.length; i++) {
+      sideTables[i].style.display = 'table';
+    }
+  } else {
+    left.style.width = '40px';
+    right.style.width = '40px';
+    for (var i = 0; i < sideTables.length; i++) {
+      sideTables[i].style.display = 'none';
+    }
+  }
 }
 
 function move(obj, direction) {
@@ -486,22 +504,6 @@ function updateLeaderboard() {
       tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
       leadersMobile[i].appendChild(tableContainerTwo);
       tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-    }
-  }
-}
-
-function collapseTables() {
-  if (left.style.width == '40px' || right.style.width == '40px') {
-    left.style.width = '160px';
-    right.style.width = '160px';
-    for (var i = 0; i < sideTables.length; i++) {
-      sideTables[i].style.display = 'table';
-    }
-  } else {
-    left.style.width = '40px';
-    right.style.width = '40px';
-    for (var i = 0; i < sideTables.length; i++) {
-      sideTables[i].style.display = 'none';
     }
   }
 }

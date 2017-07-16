@@ -1,7 +1,7 @@
 var canvas = document.getElementById('images');
 var title = document.getElementById('title');
 var requestStart = 0;
-var requestEnd = 9;
+var requestEnd = 12;
 
 title.onclick = sessionStorage.setItem('imageSrc', '');
 
@@ -65,9 +65,9 @@ function setImageValues(e) {
 }
 
 window.onscroll = function () {
-  if ((document.body.scrollTop + document.body.clientHeight) >= document.body.scrollHeight) {
+  if ((document.body.scrollTop + document.body.clientHeight) >= document.body.scrollHeight - 10) {
     requestStart = requestEnd;
-    requestEnd = requestEnd + 3;
-    setTimeout(getImages, 50);
+    requestEnd = requestEnd + Math.floor(canvas.offsetWidth/240);
+    setTimeout(getImages, 10);
   }
 }

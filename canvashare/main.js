@@ -2,8 +2,14 @@ var canvas = document.getElementById('images');
 var title = document.getElementById('title');
 var requestStart = 0;
 var requestEnd = 12;
+var titles = ['Click to leave your mark', 'The world is your canvas', 'Share your imagination with the world'];
 
 title.onclick = sessionStorage.setItem('imageSrc', '');
+
+function setTitle() {
+  number = Math.floor(Math.random() * titles.length);
+  title.title = titles[number];
+}
 
 function getImages() {
   return fetch('http://localhost:5000/api/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {

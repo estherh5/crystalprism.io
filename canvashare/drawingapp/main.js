@@ -51,10 +51,10 @@ function setStage() {
   stroke = 10;
   stagePalette = Snap('#current-palette');
   basic = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-  pastel = ['#FFE4E7', '#FFC5A7', '#FFFFA9', '#FFF0A5', '#D2FFC5', '#CFFEFF'];
+  pastel = ['#FFE4E7', '#FFC5A7', '#FFF0A5', '#FFFFA9', '#D2FFC5', '#CFFEFF'];
   seashore = ['#594F4F', '#547980', '#45ADA8', '#9DE0AD', '#E5FCC2', '#F9EBC2'];
   bold = ['#00A0B0', '#6A4A3C', '#CC333F', '#EB6841', '#EDC951', '#A1AD1A'];
-  oblique = ['#3FB8AF', '#6A4A3C', '#7FC7AF', '#FF9E9D', '#FF3D7F', '#8484CA'];
+  oblique = ['#CA8484', '#FF3D7F', '#FF9E9D', '#8484CA', '#3FB8AF', '#7FC7AF'];
   contrast = ['#E3D1FF', '#CBE86B', '#F2E9E1', '#1C140D', '#F9ABAB', '#95D8E5'];
   calico = ['#F5F5C7', '#DCE9BE', '#555152', '#2E2633', '#99173C', '#46C2DD'];
   mauve = ['#413E4A', '#73626E', '#B38184', '#F0B49E', '#F7E4BE', '#BCE4BF'];

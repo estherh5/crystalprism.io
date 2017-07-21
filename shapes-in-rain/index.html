@@ -91,12 +91,15 @@
     <title>Shapes in Rain</title>
   </head>
   <body onload="resize()">
-    <iframe width="0" height="0" src="https://www.youtube.com/embed/i6StbRRE4eo?autoplay=1&loop=1&playlist=lhonQGHFG44" frameborder="0"></iframe>
     <div id="container">
+      <div id="audio-div" data-video="i6StbRRE4eo" data-autoplay="0" data-loop="1">
+      </div>
       <div id="title">Clear the shapes</div>
       <div id="score">Score: <text id="score-value">0</text></div>
       <svg id="canvas">
       </svg>
+      <script src="https://www.youtube.com/iframe_api"></script>
+      <script src="audio-embed.js"></script>
       <script src="main.js"></script>
     </div>
     <div id="homepage">

@@ -16,8 +16,25 @@ body {
   left: 0px;
   position: absolute;
   display: flex;
+  flex-flow: column;
   justify-content: center;
   align-items: center;
+}
+
+#audio-div {
+  height: 0px;
+  width: 0px;
+}
+
+#audio-icon {
+  position: fixed;
+  height: 30px;
+  width: 30px;
+  opacity: 0.5;
+}
+
+#audio-icon:hover {
+  opacity: 1;
 }
 
 #title {
@@ -30,7 +47,7 @@ body {
   line-height: 45px;
   text-align: center;
   vertical-align: middle;
-  margin-top: -10px;
+  margin-top: -20px;
   user-select: none;
 }
 
@@ -44,7 +61,7 @@ body {
   line-height: 45px;
   text-align: center;
   vertical-align: middle;
-  margin-top: 55px;
+  margin-top: 45px;
   user-select: none;
 }
 
@@ -66,7 +83,7 @@ body {
 
 @media only screen and (min-width: 468px) {
   #score {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 }
 
@@ -74,8 +91,9 @@ body {
   #title {
     font-size: 50px;
   }
+
   #score {
     font-size: 30px;
-    margin-top: 70px;
+    margin-top: 60px;
   }
 }

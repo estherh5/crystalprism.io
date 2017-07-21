@@ -7,8 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>timespace</title>
     <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans+Condensed:300" rel="stylesheet">
-    <script src="main.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Share+Tech+Mono" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -22,16 +21,16 @@
     </script>
   </head>
   <body>
-    <iframe width="0" height="0" src="https://www.youtube.com/embed/lhonQGHFG44?autoplay=1&loop=1&playlist=lhonQGHFG44" frameborder="0"></iframe>
     <div id="container">
+      <div id="audio-div" data-video="lhonQGHFG44" data-autoplay="0" data-loop="1">
+      </div>
       <div id="circle-one" class="circle"></div>
       <div id="circle-two" class="circle"></div>
       <div id="circle-three" class="circle"></div>
       <div id="circle-four" class="circle"></div>
-      <div class="message">What time is it?<br>It's time to relax and be ourselves.</div>
       <div id="clockbox">
-        <div id="time" class="message"></div>
-        <div id="quote" class="message">"It is only in the world of objects that we have time and space and selves."<br>-T. S. Eliot</div>
+        <div id="time"></div>
+        <div id="quote">"It is only in the world of objects that we have time and space and selves."<br>-T. S. Eliot</div>
       </div>
     </div>
     <div id="homepage">
@@ -39,5 +38,8 @@
         <img src="../homepage.ico">
       </a>
     </div>
+    <script src="https://www.youtube.com/iframe_api"></script>
+    <script src="audio-embed.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>

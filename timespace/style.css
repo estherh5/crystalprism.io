@@ -8,7 +8,8 @@ body {
   height: 100%;
   text-align: center;
   background: black;
-  background-image: url("https://i.ytimg.com/vi/JquobII5VjA/maxresdefault.jpg");
+  background-image: url("background.jpg");
+  background-size: cover;
 }
 
 #container {
@@ -18,15 +19,26 @@ body {
   height: 100%;
   position: absolute;
   display: flex;
-  flex-flow: column wrap;
-  justify-content: flex-start;
-  align-items: stretch;
+  flex-flow: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.message {
-  font-family: Open Sans Condensed;
-  color: transparent;
-  margin-top: 50px;
+#audio-div {
+  height: 0px;
+  width: 0px;
+}
+
+#audio-icon {
+  position: fixed;
+  top: 0;
+  height: 30px;
+  width: 30px;
+  opacity: 0.5;
+}
+
+#audio-icon:hover {
+  opacity: 1;
 }
 
 .circle {
@@ -44,16 +56,18 @@ body {
 #time {
   color: white;
   opacity: .9;
-  font-size: 100px;
+  font-family: 'Share Tech Mono', monospace;
+  font-size: 70px;
   font-weight: bold;
 }
 
 #quote {
-  font-style: italic;
   color: white;
   opacity: .8;
+  font-family: 'Cutive Mono', monospace;
   font-size: 12px;
   font-weight: bold;
+  margin-top: 10px;
 }
 
 #homepage {
@@ -63,21 +77,17 @@ body {
 }
 
 @media only screen and (min-width: 600px) {
-  .message {
-    font-size: 20px;
-  }
-
   .circle {
     width: 70px;
     height: 70px;
   }
 
   #clockbox {
-    width: 500px;
+    width: 550px;
   }
 
   #time {
-    font-size: 150px;
+    font-size: 120px;
   }
 
   #quote {

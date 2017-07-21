@@ -6,7 +6,7 @@ html {
 body {
   height: 100%;
   width: 100%;
-  background-image: url("http://revelwallpapers.net/d/725A356F5A5A484C7A3533616333566D70705A6C7A6548577671746767513D3D/nature-graffiti-drawing-rain-background.jpg");
+  background-image: url("background.jpg");
   background-size: cover;
   margin: 0;
 }
@@ -30,7 +30,21 @@ body {
   line-height: 45px;
   text-align: center;
   vertical-align: middle;
-  margin: auto;
+  margin-top: -10px;
+  user-select: none;
+}
+
+#score {
+  width: 75%;
+  position: absolute;
+  font-family: Bungee Shade;
+  font-weight: bold;
+  font-style: italic;
+  font-size: 20px;
+  line-height: 45px;
+  text-align: center;
+  vertical-align: middle;
+  margin-top: 55px;
   user-select: none;
 }
 
@@ -50,8 +64,18 @@ body {
   right: 0px;
 }
 
+@media only screen and (min-width: 468px) {
+  #score {
+    margin-top: 30px;
+  }
+}
+
 @media only screen and (min-width: 768px) {
   #title {
     font-size: 50px;
+  }
+  #score {
+    font-size: 30px;
+    margin-top: 70px;
   }
 }

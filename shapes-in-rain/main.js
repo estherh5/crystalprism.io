@@ -1,4 +1,5 @@
 var canvas = document.getElementById('canvas');
+var scoreValue = document.getElementById('score-value');
 
 // Resize canvas to full screen
 function resize() {
@@ -45,10 +46,10 @@ setInterval(function () {
 function createRandomShape() {
   var shape = document.getElementsByClassName('shape');
   var randomyIncrement = Math.random() * 60 + 20;
-  if (randomyIncrement > 35 && randomyIncrement < 55) {
+  if (randomyIncrement > 30 && randomyIncrement < 60) {
     var randomxIncrement = Math.random() * 3;
   } else {
-    randomxIncrement = Math.random() * 60 + 20;
+    var randomxIncrement = Math.random() * 60 + 20;
   }
   z = Math.floor(Math.random() * 10);
   var randomShape = shape[z].cloneNode(true);
@@ -59,6 +60,7 @@ function createRandomShape() {
   canvas.appendChild(randomShape);
   randomShape.onclick = function () {
     randomShape.remove();
+    scoreValue.innerHTML = parseInt(scoreValue.innerHTML) + 1;
   };
   setTimeout(function () {
     randomShape.remove();

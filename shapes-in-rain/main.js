@@ -1,5 +1,6 @@
 var canvas = document.getElementById('canvas');
-var scoreValue = document.getElementById('score-value');
+var shape = document.getElementsByClassName('shape');
+var score = document.getElementById('score');
 
 // Resize canvas to full screen
 function resize() {
@@ -13,8 +14,8 @@ window.addEventListener('resize', resize, false);
 function createHeart() {
   var heart = document.getElementById('heart').cloneNode(true);
   heart.setAttribute('class', 'heart');
-  heart.setAttribute('height', '10%');
-  heart.setAttribute('width', '10%');
+  heart.setAttribute('height', '6%');
+  heart.setAttribute('width', '6%');
   heart.setAttribute('x', '0px');
   heart.setAttribute('y', '0px');
   canvas.appendChild(heart);
@@ -27,7 +28,7 @@ function createHeart() {
 function cloneHearts() {
   for(var i = 0; i < 6; i++){
     var heart = createHeart();
-    heart.setAttribute('x', i*18.8 + '%');
+    heart.setAttribute('x', i * 18.8 + '%');
   };
 }
 
@@ -42,46 +43,44 @@ setInterval(function () {
   }
 }, 15);
 
-// Create random shapes at random x and y coordinates
+// Create random shapes at random x and y coordinates without text overlap
 function createRandomShape() {
-  var shape = document.getElementsByClassName('shape');
-  var randomyIncrement = Math.random() * 60 + 20;
-  if (randomyIncrement > 30 && randomyIncrement < 60) {
-    var randomxIncrement = Math.random() * 3;
+  var randomyCoordinate = Math.random() * 60 + 20;
+  if (randomyCoordinate > 30 && randomyCoordinate < 60) {
+    var rightOrLeft = Math.floor(Math.random() * 2) + 1;
+    if (rightOrLeft == 1) {
+      var randomxCoordinate = Math.random() * 5 + 5;
+    } else {
+      var randomxCoordinate = Math.random() * 5 + 85;
+    }
   } else {
-    var randomxIncrement = Math.random() * 60 + 20;
+    var randomxCoordinate = Math.random() * 60 + 20;
   }
-  z = Math.floor(Math.random() * 10);
+  z = Math.floor(Math.random() * shape.length);
   var randomShape = shape[z].cloneNode(true);
-  randomShape.setAttribute('height', '20%');
-  randomShape.setAttribute('width', '20%');
-  randomShape.setAttribute('x', randomxIncrement + '%');
-  randomShape.setAttribute('y', randomyIncrement + '%');
+  randomShape.classList.remove('shape');
+  randomShape.setAttribute('height', '15%');
+  randomShape.setAttribute('width', '15%');
+  randomShape.setAttribute('x', randomxCoordinate + '%');
+  randomShape.setAttribute('y', randomyCoordinate + '%');
   canvas.appendChild(randomShape);
   randomShape.onclick = function () {
     randomShape.remove();
-    scoreValue.innerHTML = parseInt(scoreValue.innerHTML) + 1;
+    score.innerHTML = 'Score: ' + (parseInt(score.innerHTML.split(' ')[1]) + 1);
   };
   setTimeout(function () {
     randomShape.remove();
-  }, 10000);
+  }, 9000);
 }
 
-setInterval(createRandomShape, 3000);
+setInterval(createRandomShape, 2000);
 
 // Create blast on click
-document.getElementById('canvas').onclick = createBlast;
+document.body.onclick = createBlast;
 
-function createBlast(e) {
-  var blast = document.getElementById('blast').cloneNode(true);
-  var x = (e.x - e.target.getBoundingClientRect().left - 25) + 'px';
-  var y = (e.y - e.target.getBoundingClientRect().top - 20) + 'px';
-  blast.setAttribute('height', '50px');
-  blast.setAttribute('width', '50px');
-  blast.setAttribute('x', x);
-  blast.setAttribute('y', y);
-  canvas.appendChild(blast);
-  setTimeout(function () {
-    blast.remove();
+function createBlast() {
+  document.body.style.cursor = 'url("images/create-blast.png") 25 20, auto';
+  setTimeout(function() {
+    document.body.style.cursor = 'url("images/blast-start.png") 25 20, auto';
   }, 500);
 }

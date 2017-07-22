@@ -17,7 +17,7 @@ function onYouTubeIframeAPIReady() {
   audioDiv.appendChild(audioPlayer);
   function audioFunction(audioDiv) {
     var audioPlayer = audioDiv ? 'on-white.png' : 'off-white.png';
-    audioIcon.setAttribute('src', '../icons/' + audioPlayer);
+    audioIcon.setAttribute('src', 'images/' + audioPlayer);
   }
   audioDiv.onclick = function() {
     audioiFrame.getPlayerState() === YT.PlayerState.PLAYING || audioiFrame.getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame.pauseVideo(), audioFunction(!1)) : (audioiFrame.playVideo(), audioFunction(!0));

@@ -10,6 +10,7 @@ body {
   width: 100%;
   height: 100%;
   margin: 0;
+  user-select: none;
 }
 
 #warning {
@@ -211,8 +212,8 @@ h1 {
 }
 
 #leader-screen td {
-  font-size: 24px;
-  line-height: 26px;
+  font-size: 27px;
+  line-height: 32px;
 }
 
 #game-over-screen {
@@ -319,8 +320,8 @@ input {
   }
 
   #leader-screen td {
-    font-size: 31px;
-    line-height: 36px;
+    font-size: 35px;
+    line-height: 41px;
   }
 
   #game-over-title {
@@ -762,7 +763,7 @@ input {
   }
 
   #leaderboard td {
-    font-size: 36px;
+    font-size: 30px;
     line-height: 70px;
   }
 }

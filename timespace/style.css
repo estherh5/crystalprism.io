@@ -10,6 +10,7 @@ body {
   background: black;
   background-image: url("images/background.jpg");
   background-size: cover;
+  user-select: none;
 }
 
 #container {

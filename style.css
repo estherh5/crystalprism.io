@@ -1,12 +1,27 @@
-body {
-  user-select: none;
+html, body {
+  height: 100vh;
+  width: 100vw;
+  top: 0px;
+  left: 0px;
+  margin: 0px;
+  padding: 0px;
 }
 
-h1 {
-  font-size: 45px;
+body {
+  display: flex;
+  flex-flow: column;
+  user-select: none;
+  cursor: default;
   font-family: 'Amatic SC', cursive;
   text-align: center;
-  margin-bottom: 0;
+}
+
+#homepage {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100px;
+  margin-top: 15px;
 }
 
 a {
@@ -14,34 +29,225 @@ a {
   text-decoration: none;
 }
 
-a:hover {
+a:hover, button:hover {
   color: grey;
 }
 
-.contact {
-  text-align: center;
+#diamond {
+  opacity: 0.5;
+  position: absolute;
+}
+
+h1 {
+  font-size: 45px;
+  margin-bottom: 0;
+  position: absolute;
+}
+
+#page-buttons {
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+button {
+  font-size: 22px;
+  font-family: 'Amatic SC', cursive;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+button:focus {
+  outline: none;
+}
+
+button:active {
+  font-weight: bold;
+}
+
+button.selected {
+  font-weight: bold;
+}
+
+#pages {
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page {
+  position: absolute;
+  max-width: 900px;
+}
+
+.hidden {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
+#about-page {
+  visibility: visible;
+  user-select: text;
+}
+
+#blurb {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  margin-bottom: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+  line-height: 1.5;
+}
+
+table {
+  position: relative;
+}
+
+tr, td {
+  padding-bottom: 20px;
+}
+
+.header {
+  vertical-align: top;
+  padding-left: 10px;
+}
+
+.large-icon {
+  height: 40px;
+}
+
+.header-title {
+  font-size: 15px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  text-shadow: 0 -0.1px 0 #000000;
+  font-weight: normal;
+}
+
+.content {
+  text-align: left;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  line-height: 1.7;
+  padding-left: 25px;
+  padding-right: 10px;
+}
+
+.tiny-icon {
+  height: 8px;
+}
+
+.image-icon {
+  display: inline-block;
+}
+
+.words {
+  font-family: 'Rajdhani', sans-serif;
+  margin-right: 8px;
+  font-size: 10px;
+  line-height: 2;
+}
+
+a > i > .words:hover {
+  color: grey;
+}
+
+.contact > a > i > .words, .contact > .words, .projects > a > .location {
+  color: #81c5d7;
+  font-weight: bold;
+  text-shadow: none;
+  margin-left: 0px;
+}
+
+.skill-group {
+  display: flex;
+}
+
+.skill-type {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 10px;
+  font-weight: bold;
+  margin-right: 10px;
+  color: #81c5d7;
+  white-space: nowrap;
+}
+
+.chevron-text {
+  display: inline-flex;
+  align-items: baseline;
+}
+
+.fa-chevron-right {
+  margin-right: 6px;
+}
+
+.fa-chevron-down {
+  margin-right: 3px;
+}
+
+.fa-chevron-right, .fa-chevron-down {
+  cursor: pointer;
+}
+
+.expand-large {
+  font-size: 7px !important;
+  margin-right: -4px !important;
+}
+
+.expand-all {
+  font-family: 'Rajdhani', sans-serif;
+  font-style: italic;
+  margin-left: 2px;
+}
+
+.project, .position, .college, .honor {
+  font-size: 11px;
+  font-weight: bold;
+  color: #81c5d7;
+  margin-left: 3px;
+}
+
+.dates, .location {
+  text-shadow: 0 -0.1px 0 #000000;
+  margin-left: 16px;
+}
+
+.projects > a {
+  margin-left: 16px;
+}
+
+.section {
+  visibility: hidden;
+  height: 0px;
+}
+
+.description {
+  font-style: italic;
+  margin-top: 6px;
+  margin-bottom: 6px;
+  margin-left: 16px;
+}
+
+.bullet {
+  display: list-item;
+  margin-left: 30px;
 }
 
 #grid {
-  width: 100%;
-  height: 100%;
   display: flex;
   flex-flow: column;
   justify-content: center;
   align-items: center;
-  max-width: 900px;
   margin: 0 auto;
   padding: 0;
-  list-style: none;
 }
 
 #grid li {
   display: inline-block;
   width: 75%;
-  vertical-align: middle;
-  box-sizing: border-box;
   margin-bottom: 3%;
-  padding: 0;
   max-width: 300px;
 }
 
@@ -54,32 +260,31 @@ a:hover {
 .image {
   display: block;
   width: 100%;
-  height: auto;
-  border: none;
-  transform: scale(1);
   transition: all 0.5s;
+  transform: scale(1.05);
 }
 
 #grid li:hover .image {
-  transform: scale(1.05);
+  transform: scale(1);
 }
 
 .overlay {
   position: absolute;
-  display: block;
   top: 0;
   left: 0;
   bottom: 0;
   right: 0;
-  margin: auto;
   background: #e8e8e8 no-repeat center 20%;
   background-size: 50px 50px;
   opacity: 0;
   transition: all 0.3s;
 }
 
+#grid li:hover .overlay {
+  opacity: 0.85;
+}
+
 .preview {
-  text-align: center;
   opacity: 0.5;
 }
 
@@ -93,18 +298,14 @@ a:hover {
   transition: all 0.3s;
 }
 
-#grid li:hover .overlay {
-  opacity: 0.85;
+#grid li:hover .icon {
+  transform: translateY(0px);
 }
 
 .title {
-  display: block;
-  padding: 0 30px;
-  box-sizing: border-box;
   position: absolute;
   left: 0;
   width: 100%;
-  text-align: center;
   font-size: 30px;
   font-weight: bolder;
   font-family: 'Poiret One', cursive;
@@ -120,24 +321,79 @@ a:hover {
   opacity: 1;
 }
 
-#grid li:hover .icon {
-  transform: translateY(0px);
-}
-
-#homepage {
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  text-align: center;
-}
-
-#crystal {
-  height: 20%;
-  width: 20%;
-  max-width: 100px;
-}
-
 @media only screen and (min-width: 768px) {
+  #blurb {
+    font-size: 14px;
+  }
+
+  tr, td {
+    padding-bottom: 30px;
+  }
+
+  .large-icon {
+    height: initial;
+  }
+
+  .header-title {
+    font-size: 1.5em;
+    margin-top: 8px;
+    margin-bottom: 8px;
+  }
+
+  .content {
+    font-size: 15px;
+    padding-left: 35px;
+  }
+
+  .tiny-icon {
+    height: initial;
+  }
+
+  .words {
+    font-size: 15px;
+    margin-right: 15px;
+  }
+
+  .skill-type {
+    font-size: 15px;
+  }
+
+  .fa-chevron-right {
+    margin-right: 7px;
+  }
+
+  .expand-large {
+    font-size: 12px !important;
+  }
+
+  .expand-all {
+    font-size: 13px;
+    margin-left: 4px;
+  }
+
+  .project, .position, .college, .honor {
+    font-size: 18px;
+  }
+
+  .dates, .location {
+    font-size: 16px;
+    margin-left: 21px;
+  }
+
+  .projects > a {
+    margin-left: 21px;
+  }
+
+  .description {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    margin-left: 21px;
+  }
+
+  .bullet {
+    margin-left: 39px;
+  }
+
   #grid {
     flex-flow: row wrap;
   }
@@ -145,9 +401,5 @@ a:hover {
   #grid li {
     width: 32%;
     margin: 0.5%;
-  }
-
-  #homepage {
-    position: fixed;
   }
 }

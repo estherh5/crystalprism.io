@@ -6,8 +6,9 @@
     <meta name="keywords" content="design,aesthetics,movement">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="style.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Overpass+Mono|Poiret+One" rel="stylesheet">
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Poiret+One" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Abel|Josefin+Sans:300,400|Overpass+Mono|Open+Sans+Condensed:300|PT+Sans+Narrow|Rajdhani|Ubuntu|Yanone+Kaffeesatz:300" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -20,67 +21,509 @@
     <title>Esther Hoffman</title>
   </head>
   <body>
-    <h1>Esther Hoffman</h1>
-    <div class="contact">
-      <a href="mailto:hoffman.esther@gmail.com">
-        <i class="fa fa-envelope-o fa-lg" aria-hidden="true"></i>
-      </a>
-      <a href="https://github.com/estherh5">
-        <i class="fa fa-github fa-lg" aria-hidden="true"></i>
-      </a>
+    <a id="homepage" href="index.html">
+      <img id="diamond" src="images/homepage.png">
+      <h1>Esther Hoffman</h1>
+    </a>
+    <div id="page-buttons">
+      <button id="about-button" class="selected" data-page="about-page" data-button="about-button">About</button>
+      <button id="projects-button" data-page="projects-page" data-button="projects-button">Projects</button>
     </div>
     <br>
-    <br>
-    <ul id="grid">
-      <li>
-        <a class="container" href="timespace/index.html">
-          <img class="image" src="images/timespace.jpg">
-          <span class="overlay">
-            <div class="preview">
-              <img class="icon" src="timespace/favicon.ico">
-            </div>
-          </span>
-          <span class="title">Timespace</span>
-        </a>
-      </li>
-      <li>
-        <a class="container" href="shapes-in-rain/index.html">
-          <img class="image" src="images/shapes-in-rain.jpg">
-          <span class="overlay">
-            <div class="preview">
-              <img class="icon" src="shapes-in-rain/favicon.ico">
-            </div>
-          </span>
-          <span class="title">Shapes in Rain</span>
-        </a>
-      </li>
-      <li>
-        <a class="container" href="rhythm-of-life/index.html">
-          <img class="image" src="images/rhythm-of-life.jpg">
-          <span class="overlay">
-            <div class="preview">
-              <img class="icon" src="rhythm-of-life/favicon.ico">
-            </div>
-          </span>
-          <span class="title">Rhythm of Life</span>
-        </a>
-      </li>
-      <li>
-        <a class="container" href="canvashare/index.html">
-          <img class="image" src="images/canvashare.jpg">
-          <span class="overlay">
-            <div class="preview">
-              <img class="icon" src="canvashare/favicon.ico">
-            </div>
-          </span>
-          <span class="title">CanvaShare</span>
-        </a>
-      </li>
-    </ul>
-    <div id="homepage">
-      <a href="index.html">
-        <img id="crystal" src="favicon.ico">
-      </a>
+    <div id="container">
+      <div id="pages">
+        <div id="about-page" class="page">
+          <div id="blurb">
+            I am an aspiring web developer interested in functional aesthetic design. I have been learning front-end and
+            <br>
+            back-end development since January 2017, from an experienced friend and from teaching myself as I develop projects
+            <br>
+            on my website. I have 4 years of experience in healthcare software implementation and management and a bachelor's
+            <br>
+            degree in Biology and Psychology from Cornell University.
+          </div>
+          <table>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/contact.png">
+                <h2 class="header-title">Contact & Profiles</h2>
+              </td>
+              <td class="content contact">
+                <a href="https://goo.gl/maps/kYQ45KLGnmz">
+                  <i class="tiny-icon fa fa-lg fa-map-marker" aria-hidden="true">
+                    <text class="words">Philadelphia, PA</text>
+                  </i>
+                </a>
+                <a href="mailto:hoffman.esther@gmail.com">
+                  <i class="tiny-icon fa fa-envelope" aria-hidden="true">
+                    <text class="words">hoffman.esther@gmail.com</text>
+                  </i>
+                </a>
+                <i class="tiny-icon fa fa-phone" aria-hidden="true">
+                  <text class="words">(484) 868-3766</text>
+                </i>
+                <br>
+                <a href="https://github.com/estherh5">
+                  <i class="tiny-icon fa fa-github fa-lg" aria-hidden="true">
+                    <text class="words">estherh5</text>
+                  </i>
+                </a>
+                <a href="https://www.linkedin.com/in/esther-hoffman">
+                  <i class="tiny-icon fa fa-linkedin-square" aria-hidden="true">
+                    <text class="words">Esther Hoffman</text>
+                  </i>
+                </a>
+                <a href="http://crystalprism.io">
+                  <i class="tiny-icon fa fa-external-link" aria-hidden="true">
+                    <text class="words">Crystal Prism</text>
+                  </i>
+                </a>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/skills.png">
+                <h2 class="header-title">Skills</h2>
+              </td>
+              <td class="content">
+                <div class="skill-group">
+                  <text class="skill-type">Front-End:</text>
+                  <div class="skills">
+                    <i class="tiny-icon fa fa-html5" aria-hidden="true">
+                      <text class="words">HTML5</text>
+                    </i>
+                    <i class="tiny-icon fa fa-css3" aria-hidden="true">
+                      <text class="words">CSS</text>
+                    </i>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/javascript.png">
+                      <text class="words">JavaScript</text>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-group">
+                  <text class="skill-type">Back-End:</text>
+                  <div class="skills">
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/python.png">
+                      <text class="words">Python</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/flask.png">
+                      <text class="words">Flask</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/aws.png">
+                      <text class="words">AWS/EC2</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/unix.png">
+                      <text class="words">Unix</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/apache.png">
+                      <text class="words">Apache</text>
+                    </div>
+                  </div>
+                </div>
+                <div class="skill-group">
+                  <text class="skill-type">Other:</text>
+                  <div class="skills">
+                    <i class="tiny-icon fa fa-git" aria-hidden="true">
+                      <text class="words">git</text>
+                    </i>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/ps.png">
+                      <text class="words">Photoshop</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/msoffice.png">
+                      <text class="words">Microsoft Office</text>
+                    </div>
+                    <div class="image-icon">
+                      <img class="tiny-icon" src="images/epic.png">
+                      <text class="words">Epic</text>
+                    </div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/projects.png">
+                <h2 class="header-title">Projects</h2>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-large" aria-hidden="true" data-expandstart="0" data-expandend="4" data-expanded="No">
+                    <text class="expand-all">Expand/Collapse All</text>
+                  </span>
+                </div>
+              </td>
+              <td class="content projects">
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="0" data-expandend="1" data-expanded="No" data-expandparent="0"></span>
+                  <text class="project">CanvaShare</text>
+                </div>
+                <br>
+                <text class="dates">March 2017 - Present</text>
+                <br>
+                <a href="https://github.com/estherh5/estherh5.github.io/tree/master/canvashare">
+                  <i class="tiny-icon fa fa-github fa-lg" aria-hidden="true"></i>
+                  <text class="location">GitHub Repository</text>
+                </a>
+                <section class="section">
+                  <div class="description">Interactive drawing tool and gallery that uses back-end image storage and retrieval</div>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-html5" aria-hidden="true"></i>
+                    HTML5
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-css3" aria-hidden="true"></i>
+                    CSS
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/javascript.png">
+                    JavaScript
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-mobile" aria-hidden="true"></i>
+                    RWD
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/python.png">
+                    Python
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/flask.png">
+                    Flask
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/aws.png">
+                    AWS/EC2
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/unix.png">
+                    Unix
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/apache.png">
+                    Apache
+                  </text>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="1" data-expandend="2" data-expanded="No" data-expandparent="0"></span>
+                  <text class="project">Rhythm of Life</text>
+                </div>
+                <br>
+                <text class="dates">February 2017 - Present</text>
+                <br>
+                <a href="https://github.com/estherh5/estherh5.github.io/tree/master/rhythm-of-life">
+                  <i class="tiny-icon fa fa-github fa-lg" aria-hidden="true"></i>
+                  <text class="location">GitHub Repository</text>
+                </a>
+                <section class="section">
+                  <div class="description">Educational Snake-based game that includes responsive design, game states, and a flask API leaderboard</div>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-html5" aria-hidden="true"></i>
+                    HTML5
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-css3" aria-hidden="true"></i>
+                    CSS
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/javascript.png">
+                    JavaScript
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-mobile" aria-hidden="true"></i>
+                    RWD
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/python.png">
+                    Python
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/flask.png">
+                    Flask
+                  </text>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="2" data-expandend="3" data-expanded="No" data-expandparent="0"></span>
+                  <text class="project">Shapes in Rain</text>
+                </div>
+                <br>
+                <text class="dates">January 2017 - Present</text>
+                <br>
+                <a href="https://github.com/estherh5/estherh5.github.io/tree/master/shapes-in-rain">
+                  <i class="tiny-icon fa fa-github fa-lg" aria-hidden="true"></i>
+                  <text class="location">GitHub Repository</text>
+                </a>
+                <section class="section">
+                  <div class="description">Interactive clearing shapes game that includes randomized interval functions, SVG cloning, and embedded audio</div>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-html5" aria-hidden="true"></i>
+                    HTML5
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-css3" aria-hidden="true"></i>
+                    CSS
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/javascript.png">
+                    JavaScript
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-mobile" aria-hidden="true"></i>
+                    RWD
+                  </text>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="3" data-expandend="4" data-expanded="No" data-expandparent="0"></span>
+                  <text class="project">Timespace</text>
+                </div>
+                <br>
+                <text class="dates">January 2017 - Present</text>
+                <br>
+                <a href="https://github.com/estherh5/estherh5.github.io/tree/master/timespace">
+                  <i class="tiny-icon fa fa-github fa-lg" aria-hidden="true"></i>
+                  <text class="location">GitHub Repository</text>
+                </a>
+                <section class="section">
+                  <div class="description">Hexadecimal clock that includes interval functions to generate movement and color to trace time's passage each second</div>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-html5" aria-hidden="true"></i>
+                    HTML5
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-css3" aria-hidden="true"></i>
+                    CSS
+                  </text>
+                  <text class="bullet">
+                    <img class="tiny-icon" src="images/javascript.png">
+                    JavaScript
+                  </text>
+                  <text class="bullet">
+                    <i class="tiny-icon fa fa-mobile" aria-hidden="true"></i>
+                    RWD
+                  </text>
+                </section>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/work.png">
+                <h2 class="header-title">Work Experience</h2>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-large" aria-hidden="true" data-expandstart="4" data-expandend="7" data-expanded="No">
+                    <text class="expand-all">Expand/Collapse All</text>
+                  </span>
+                </div>
+              </td>
+              <td class="content">
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="4" data-expandend="5" data-expanded="No" data-expandparent="1"></span>
+                  <text class="position">Implementer and Manager | Epic</text>
+                </div>
+                <br>
+                <text class="dates">September 2013 - Present</text>
+                <br>
+                <text class="location">Verona, Wisconsin</text>
+                <br>
+                <section class="section">
+                  <div class="description">Project Manager for Covenant Healthcare, Thomas Jefferson University, and Main Line Health Epic software implementations</div>
+                  <text class="bullet">Manage 2-year-long software implementations by creating project plans, providing technical expertise, and monitoring timelines and budget</text>
+                  <text class="bullet">Oversee Project Managers as Team Leader to ensure high performance by monitoring deliverables and conveying feedback</text>
+                  <text class="bullet">Designed new system functionality as Development Application Success Owner by working with clinicians and software developers</text>
+                  <text class="bullet">Redesigned development request process to be more transparent and efficient</text>
+                  <text class="bullet">Built model laboratory system for new organizations to adopt, including Ebola infectious disease warnings for traveling patients</text>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="5" data-expandend="6" data-expanded="No" data-expandparent="1"></span>
+                  <text class="position">Photography Editor | The Cornell Daily Sun</text>
+                </div>
+                <br>
+                <text class="dates">May 2012 - May 2013</text>
+                <br>
+                <text class="location">Ithaca, New York</text>
+                <br>
+                <section class="section">
+                  <div class="description">Photography Editor in charge of 50 photographers and photo editing with Photoshop for university daily newspaper</div>
+                  <text class="bullet">Photographed news, sports, arts and candid events on- and off-campus</text>
+                  <text class="bullet">Led <a href="http://161faces.cornellsun.com/">161 Faces of Cornell</a> project for capturing student profiles</text>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="6" data-expandend="7" data-expanded="No" data-expandparent="1"></span>
+                  <text class="position">Production Assistant | The Cornell Daily Sun</text>
+                </div>
+                <br>
+                <text class="dates">January 2010 - May 2013</text>
+                <br>
+                <text class="location">Ithaca, New York</text>
+                <br>
+                <section class="section">
+                  <div class="description">Organized newspaper layout for daily production</div>
+                  <text class="bullet">Designed newspaper layout and advertisement placement weekly with QuarkXPress and InDesign</text>
+                  <text class="bullet">Created special edition cover pages and edited sports inserts quarterly with Photoshop</text>
+                </section>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/education.png">
+                <h2 class="header-title">Education</h2>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-large" aria-hidden="true" data-expandstart="7" data-expandend="8" data-expanded="No">
+                    <text class="expand-all">Expand/Collapse All</text>
+                  </span>
+                </div>
+              </td>
+              <td class="content">
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="7" data-expandend="8" data-expanded="No" data-expandparent="2"></span>
+                  <text class="college">Bachelor of Arts in Biology and Psychology | Cornell University</text>
+                </div>
+                <br>
+                <text class="dates">Aug 2009 - May 2013</text>
+                <br>
+                <text class="location">Ithaca, New York</text>
+                <section class="section">
+                  <div class="description">Double-majored in Biology and Psychology and double-minored in Biomedical Engineering and Global Health</div>
+                </section>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/awards.png">
+                <h2 class="header-title">Honors & Publications</h2>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-large" aria-hidden="true" data-expandstart="8" data-expandend="11" data-expanded="No">
+                    <text class="expand-all">Expand/Collapse All</text>
+                  </span>
+                </div>
+              </td>
+              <td class="content">
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="8" data-expandend="9" data-expanded="No" data-expandparent="3"></span>
+                  <text class="honor">Foundation System Top Contributor | Epic</text>
+                </div>
+                <br>
+                <text class="dates">December 2014</text>
+                <br>
+                <text class="location">Verona, Wisconsin</text>
+                <section class="section">
+                  <div class="description">Awarded for intensive Epic model system build and patient care impact</div>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="9" data-expandend="10" data-expanded="No" data-expandparent="3"></span>
+                  <text class="honor">Manual Experience Shapes Object Representations | <i>Psychological Science</i></text>
+                </div>
+                <br>
+                <text class="dates">April 2013</text>
+                <br>
+                <text class="location"><a href="https://www.researchgate.net/publication/236600148_Manual_Experience_Shapes_Object_Representations?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B1DjjZZ9zSCCVXY%2B55VdmwA%3D%3D">Psychol Sci. 2013 Jun; 24(6): 909–919.</a></text>
+                <section class="section">
+                  <div class="description">Research paper exploring the way people mentally represent objects</div>
+                </section>
+                <br>
+                <div class="chevron-text">
+                  <span class="tiny-icon fa fa-chevron-right expand-small" aria-hidden="true" data-expandstart="10" data-expandend="11" data-expanded="No" data-expandparent="3"></span>
+                  <text class="honor">Social Innovation Challenge Semi-Finalist | Dell</text>
+                </div>
+                <br>
+                <text class="dates">April 2013</text>
+                <br>
+                <text class="location">Austin, Texas</text>
+                <section class="section">
+                  <div class="description">Awarded for developing a public health intervention, <a href="https://www.youtube.com/watch?v=afTHALk8V7U">Learning from Burning</a>, to counter trash-burning with composting</div>
+                </section>
+              </td>
+            </tr>
+            <tr>
+              <td class="header">
+                <img class="large-icon" src="images/hobby.png">
+                <h2 class="header-title">Interests</h2>
+              </td>
+              <td class="content">
+                <i class="tiny-icon fa fa-laptop" aria-hidden="true">
+                  <text class="words">Programming</text>
+                </i>
+                <i class="tiny-icon fa fa-camera" aria-hidden="true">
+                  <text class="words">Photography</text>
+                </i>
+                <i class="tiny-icon fa fa-diamond" aria-hidden="true">
+                  <text class="words">Design</text>
+                </i>
+                <i class="tiny-icon fa fa-globe" aria-hidden="true">
+                  <text class="words">Traveling</text>
+                </i>
+                <div class="image-icon">
+                  <img class="tiny-icon" src="images/hiking.png">
+                  <text class="words">Hiking</text>
+                </div>
+                <i class="tiny-icon fa fa-bicycle" aria-hidden="true">
+                  <text class="words">Biking</text>
+                </i>
+              </td>
+            </tr>
+          </table>
+        </div>
+        <div id="projects-page" class="page hidden">
+          <ul id="grid">
+            <li>
+              <a class="container" href="timespace/index.html">
+                <img class="image" src="images/timespace.jpg">
+                <span class="overlay">
+                  <div class="preview">
+                    <img class="icon" src="timespace/favicon.ico">
+                  </div>
+                </span>
+                <span class="title">Timespace</span>
+              </a>
+            </li>
+            <li>
+              <a class="container" href="shapes-in-rain/index.html">
+                <img class="image" src="images/shapes-in-rain.jpg">
+                <span class="overlay">
+                  <div class="preview">
+                    <img class="icon" src="shapes-in-rain/favicon.ico">
+                  </div>
+                </span>
+                <span class="title">Shapes in Rain</span>
+              </a>
+            </li>
+            <li>
+              <a class="container" href="rhythm-of-life/index.html">
+                <img class="image" src="images/rhythm-of-life.jpg">
+                <span class="overlay">
+                  <div class="preview">
+                    <img class="icon" src="rhythm-of-life/favicon.ico">
+                  </div>
+                </span>
+                <span class="title">Rhythm of Life</span>
+              </a>
+            </li>
+            <li>
+              <a class="container" href="canvashare/index.html">
+                <img class="image" src="images/canvashare.jpg">
+                <span class="overlay">
+                  <div class="preview">
+                    <img class="icon" src="canvashare/favicon.ico">
+                  </div>
+                </span>
+                <span class="title">CanvaShare</span>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
+    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>

@@ -88,7 +88,6 @@ button.selected {
 }
 
 #about-page {
-  visibility: visible;
   user-select: text;
 }
 

@@ -1,8 +1,8 @@
 // Define variables
 var aboutButton = document.getElementById('about-button');
 var projectsButton = document.getElementById('projects-button');
-var page = document.getElementById('about-page');
-var button = aboutButton;
+var page = document.getElementById('projects-page');
+var button = projectsButton;
 var expandableSmallChevrons = document.getElementsByClassName('expand-small');
 var expandableLargeChevrons = document.getElementsByClassName('expand-large');
 var expandableSections = document.getElementsByClassName('section');

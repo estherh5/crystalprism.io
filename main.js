@@ -24,8 +24,8 @@ function displayPage(e) {
   page.classList.add('hidden');
   if (page.id == 'about-page') {
     for (var i = 0; i < expandableSmallChevrons.length; i++) {
-      expandableSmallChevrons[i].classList.remove('fa-chevron-down');
-      expandableSmallChevrons[i].classList.add('fa-chevron-right');
+      expandableSmallChevrons[i].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+      expandableSmallChevrons[i].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
       expandableSmallChevrons[i].dataset.expanded = 'No';
     }
     for (var j = 0; j < expandableSections.length; j++) {
@@ -33,8 +33,8 @@ function displayPage(e) {
       expandableSections[j].style.height = '0px';
     }
     for (var k = 0; k < expandableLargeChevrons.length; k++) {
-      expandableLargeChevrons[k].classList.remove('fa-chevron-down');
-      expandableLargeChevrons[k].classList.add('fa-chevron-right');
+      expandableLargeChevrons[k].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+      expandableLargeChevrons[k].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
       expandableLargeChevrons[k].dataset.expanded = 'No';
     }
   }
@@ -50,36 +50,36 @@ function expandSection() {
     siblingChevrons = document.querySelectorAll('[data-expandparent="' + this.dataset.expandparent + '"]');
   }
   if (this.dataset.expanded == 'Yes') {
-    this.classList.remove('fa-chevron-down');
-    this.classList.add('fa-chevron-right');
+    this.getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+    this.getElementsByTagName('span')[0].classList.add('fa-chevron-right');
     for (j = parseInt(this.dataset.expandstart); j < parseInt(this.dataset.expandend); j++) {
       expandableSections[j].style.visibility = 'hidden';
       expandableSections[j].style.height = '0px';
-      expandableSmallChevrons[j].classList.remove('fa-chevron-down');
-      expandableSmallChevrons[j].classList.add('fa-chevron-right');
+      expandableSmallChevrons[j].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+      expandableSmallChevrons[j].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
       expandableSmallChevrons[j].dataset.expanded = 'No';
     }
     this.dataset.expanded = 'No';
   } else {
-    this.classList.remove('fa-chevron-right');
-    this.classList.add('fa-chevron-down');
+    this.getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
+    this.getElementsByTagName('span')[0].classList.add('fa-chevron-down');
     for (j = parseInt(this.dataset.expandstart); j < parseInt(this.dataset.expandend); j++) {
       expandableSections[j].style.visibility = 'visible';
       expandableSections[j].style.height = 'inherit';
-      expandableSmallChevrons[j].classList.remove('fa-chevron-right');
-      expandableSmallChevrons[j].classList.add('fa-chevron-down');
+      expandableSmallChevrons[j].getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
+      expandableSmallChevrons[j].getElementsByTagName('span')[0].classList.add('fa-chevron-down');
       expandableSmallChevrons[j].dataset.expanded = 'Yes';
     }
     this.dataset.expanded = 'Yes';
   }
   if (this.dataset.expanded == 'Yes' && this.classList.contains('expand-small') && expandableLargeChevrons[this.dataset.expandparent].dataset.expanded == 'No') {
-    expandableLargeChevrons[this.dataset.expandparent].classList.remove('fa-chevron-right');
-    expandableLargeChevrons[this.dataset.expandparent].classList.add('fa-chevron-down');
+    expandableLargeChevrons[this.dataset.expandparent].getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
+    expandableLargeChevrons[this.dataset.expandparent].getElementsByTagName('span')[0].classList.add('fa-chevron-down');
     expandableLargeChevrons[this.dataset.expandparent].dataset.expanded = 'Yes';
   }
   if (this.dataset.expanded == 'No' && this.classList.contains('expand-small') && notExpanded(siblingChevrons) && expandableLargeChevrons[this.dataset.expandparent].dataset.expanded == 'Yes') {
-    expandableLargeChevrons[this.dataset.expandparent].classList.remove('fa-chevron-down');
-    expandableLargeChevrons[this.dataset.expandparent].classList.add('fa-chevron-right');
+    expandableLargeChevrons[this.dataset.expandparent].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+    expandableLargeChevrons[this.dataset.expandparent].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
     expandableLargeChevrons[this.dataset.expandparent].dataset.expanded = 'No';
   }
 }

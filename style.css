@@ -176,17 +176,6 @@ a > i > .words:hover {
 .chevron-text {
   display: inline-flex;
   align-items: baseline;
-}
-
-.fa-chevron-right {
-  margin-right: 6px;
-}
-
-.fa-chevron-down {
-  margin-right: 3px;
-}
-
-.fa-chevron-right, .fa-chevron-down {
   cursor: pointer;
 }
 
@@ -195,10 +184,25 @@ a > i > .words:hover {
   margin-right: -4px !important;
 }
 
+.fa-chevron-right {
+  margin-right: 5.8px;
+}
+
+.expand-large > .fa-chevron-right {
+  margin-right: 0.5px;
+}
+
+.fa-chevron-down {
+  margin-right: 2.9px;
+}
+
+.expand-large > .fa-chevron-down {
+  margin-right: -1.5px;
+}
+
 .expand-all {
   font-family: 'Rajdhani', sans-serif;
   font-style: italic;
-  margin-left: 2px;
 }
 
 .project, .position, .college, .honor {
@@ -357,17 +361,28 @@ a > i > .words:hover {
     font-size: 15px;
   }
 
-  .fa-chevron-right {
-    margin-right: 7px;
-  }
-
   .expand-large {
     font-size: 12px !important;
   }
 
+  .fa-chevron-right {
+    margin-right: 7px;
+  }
+
+  .expand-large > .fa-chevron-right {
+    margin-right: 4.1px;
+  }
+
+  .fa-chevron-down {
+    margin-right: 2.8px;
+  }
+
+  .expand-large > .fa-chevron-down {
+    margin-right: 1px;
+  }
+
   .expand-all {
     font-size: 13px;
-    margin-left: 4px;
   }
 
   .project, .position, .college, .honor {

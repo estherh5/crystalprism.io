@@ -1,26 +1,24 @@
-html {
+html, body {
   height: 100%;
   width: 100%;
+  margin: 0px;
 }
 
 body {
-  height: 100%;
-  width: 100%;
-  background-image: url("images/background.jpg");
+  background-image: url("images/background.png");
   background-size: cover;
-  margin: 0;
   cursor: url("images/blast-start.png") 25 20, none;
   user-select: none;
 }
 
 #container {
+  position: absolute;
   top: 0px;
   left: 0px;
-  position: absolute;
   display: flex;
-  flex-flow: column;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 #audio-div {
@@ -40,29 +38,29 @@ body {
 }
 
 #title {
+  alignment-baseline: middle;
   font-family: Bungee Shade;
-  font-weight: bold;
-  font-style: italic;
   font-size: 30px;
+  font-style: italic;
+  font-weight: bold;
+  text-anchor: middle;
   line-height: 45px;
   opacity: 0.6;
-  text-anchor: middle;
-  alignment-baseline: middle;
 }
 
 #score {
+  alignment-baseline: middle;
   font-family: Bungee Shade;
-  font-weight: bold;
-  font-style: italic;
   font-size: 20px;
+  font-style: italic;
+  font-weight: bold;
+  text-anchor: middle;
   line-height: 45px;
   opacity: 0.6;
-  text-anchor: middle;
-  alignment-baseline: middle;
 }
 
 #heart {
-  opacity: .3;
+  opacity: 0.3;
 }
 
 #homepage {
@@ -83,7 +81,7 @@ body {
   }
 
   #score {
-    font-size: 30px;
     margin-top: 60px;
+    font-size: 30px;
   }
 }

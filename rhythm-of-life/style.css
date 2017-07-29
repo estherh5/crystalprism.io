@@ -1,15 +1,13 @@
 /* iPhone 5 */
-html {
-  width: 100%;
+html, body {
   height: 100%;
+  width: 100%;
+  margin: 0px;
 }
 
 body {
-  text-align: center;
   font-family: Wire One, sans-serif;
-  width: 100%;
-  height: 100%;
-  margin: 0;
+  text-align: center;
   user-select: none;
 }
 
@@ -19,21 +17,21 @@ body {
 
 #control-buttons {
   position: absolute;
-  left: 20px;
   width: 150px;
+  left: 20px;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
 }
 
 button {
-  margin: 1%;
-  color: black;
-  font-family: Wire One, sans-serif;
-  font-size: 21px;
   border: none;
   border-radius: 5px;
+  margin: 1%;
   background: #e8e8e8;
+  font-family: Wire One, sans-serif;
+  font-size: 21px;
+  color: black;
   text-shadow: 0 -0.1px 0 #000000;
   opacity: 1;
   cursor: default;
@@ -53,14 +51,14 @@ button.inactive {
 }
 
 h1 {
-  margin: 0 auto;
+  margin: 0px auto;
   background-color: #e8e8e8;
 }
 
 #blood-pressure {
-  font-size: 24px;
   width: 180px;
   margin-top: 1%;
+  font-size: 24px;
 }
 
 #systolic, #diastolic {
@@ -68,26 +66,26 @@ h1 {
 }
 
 #lifespan {
-  font-size: 24px;
   width: 180px;
   margin-bottom: 1%;
+  font-size: 24px;
 }
 
 #mobile-arrows {
   position: absolute;
-  margin-top: 0.5%;
-  top: 0;
-  right: 75px;
   width: 100px;
+  margin-top: 0.5%;
+  top: 0px;
+  right: 75px;
   display: flex;
   flex-flow: row wrap;
   justify-content: center;
 }
 
 .arrow {
-  margin: 3%;
-  width: 25px;
   height: 25px;
+  width: 25px;
+  margin: 3%;
 }
 
 #left-arrow, #right-arrow {
@@ -109,64 +107,64 @@ h1 {
 }
 
 #game {
-  display: flex;
   position: relative;
-  width: 540px;
   height: 240px;
+  width: 540px;
   margin-left: 1%;
   margin-right: 1%;
+  display: flex;
 }
 
 #canvas {
-  background-color: #ceebff;
   width: 100%;
   height: 100%;
+  background-color: #ceebff;
 }
 
 .screen {
-  font-size: 29px;
   position: absolute;
-  background: #e8e8e8 no-repeat center 20%;
-  width: 100%;
   height: 100%;
-  line-height: 32px;
+  width: 100%;
   display: flex;
-  flex-flow: column;
+  background: #e8e8e8 no-repeat center 20%;
+  font-size: 29px;
+  line-height: 32px;
+  flex-direction: column;
 }
 
 #start-title {
-  font-size: 55px;
   font-family: Tangerine, cursive;
+  font-size: 55px;
   line-height: 105px;
 }
 
 #pause-title {
   margin-top: 10%;
-  font-size: 55px;
   font-family: Poiret One, cursive;
+  font-size: 55px;
   font-weight: bold;
   line-height: 50px;
 }
 
 #pause-screen, #game-over-screen {
-  display: flex;
-  flex-flow: column;
-  align-items: center;
   visibility: hidden;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   opacity: 0.85;
 }
 
 #information-screen {
-  display: flex;
-  flex-flow: row;
   visibility: hidden;
+  display: flex;
+  flex-direction: row;
   opacity: 1;
 }
 
 .close {
   position: absolute;
-  top: 0;
-  right: 0;
+  top: 0px;
+  right: 0px;
 }
 
 #stress-description, #relief-description {
@@ -192,23 +190,23 @@ h1 {
 }
 
 #leader-screen {
-  align-items: center;
   visibility: hidden;
+  align-items: center;
 }
 
 #leader-title {
   font-size: 30px;
-  line-height: 30px;
   text-shadow: 0 -0.1px 0 #000000;
+  line-height: 30px;
 }
 
 #leader-screen th {
   width: 50%;
   font-size: 28px;
-  line-height: 26px;
+  font-weight: 100;
   text-decoration: underline;
   text-shadow: 0 -0.1px 0 #000000;
-  font-weight: 100;
+  line-height: 26px;
 }
 
 #leader-screen td {
@@ -223,17 +221,17 @@ h1 {
 #game-over-title {
   margin-top: 6%;
   background-color: rgba(0, 0, 0, 0);
-  font-size: 55px;
-  line-height: 45px;
   font-family: Ribeye, cursive;
+  font-size: 55px;
   color: red;
+  line-height: 45px;
 }
 
 input {
+  width: 75%;
   margin: 2%;
   font-family: Wire One, sans-serif;
   font-size: 24px;
-  width: 75%;
 }
 
 #submit {
@@ -242,10 +240,10 @@ input {
 
 #homepage {
   position: fixed;
-  top: 0;
-  right: 0;
   margin-top: 0.5%;
   margin-right: 0.5%;
+  top: 0px;
+  right: 0px;
 }
 
 /* Galaxy S5 */
@@ -261,8 +259,8 @@ input {
   }
 
   #blood-pressure, #lifespan {
-    font-size: 18px;
     width: 160px;
+    font-size: 18px;
   }
 
   #mobile-arrows {
@@ -271,8 +269,8 @@ input {
   }
 
   .arrow {
-    width: 22px;
     height: 21px;
+    width: 22px;
   }
 
   #left-arrow, #right-arrow {
@@ -284,8 +282,8 @@ input {
   }
 
   #game {
-    width: 600px;
     height: 300px;
+    width: 600px;
   }
 
   .screen {
@@ -293,8 +291,8 @@ input {
   }
 
   #start-title {
-    font-size: 65px;
     margin-top: 2%;
+    font-size: 65px;
   }
 
   .description-title {
@@ -333,7 +331,7 @@ input {
 @media only screen and (min-width: 667px) and (min-height: 375px) and (orientation: landscape) {
   #control-buttons {
     width: 150px;
-    margin-top: 0;
+    margin-top: 0px;
     left: 55px;
     justify-content: center;
   }
@@ -352,8 +350,8 @@ input {
   }
 
   .arrow {
-    width: 25px;
     height: 25px;
+    width: 25px;
   }
 
   #leader-title {
@@ -385,8 +383,8 @@ input {
   }
 
   .arrow {
-    width: 32px;
     height: 32px;
+    width: 32px;
     line-height: 34px;
   }
 
@@ -403,8 +401,8 @@ input {
 @media only screen and (max-width: 767px) and (orientation: portrait), (min-height: 415px) and (max-height: 767px) and (orientation: landscape), (max-height: 319px) and (orientation: landscape), (min-height: 320px) and (max-height: 414px) and (min-width: 737px) and (orientation: landscape) {
   body {
     display: flex;
-    justify-content: center;
     align-items: center;
+    justify-content: center;
   }
 
   body *:not(#warning) {
@@ -412,10 +410,10 @@ input {
   }
 
   #warning {
-    display: block;
     position: absolute;
-    font-size: 5vh;
+    display: block;
     font-family: 'Londrina Outline', cursive;
+    font-size: 5vh;
     font-weight: bold;
   }
 }
@@ -424,17 +422,17 @@ input {
 @media only screen and (min-width: 768px) and (min-height: 768px) and (orientation: portrait), (min-width: 800px) and (min-height: 768px) and (orientation: landscape) {
   body {
     display: flex;
-    flex-flow: column;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
   }
 
   #control-buttons {
-    width: 300px;
-    left: 0;
-    top: 0;
     position: relative;
+    width: 300px;
     margin-top: -3%;
+    left: 0px;
+    top: 0px;
   }
 
   button {
@@ -450,15 +448,15 @@ input {
   }
 
   #blood-pressure {
-    font-size: 34px;
-    margin-top: 0.5%;
     width: 420px;
+    margin-top: 0.5%;
+    font-size: 34px;
   }
 
   #lifespan {
-    font-size: 34px;
-    margin-bottom: 0.5%;
     width: 420px;
+    margin-bottom: 0.5%;
+    font-size: 34px;
   }
 
   #mobile-arrows {
@@ -474,8 +472,8 @@ input {
   }
 
   .side-board {
-    background-color: #e8e8e8;
     height: 297.5px;
+    background-color: #e8e8e8;
     opacity: 0.5;
   }
 
@@ -490,9 +488,9 @@ input {
   }
 
   th {
-    text-decoration: underline;
-    font-size: 28px;
     width: 50%;
+    font-size: 28px;
+    text-decoration: underline;
     line-height: 45px;
   }
 
@@ -515,8 +513,8 @@ input {
   }
 
   #game {
-    width: 420px;
     height: 600px;
+    width: 420px;
     margin-left: 0%;
     margin-right: 0%;
   }
@@ -526,8 +524,8 @@ input {
   }
 
   #start-title {
-    font-size: 80px;
     margin-top: 20%;
+    font-size: 80px;
     line-height: 120px;
   }
 
@@ -536,7 +534,7 @@ input {
   }
 
   #information-screen {
-    flex-flow: column;
+    flex-direction: column;
   }
 
   #stress-description, #relief-description {
@@ -551,8 +549,8 @@ input {
   }
 
   .description {
-    font-size: 18px;
     margin-left: 3%;
+    font-size: 18px;
     font-weight: 100;
     text-align: left;
   }
@@ -637,8 +635,8 @@ input {
   }
 
   #start-title, #pause-title {
-    font-size: 90px;
     margin-top: 30%;
+    font-size: 90px;
   }
 
   #stress-description {
@@ -679,8 +677,8 @@ input {
   }
 
   #blood-pressure, #lifespan {
-    font-size: 50px;
     width: 600px;
+    font-size: 50px;
   }
 
   button {
@@ -780,8 +778,8 @@ input {
   }
 
   #blood-pressure, #lifespan {
-    font-size: 40px;
     width: 960px;
+    font-size: 40px;
   }
 
   #left-panel, #right-panel {
@@ -812,8 +810,8 @@ input {
   }
 
   #game {
-    width: 960px;
     height: 840px;
+    width: 960px;
   }
 
   .screen {

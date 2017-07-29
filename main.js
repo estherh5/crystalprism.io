@@ -5,7 +5,7 @@ var page = document.getElementById('projects-page');
 var button = projectsButton;
 var expandableSmallChevrons = document.getElementsByClassName('expand-small');
 var expandableLargeChevrons = document.getElementsByClassName('expand-large');
-var expandableSections = document.getElementsByClassName('section');
+var expandableSections = document.getElementsByTagName('section');
 
 // Define events
 aboutButton.onclick = displayPage;
@@ -41,7 +41,7 @@ function displayPage(e) {
   button.classList.remove('selected');
   page = document.getElementById(e.target.dataset.page);
   page.classList.remove('hidden');
-  button = document.getElementById(e.target.dataset.button);
+  button = document.getElementById(e.target.id);
   button.classList.add('selected');
 }
 

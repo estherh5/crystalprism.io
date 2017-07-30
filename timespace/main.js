@@ -1,9 +1,12 @@
-setInterval(everySecond,1000);
-function everySecond(){
-  var circleOne = document.getElementById('circle-one');
-  var circleTwo = document.getElementById('circle-two');
-  var circleThree = document.getElementById('circle-three');
-  var circleFour = document.getElementById('circle-four');
+// Define variables
+var timeDisplay = document.getElementById('time');
+var circleOne = document.getElementById('circle-one');
+var circleTwo = document.getElementById('circle-two');
+var circleThree = document.getElementById('circle-three');
+var circleFour = document.getElementById('circle-four');
+
+// Define functions
+function everySecond() {
   var now = new Date();
   var time = now.getTime().toString();
   var circleOneColor = time.slice(-6);
@@ -18,7 +21,7 @@ function everySecond(){
   var hours = ("0" + now.getHours()).slice(-2);
   var minutes = ("0" + now.getMinutes()).slice(-2);
   var seconds = ("0" + now.getSeconds()).slice(-2);
-  document.getElementById('time').innerHTML = hours + ":" + minutes + ":" + seconds;
+  timeDisplay.innerHTML = hours + ":" + minutes + ":" + seconds;
   circleOne.style.bottom = digitTwo + digitFour + '.' + digitFour + "%";
   circleOne.style.right = digitFour + digitTwo + '.' + digitOne + "%";
   circleOne.style.background = "#" + circleOneColor;
@@ -32,3 +35,5 @@ function everySecond(){
   circleFour.style.left = digitOne + digitFour + '.' + digitThree + "%";
   circleFour.style.background = "#" + circleFourColor;
 }
+
+setInterval(everySecond, 1000);

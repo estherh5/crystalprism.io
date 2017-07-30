@@ -11,6 +11,16 @@ body {
   user-select: none;
 }
 
+#heart {
+  opacity: 0.3;
+}
+
+.shape {
+  position: absolute;
+  top: -9999px;
+  left: -9999px;
+}
+
 #container {
   position: absolute;
   top: 0px;
@@ -57,10 +67,6 @@ body {
   text-anchor: middle;
   line-height: 45px;
   opacity: 0.6;
-}
-
-#heart {
-  opacity: 0.3;
 }
 
 #homepage {

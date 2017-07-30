@@ -1,8 +1,10 @@
+// Define variables
 var canvas = document.getElementById('canvas');
-var shape = document.getElementsByClassName('shape');
+var heart = document.getElementById('heart');
+var shapes = document.getElementsByClassName('shape');
 var score = document.getElementById('score');
 
-// Resize canvas to full screen
+// Resize canvas to fullscreen
 function resize() {
   canvas.setAttribute('width', window.innerWidth);
   canvas.setAttribute('height', window.innerHeight);
@@ -10,59 +12,61 @@ function resize() {
 
 window.addEventListener('resize', resize, false);
 
-// Create heart shapes that are positioned a distance apart on the x-axis
-function createHeart() {
-  var heart = document.getElementById('heart').cloneNode(true);
-  heart.setAttribute('class', 'heart');
-  heart.setAttribute('height', '6%');
-  heart.setAttribute('width', '6%');
-  heart.setAttribute('x', '0px');
-  heart.setAttribute('y', '0px');
-  canvas.appendChild(heart);
+// Create heart shapes positioned a distance apart on the x-axis
+function cloneHeart() {
+  var heartClone = heart.cloneNode(true);
+  heartClone.setAttribute('class', 'heart');
+  heartClone.setAttribute('height', '6%');
+  heartClone.setAttribute('width', '6%');
+  heartClone.setAttribute('x', '0px');
+  heartClone.setAttribute('y', '0px');
+  canvas.appendChild(heartClone);
   setTimeout(function () {
-    heart.remove();
+    heartClone.remove();
   }, 15000);
-  return heart;
+  return heartClone;
 }
 
-function cloneHearts() {
-  for(var i = 0; i < 6; i++){
-    var heart = createHeart();
-    heart.setAttribute('x', i * 18.8 + '%');
+function multiplyHeart() {
+  for (var i = 0; i < 6; i++) {
+    var heartClone = cloneHeart();
+    heartClone.setAttribute('x', i * 18.8 + '%');
   };
 }
 
-setInterval(cloneHearts, 2500);
+setInterval(multiplyHeart, 2500);
 
-// Move heart shapes down the page like rain
-setInterval(function () {
-  var hearts = document.getElementsByClassName('heart');
-  for(var i = 0; i < hearts.length; i++){
-    var inty = parseFloat(hearts[i].getAttribute('y'));
-    hearts[i].setAttribute('y', inty + 1 + 'px');
+// Move heart shapes down y-axis like rain
+function rain() {
+  var heartClones = document.getElementsByClassName('heart');
+  for (var i = 0; i < heartClones.length; i++) {
+    var intY = parseFloat(heartClones[i].getAttribute('y'));
+    heartClones[i].setAttribute('y', intY + 1 + 'px');
   }
-}, 15);
+}
 
-// Create random shapes at random x and y coordinates without text overlap
+setInterval(rain, 15);
+
+// Create random shapes at random x and y coordinates with minimal text overlap
 function createRandomShape() {
-  var randomyCoordinate = Math.random() * 60 + 20;
-  if (randomyCoordinate > 30 && randomyCoordinate < 60) {
-    var rightOrLeft = Math.floor(Math.random() * 2) + 1;
-    if (rightOrLeft == 1) {
-      var randomxCoordinate = Math.random() * 5 + 5;
+  var randomYCoordinate = Math.random() * 60 + 20;
+  if (randomYCoordinate > 30 && randomYCoordinate < 60) {
+    var rightOrLeftOfText = Math.floor(Math.random() * 2) + 1;
+    if (rightOrLeftOfText == 1) {
+      var randomXCoordinate = Math.random() * 5 + 5;
     } else {
-      var randomxCoordinate = Math.random() * 5 + 85;
+      var randomXCoordinate = Math.random() * 5 + 85;
     }
   } else {
-    var randomxCoordinate = Math.random() * 60 + 20;
+    var randomXCoordinate = Math.random() * 60 + 20;
   }
-  z = Math.floor(Math.random() * shape.length);
-  var randomShape = shape[z].cloneNode(true);
+  var randomNumber = Math.floor(Math.random() * shapes.length);
+  var randomShape = shapes[randomNumber].cloneNode(true);
   randomShape.classList.remove('shape');
   randomShape.setAttribute('height', '15%');
   randomShape.setAttribute('width', '15%');
-  randomShape.setAttribute('x', randomxCoordinate + '%');
-  randomShape.setAttribute('y', randomyCoordinate + '%');
+  randomShape.setAttribute('x', randomXCoordinate + '%');
+  randomShape.setAttribute('y', randomYCoordinate + '%');
   canvas.appendChild(randomShape);
   randomShape.onclick = function () {
     randomShape.remove();

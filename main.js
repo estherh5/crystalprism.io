@@ -1,13 +1,17 @@
 // Define variables
+var projectsCircle = document.getElementById('projects-circle');
+var aboutCircle = document.getElementById('about-circle');
 var projectsButton = document.getElementById('projects-button');
 var aboutButton = document.getElementById('about-button');
-var page = document.getElementById('projects-page');
-var button = projectsButton;
+var button = document.getElementById('projects-button');
+var page = document.getElementById('starting-page');
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
 
 // Define events
+projectsCircle.onclick = displayPage;
+aboutCircle.onclick = displayPage;
 projectsButton.onclick = displayPage;
 aboutButton.onclick = displayPage;
 
@@ -22,6 +26,10 @@ for (var i = 0; i < parentExpandables.length; i++) {
 // Define functions
 function displayPage(e) {
   page.classList.add('hidden');
+  if (page.id == 'starting-page') {
+    document.getElementById('page-buttons').classList.remove('hidden');
+    document.getElementById('diamond-small').classList.remove('hidden');
+  }
   if (page.id == 'about-page') {
     for (var i = 0; i < childExpandables.length; i++) {
       childExpandables[i].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
@@ -41,7 +49,7 @@ function displayPage(e) {
   button.classList.remove('selected');
   page = document.getElementById(e.target.dataset.page);
   page.classList.remove('hidden');
-  button = document.getElementById(e.target.id);
+  button = document.getElementById(e.target.dataset.button);
   button.classList.add('selected');
 }
 

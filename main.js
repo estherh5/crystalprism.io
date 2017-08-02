@@ -1,19 +1,27 @@
 // Define variables
+var themeButton = document.getElementById('theme-button');
 var projectsCircle = document.getElementById('projects-circle');
 var aboutCircle = document.getElementById('about-circle');
 var projectsButton = document.getElementById('projects-button');
 var aboutButton = document.getElementById('about-button');
 var button = document.getElementById('projects-button');
 var page = document.getElementById('starting-page');
+var now = new Date().getHours();
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
 
 // Define events
+themeButton.onclick = changeTheme;
 projectsCircle.onclick = displayPage;
 aboutCircle.onclick = displayPage;
 projectsButton.onclick = displayPage;
 aboutButton.onclick = displayPage;
+
+if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localStorage.getItem('theme') != 'day' || now >= 20 && now <= 23 && localStorage.getItem('theme') != 'day') {
+  document.body.classList.add('night-view');
+  themeButton.innerHTML = 'Day View';
+}
 
 for (var i = 0; i < childExpandables.length; i++) {
   childExpandables[i].addEventListener('click', expandSection, false);
@@ -24,6 +32,18 @@ for (var i = 0; i < parentExpandables.length; i++) {
 }
 
 // Define functions
+function changeTheme() {
+  if (localStorage.getItem('theme') == 'night') {
+    document.body.classList.remove('night-view');
+    themeButton.innerHTML = 'Night View';
+    localStorage.setItem('theme', 'day');
+  } else {
+    document.body.classList.add('night-view');
+    themeButton.innerHTML = 'Day View';
+    localStorage.setItem('theme', 'night');
+  }
+}
+
 function displayPage(e) {
   page.classList.add('hidden');
   if (page.id == 'starting-page') {

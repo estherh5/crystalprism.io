@@ -290,14 +290,14 @@ tr, td {
   line-height: 2;
 }
 
-.contact > a > i > .words, .contact > .words, .projects > a > .location {
+.contact > a > i > .words, .contact > .words, .projects > a > .location, .education > a > .location {
   margin-left: 0px;
   color: #7fd13b;
   font-weight: bold;
   text-shadow: none;
 }
 
-.contact > a:hover > i > .words, .projects > a:hover > .location {
+.contact > a:hover > i > .words, .projects > a:hover > .location, .education > a:hover > .location {
   color: grey;
 }
 
@@ -323,7 +323,7 @@ tr, td {
   display: none !important;
 }
 
-#about-page .project-title, .position, .college, .honor {
+#about-page .project-title, .position-title, .education-title, .award-title {
   margin-left: 0px;
   font-size: 11px;
   font-weight: bold;
@@ -335,7 +335,7 @@ tr, td {
   text-shadow: 0 -0.1px 0 #000000;
 }
 
-.projects > a {
+.projects > a, .education > a {
   margin-left: 0px;
 }
 
@@ -563,7 +563,7 @@ section {
     font-style: italic;
 }
 
-  #about-page .project-title, .position, .college, .honor {
+  #about-page .project-title, .position-title, .education-title, .award-title {
     margin-left: 3px;
     font-size: 18px;
   }
@@ -573,7 +573,7 @@ section {
     font-size: 16px;
   }
 
-  .projects > a {
+  .projects > a, .education > a {
     margin-left: 21px;
   }
 
@@ -616,12 +616,8 @@ section {
     text-shadow: none !important;
   }
 
-  a {
-    font-weight: normal !important;
-  }
-
-  text {
-    fill: black;
+  #homepage {
+    margin-top: 10px;
   }
 
   #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-button {
@@ -630,6 +626,15 @@ section {
 
   #blurb {
     width: 500px;
+    font-size: 12px;
+  }
+
+  a {
+    font-weight: normal !important;
+  }
+
+  text {
+    fill: black;
   }
 
   .javascript {
@@ -660,12 +665,11 @@ section {
     content: url("images/epic-black.png");
   }
 
-  .project-title, .position, .college, .honor, .dates, .location, .description {
+  .project-title, .position-title, .education-title, .award-title, .dates, .location, .description {
     margin-left: 0px !important;
   }
 
   section {
-    height: initial;
     visibility: visible;
   }
 

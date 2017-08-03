@@ -100,26 +100,26 @@ function expandSection() {
     }
     this.dataset.expanded = 'Yes';
   }
-  if (this.dataset.expanded == 'Yes' && this.classList.contains('expand-small') && parentExpandables[this.dataset.expandparent].dataset.expanded == 'No') {
+  if (this.dataset.expanded == 'Yes' && this.classList.contains('expand-small') && expanded(siblingExpandables) && parentExpandables[this.dataset.expandparent].dataset.expanded == 'No') {
     parentExpandables[this.dataset.expandparent].getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
     parentExpandables[this.dataset.expandparent].getElementsByTagName('span')[0].classList.add('fa-chevron-down');
     parentExpandables[this.dataset.expandparent].dataset.expanded = 'Yes';
   }
-  if (this.dataset.expanded == 'No' && this.classList.contains('expand-small') && notExpanded(siblingExpandables) && parentExpandables[this.dataset.expandparent].dataset.expanded == 'Yes') {
+  if (this.dataset.expanded == 'No' && this.classList.contains('expand-small') && !expanded(siblingExpandables) && parentExpandables[this.dataset.expandparent].dataset.expanded == 'Yes') {
     parentExpandables[this.dataset.expandparent].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
     parentExpandables[this.dataset.expandparent].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
     parentExpandables[this.dataset.expandparent].dataset.expanded = 'No';
   }
 }
 
-function notExpanded(siblings) {
-  var noneExpanded = 0;
+function expanded(siblings) {
+  var expanded = 0;
   for (var i = 0; i < siblings.length; i++) {
-    if (siblings[i].dataset.expanded == 'No') {
-      noneExpanded = noneExpanded + 1;
+    if (siblings[i].dataset.expanded == 'Yes') {
+      expanded = expanded + 1;
     }
   }
-  if (noneExpanded == siblings.length) {
+  if (expanded == siblings.length) {
     return true;
   } else {
     return false;

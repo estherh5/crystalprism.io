@@ -137,15 +137,15 @@ button.selected {
   width: 100%;
 }
 
-#blue:hover, #green:hover, #purple:hover, #teal:hover {
+#purple:hover, #green:hover, #pink:hover, #teal:hover {
   opacity: 0.9;
 }
 
-#blue g, #green g, #purple g, #teal g {
+#purple g, #green g, #pink g, #teal g {
   transition: all 1s;
 }
 
-#menu:hover #blue g {
+#menu:hover #purple g {
   transform: scale(0.89) translateX(242px) translateY(-59px);
   transition: all 1s;
 }
@@ -155,7 +155,7 @@ button.selected {
   transition: all 1s;
 }
 
-#menu:hover #purple g {
+#menu:hover #pink g {
   transform: scale(0.55) translateX(81px) translateY(187px);
   transition: all 1s;
 }

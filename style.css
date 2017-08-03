@@ -1,6 +1,6 @@
 html, body {
   height: 100vh;
-  width: 100vw;
+  width: 98vw;
   padding: 0px;
   margin: 0px;
   top: 0px;
@@ -43,7 +43,7 @@ a:hover, button:hover {
 #diamond-small {
   position: absolute;
   height: 50px;
-  opacity: 0.5;
+  opacity: 0.7;
 }
 
 h1 {
@@ -259,10 +259,6 @@ tr, td {
   content: url("images/aws-white.png");
 }
 
-.night-view .unix {
-  content: url("images/unix-white.png");
-}
-
 .night-view .apache {
   content: url("images/apache-white.png");
 }
@@ -306,7 +302,6 @@ tr, td {
   font-family: 'Rajdhani', sans-serif;
   font-size: 10px;
   font-weight: bold;
-  color: #7fd13b;
   white-space: nowrap;
 }
 
@@ -531,7 +526,7 @@ section {
   .header-title {
     margin-top: 8px;
     margin-bottom: 8px;
-    font-size: 1.5em;
+    font-size: 24px;
   }
 
   .content {
@@ -610,5 +605,75 @@ section {
 
   .night-view #grid li {
     margin: 0.3%;
+  }
+}
+
+@media print {
+  body {
+    background: white;
+  }
+
+  body * {
+    color: black !important;
+    text-shadow: none !important;
+  }
+
+  a {
+    font-weight: normal !important;
+  }
+
+  text {
+    fill: black;
+  }
+
+  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-button {
+    display: none !important;
+  }
+
+  .javascript {
+    content: url("images/javascript-black.png");
+  }
+
+  .flask {
+    content: url("images/flask-black.png");
+  }
+
+  .aws {
+    content: url("images/aws-black.png");
+  }
+
+  .apache {
+    content: url("images/apache-black.png");
+  }
+
+  .ps {
+    content: url("images/ps-black.png");
+  }
+
+  .msoffice {
+    content: url("images/msoffice-black.png");
+  }
+
+  .epic {
+    content: url("images/epic-black.png");
+  }
+
+  .project-title, .position, .college, .honor, .dates, .location, .description {
+    margin-left: 0px !important;
+  }
+
+  section {
+    height: initial;
+    visibility: visible;
+  }
+
+  .bullets {
+    width: 400px;
+    display: flex;
+    flex-flow: row wrap;
+  }
+
+  .bullets > .bullet {
+    display: inline;
   }
 }

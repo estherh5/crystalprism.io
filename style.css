@@ -43,7 +43,7 @@ a:hover, button:hover {
 #diamond-small {
   position: absolute;
   height: 50px;
-  opacity: 0.7;
+  opacity: 0.6;
 }
 
 h1 {
@@ -189,6 +189,18 @@ button.selected {
 }
 
 #about-page {
+  display: flex;
+  flex-direction: column;
+}
+
+#blurb {
+  margin-bottom: 25px;
+  margin-left: 10px;
+  margin-right: 10px;
+  align-self: center;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 11px;
+  line-height: 1.5;
   user-select: text;
 }
 
@@ -196,13 +208,8 @@ button.selected {
   background: #ddbef7;
 }
 
-#blurb {
-  margin-bottom: 25px;
-  margin-left: 10px;
-  margin-right: 10px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 11px;
-  line-height: 1.5;
+.night-view ::selection {
+  background: #ff54f6;
 }
 
 table {
@@ -237,6 +244,7 @@ tr, td {
   font-size: 10px;
   text-align: left;
   line-height: 1.7;
+  user-select: text;
 }
 
 .small-icon {
@@ -311,57 +319,34 @@ tr, td {
   cursor: pointer;
 }
 
-.expand-large {
-  margin-right: -4px !important;
-  font-size: 7px !important;
-}
-
-.fa-chevron-right {
-  margin-right: 5.8px;
-}
-
-.expand-large > .fa-chevron-right {
-  margin-right: 0.5px;
-}
-
-.fa-chevron-down {
-  margin-right: 2.9px;
-}
-
-.expand-large > .fa-chevron-down {
-  margin-right: -1.5px;
-}
-
-.expand-all {
-  font-family: 'Rajdhani', sans-serif;
-  font-style: italic;
+.expand-all, .fa-chevron-right, .fa-chevron-down {
+  display: none !important;
 }
 
 #about-page .project-title, .position, .college, .honor {
+  margin-left: 0px;
   font-size: 11px;
   font-weight: bold;
   color: #7fd13b;
-  margin-left: 3px;
 }
 
 .dates, .location {
-  margin-left: 16px;
+  margin-left: 0px;
   text-shadow: 0 -0.1px 0 #000000;
 }
 
 .projects > a {
-  margin-left: 16px;
+  margin-left: 0px;
 }
 
 section {
-  height: 0px;
-  visibility: hidden;
+  visibility: visible;
 }
 
 .description {
   margin-top: 6px;
   margin-bottom: 6px;
-  margin-left: 16px;
+  margin-left: 0px;
   font-style: italic;
 }
 
@@ -512,6 +497,7 @@ section {
   }
 
   #blurb {
+    max-width: 700px;
     font-size: 14px;
   }
 
@@ -548,10 +534,12 @@ section {
   }
 
   .expand-large {
+    display: initial !important;
     font-size: 12px !important;
   }
 
   .fa-chevron-right {
+    display: initial !important;
     margin-right: 7px;
   }
 
@@ -560,6 +548,7 @@ section {
   }
 
   .fa-chevron-down {
+    display: initial !important;
     margin-right: 2.8px;
   }
 
@@ -568,10 +557,14 @@ section {
   }
 
   .expand-all {
+    display: initial !important;
+    font-family: 'Rajdhani', sans-serif;
     font-size: 13px;
-  }
+    font-style: italic;
+}
 
   #about-page .project-title, .position, .college, .honor {
+    margin-left: 3px;
     font-size: 18px;
   }
 
@@ -582,6 +575,11 @@ section {
 
   .projects > a {
     margin-left: 21px;
+  }
+
+  section {
+    height: 0px;
+    visibility: hidden;
   }
 
   .description {
@@ -628,6 +626,10 @@ section {
 
   #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-button {
     display: none !important;
+  }
+
+  #blurb {
+    width: 500px;
   }
 
   .javascript {

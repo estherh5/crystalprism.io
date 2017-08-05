@@ -1,0 +1,183 @@
+html, body {
+  height: 100vh;
+  width: 100vw;
+  margin: 0px;
+  top: 0px;
+  left: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #cecece;
+  cursor: default;
+  user-select: none;
+}
+
+::selection {
+  background-color: #00ffff;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+#title {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  margin: 0px;
+  font-family: 'Passero One', cursive;
+  font-size: 52px;
+  font-variant: small-caps;
+  text-align: center;
+}
+
+#container {
+  margin-top: 57px;
+  margin-bottom: 125px;
+  display: flex;
+  flex-direction: column;
+}
+
+#entry-name {
+  height: 50px;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 23px;
+  font-weight: bold;
+  text-align: center;
+}
+
+#journal {
+  height: 50vh;
+  min-height: 220px;
+  max-height: 700px;
+  width: 70vw;
+  min-width: 300px;
+  max-width: 700px;
+  outline-style: solid;
+  outline-width: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background-color: #ff90cd;
+}
+
+#format-tools {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+#color-picker {
+  width: 18px;
+  padding: 0px;
+  border: none;
+  margin: 0px;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+button {
+  border: none;
+  outline: none;
+  background: none;
+  cursor: pointer;
+}
+
+button:active, a:active {
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+button:hover, a:hover {
+  color: grey;
+}
+
+#format-tools button {
+  margin: -3.5px;
+}
+
+#entry {
+  height: 40vh;
+  min-height: 160px;
+  max-height: 600px;
+  width: 60vw;
+  min-width: 240px;
+  max-width: 600px;
+  border-style: solid;
+  border-width: 2px;
+  outline: none;
+  resize: none;
+  background-color: #ffff00;
+  font-family: 'Megrim', cursive;
+  font-size: 20px;
+  overflow: auto;
+  user-select: text;
+}
+
+#entry > a {
+  text-decoration: underline;
+}
+
+#entry img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+#submit {
+  height: 50px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 20px;
+  text-decoration: none;
+  line-height: 20px;
+}
+
+#submit:hover {
+  font-weight: bold;
+}
+
+#homepage {
+  position: fixed;
+  bottom: 0px;
+  right: 0px;
+  opacity: 0.7;
+}
+
+#homepage:hover {
+  opacity: 1;
+}
+
+@media only screen and (min-width: 768px) {
+  #title {
+    font-size: 85px;
+  }
+
+  #container {
+    margin-top: 100px;
+  }
+
+  #entry-name {
+    font-size: 25px;
+  }
+
+  #journal {
+    height: 60vh;
+    width: 60vw;
+  }
+
+  #format-tools button {
+    margin: 0.3vw;
+  }
+
+  #entry {
+    height: 50vh;
+    width: 50vw;
+  }
+}

@@ -66,6 +66,22 @@ a {
   align-items: center;
   justify-content: flex-start;
   background-color: #ff90cd;
+  transition: transform 0.5s;
+}
+
+.entry-done-journal {
+  transform: rotateX(180deg);
+  transition: transform 0.5s;
+}
+
+.entry-done-content {
+  transform: rotateX(180deg);
+  transition: transform 0.5s;
+}
+
+.entry-done-buttons {
+  transform: rotateX(180deg);
+  transition: transform 0.5s;
 }
 
 #format-tools {
@@ -131,16 +147,28 @@ button:hover, a:hover {
   max-width: 100%;
 }
 
-#submit {
+#clear-submit {
   height: 50px;
+  display: flex;
+  flex-direction: row;
+}
+
+.content-button {
+  margin-left: 10px;
+  margin-right: 10px;
   font-family: 'Cutive Mono', monospace;
   font-size: 20px;
   text-decoration: none;
   line-height: 20px;
 }
 
-#submit:hover {
+.content-button:hover {
   font-weight: bold;
+}
+
+#go-back, #new-post {
+  height: 50px;
+  display: none;
 }
 
 #homepage {

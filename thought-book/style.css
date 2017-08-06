@@ -28,9 +28,10 @@ a {
   left: 0px;
   right: 0px;
   margin: 0px;
-  font-family: 'Passero One', cursive;
+  font-family: 'Share', cursive;
   font-size: 52px;
   font-variant: small-caps;
+  font-weight: normal;
   text-align: center;
 }
 

@@ -15,6 +15,10 @@ var now = new Date().getHours();
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
+var server = '';
+var requestStart = 0;
+var requestEnd = 10;
+var ideasPage = document.getElementById('ideas-page');
 
 // Define events
 themeButton.onclick = changeTheme;
@@ -43,6 +47,72 @@ for (var i = 0; i < parentExpandables.length; i++) {
 }
 
 // Define functions
+function getEntries() {
+  if (window.location.hostname == 'crystalprism.io') {
+    server = 'http://13.58.175.191/api';
+  } else {
+    server = 'http://localhost:5000/api';
+  }
+  return fetch(server + '/thoughts?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+    response.json().then(function (entries) {
+      if (entries.length != 0) {
+        for (var i = 0; i < entries.length; i++) {
+          var entry = document.createElement('table');
+          entry.classList.add('entry');
+          var headerRow = document.createElement('tr');
+          headerRow.classList.add('header-row');
+          var entryName = document.createElement('td');
+          entryName.classList.add('entry-name');
+          entryName.innerHTML = entries[i].name;
+          var entryDate = document.createElement('td');
+          entryDate.classList.add('entry-date');
+          entryDate.innerHTML = entries[i].date;
+          var contentRow = document.createElement('tr');
+          var entryContentArea = document.createElement('td');
+          entryContentArea.classList.add('entry-content-area');
+          entryContentArea.colSpan = '3';
+          var entryContent = document.createElement('div');
+          entryContent.classList.add('entry-content');
+          entryContent.id = entries[i].name;
+          if (entries[i].content.length >= 200) {
+            entryContent.dataset.fulltext = entries[i].content;
+            entryContent.innerHTML = entries[i].content.slice(0, 200) + '...';
+            var showTextButton = document.createElement('button');
+            showTextButton.classList.add('show-full-text');
+            showTextButton.dataset.entry = entries[i].name;
+            showTextButton.innerHTML = '<i class="fa fa-plus-square-o" aria-hidden="true"></i>';
+            showTextButton.addEventListener('click', showFullText, false);
+            entryContent.appendChild(showTextButton);
+          } else {
+            entryContent.innerHTML = entries[i].content.slice(0, 200);
+          }
+          ideasPage.appendChild(entry);
+          entry.appendChild(headerRow);
+          headerRow.appendChild(entryName);
+          headerRow.appendChild(entryDate);
+          entry.appendChild(contentRow);
+          contentRow.appendChild(entryContentArea);
+          entryContentArea.appendChild(entryContent);
+        }
+      }
+    })
+  })
+}
+
+function showFullText() {
+  if (this.innerHTML == '<i class="fa fa-plus-square-o" aria-hidden="true"></i>') {
+    this.innerHTML = '<i class="fa fa-minus-square-o" aria-hidden="true"></i>';
+    var entryToDisplay = document.getElementById(this.dataset.entry);
+    entryToDisplay.innerHTML = entryToDisplay.dataset.fulltext;
+    entryToDisplay.appendChild(this);
+  } else {
+    this.innerHTML = '<i class="fa fa-plus-square-o" aria-hidden="true"></i>';
+    var entryToDisplay = document.getElementById(this.dataset.entry);
+    entryToDisplay.innerHTML = entryToDisplay.dataset.fulltext.slice(0, 200) + '...';
+    entryToDisplay.appendChild(this);
+  }
+}
+
 function changeTheme() {
   if (localStorage.getItem('theme') == 'night') {
     document.body.classList.remove('night-view');

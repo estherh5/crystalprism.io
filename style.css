@@ -77,7 +77,7 @@ button.selected {
   font-weight: bold;
 }
 
-.night-view button {
+.night-view button, .night-view input {
   color: white;
 }
 
@@ -451,6 +451,74 @@ section {
   transform: translateY(0px);
 }
 
+.entry {
+  border-spacing: 0px;
+  margin-bottom: 30px;
+  margin-left: 2vw;
+  user-select: text;
+}
+
+#ideas-page tr, #ideas-page td {
+  padding: 7px;
+}
+
+.header-row {
+  background: rgb(239, 239, 239);
+}
+
+.night-view .header-row {
+  background: rgb(99, 99, 99);
+}
+
+.entry-name {
+  width: 80%;
+  border-top-left-radius: 10px;
+  font-family: 'Shrikhand', cursive;
+  font-size: 20px;
+  text-align: left;
+  vertical-align: bottom;
+  color: rgba(235, 91, 211, 0.65);
+}
+
+.entry-date {
+  width: 10%;
+  border-top-right-radius: 10px;
+  vertical-align: bottom;
+  font-family: 'Scope One', serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: right;
+  color: black !important;
+}
+
+.entry-content-area {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background: #f9f9f9;
+}
+
+.night-view .entry-content-area {
+  background: #aeaeae;
+}
+
+.entry-content {
+  font-family: 'Scope One', serif;
+  font-size: 15px;
+  text-align: justify;
+  color: black !important;
+}
+
+.entry-content img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.show-full-text {
+  margin-left: 3px;
+  font-size: 18px;
+  line-height: 0;
+}
+
 #theme-setting {
   position: fixed;
   width: 60px;
@@ -623,6 +691,30 @@ section {
 
   .night-view #grid li {
     margin: 0.3%;
+  }
+
+  .entry {
+    margin-bottom: 40px;
+  }
+
+  .entry-name {
+    font-size: 25px;
+  }
+
+  .entry-date {
+    font-size: 20px;
+  }
+
+  .entry-content-area {
+    opacity: 0.7;
+  }
+
+  .entry:hover .entry-content-area {
+    opacity: 1;
+  }
+
+  .entry-content {
+    font-size: 20px;
   }
 
   #theme-setting {

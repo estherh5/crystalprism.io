@@ -1,5 +1,6 @@
 // Define variables
 var themeButton = document.getElementById('theme-button');
+var skyIcon = document.getElementById('sky-icon');
 var projectsCircle = document.getElementById('projects-circle');
 var aboutCircle = document.getElementById('about-circle');
 var projectsButton = document.getElementById('projects-button');
@@ -20,6 +21,8 @@ aboutButton.onclick = displayPage;
 
 if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localStorage.getItem('theme') != 'day' || now >= 20 && now <= 23 && localStorage.getItem('theme') != 'day') {
   document.body.classList.add('night-view');
+  skyIcon.classList.remove('ion-ios-moon-outline');
+  skyIcon.classList.add('ion-ios-sunny');
   themeButton.innerHTML = 'Day View';
 }
 
@@ -35,10 +38,14 @@ for (var i = 0; i < parentExpandables.length; i++) {
 function changeTheme() {
   if (localStorage.getItem('theme') == 'night') {
     document.body.classList.remove('night-view');
+    skyIcon.classList.remove('ion-ios-sunny');
+    skyIcon.classList.add('ion-ios-moon-outline');
     themeButton.innerHTML = 'Night View';
     localStorage.setItem('theme', 'day');
   } else {
     document.body.classList.add('night-view');
+    skyIcon.classList.remove('ion-ios-moon-outline');
+    skyIcon.classList.add('ion-ios-sunny');
     themeButton.innerHTML = 'Day View';
     localStorage.setItem('theme', 'night');
   }

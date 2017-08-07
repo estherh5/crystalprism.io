@@ -91,14 +91,16 @@ button.selected {
 .page {
   position: absolute;
   max-width: 953px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 #starting-page {
-  height: 80vh;
+  height: 74vh;
   width: 100%;
   margin: 0px;
-  display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
 }
 
@@ -188,13 +190,8 @@ button.selected {
   left: -9999px;
 }
 
-#about-page {
-  display: flex;
-  flex-direction: column;
-}
-
 #blurb {
-  margin-bottom: 25px;
+  margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
   align-self: center;
@@ -212,11 +209,11 @@ button.selected {
   background: #ff54f6;
 }
 
-table {
+#about-page table {
   position: relative;
 }
 
-tr, td {
+#about-page tr, #about-page td {
   padding-bottom: 20px;
 }
 
@@ -232,7 +229,8 @@ tr, td {
 .header-title {
   margin-top: 0px;
   margin-bottom: 0px;
-  font-size: 15px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 9px;
   font-weight: normal;
   text-shadow: 0 -0.1px 0 #000000;
 }
@@ -256,31 +254,31 @@ tr, td {
 }
 
 .night-view .javascript {
-  content: url("images/javascript-white.png");
+  content: url('images/javascript-white.png');
 }
 
 .night-view .flask {
-  content: url("images/flask-white.png");
+  content: url('images/flask-white.png');
 }
 
 .night-view .aws {
-  content: url("images/aws-white.png");
+  content: url('images/aws-white.png');
 }
 
 .night-view .apache {
-  content: url("images/apache-white.png");
+  content: url('images/apache-white.png');
 }
 
 .night-view .ps {
-  content: url("images/ps-white.png");
+  content: url('images/ps-white.png');
 }
 
 .night-view .msoffice {
-  content: url("images/msoffice-white.png");
+  content: url('images/msoffice-white.png');
 }
 
 .night-view .epic {
-  content: url("images/epic-white.png");
+  content: url('images/epic-white.png');
 }
 
 .words {
@@ -453,8 +451,30 @@ section {
   transform: translateY(0px);
 }
 
-#theme-button {
+#theme-setting {
   position: fixed;
+  width: 60px;
+  top: 0px;
+  left: 0px;
+  margin-top: 3px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+#sky-icon {
+  position: absolute;
+  margin-top: -7px;
+  font-size: 27px;
+  opacity: 0.3;
+}
+
+#theme-button {
+  position: absolute;
+  width: 66px;
+  padding: 0px;
+  margin-top: 10px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -498,10 +518,10 @@ section {
 
   #blurb {
     max-width: 700px;
-    font-size: 14px;
+    font-size: 16px;
   }
 
-  tr, td {
+  #about-page tr, #about-page td {
     padding-bottom: 30px;
   }
 
@@ -512,7 +532,7 @@ section {
   .header-title {
     margin-top: 8px;
     margin-bottom: 8px;
-    font-size: 24px;
+    font-size: 18px;
   }
 
   .content {
@@ -604,6 +624,15 @@ section {
   .night-view #grid li {
     margin: 0.3%;
   }
+
+  #theme-setting {
+    width: 75px;
+  }
+
+  #sky-icon {
+    margin-top: -9px;
+    font-size: 32px;
+  }
 }
 
 @media print {
@@ -617,16 +646,20 @@ section {
   }
 
   #homepage {
-    margin-top: 10px;
+    margin-top: 20px;
   }
 
-  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-button {
+  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-setting {
     display: none !important;
   }
 
   #blurb {
     width: 500px;
     font-size: 12px;
+  }
+
+  .header-title {
+    font-size: 15px;
   }
 
   a {
@@ -638,35 +671,43 @@ section {
   }
 
   .javascript {
-    content: url("images/javascript-black.png");
+    content: url('images/javascript-black.png');
   }
 
   .flask {
-    content: url("images/flask-black.png");
+    content: url('images/flask-black.png');
   }
 
   .aws {
-    content: url("images/aws-black.png");
+    content: url('images/aws-black.png');
   }
 
   .apache {
-    content: url("images/apache-black.png");
+    content: url('images/apache-black.png');
   }
 
   .ps {
-    content: url("images/ps-black.png");
+    content: url('images/ps-black.png');
   }
 
   .msoffice {
-    content: url("images/msoffice-black.png");
+    content: url('images/msoffice-black.png');
   }
 
   .epic {
-    content: url("images/epic-black.png");
+    content: url('images/epic-black.png');
   }
 
   .project-title, .position-title, .education-title, .award-title, .dates, .location, .description {
     margin-left: 0px !important;
+  }
+
+  .content, .words, .skill-type, .dates, .location {
+    font-size: 11.3px;
+  }
+
+  #about-page .project-title, .position-title, .education-title, .award-title {
+    font-size: 12px;
   }
 
   section {

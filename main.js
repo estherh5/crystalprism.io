@@ -36,6 +36,7 @@ if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localSto
   skyIcon.classList.remove('ion-ios-moon-outline');
   skyIcon.classList.add('ion-ios-sunny');
   themeButton.innerHTML = 'Day View';
+  localStorage.setItem('theme', 'night');
 }
 
 for (var i = 0; i < childExpandables.length; i++) {

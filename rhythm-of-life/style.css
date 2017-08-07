@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-  font-family: Wire One, sans-serif;
+  font-family: 'Wire One', sans-serif;
   text-align: center;
   user-select: none;
 }
@@ -29,7 +29,7 @@ button {
   border-radius: 5px;
   margin: 1%;
   background: #e8e8e8;
-  font-family: Wire One, sans-serif;
+  font-family: 'Wire One', sans-serif;
   font-size: 21px;
   color: black;
   text-shadow: 0 -0.1px 0 #000000;
@@ -106,6 +106,10 @@ h1 {
   display: none;
 }
 
+table {
+  width: 100%;
+}
+
 #game {
   position: relative;
   height: 240px;
@@ -133,17 +137,9 @@ h1 {
 }
 
 #start-title {
-  font-family: Tangerine, cursive;
+  font-family: 'Tangerine', cursive;
   font-size: 55px;
   line-height: 105px;
-}
-
-#pause-title {
-  margin-top: 10%;
-  font-family: Poiret One, cursive;
-  font-size: 55px;
-  font-weight: bold;
-  line-height: 50px;
 }
 
 #pause-screen, #game-over-screen {
@@ -152,6 +148,14 @@ h1 {
   flex-direction: column;
   align-items: center;
   opacity: 0.85;
+}
+
+#pause-title {
+  margin-top: 10%;
+  font-family: 'Poiret One', cursive;
+  font-size: 55px;
+  font-weight: bold;
+  line-height: 50px;
 }
 
 #information-screen {
@@ -221,7 +225,7 @@ h1 {
 #game-over-title {
   margin-top: 6%;
   background-color: rgba(0, 0, 0, 0);
-  font-family: Ribeye, cursive;
+  font-family: 'Ribeye', cursive;
   font-size: 55px;
   color: red;
   line-height: 45px;
@@ -230,7 +234,7 @@ h1 {
 input {
   width: 75%;
   margin: 2%;
-  font-family: Wire One, sans-serif;
+  font-family: 'Wire One', sans-serif;
   font-size: 24px;
 }
 
@@ -244,6 +248,11 @@ input {
   margin-right: 0.5%;
   top: 0px;
   right: 0px;
+  opacity: 0.7;
+}
+
+#homepage:hover {
+  opacity: 1;
 }
 
 /* Galaxy S5 */
@@ -481,20 +490,17 @@ input {
     opacity: 1;
   }
 
+  #stressboard, #ranges {
+    margin-bottom: 2.5px;
+  }
+
   .side-table-title {
     font-size: 30px;
     font-weight: bold;
     line-height: 45px;
   }
 
-  th {
-    width: 50%;
-    font-size: 28px;
-    text-decoration: underline;
-    line-height: 45px;
-  }
-
-  td, tr {
+  tr, td {
     font-size: 28px;
     font-weight: bold;
   }
@@ -502,10 +508,6 @@ input {
   .stressor, .reliever {
     height: 53.75px;
     width: 53.75px;
-  }
-
-  #stressboard, #ranges {
-    margin-bottom: 2.5px;
   }
 
   #reliefboard, #leaderboard {
@@ -568,6 +570,13 @@ input {
     margin-top: 40%;
   }
 
+  th {
+    width: 50%;
+    font-size: 28px;
+    text-decoration: underline;
+    line-height: 45px;
+  }
+
   #ranges td {
     font-size: 32px;
     line-height: 40px;
@@ -612,12 +621,7 @@ input {
     font-size: 35px;
   }
 
-  th {
-    font-size: 32px;
-    line-height: 55px;
-  }
-
-  td, tr {
+  tr, td {
     font-size: 32px;
   }
 
@@ -645,6 +649,11 @@ input {
 
   #relief-description {
     margin-top: 20%;
+  }
+
+  th {
+    font-size: 32px;
+    line-height: 55px;
   }
 
   #leaderboard td {
@@ -694,12 +703,7 @@ input {
     line-height: 50px;
   }
 
-  th {
-    font-size: 40px;
-    line-height: 90px;
-  }
-
-  td, tr {
+  tr, td {
     font-size: 38px;
   }
 
@@ -755,6 +759,11 @@ input {
     font-size: 45px;
   }
 
+  th {
+    font-size: 40px;
+    line-height: 90px;
+  }
+
   #ranges td {
     font-size: 38px;
     line-height: 60px;
@@ -791,6 +800,10 @@ input {
     height: 415px;
   }
 
+  #stressboard, #ranges {
+    margin-bottom: 5px;
+  }
+
   .side-table-title {
     font-size: 45px;
     line-height: 48px;
@@ -799,10 +812,6 @@ input {
   .stressor, .reliever {
     height: 83px;
     width: 76px;
-  }
-
-  #stressboard, #ranges {
-    margin-bottom: 5px;
   }
 
   #reliefboard, #leaderboard {

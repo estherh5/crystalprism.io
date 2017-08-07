@@ -1,4 +1,4 @@
-// Game settings
+// Define game settings
 var sizeX = document.getElementById('game').offsetWidth;
 var sizeY = document.getElementById('game').offsetHeight;
 var scale = 60;
@@ -20,7 +20,7 @@ var sound = new Howl({
   loop: true,
 });
 
-// Define pieces
+// Define game pieces
 var canvas = Snap('#canvas');
 var heart = Snap('#heart').attr({fill: '#56d056', 'x': 0, 'y': 0, width: scale, height: scale});
 canvas.append(heart);
@@ -166,6 +166,31 @@ setInterval(getMinutes, 60000);
 setInterval(getSeconds, 1000);
 
 // Define game functions
+function getLeaders() {
+  fetch('http://localhost:5000/api/rhythm-of-life').then(function (response) {
+    response.json().then(function (leadersList) {
+      for (var i = 0; i < leadersList.length; i++) {
+        var tableContainerOne = document.createElement('td');
+        var tableContainerTwo = document.createElement('td');
+        leaders[i].innerHTML = '';
+        leaders[i].appendChild(tableContainerOne);
+        tableContainerOne.appendChild(document.createTextNode(leadersList[i].lifespan));
+        leaders[i].appendChild(tableContainerTwo);
+        tableContainerTwo.appendChild(document.createTextNode(leadersList[i].name));
+      }
+      for (var i = 0; i < leadersList.length; i++) {
+        var tableContainerOne = document.createElement('td');
+        var tableContainerTwo = document.createElement('td');
+        leadersMobile[i].innerHTML = '';
+        leadersMobile[i].appendChild(tableContainerOne);
+        tableContainerOne.appendChild(document.createTextNode(leadersList[i].lifespan));
+        leadersMobile[i].appendChild(tableContainerTwo);
+        tableContainerTwo.appendChild(document.createTextNode(leadersList[i].name));
+      }
+    })
+  })
+}
+
 function place(objs) {
   randNum = Math.floor(Math.random() * 4);
   if (objs == relievers) {
@@ -461,49 +486,11 @@ function updateLeaderboard() {
     lifespan: ('0' + hours).slice(-2) + ':' + ('0' + minutes).slice(-2) + ':' + ('0' + seconds).slice(-2),
     name: name,
   };
-  scoresNames.push(scoreName);
-  scoresNames.sort(function (a, b) {
-    return b.score - a.score;
-  });
-  if (scoresNames.length <= 5 && mobile == '') {
-    for (var i = 0; i < scoresNames.length; i++) {
-      var tableContainerOne = document.createElement('td');
-      var tableContainerTwo = document.createElement('td');
-      leaders[i].innerHTML = '';
-      leaders[i].appendChild(tableContainerOne);
-      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
-      leaders[i].appendChild(tableContainerTwo);
-      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-    }
-  } else if (scoresNames.length <= 5 && mobile == 'Yes') {
-    for (var i = 0; i < scoresNames.length; i++) {
-      var tableContainerOne = document.createElement('td');
-      var tableContainerTwo = document.createElement('td');
-      leadersMobile[i].innerHTML = '';
-      leadersMobile[i].appendChild(tableContainerOne);
-      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
-      leadersMobile[i].appendChild(tableContainerTwo);
-      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-    }
-  } else if (mobile == '') {
-    for (var i = 0; i <= 4; i++) {
-      var tableContainerOne = document.createElement('td');
-      var tableContainerTwo = document.createElement('td');
-      leaders[i].innerHTML = '';
-      leaders[i].appendChild(tableContainerOne);
-      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
-      leaders[i].appendChild(tableContainerTwo);
-      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-    }
-  } else if (mobile != 'Yes') {
-    for (var i = 0; i <= 4; i++) {
-      var tableContainerOne = document.createElement('td');
-      var tableContainerTwo = document.createElement('td');
-      leadersMobile[i].innerHTML = '';
-      leadersMobile[i].appendChild(tableContainerOne);
-      tableContainerOne.appendChild(document.createTextNode(scoresNames[i].lifespan));
-      leadersMobile[i].appendChild(tableContainerTwo);
-      tableContainerTwo.appendChild(document.createTextNode(scoresNames[i].name));
-    }
-  }
+  data = JSON.stringify(scoreName);
+  fetch('http://localhost:5000/api/rhythm-of-life', {
+    headers: {'Content-Type': 'application/json'},
+    method: 'POST',
+    body: data,
+  })
+  setTimeout(getLeaders, 500);
 }

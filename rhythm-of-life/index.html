@@ -5,10 +5,10 @@
     <meta name="description" content="Educational game about blood pressure stressors and relievers">
     <meta name="keywords" content="heart,blood pressure,game,rhythm,life">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="style.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Londrina+Outline|Poiret+One|Ribeye|Tangerine|Wire+One" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
-    <svg id="heart" height="0" width="0" viewBox="0 0 438 438" style="enable-background:new 0 0 492.719 492.719" xml:space="preserve">
+    <svg id="heart" height="0" width="0" viewBox="0 0 438 438" xml:space="preserve">
       <g transform="translate(0.000000,438.000000) scale(0.100000,-0.100000)" stroke="none">
         <path d="M895 4345 c-316 -70 -580 -288 -744 -613 -207 -412 -192 -937 39
         -1339 59 -102 99 -153 360 -459 113 -132 329 -386 480 -564 151 -178 370 -435
@@ -31,7 +31,7 @@
     </script>
     <title>Rhythm of Life</title>
   </head>
-  <body>
+  <body onload="getLeaders();">
     <div id="warning">Please switch to a larger window or to landscape mode.</div>
     <div id="control-buttons">
       <button id="pause">Pause</button>
@@ -50,7 +50,7 @@
     <div class="container">
       <div id="left-panel">
         <div id="stressboard" class="side-board">
-          <table style="width:100%" class="side-table">
+          <table class="side-table">
             <thead>
               <caption class="side-table-title">Stressors</caption>
             </thead>
@@ -176,7 +176,7 @@
           </table>
         </div>
         <div id="reliefboard" class="side-board">
-          <table style="width:100%" class="side-table">
+          <table class="side-table">
             <thead>
               <caption class="side-table-title">Relievers</caption>
             </thead>
@@ -390,7 +390,7 @@
               </tr>
               <tr>
                 <td>
-                  <div id="smok-desc" class="description">
+                  <div id="smoke-desc" class="description">
                     Nicotine <a href="http://www.webmd.com/hypertension-high-blood-pressure/guide/smoking-kicking-habit#1" rel="noopener noreferrer" target="_blank">raises your blood pressure</a> and sets you up for a heart attack or stroke.
                   </div>
                 </td>
@@ -600,7 +600,7 @@
         </div>
         <div id="leader-screen" class="screen">
           <button id="leader-close" class="close">X</button>
-          <table style="width:100%">
+          <table>
             <thead>
               <caption id="leader-title">Leaderboard</caption>
               <tr>
@@ -621,13 +621,13 @@
           <text id="game-over-title">Game Over</text>
           <br>
           <text>Name:</text>
-          <input id="input" maxlength="10"></input>
+          <input id="input" maxlength="10">
           <button id="submit">Submit</button>
         </div>
       </div>
       <div id="right-panel">
         <div id="ranges" class="side-board">
-          <table style="width:100%" class="side-table">
+          <table class="side-table">
             <thead>
               <caption class="side-table-title">Blood Pressure Ranges</caption>
               <tr>
@@ -656,7 +656,7 @@
           </table>
         </div>
         <div id="leaderboard" class="side-board">
-          <table style="width:100%" class="side-table">
+          <table class="side-table">
             <thead>
               <caption class="side-table-title">Leaderboard</caption>
               <tr>
@@ -675,13 +675,13 @@
         </div>
       </div>
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.2/howler.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
-    <script src="main.js"></script>
     <div id="homepage">
       <a href="../index.html">
         <img src="../homepage.ico">
       </a>
     </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.0.2/howler.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>

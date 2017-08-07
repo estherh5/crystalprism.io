@@ -1,79 +1,90 @@
-var canvas = document.getElementById('images');
-var title = document.getElementById('title');
+// Define variables
+var gallery = document.getElementById('gallery');
+var galleryTitle = document.getElementById('gallery-title');
 var requestStart = 0;
 var requestEnd = 12;
-var titles = ['Click to leave your mark', 'The world is your canvas', 'Share your imagination with the world'];
+var hoverTitles = ['Click to leave your mark', 'The world is your canvas', 'Share your imagination with the world'];
+var server = '';
 
-title.onclick = sessionStorage.setItem('imageSrc', '');
+// Define events
+galleryTitle.onclick = sessionStorage.setItem('imageSrc', '');
 
-function setTitle() {
-  number = Math.floor(Math.random() * titles.length);
-  title.title = titles[number];
+window.onscroll = displayMoreImages;
+
+// Define functions
+function setHoverTitle() {
+  var randomNumber = Math.floor(Math.random() * hoverTitles.length);
+  galleryTitle.title = hoverTitles[randomNumber];
 }
 
 function getImages() {
-  return fetch('http://localhost:5000/api/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  if (window.location.hostname == 'crystalprism.io') {
+    server = 'http://13.58.175.191/api';
+  } else {
+    server = 'http://localhost:5000/api';
+  }
+  return fetch(server + '/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
     response.json().then(function (images) {
       if (images.length != 0) {
-        for (i = 0; i < images.length; i++) {
-          views = document.createElement('text');
-          views.id = images[i];
+        for (var i = 0; i < images.length; i++) {
+          var viewText = document.createElement('text');
+          viewText.id = images[i];
           getViews(images[i]);
-          imageDiv = document.createElement('div');
+          var imageDiv = document.createElement('div');
           imageDiv.className = 'image-div';
-          imageLink = document.createElement('a');
-          imageLink.href = "javascript:delay('drawingapp/index.html')";
+          var imageLink = document.createElement('a');
           imageLink.className = 'image-link';
-          imageName = document.createElement('div');
-          imageName.innerHTML = images[i].split(/`|.png/)[0];
+          imageLink.href = 'javascript:delay("drawingapp/index.html")';
+          var imageName = document.createElement('div');
           imageName.className = 'image-name';
-          image = document.createElement('img');
-          image.src = 'http://localhost:5000/api/drawing/' + images[i];
+          imageName.innerHTML = images[i].split(/`|.png/)[0];
+          var image = document.createElement('img');
           image.className = 'image';
-          image.onclick = setImageValues;
-          imageViews = document.createElement('div');
-          imageViews.innerHTML = 'Views: ';
+          image.src = server + '/drawing/' + images[i];
+          var imageViews = document.createElement('div');
           imageViews.className = 'image-views';
-          canvas.append(imageDiv);
+          imageViews.innerHTML = 'Views: ';
+          gallery.append(imageDiv);
           imageDiv.append(imageLink);
           imageLink.append(imageName);
           imageLink.append(image);
           imageDiv.append(imageViews);
-          imageViews.append(views);
+          imageViews.append(viewText);
+          imageDiv.onclick = setImageValues;
         }
       }
     })
   })
 }
 
-function getViews(name) {
-  return fetch('http://localhost:5000/api/drawinginfo/' + name.split('.png')[0]).then(function (response) {
-    response.json().then(function (info) {
-      document.getElementById(name).innerHTML = info;
+function getViews(imageFileName) {
+  return fetch(server + '/drawinginfo/' + imageFileName.split('.png')[0]).then(function (response) {
+    response.json().then(function (viewNumber) {
+      document.getElementById(imageFileName).innerHTML = viewNumber;
     })
   });
 }
 
 function delay(URL) {
-  setTimeout(function() {window.location = URL}, 800);
+  setTimeout(function () {window.location = URL}, 800);
 }
 
-function setImageValues(e) {
-  sessionStorage.setItem('imageSrc', e.target.src);
-  currentViews = document.getElementById(e.target.src.split('/drawing/')[1]).innerHTML;
-  data = {'views': (parseInt(currentViews) + 1).toString()};
-  data = JSON.stringify(data);
-  fetch('http://localhost:5000/api/drawinginfo/' + e.target.src.split('/drawing/')[1].split('.png')[0], {
+function setImageValues() {
+  sessionStorage.setItem('imageSrc', this.getElementsByTagName('img')[0].src);
+  currentViews = document.getElementById(this.getElementsByTagName('img')[0].src.split('/drawing/')[1]).innerHTML;
+  stringViews = {'views': (parseInt(currentViews) + 1).toString()};
+  stringViews = JSON.stringify(stringViews);
+  fetch(server + '/drawinginfo/' + this.getElementsByTagName('img')[0].src.split('/drawing/')[1].split('.png')[0], {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
-    body: data,
+    body: stringViews
   })
 }
 
-window.onscroll = function () {
+function displayMoreImages() {
   if ((document.body.scrollTop + document.body.clientHeight) >= document.body.scrollHeight - 10) {
     requestStart = requestEnd;
-    requestEnd = requestEnd + Math.floor(canvas.offsetWidth/240);
+    requestEnd = requestEnd + Math.floor(gallery.offsetWidth/240);
     setTimeout(getImages, 10);
   }
 }

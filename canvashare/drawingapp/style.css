@@ -6,23 +6,25 @@ html, body {
   user-select: none;
 }
 
+.hidden {
+  height: 0px;
+  width: 0px;
+  visibility: hidden;
+}
+
 #gallery {
   margin: 0.5%;
 }
 
 #gallery-link {
+  margin: 0px;
   font-family: 'League Script', cursive;
+  font-weight: normal;
   font-size: 2em;
 }
 
 #gallery-link:hover {
   font-weight: bold;
-}
-
-.hidden {
-  height: 0px;
-  width: 0px;
-  visibility: hidden;
 }
 
 #file-name {
@@ -98,6 +100,11 @@ a {
   position: fixed;
   bottom: 0px;
   right: 0px;
+  opacity: 0.7;
+}
+
+#homepage:hover {
+  opacity: 1;
 }
 
 @media only screen and (min-width: 768px) {

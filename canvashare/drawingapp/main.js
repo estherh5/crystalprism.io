@@ -1,3 +1,4 @@
+// Define variables
 var canvas;
 var context;
 var startingImage;
@@ -25,14 +26,15 @@ var XMLS;
 var brushCircle;
 var brushSVG;
 var filename;
+var server;
 var enteredName;
 var data;
 
-
+// Define functions
 function setStage() {
   canvas = document.getElementById('canvas');
   context = canvas.getContext('2d');
-  startingImage = new Image;
+  startingImage = new Image();
   startingImage.crossOrigin = 'Anonymous';
   startingImage.src = sessionStorage.getItem('imageSrc');
   setTimeout(function() {
@@ -159,10 +161,15 @@ function enterTitle(e) {
 }
 
 function postImage() {
+  if (window.location.hostname == 'crystalprism.io') {
+    server = 'http://13.58.175.191/api';
+  } else {
+    server = 'http://localhost:5000/api';
+  }
   while (filename.value == '[title]' || filename.value == '') {
     enteredName = prompt('Enter a title for your drawing.');
     if (enteredName == '') {
-      evaluateTitle;
+      enteredName = prompt('Enter a title for your drawing.');
     } else if (enteredName == null) {
       return;
     } else {
@@ -172,7 +179,7 @@ function postImage() {
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
     data = {'image': stageCanvas.toDataURL(), 'views': '0'};
     data = JSON.stringify(data);
-    fetch('http://localhost:5000/api/drawing/' + filename.value, {
+    fetch(server + '/drawing/' + filename.value, {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
@@ -187,7 +194,7 @@ function downloadImage(e) {
   while (filename.value == '[title]' || filename.value == '') {
     enteredName = prompt('Enter a title for your drawing.');
     if (enteredName == '') {
-      evaluateTitle;
+      enteredName = prompt('Enter a title for your drawing.');
     } else if (enteredName == null) {
       return;
     } else {

@@ -6,8 +6,14 @@
     <meta name="keywords" content="drawing,canvas,palette">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura" rel="stylesheet">
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
     <link href="style.css" rel="stylesheet">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+    <div class="hidden">
+      <canvas id="brush"></canvas>
+      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg" width="20" height="20" xml:space="preserve">
+        <circle id="circle" cx="10" cy="10" r="10">
+      </svg>
+    </div>
     <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
@@ -22,20 +28,16 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
-    <div class="hidden">
-      <canvas id="brush" width="20" height="20"></canvas>
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg" width="20" height="20" xml:space="preserve">
-        <circle id="circle" cx="10" cy="10" r="10">
-      </svg>
-    </div>
     <title>CanvaShare</title>
   </head>
   <body onload="setStage();">
     <div id="gallery">
-      <a href="../index.html" id="gallery-link">CanvaShare</a>
+      <a href="../index.html">
+        <h1 id="gallery-link">CanvaShare</h1>
+      </a>
     </div>
     <div id="input">
-      <input id="file-name" value="[title]"></input>
+      <input id="file-name" value="[title]">
     </div>
     <div>
       <canvas id="canvas" width="400" height="400"></canvas>

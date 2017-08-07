@@ -19,14 +19,16 @@
     </script>
     <title>Esther Hoffman</title>
   </head>
-  <body>
+  <body onload="getEntries();">
     <a id="homepage" href="index.html">
       <img id="diamond-small" class="hidden" src="images/homepage.png">
       <h1>Esther Hoffman</h1>
     </a>
     <div id="page-buttons" class="hidden">
-      <button id="projects-button" class="selected" data-page="projects-page" data-button="projects-button">Projects</button>
-      <button id="about-button" data-page="about-page" data-button="about-button">About</button>
+      <button id="projects-button" class="selected" data-page="projects-page" data-button="projects-button" data-color="#1ebfe8">Projects</button>
+      <button id="photos-button" data-page="photos-page" data-button="photos-button" data-color="#8551ff">Photos</button>
+      <button id="ideas-button" data-page="ideas-page" data-button="ideas-button" data-color="#d24cff">Ideas</button>
+      <button id="about-button" data-page="about-page" data-button="about-button" data-color="#7fd13b">About</button>
     </div>
     <br>
     <div id="container">
@@ -34,32 +36,32 @@
         <div id="starting-page" class="page">
           <div id="menu">
               <svg id="diamond-large" class="menu-shape" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" viewBox="5 15 90 70">
-                <g transform="translate(0,-952.36218)" fill="white">
-                  <path stroke="black" stroke-width="0.5" d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z" transform="translate(0,952.36218)"/>
+                <g fill="white">
+                  <path stroke="black" stroke-width="0.5" d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z"/>
                 </g>
               </svg>
             <svg id="circles">
               <svg id="purple" class="menu-shape" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 356 356" xml:space="preserve">
                 <g>
-                  <circle cx="96px" cy="153px" r="50px" fill="#8551ff"/>
-                  <text id="ideas-circle" class="page-title" data-page="ideas-page" data-button="ideas-button" x="96px" y="153px">Ideas</text>
+                  <circle cx="96px" cy="153px" r="50px" fill="#8551ff"></circle>
+                  <text id="photos-circle" class="page-title" data-page="photos-page" data-button="photos-button" x="96px" y="153px">Photos</text>
                 </g>
               </svg>
               <svg id="green" class="menu-shape" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 445 445" xml:space="preserve">
                 <g>
-                  <circle cx="58px" cy="257px" r="50px" fill="#7fd13b"/>
+                  <circle cx="58px" cy="257px" r="50px" fill="#7fd13b"></circle>
                   <text id="about-circle" class="page-title" data-page="about-page" data-button="about-button" x="58px" y="257px">About</text>
                 </g>
               </svg>
               <svg id="pink" class="menu-shape" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 198 198" xml:space="preserve">
                 <g>
-                  <circle cx="99px" cy="108px" r="50px" fill="#d24cff"/>
-                  <text id="contact-circle" class="page-title" data-page="contact-page" data-button="contact-button" x="99px" y="108px">Contact</text>
+                  <circle cx="99px" cy="108px" r="50px" fill="#d24cff"></circle>
+                  <text id="ideas-circle" class="page-title" data-page="ideas-page" data-button="ideas-button" x="99px" y="108px">Ideas</text>
                 </g>
               </svg>
               <svg id="teal" class="menu-shape" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" viewbox="0 0 297 297" xml:space="preserve">
                 <g>
-                  <circle cx="96px" cy="196px" r="50px" fill="#1ebfe8"/>
+                  <circle cx="96px" cy="196px" r="50px" fill="#1ebfe8"></circle>
                   <text id="projects-circle" class="page-title" data-page="projects-page" data-button="projects-button" x="96px" y="196px">Projects</text>
                 </g>
               </svg>
@@ -577,6 +579,11 @@
               </td>
             </tr>
           </table>
+        </div>
+        <div id="photos-page" class="page hidden">
+          Content here
+        </div>
+        <div id="ideas-page" class="page hidden">
         </div>
       </div>
     </div>

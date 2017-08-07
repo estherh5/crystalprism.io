@@ -3,8 +3,12 @@ var themeButton = document.getElementById('theme-button');
 var skyIcon = document.getElementById('sky-icon');
 var projectsCircle = document.getElementById('projects-circle');
 var aboutCircle = document.getElementById('about-circle');
+var photosCircle = document.getElementById('photos-circle');
+var ideasCircle = document.getElementById('ideas-circle');
 var projectsButton = document.getElementById('projects-button');
 var aboutButton = document.getElementById('about-button');
+var photosButton = document.getElementById('photos-button');
+var ideasButton = document.getElementById('ideas-button');
 var button = document.getElementById('projects-button');
 var page = document.getElementById('starting-page');
 var now = new Date().getHours();
@@ -16,8 +20,12 @@ var sections = document.getElementsByTagName('section');
 themeButton.onclick = changeTheme;
 projectsCircle.onclick = displayPage;
 aboutCircle.onclick = displayPage;
+photosCircle.onclick = displayPage;
+ideasCircle.onclick = displayPage;
 projectsButton.onclick = displayPage;
 aboutButton.onclick = displayPage;
+photosButton.onclick = displayPage;
+ideasButton.onclick = displayPage;
 
 if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localStorage.getItem('theme') != 'day' || now >= 20 && now <= 23 && localStorage.getItem('theme') != 'day') {
   document.body.classList.add('night-view');
@@ -74,10 +82,12 @@ function displayPage(e) {
     }
   }
   button.classList.remove('selected');
+  button.style.color = '';
   page = document.getElementById(e.target.dataset.page);
   page.classList.remove('hidden');
   button = document.getElementById(e.target.dataset.button);
   button.classList.add('selected');
+  button.style.color = button.dataset.color;
 }
 
 function expandSection() {

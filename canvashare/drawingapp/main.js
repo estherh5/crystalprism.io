@@ -36,7 +36,17 @@ function setStage() {
   context = canvas.getContext('2d');
   startingImage = new Image();
   startingImage.crossOrigin = 'Anonymous';
-  startingImage.src = sessionStorage.getItem('imageSrc');
+  filename = document.getElementById('file-name');
+  if (sessionStorage.getItem('imageSrc') != '') {
+    startingImage.src = sessionStorage.getItem('imageSrc');
+    filename.value = '[title]';
+  } else if (sessionStorage.getItem('imageSrc') == '' && localStorage.getItem('imageSrc') != '') {
+    startingImage.src = localStorage.getItem('imageSrc');
+    filename.value = localStorage.getItem('imageName');
+  } else {
+    startingImage.src = '';
+    filename.value = '[title]';
+  }
   setTimeout(function() {
     context.drawImage(startingImage, 0, 0);
   }, 10);
@@ -78,11 +88,11 @@ function setStage() {
   ctx = brushCanvas.getContext('2d');
   XMLS = new XMLSerializer();
   updateBrush();
-  filename = document.getElementById('file-name');
   window.onclick = enterTitle;
   document.getElementById('clear').onclick = clearImage;
   document.getElementById('post').onclick = postImage;
   document.getElementById('download').onclick = downloadImage;
+  setInterval(saveData, 1000);
 }
 
 function whenMouseDown(event) {
@@ -210,4 +220,9 @@ function downloadImage(e) {
     e.target.href = stageCanvas.toDataURL();
     e.target.download = filename.value;
   }
+}
+
+function saveData() {
+  localStorage.setItem('imageSrc', stageCanvas.toDataURL());
+  localStorage.setItem('imageName', filename.value);
 }

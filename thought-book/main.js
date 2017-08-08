@@ -30,7 +30,7 @@ colorPicker.oninput = executeCommand;
 window.onclick = enterTitle;
 clear.onclick = clearEntry;
 submit.onclick = postEntry;
-goBack.onclick = seeOld;
+goBack.onclick = modifyLast;
 newPost.onclick = startNew;
 
 // Define functions
@@ -111,7 +111,7 @@ function postEntry() {
   }
 }
 
-function seeOld() {
+function modifyLast() {
   journal.classList.remove('entry-done-journal');
   setTimeout (function() {
     journal.style.justifyContent = 'flex-start';
@@ -126,6 +126,10 @@ function seeOld() {
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);
+  fetch(server + '/thoughts', {
+    headers: {'Content-Type': 'application/json'},
+    method: 'DELETE'
+  })
 }
 
 function startNew() {

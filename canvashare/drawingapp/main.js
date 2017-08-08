@@ -80,6 +80,7 @@ function setStage() {
   updateBrush();
   filename = document.getElementById('file-name');
   window.onclick = enterTitle;
+  document.getElementById('clear').onclick = clearImage;
   document.getElementById('post').onclick = postImage;
   document.getElementById('download').onclick = downloadImage;
 }
@@ -158,6 +159,10 @@ function enterTitle(e) {
       filename.value = '[title]';
     }
   }
+}
+
+function clearImage() {
+  stageCanvas.clear();
 }
 
 function postImage() {

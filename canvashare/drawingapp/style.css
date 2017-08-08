@@ -53,6 +53,10 @@ html, body {
   margin-bottom: 1%;
 }
 
+circle {
+  cursor: pointer;
+}
+
 .chosen {
   r: 4%;
   stroke: darkslategrey;
@@ -66,6 +70,7 @@ button {
   font-size: 2em;
   color: grey;
   line-height: 1em;
+  cursor: pointer;
 }
 
 button:focus {

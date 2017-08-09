@@ -1,6 +1,6 @@
 html, body {
   height: 100vh;
-  width: 98vw;
+  width: 100vw;
   padding: 0px;
   margin: 0px;
   top: 0px;
@@ -456,6 +456,11 @@ section {
   margin-bottom: 30px;
   margin-left: 2vw;
   user-select: text;
+}
+
+#error-message {
+  font-size: 25px;
+  color: #d24cff;
 }
 
 #ideas-page tr, #ideas-page td {

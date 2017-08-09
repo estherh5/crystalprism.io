@@ -23,6 +23,7 @@ if (window.location.hostname == 'crystalprism.io') {
 var requestStart = 0;
 var requestEnd = 10;
 var ideasPage = document.getElementById('ideas-page');
+var errorMessage = '';
 
 // Define events
 themeButton.onclick = changeTheme;
@@ -53,7 +54,14 @@ for (var i = 0; i < parentExpandables.length; i++) {
 
 // Define functions
 function getEntries() {
-  return fetch(server + '/thought-book?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  return fetch(server + '/thought-book?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+    if (errorMessage == '') {
+      errorMessage = document.createElement('text');
+      errorMessage.id = 'error-message';
+      errorMessage.innerHTML = 'There was an error loading the Ideas page. Please refresh.';
+      ideasPage.append(errorMessage);
+    }
+  }).then(function (response) {
     response.json().then(function (entries) {
       if (entries.length != 0) {
         for (var i = 0; i < entries.length; i++) {

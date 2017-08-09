@@ -6,6 +6,7 @@
     <meta name="keywords" content="gallery,drawing,canvas">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura" rel="stylesheet">
+    <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
@@ -19,9 +20,15 @@
     <title>CanvaShare</title>
   </head>
   <body onload="setHoverTitle();getImages();">
-    <div>
-      <a href="drawingapp/index.html">
+    <div id="header">
+      <a id="gallery-link" href="index.html">
         <h1 id="gallery-title">CanvaShare</h1>
+      </a>
+      <a id="drawing-app" href="drawingapp/index.html">
+        <i id="draw" class="ionicons ion-paintbrush"></i>
+        <div id="instructions">
+          Click here to create a new image, or click an image below to make it your own.
+        </div>
       </a>
     </div>
     <div id="container">

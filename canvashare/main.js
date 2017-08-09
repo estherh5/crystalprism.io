@@ -1,9 +1,10 @@
 // Define variables
+var header = document.getElementById('header');
 var gallery = document.getElementById('gallery');
 var galleryTitle = document.getElementById('gallery-title');
 var requestStart = 0;
 var requestEnd = 12;
-var hoverTitles = ['Click to leave your mark', 'The world is your canvas', 'Share your imagination with the world'];
+var hoverTitles = ['"The world is but a canvas to our imagination." -Henry David Thoreau', '"Life is a great big canvas; throw all the paint you can at it." -Danny Kaye', '"A great artist can paint a great picture on a small canvas." -Charles Dudley Warner', '"I put on the canvas whatever comes into my mind." -Frida Kahlo', '"An empty canvas is a living wonder... far lovelier than certain pictures." -Wassily Kandinsky', '"I never know what I\'m going to put on the canvas. The canvas paints itself. I\'m just the middleman." -Peter Max', '"Cover the canvas at the first go, then work at it until you see nothing more to add." -Camille Pissarro', '"All I try to do is put as many colors as I can on the canvas every night." -Leslie Odom, Jr.', '"I was blown away by being able to color. Then I started to draw... bringing a blank white canvas to life was fascinating." James De La Vega'];
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -12,6 +13,15 @@ if (window.location.hostname == 'crystalprism.io') {
 var errorMessage = '';
 
 // Define events
+// Define variables
+window.addEventListener('scroll', function () {
+  if (window.pageYOffset > 100) {
+    header.classList.add('shrink');
+  } else if (header.classList.contains('shrink')) {
+    header.classList.remove('shrink');
+  }
+})
+
 galleryTitle.onclick = sessionStorage.setItem('imageSrc', '');
 
 window.onscroll = displayMoreImages;

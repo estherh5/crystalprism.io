@@ -2,6 +2,7 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0px;
+  font-family: 'Chathura', sans-serif;
   user-select: none;
 }
 
@@ -14,22 +15,105 @@ a {
   text-decoration: none;
 }
 
+#header {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ffffff;
+  opacity: 0.7;
+  z-index: 1;
+}
+
+#header:hover {
+  opacity: 1;
+}
+
 #gallery-title {
   margin: 0px;
+  margin-top: 10px;
   font-family: 'League Script', cursive;
   font-size: 3em;
   font-weight: normal;
-  line-height: 1.5em;
+  line-height: 1;
+  opacity: 0.7;
+  transition: all 0.3s;
 }
 
 #gallery-title:hover {
   font-weight: bold;
+  transition: all 0.3s;
+}
+
+.shrink #gallery-title {
+  font-size: 2em;
+  transition: all 0.3s;
+}
+
+.shrink:hover #gallery-title {
+  font-size: 6em;
+  transition: all 0.3s;
+}
+
+#drawing-app {
+  display: flex;
+  flex-direction: column;
+}
+
+#draw {
+  font-size: 4em;
+  color: #d6d6d6;
+  transition: all 0.3s;
+}
+
+#drawing-app:hover #draw {
+  color: #000000;
+  transition: all 0.3s;
+}
+
+.shrink #draw {
+  font-size: 2em;
+  transition: all 0.3s;
+}
+
+.shrink:hover #draw {
+  font-size: 4em;
+  transition: all 0.3s;
+}
+
+#instructions {
+  padding-left: 5px;
+  padding-right: 5px;
+  font-size: 1.7em;
+  font-style: italic;
+  line-height: 1;
+  opacity: 0.5;
+  transition: all 0.3s ease-out;
+}
+
+#drawing-app:hover #instructions {
+  opacity: 1;
+  transition: all 0.3s;
+}
+
+.shrink #instructions {
+  font-size: 1em;
+  transition: all 0.3s;
+}
+
+.shrink:hover #instructions {
+  font-size: 1.7em;
+  transition: all 0.3s;
 }
 
 #container {
   position: absolute;
   height: 100%;
   width: 100%;
+  margin-top: 140px;
   display: flex;
   flex-flow: row wrap;
   align-items: flex-start;
@@ -45,7 +129,6 @@ a {
 
 #error-message {
   margin-top: 50px;
-  font-family: 'Chathura', sans-serif;
   font-size: 2.5em;
   font-style: italic;
   line-height: 1;
@@ -106,14 +189,15 @@ a {
   max-height: 300px;
   max-width: 240px;
   margin-bottom: 1%;
-  font-family: 'Chathura', sans-serif;
   font-size: 2em;
   line-height: 0.5em;
   opacity: 0.7;
+  transition: all 0.3s;
 }
 
 .image-div:hover {
   opacity: 1;
+  transition: all 0.3s;
 }
 
 .image {
@@ -134,10 +218,12 @@ a {
   bottom: 0px;
   right: 0px;
   opacity: 0.7;
+  transition: all 0.3s;
 }
 
 #homepage:hover {
   opacity: 1;
+  transition: all 0.3s;
 }
 
 @media only screen and (min-width: 400px) {
@@ -148,19 +234,23 @@ a {
   #gallery {
     max-width: 90%;
   }
-
-  .image-views {
-    color: transparent;
-  }
-
-  .image-div:hover > .image-views {
-    color: black;
-  }
 }
 
 @media only screen and (min-width: 768px) {
+  #header {
+    opacity: 0.5;
+  }
+
   #gallery-title {
     font-size: 6em;
+  }
+
+  #instructions {
+    opacity: 0;
+  }
+
+  #container {
+    margin-top: 170px;
   }
 
   #gallery {
@@ -169,5 +259,13 @@ a {
 
   #error-message {
     font-size: 3.3em;
+  }
+
+  .image-views {
+    color: transparent;
+  }
+
+  .image-div:hover > .image-views {
+    color: black;
   }
 }

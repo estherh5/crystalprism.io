@@ -19,6 +19,11 @@ var sound = new Howl({
   src: ['sounds/heartbeat.mp3'],
   loop: true,
 });
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
 
 // Define game pieces
 var canvas = Snap('#canvas');
@@ -167,7 +172,7 @@ setInterval(getSeconds, 1000);
 
 // Define game functions
 function getLeaders() {
-  fetch('http://localhost:5000/api/rhythm-of-life').then(function (response) {
+  fetch(server + '/rhythm-of-life').then(function (response) {
     response.json().then(function (leadersList) {
       for (var i = 0; i < leadersList.length; i++) {
         var tableContainerOne = document.createElement('td');
@@ -487,7 +492,7 @@ function updateLeaderboard() {
     name: name,
   };
   data = JSON.stringify(scoreName);
-  fetch('http://localhost:5000/api/rhythm-of-life', {
+  fetch(server + '/rhythm-of-life', {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,

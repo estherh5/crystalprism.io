@@ -9,6 +9,7 @@ if (window.location.hostname == 'crystalprism.io') {
 } else {
   var server = 'http://localhost:5000/api';
 }
+var errorMessage = '';
 
 // Define events
 galleryTitle.onclick = sessionStorage.setItem('imageSrc', '');
@@ -22,7 +23,14 @@ function setHoverTitle() {
 }
 
 function getImages() {
-  return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+    if (errorMessage == '') {
+      errorMessage = document.createElement('text');
+      errorMessage.id = 'error-message';
+      errorMessage.innerHTML = 'There was an error loading the CanvaShare gallery. Please refresh the page.';
+      gallery.append(errorMessage);
+    }
+  }).then(function (response) {
     response.json().then(function (images) {
       if (images.length != 0) {
         for (var i = 0; i < images.length; i++) {
@@ -70,10 +78,10 @@ function delay(URL) {
 
 function setImageValues() {
   sessionStorage.setItem('imageSrc', this.getElementsByTagName('img')[0].src);
-  currentViews = document.getElementById(this.getElementsByTagName('img')[0].src.split('/drawing/')[1]).innerHTML;
+  currentViews = this.getElementsByTagName('text')[0].innerHTML;
   stringViews = {'views': (parseInt(currentViews) + 1).toString()};
   stringViews = JSON.stringify(stringViews);
-  fetch(server + '/canvashare/drawinginfo/' + this.getElementsByTagName('img')[0].src.split('/drawing/')[1].split('.png')[0], {
+  fetch(server + '/canvashare/drawinginfo/' + this.getElementsByTagName('img')[0].src.split('/canvashare/drawing/')[1].split('.png')[0], {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: stringViews

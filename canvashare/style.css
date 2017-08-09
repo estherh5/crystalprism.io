@@ -43,11 +43,69 @@ a {
   justify-content: center;
 }
 
+#error-message {
+  margin-top: 50px;
+  font-family: 'Chathura', sans-serif;
+  font-size: 2.5em;
+  font-style: italic;
+  line-height: 1;
+  animation-name: color;
+  animation-duration: 10s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes color {
+  0% {
+    color: #ff0000;
+  }
+
+  10% {
+    color: #ffb100;
+  }
+
+  20% {
+    color: #ffe000;
+  }
+
+  30% {
+    color: #62ff00;
+  }
+
+  40% {
+    color: #00ffad;
+  }
+
+  50% {
+    color: #00e7ff;
+  }
+
+  60% {
+    color: #0066ff;
+  }
+
+  70% {
+    color: #2700ff;
+  }
+
+  80% {
+    color: #b400ff;
+  }
+
+  90% {
+    color: #ff00bc;
+  }
+
+  100% {
+    color: #ff0000;
+  }
+}
+
 .image-div {
   position: relative;
   max-height: 300px;
   max-width: 240px;
-  margin-bottom: 5%;
+  margin-bottom: 1%;
   font-family: 'Chathura', sans-serif;
   font-size: 2em;
   line-height: 0.5em;
@@ -109,7 +167,7 @@ a {
     max-width: 85%;
   }
 
-  .image-div {
-    margin-bottom: 2%;
+  #error-message {
+    font-size: 3.3em;
   }
 }

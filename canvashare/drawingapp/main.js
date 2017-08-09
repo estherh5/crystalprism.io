@@ -198,10 +198,17 @@ function postImage() {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
+    }).catch(function (error) {
+      window.alert('Your post did not go through. Please try again soon.');
+    }).then(function (response) {
+      if (response.ok) {
+        setTimeout(function () {
+          localStorage.setItem('imageSrc', '');
+          localStorage.setItem('imageName', '');
+          window.location.href = '../index.html'
+        }, 700);
+      }
     })
-    setTimeout(function () {
-      window.location.href = '../index.html'
-    }, 700);
   }
 }
 

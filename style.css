@@ -471,7 +471,7 @@ section {
 }
 
 .entry-name {
-  width: 80%;
+  width: 79%;
   border-top-left-radius: 10px;
   font-family: 'Shrikhand', cursive;
   font-size: 20px;
@@ -481,7 +481,7 @@ section {
 }
 
 .entry-date {
-  width: 10%;
+  width: 22%;
   border-top-right-radius: 10px;
   vertical-align: bottom;
   font-family: 'Scope One', serif;
@@ -702,6 +702,7 @@ section {
   }
 
   .entry-date {
+    width: 16%;
     font-size: 20px;
   }
 

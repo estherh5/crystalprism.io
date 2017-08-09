@@ -15,7 +15,11 @@ var now = new Date().getHours();
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
-var server = '';
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
 var requestStart = 0;
 var requestEnd = 10;
 var ideasPage = document.getElementById('ideas-page');
@@ -49,12 +53,7 @@ for (var i = 0; i < parentExpandables.length; i++) {
 
 // Define functions
 function getEntries() {
-  if (window.location.hostname == 'crystalprism.io') {
-    server = 'http://13.58.175.191/api';
-  } else {
-    server = 'http://localhost:5000/api';
-  }
-  return fetch(server + '/thoughts?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  return fetch(server + '/thought-book?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
     response.json().then(function (entries) {
       if (entries.length != 0) {
         for (var i = 0; i < entries.length; i++) {
@@ -67,7 +66,7 @@ function getEntries() {
           entryName.innerHTML = entries[i].name;
           var entryDate = document.createElement('td');
           entryDate.classList.add('entry-date');
-          entryDate.innerHTML = entries[i].date;
+          entryDate.innerHTML = entries[i].month + '/' + entries[i].day + '/' + entries[i].year + ', ' + entries[i].hour + ':' + ('0' + entries[i].minute).slice(-2);
           var contentRow = document.createElement('tr');
           var entryContentArea = document.createElement('td');
           entryContentArea.classList.add('entry-content-area');

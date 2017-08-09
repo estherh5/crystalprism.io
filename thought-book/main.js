@@ -20,6 +20,9 @@ if (window.location.hostname == 'crystalprism.io') {
 setInterval(saveData, 1000);
 
 if (localStorage.getItem('entryName') != '') {
+  if (localStorage.getItem('entryName') == 'Thank you for your post') {
+    localStorage.setItem('entryName', '[title]');
+  }
   entryName.value = localStorage.getItem('entryName');
 }
 
@@ -93,25 +96,32 @@ function postEntry() {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
+    }).catch(function (error) {
+      window.alert('Your post did go through. Please try again soon.');
+    }).then(function (response) {
+      if (response.ok) {
+        journal.classList.add('entry-done-journal');
+        formatTools.classList.add('entry-done-content');
+        entry.classList.add('entry-done-content');
+        clearSubmit.classList.add('entry-done-content');
+        goBack.classList.add('entry-done-buttons');
+        newPost.classList.add('entry-done-buttons');
+        setTimeout (function() {
+          journal.style.justifyContent = 'center';
+          formatTools.style.display = 'none';
+          entry.style.display = 'none';
+          clearSubmit.style.display = 'none';
+          goBack.style.display = 'initial';
+          newPost.style.display = 'initial';
+        }, 200);
+        sessionStorage.setItem('entryName', entryName.value);
+        sessionStorage.setItem('entry', entry.innerHTML);
+        entryName.value = 'Thank you for your post';
+        entryName.disabled = true;
+        entryName.style.userSelect = 'none';
+        entry.innerHTML = '';
+      }
     })
-    journal.classList.add('entry-done-journal');
-    formatTools.classList.add('entry-done-content');
-    entry.classList.add('entry-done-content');
-    clearSubmit.classList.add('entry-done-content');
-    goBack.classList.add('entry-done-buttons');
-    newPost.classList.add('entry-done-buttons');
-    setTimeout (function() {
-      journal.style.justifyContent = 'center';
-      formatTools.style.display = 'none';
-      entry.style.display = 'none';
-      clearSubmit.style.display = 'none';
-      goBack.style.display = 'initial';
-      newPost.style.display = 'initial';
-    }, 200);
-    sessionStorage.setItem('entryName', entryName.value);
-    sessionStorage.setItem('entry', entry.innerHTML);
-    entryName.value = '[title]';
-    entry.innerHTML = '';
   }
 }
 
@@ -130,6 +140,8 @@ function modifyLast() {
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);
+  entryName.disabled = false;
+  entryName.style.userSelect = 'text';
   entryName.value = sessionStorage.getItem('entryName');
   entry.innerHTML = sessionStorage.getItem('entry');
   fetch(server + '/thought-book', {
@@ -140,6 +152,9 @@ function modifyLast() {
 
 function startNew() {
   journal.classList.remove('entry-done-journal');
+  entryName.disabled = false;
+  entryName.style.userSelect = 'text';
+  entryName.value = '[title]';
   setTimeout (function() {
     journal.style.justifyContent = 'flex-start';
     formatTools.style.display = 'flex';

@@ -10,6 +10,11 @@ var journal = document.getElementById('journal');
 var clearSubmit = document.getElementById('clear-submit');
 var goBack = document.getElementById('go-back');
 var newPost = document.getElementById('new-post');
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
 
 // Define events
 setInterval(saveData, 1000);
@@ -71,11 +76,6 @@ function clearEntry() {
 
 function postEntry() {
   var now = new Date();
-  if (window.location.hostname == 'crystalprism.io') {
-    server = 'http://13.58.175.191/api';
-  } else {
-    server = 'http://localhost:5000/api';
-  }
   while (entryName.value == '[title]' || entryName.value == '') {
     enteredName = prompt('Specify a title for your entry.');
     if (enteredName == '') {
@@ -87,9 +87,9 @@ function postEntry() {
     }
   }
   if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
-    var data = {'name': entryName.value, 'date': now.getMonth() + 1 + '/' + now.getDate() + '/' + now.getFullYear(), 'time': now.getHours() + ':' + now.getMinutes(), 'content': entry.innerHTML};
+    var data = {'name': entryName.value, 'month': parseInt(now.getMonth() + 1), 'day': parseInt(now.getDate()), 'year': parseInt(now.getFullYear()), 'hour': parseInt(now.getHours()), 'minute': parseInt(now.getMinutes()), 'content': entry.innerHTML};
     data = JSON.stringify(data);
-    fetch(server + '/thoughts', {
+    fetch(server + '/thought-book', {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
@@ -108,6 +108,10 @@ function postEntry() {
       goBack.style.display = 'initial';
       newPost.style.display = 'initial';
     }, 200);
+    sessionStorage.setItem('entryName', entryName.value);
+    sessionStorage.setItem('entry', entry.innerHTML);
+    entryName.value = '[title]';
+    entry.innerHTML = '';
   }
 }
 
@@ -126,7 +130,9 @@ function modifyLast() {
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);
-  fetch(server + '/thoughts', {
+  entryName.value = sessionStorage.getItem('entryName');
+  entry.innerHTML = sessionStorage.getItem('entry');
+  fetch(server + '/thought-book', {
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE'
   })
@@ -134,8 +140,6 @@ function modifyLast() {
 
 function startNew() {
   journal.classList.remove('entry-done-journal');
-  entryName.value = '[title]';
-  entry.innerHTML = '';
   setTimeout (function() {
     journal.style.justifyContent = 'flex-start';
     formatTools.style.display = 'flex';

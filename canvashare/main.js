@@ -4,7 +4,11 @@ var galleryTitle = document.getElementById('gallery-title');
 var requestStart = 0;
 var requestEnd = 12;
 var hoverTitles = ['Click to leave your mark', 'The world is your canvas', 'Share your imagination with the world'];
-var server = '';
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
 
 // Define events
 galleryTitle.onclick = sessionStorage.setItem('imageSrc', '');
@@ -18,12 +22,7 @@ function setHoverTitle() {
 }
 
 function getImages() {
-  if (window.location.hostname == 'crystalprism.io') {
-    server = 'http://13.58.175.191/api';
-  } else {
-    server = 'http://localhost:5000/api';
-  }
-  return fetch(server + '/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
     response.json().then(function (images) {
       if (images.length != 0) {
         for (var i = 0; i < images.length; i++) {
@@ -40,7 +39,7 @@ function getImages() {
           imageName.innerHTML = images[i].split(/`|.png/)[0];
           var image = document.createElement('img');
           image.className = 'image';
-          image.src = server + '/drawing/' + images[i];
+          image.src = server + '/canvashare/drawing/' + images[i];
           var imageViews = document.createElement('div');
           imageViews.className = 'image-views';
           imageViews.innerHTML = 'Views: ';
@@ -58,7 +57,7 @@ function getImages() {
 }
 
 function getViews(imageFileName) {
-  return fetch(server + '/drawinginfo/' + imageFileName.split('.png')[0]).then(function (response) {
+  return fetch(server + '/canvashare/drawinginfo/' + imageFileName.split('.png')[0]).then(function (response) {
     response.json().then(function (viewNumber) {
       document.getElementById(imageFileName).innerHTML = viewNumber;
     })
@@ -74,7 +73,7 @@ function setImageValues() {
   currentViews = document.getElementById(this.getElementsByTagName('img')[0].src.split('/drawing/')[1]).innerHTML;
   stringViews = {'views': (parseInt(currentViews) + 1).toString()};
   stringViews = JSON.stringify(stringViews);
-  fetch(server + '/drawinginfo/' + this.getElementsByTagName('img')[0].src.split('/drawing/')[1].split('.png')[0], {
+  fetch(server + '/canvashare/drawinginfo/' + this.getElementsByTagName('img')[0].src.split('/drawing/')[1].split('.png')[0], {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: stringViews

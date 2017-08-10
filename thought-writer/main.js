@@ -92,7 +92,7 @@ function postEntry() {
   if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
     var data = {'name': entryName.value, 'month': parseInt(now.getMonth() + 1), 'day': parseInt(now.getDate()), 'year': parseInt(now.getFullYear()), 'hour': parseInt(now.getHours()), 'minute': parseInt(now.getMinutes()), 'content': entry.innerHTML};
     data = JSON.stringify(data);
-    fetch(server + '/thought-book', {
+    fetch(server + '/thought-writer', {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
@@ -144,7 +144,7 @@ function modifyLast() {
   entryName.style.userSelect = 'text';
   entryName.value = sessionStorage.getItem('entryName');
   entry.innerHTML = sessionStorage.getItem('entry');
-  fetch(server + '/thought-book', {
+  fetch(server + '/thought-writer', {
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE'
   })

@@ -192,7 +192,7 @@ function postImage() {
     }
   }
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
-    data = {'image': stageCanvas.toDataURL(), 'views': '0'};
+    data = {image: stageCanvas.toDataURL(), likes: '0', views: '0'};
     data = JSON.stringify(data);
     fetch(server + '/canvashare/drawing/' + filename.value, {
       headers: {'Content-Type': 'application/json'},

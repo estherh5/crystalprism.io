@@ -18,13 +18,13 @@
     </script>
     <title>Thought Writer</title>
   </head>
-  <body>
+  <body onload="getPosts();">
     <a href="index.html">
       <h1 id="title">Thought Writer</h1>
     </a>
     <div id="container">
       <input id="entry-name" value="[title]">
-      <div id="journal">
+      <div id="drawing-board">
         <div id="format-tools">
           <input id="color-picker" type="color" data-command="foreColor">
           <button data-command="removeFormat">
@@ -83,6 +83,19 @@
         </div>
         <button id="go-back" class="content-button">Modify Last Post</button>
         <button id="new-post" class="content-button">New Post</button>
+      </div>
+    </div>
+    <div id="cabinet">
+      <div id="cabinet-back">
+        <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
+      </div>
+      <div id="post-area">
+      </div>
+      <div id="cabinet-front">
+        <div id="handle">
+          My Posts
+        </div>
+        <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
       </div>
     </div>
     <div id="homepage">

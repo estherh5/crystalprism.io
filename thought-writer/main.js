@@ -1,4 +1,8 @@
 // Define variables
+var requestStart = 0;
+var requestEnd = 11;
+var moreExists = false;
+var postArea = document.getElementById('post-area');
 var entryName = document.getElementById('entry-name');
 var entry = document.getElementById('entry');
 var toolbarButtons = document.getElementById('format-tools').getElementsByTagName('button');
@@ -6,10 +10,16 @@ var colorPicker = document.getElementById('color-picker');
 var formatTools = document.getElementById('format-tools');
 var clear = document.getElementById('clear');
 var submit = document.getElementById('submit');
-var journal = document.getElementById('journal');
+var drawingBoard = document.getElementById('drawing-board');
 var clearSubmit = document.getElementById('clear-submit');
 var goBack = document.getElementById('go-back');
 var newPost = document.getElementById('new-post');
+var handle = document.getElementById('handle');
+var open = false;
+var cabinetFront = document.getElementById('cabinet-front');
+var cabinetBack = document.getElementById('cabinet-back')
+var leftArrow = document.getElementById('left-arrow');
+var rightArrow = document.getElementById('right-arrow');
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -30,6 +40,18 @@ if (localStorage.getItem('entry') != '') {
   entry.innerHTML = localStorage.getItem('entry');
 }
 
+if (localStorage.getItem('clearName') != '') {
+  clear.innerHTML = localStorage.getItem('clearName');
+}
+
+if (localStorage.getItem('submitName') != '') {
+  submit.innerHTML = localStorage.getItem('submitName');
+}
+
+if (localStorage.getItem('entryTimestamp') != '') {
+  entry.dataset.timestamp = localStorage.getItem('entryTimestamp');
+}
+
 for (var i = 0; i < toolbarButtons.length; i++) {
   toolbarButtons[i].addEventListener('click', executeCommand, false);
 }
@@ -37,14 +59,67 @@ for (var i = 0; i < toolbarButtons.length; i++) {
 colorPicker.oninput = executeCommand;
 window.onclick = enterTitle;
 clear.onclick = clearEntry;
-submit.onclick = postEntry;
+submit.onclick = submitEntry;
 goBack.onclick = modifyLast;
 newPost.onclick = startNew;
+handle.onclick = toggleCabinet;
+leftArrow.onclick = getMore;
+rightArrow.onclick = getMore;
 
 // Define functions
+function getPosts() {
+  return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+    response.json().then(function (posts) {
+      postArea.innerHTML = '';
+      if (posts.length != 0) {
+        if (posts.length > 10) {
+          moreExists = true;
+          loadNumber = 10;
+        } else {
+          moreExists = false;
+          loadNumber = posts.length;
+        }
+        for (var i = 0; i < loadNumber; i++) {
+          var post = document.createElement('div');
+          post.classList.add('post');
+          if (open) {
+            post.classList.add('post-display');
+          }
+          post.dataset.name = posts[i].name;
+          post.dataset.number = requestStart + i;
+          post.dataset.timestamp = posts[i].timestamp;
+          post.dataset.date = posts[i].date;
+          post.dataset.time = posts[i].time;
+          post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
+          var postEntry = document.createElement('div');
+          postEntry.classList.add('post-entry');
+          postEntry.innerHTML = posts[i].content;
+          postArea.appendChild(post);
+          post.appendChild(postEntry);
+          post.onclick = displayPost;
+        }
+      }
+    })
+  })
+}
+
+function displayPost() {
+  backToDrawingBoard();
+  entryName.value = this.dataset.name;
+  entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
+  entry.dataset.timestamp = this.dataset.timestamp;
+  entry.dataset.date = this.dataset.date;
+  entry.dataset.time = this.dataset.time;
+  clear.innerHTML = 'Close';
+  submit.innerHTML = 'Modify';
+}
+
 function saveData() {
   localStorage.setItem('entryName', entryName.value);
   localStorage.setItem('entry', entry.innerHTML);
+  localStorage.setItem('clearName', clear.innerHTML);
+  localStorage.setItem('submitName', submit.innerHTML);
+  localStorage.setItem('entryTimestamp', entry.dataset.timestamp);
 }
 
 function executeCommand() {
@@ -75,9 +150,12 @@ function enterTitle(e) {
 function clearEntry() {
   entryName.value = '[title]';
   entry.innerHTML = '';
+  clear.innerHTML = 'Clear';
+  submit.innerHTML = 'Submit';
+  delete entry.dataset.timestamp;
 }
 
-function postEntry() {
+function submitEntry() {
   var now = new Date();
   while (entryName.value == '[title]' || entryName.value == '') {
     enteredName = prompt('Specify a title for your entry.');
@@ -89,74 +167,87 @@ function postEntry() {
       entryName.value = enteredName;
     }
   }
-  if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
-    var data = {'name': entryName.value, 'month': parseInt(now.getMonth() + 1), 'day': parseInt(now.getDate()), 'year': parseInt(now.getFullYear()), 'hour': parseInt(now.getHours()), 'minute': parseInt(now.getMinutes()), 'content': entry.innerHTML};
-    data = JSON.stringify(data);
-    fetch(server + '/thought-writer', {
-      headers: {'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data,
-    }).catch(function (error) {
-      window.alert('Your post did go through. Please try again soon.');
-    }).then(function (response) {
-      if (response.ok) {
-        journal.classList.add('entry-done-journal');
-        formatTools.classList.add('entry-done-content');
-        entry.classList.add('entry-done-content');
-        clearSubmit.classList.add('entry-done-content');
-        goBack.classList.add('entry-done-buttons');
-        newPost.classList.add('entry-done-buttons');
-        setTimeout (function() {
-          journal.style.justifyContent = 'center';
-          formatTools.style.display = 'none';
-          entry.style.display = 'none';
-          clearSubmit.style.display = 'none';
-          goBack.style.display = 'initial';
-          newPost.style.display = 'initial';
-        }, 200);
-        sessionStorage.setItem('entryName', entryName.value);
-        sessionStorage.setItem('entry', entry.innerHTML);
-        entryName.value = 'Thank you for your post';
-        entryName.disabled = true;
-        entryName.style.userSelect = 'none';
-        entry.innerHTML = '';
+  if (this.innerHTML == 'Submit') {
+    if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
+      var timestamp = now.getTime();
+      entry.dataset.timestamp = timestamp;
+      var hour = parseInt(now.getHours());
+      var ampm = hour >= 12 ? ' PM' : ' AM';
+      var hour = hour % 12;
+      if (hour == 0) {
+        hour = 12;
       }
-    })
+      var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML};
+      data = JSON.stringify(data);
+    }
+  } else if (this.innerHTML == 'Modify') {
+    var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML};
+    data = JSON.stringify(data);
+  }
+  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+    headers: {'Content-Type': 'application/json'},
+    method: 'POST',
+    body: data,
+  }).catch(function (error) {
+    window.alert('Your post did not go through. Please try again soon.');
+  }).then(function (response) {
+    if (response.ok) {
+      if (open) {
+        toggleCabinet();
+      }
+      getPosts();
+      drawingBoard.classList.add('entry-done-board');
+      formatTools.classList.add('entry-done-content');
+      entry.classList.add('entry-done-content');
+      clearSubmit.classList.add('entry-done-content');
+      goBack.classList.add('entry-done-buttons');
+      newPost.classList.add('entry-done-buttons');
+      setTimeout (function() {
+        drawingBoard.style.justifyContent = 'center';
+        formatTools.style.display = 'none';
+        entry.style.display = 'none';
+        clearSubmit.style.display = 'none';
+        goBack.style.display = 'initial';
+        newPost.style.display = 'initial';
+      }, 200);
+      sessionStorage.setItem('entryName', entryName.value);
+      sessionStorage.setItem('entry', entry.innerHTML);
+      entryName.value = 'Thank you for your post';
+      entryName.disabled = true;
+      entryName.style.userSelect = 'none';
+      entry.innerHTML = '';
+    }
+  })
+  if (this.innerHTML == 'Modify') {
+    this.innerHTML = 'Submit';
+    clear.innerHTML = 'Clear';
   }
 }
 
 function modifyLast() {
-  journal.classList.remove('entry-done-journal');
-  setTimeout (function() {
-    journal.style.justifyContent = 'flex-start';
-    formatTools.style.display = 'flex';
-    entry.style.display = 'block';
-    clearSubmit.style.display = 'flex';
-    goBack.style.display = 'none';
-    newPost.style.display = 'none';
-    formatTools.classList.remove('entry-done-content');
-    entry.classList.remove('entry-done-content');
-    clearSubmit.classList.remove('entry-done-content');
-    goBack.classList.remove('entry-done-buttons');
-    newPost.classList.remove('entry-done-buttons');
-  }, 200);
-  entryName.disabled = false;
-  entryName.style.userSelect = 'text';
+  if (open) {
+    toggleCabinet();
+  }
+  getPosts();
+  backToDrawingBoard();
   entryName.value = sessionStorage.getItem('entryName');
   entry.innerHTML = sessionStorage.getItem('entry');
-  fetch(server + '/thought-writer', {
+  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE'
   })
 }
 
 function startNew() {
-  journal.classList.remove('entry-done-journal');
-  entryName.disabled = false;
-  entryName.style.userSelect = 'text';
   entryName.value = '[title]';
+  delete entry.dataset.timestamp;
+  backToDrawingBoard();
+}
+
+function backToDrawingBoard() {
+  drawingBoard.classList.remove('entry-done-board');
   setTimeout (function() {
-    journal.style.justifyContent = 'flex-start';
+    drawingBoard.style.justifyContent = 'flex-start';
     formatTools.style.display = 'flex';
     entry.style.display = 'block';
     clearSubmit.style.display = 'flex';
@@ -168,4 +259,61 @@ function startNew() {
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);
+  entryName.disabled = false;
+  entryName.style.userSelect = 'text';
+}
+
+function toggleCabinet() {
+  if (open) {
+    cabinetBack.classList.remove('cabinet-back-display');
+    cabinetFront.classList.remove('cabinet-front-display');
+    allPosts = document.getElementsByClassName('post');
+    for (var i = 0; i < allPosts.length; i++) {
+      allPosts[i].classList.remove('post-display');
+    }
+    leftArrow.classList.remove('next-display');
+    rightArrow.classList.remove('next-display');
+    open = false;
+  } else {
+    cabinetBack.classList.add('cabinet-back-display');
+    cabinetFront.classList.add('cabinet-front-display');
+    allPosts = document.getElementsByClassName('post');
+    for (var i = 0; i < allPosts.length; i++) {
+      allPosts[i].classList.add('post-display');
+    }
+    if (moreExists) {
+      rightArrow.classList.add('next-display');
+    }
+    if (postArea.children.length != 0) {
+      if (postArea.getElementsByClassName('post')[0].dataset.number != 0) {
+      leftArrow.classList.add('next-display');
+      }
+    }
+    open = true;
+  }
+}
+
+function getMore() {
+  if (window.getComputedStyle(this).getPropertyValue('opacity') != 0) {
+    if (this.id == 'left-arrow') {
+      requestStart = requestStart - 10;
+      requestEnd = requestEnd - 10;
+    } else if (this.id == 'right-arrow') {
+      requestStart = requestStart + 10;
+      requestEnd = requestEnd + 10;
+    }
+    getPosts();
+    setTimeout(function () {
+      if (postArea.getElementsByClassName('post')[0].dataset.number != 0) {
+        leftArrow.classList.add('next-display');
+      } else {
+        leftArrow.classList.remove('next-display');
+      }
+      if (moreExists) {
+        rightArrow.classList.add('next-display');
+      } else {
+        rightArrow.classList.remove('next-display');
+      }
+    }, 50);
+  }
 }

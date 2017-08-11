@@ -150,10 +150,14 @@ button:hover, a:hover {
   max-width: 100%;
 }
 
-#clear-submit {
+#action-buttons {
   height: 50px;
   display: flex;
   flex-direction: row;
+}
+
+#delete {
+  display: none;
 }
 
 .content-button {

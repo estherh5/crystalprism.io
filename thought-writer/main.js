@@ -10,8 +10,9 @@ var colorPicker = document.getElementById('color-picker');
 var formatTools = document.getElementById('format-tools');
 var clear = document.getElementById('clear');
 var submit = document.getElementById('submit');
+var remove = document.getElementById('delete');
 var drawingBoard = document.getElementById('drawing-board');
-var clearSubmit = document.getElementById('clear-submit');
+var actionButtons = document.getElementById('action-buttons');
 var goBack = document.getElementById('go-back');
 var newPost = document.getElementById('new-post');
 var handle = document.getElementById('handle');
@@ -60,6 +61,7 @@ colorPicker.oninput = executeCommand;
 window.onclick = enterTitle;
 clear.onclick = clearEntry;
 submit.onclick = submitEntry;
+remove.onclick = deleteEntry;
 goBack.onclick = modifyLast;
 newPost.onclick = startNew;
 handle.onclick = toggleCabinet;
@@ -112,6 +114,7 @@ function displayPost() {
   entry.dataset.time = this.dataset.time;
   clear.innerHTML = 'Close';
   submit.innerHTML = 'Modify';
+  remove.style.display = 'inline-block';
 }
 
 function saveData() {
@@ -152,6 +155,7 @@ function clearEntry() {
   entry.innerHTML = '';
   clear.innerHTML = 'Clear';
   submit.innerHTML = 'Submit';
+  remove.style.display = '';
   delete entry.dataset.timestamp;
 }
 
@@ -199,14 +203,14 @@ function submitEntry() {
       drawingBoard.classList.add('entry-done-board');
       formatTools.classList.add('entry-done-content');
       entry.classList.add('entry-done-content');
-      clearSubmit.classList.add('entry-done-content');
+      actionButtons.classList.add('entry-done-content');
       goBack.classList.add('entry-done-buttons');
       newPost.classList.add('entry-done-buttons');
       setTimeout (function() {
         drawingBoard.style.justifyContent = 'center';
         formatTools.style.display = 'none';
         entry.style.display = 'none';
-        clearSubmit.style.display = 'none';
+        actionButtons.style.display = 'none';
         goBack.style.display = 'initial';
         newPost.style.display = 'initial';
       }, 200);
@@ -221,10 +225,27 @@ function submitEntry() {
   if (this.innerHTML == 'Modify') {
     this.innerHTML = 'Submit';
     clear.innerHTML = 'Clear';
+    remove.style.display = '';
   }
 }
 
+function deleteEntry() {
+  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+    headers: {'Content-Type': 'application/json'},
+    method: 'DELETE'
+  })
+  if (open) {
+    toggleCabinet();
+  }
+  getPosts();
+  clearEntry();
+}
+
 function modifyLast() {
+  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+    headers: {'Content-Type': 'application/json'},
+    method: 'DELETE'
+  })
   if (open) {
     toggleCabinet();
   }
@@ -232,10 +253,6 @@ function modifyLast() {
   backToDrawingBoard();
   entryName.value = sessionStorage.getItem('entryName');
   entry.innerHTML = sessionStorage.getItem('entry');
-  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
-    headers: {'Content-Type': 'application/json'},
-    method: 'DELETE'
-  })
 }
 
 function startNew() {
@@ -250,12 +267,12 @@ function backToDrawingBoard() {
     drawingBoard.style.justifyContent = 'flex-start';
     formatTools.style.display = 'flex';
     entry.style.display = 'block';
-    clearSubmit.style.display = 'flex';
+    actionButtons.style.display = 'flex';
     goBack.style.display = 'none';
     newPost.style.display = 'none';
     formatTools.classList.remove('entry-done-content');
     entry.classList.remove('entry-done-content');
-    clearSubmit.classList.remove('entry-done-content');
+    actionButtons.classList.remove('entry-done-content');
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);

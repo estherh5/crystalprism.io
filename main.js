@@ -54,7 +54,7 @@ for (var i = 0; i < parentExpandables.length; i++) {
 
 // Define functions
 function getEntries() {
-  return fetch(server + '/thought-writer?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+  return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
@@ -74,7 +74,7 @@ function getEntries() {
           entryName.innerHTML = entries[i].name;
           var entryDate = document.createElement('td');
           entryDate.classList.add('entry-date');
-          entryDate.innerHTML = entries[i].month + '/' + entries[i].day + '/' + entries[i].year + ', ' + entries[i].hour + ':' + ('0' + entries[i].minute).slice(-2);
+          entryDate.innerHTML = entries[i].date + ', ' + entries[i].time;
           var contentRow = document.createElement('tr');
           var entryContentArea = document.createElement('td');
           entryContentArea.classList.add('entry-content-area');

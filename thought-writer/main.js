@@ -70,39 +70,43 @@ rightArrow.onclick = getMore;
 
 // Define functions
 function getPosts() {
-  return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
-    response.json().then(function (posts) {
-      postArea.innerHTML = '';
-      if (posts.length != 0) {
-        if (posts.length > 10) {
-          moreExists = true;
-          loadNumber = 10;
-        } else {
-          moreExists = false;
-          loadNumber = posts.length;
-        }
-        for (var i = 0; i < loadNumber; i++) {
-          var post = document.createElement('div');
-          post.classList.add('post');
-          if (open) {
-            post.classList.add('post-display');
+  if (localStorage.getItem('thoughtWriterID') != null) {
+    return fetch(server + '/thought-writer/entries/' + localStorage.getItem('thoughtWriterID') + '?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+      response.json().then(function (posts) {
+        postArea.innerHTML = '';
+        if (posts.length != 0) {
+          if (posts.length > 10) {
+            moreExists = true;
+            loadNumber = 10;
+          } else {
+            moreExists = false;
+            loadNumber = posts.length;
           }
-          post.dataset.name = posts[i].name;
-          post.dataset.number = requestStart + i;
-          post.dataset.timestamp = posts[i].timestamp;
-          post.dataset.date = posts[i].date;
-          post.dataset.time = posts[i].time;
-          post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
-          var postEntry = document.createElement('div');
-          postEntry.classList.add('post-entry');
-          postEntry.innerHTML = posts[i].content;
-          postArea.appendChild(post);
-          post.appendChild(postEntry);
-          post.onclick = displayPost;
+          for (var i = 0; i < loadNumber; i++) {
+            var post = document.createElement('div');
+            post.classList.add('post');
+            if (open) {
+              post.classList.add('post-display');
+            }
+            post.dataset.name = posts[i].name;
+            post.dataset.number = requestStart + i;
+            post.dataset.timestamp = posts[i].timestamp;
+            post.dataset.date = posts[i].date;
+            post.dataset.time = posts[i].time;
+            post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
+            var postEntry = document.createElement('div');
+            postEntry.classList.add('post-entry');
+            postEntry.innerHTML = posts[i].content;
+            postArea.appendChild(post);
+            post.appendChild(postEntry);
+            post.onclick = displayPost;
+          }
         }
-      }
+      })
     })
-  })
+  } else {
+    localStorage.setItem('thoughtWriterID', Math.random().toString(36).substr(2, 16));
+  }
 }
 
 function displayPost() {
@@ -188,7 +192,7 @@ function submitEntry() {
     var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML};
     data = JSON.stringify(data);
   }
-  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
@@ -230,7 +234,7 @@ function submitEntry() {
 }
 
 function deleteEntry() {
-  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE'
   })
@@ -242,7 +246,7 @@ function deleteEntry() {
 }
 
 function modifyLast() {
-  fetch(server + '/thought-writer/thoughts/' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE'
   })

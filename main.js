@@ -54,7 +54,7 @@ for (var i = 0; i < parentExpandables.length; i++) {
 
 // Define functions
 function getEntries() {
-  return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+  return fetch(server + '/thought-writer/entries/fasi32058vasfr23rp9pgasf@Ej2##34?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';

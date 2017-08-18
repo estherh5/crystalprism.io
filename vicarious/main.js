@@ -30,47 +30,29 @@ function getContent() {
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after).then(function (response) {
     response.json().then(function (info) {
       for (var i = 0; i < info['data']['children'].length; i++) {
-        if (images.childNodes.length >= 6) {
+        if (urlsList.length >= 5) {
+          for (var j = 0; j < imageLinks.length; j++) {
+            imageLinks[j].href = urlsList[j];
+            imageImgs[j].src = urlsList[j];
+            imageImgs[j].classList.remove('loading');
+            imageTitles[j].href = imageTitleLinksList[j];
+            imageTitles[j].innerHTML = imageTitlesList[j];
+          }
           return;
         }
-        if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/) && info['data']['children'][i]['data']['title'].toLowerCase().indexOf(inputValue) != -1 && urlsList.includes(info['data']['children'][i]['data']['url']) == false) {
-          imageList = document.createElement('ul');
-          imageList.classList.add('list-unstyled');
-          imageListItem = document.createElement('li');
-          imageListItem.classList.add('media');
-          imageListItem.classList.add('align-items-center');
-          imageLink = document.createElement('a');
-          imageLink.classList.add('image-link');
-          imageLink.classList.add('mr-3');
-          imageLink.href = info['data']['children'][i]['data']['url'];
-          imageLink.target = '_blank';
-          image = document.createElement('img');
-          image.classList.add('img-fluid');
-          image.classList.add('img-thumbnail');
-          image.classList.add('image');
-          image.src = info['data']['children'][i]['data']['url'];
-          urlsList.push(image.src);
-          titleDiv = document.createElement('div');
-          titleDiv.classList.add('media-body');
-          title = document.createElement('a');
-          title.classList.add('image-title');
-          title.href = 'https://reddit.com' + info['data']['children'][i]['data']['permalink'];
-          title.target = '_blank';
-          title.innerHTML = info['data']['children'][i]['data']['title'];
-          images.appendChild(imageList);
-          imageList.appendChild(imageListItem);
-          imageListItem.appendChild(imageLink);
-          imageLink.appendChild(image);
-          imageListItem.appendChild(titleDiv);
-          titleDiv.appendChild(title);
+        if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/) && info['data']['children'][i]['data']['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(info['data']['children'][i]['data']['url']) == false) {
+          urlsList.push(info['data']['children'][i]['data']['url']);
+          imageTitleLinksList.push('https://reddit.com' + info['data']['children'][i]['data']['permalink']);
+          imageTitlesList.push(info['data']['children'][i]['data']['title']);
         }
         if (i == info['data']['children'].length - 1) {
           after = info['data']['after'];
           getContent();
         }
-        if (i == 101) {
-          after = info['data']['after'];
-          getContent();
+      }
+      if (urlsList.length == 0 && after == null) {
+        for (var j = 0; j < imageImgs.length; j++) {
+          imageImgs[j].style.animationPlayState = 'paused';
         }
         noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
         $(noResultsModal).modal('show');
@@ -81,7 +63,17 @@ function getContent() {
 }
 
 function clearImages() {
+  for (var j = 0; j < imageLinks.length; j++) {
+    imageLinks[j].removeAttribute('href');
+    imageImgs[j].classList.add('loading');
+    imageImgs[j].style.animationPlayState = 'initial';
+    imageImgs[j].src = 'images/loading.png';
+    imageTitles[j].removeAttribute('href');
+    imageTitles[j].innerHTML = '';
+  }
   urlsList = [];
+  imageTitleLinksList = [];
+  imageTitlesList = [];
   after = '';
   getContent();
 }

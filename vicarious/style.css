@@ -42,8 +42,9 @@ a {
 }
 
 a:active, a:focus, a:hover {
+  outline: none;
+  color: #2d8e84;
   text-decoration: none !important;
-  color: #8c8c8c;
 }
 
 h1 {
@@ -91,15 +92,19 @@ input::placeholder {
   cursor: pointer;
 }
 
+.btn:active {
+  box-shadow: 0.05em 0.05em 0.0em !important;
+  -webkit-box-shadow: 0.05em 0.05em 0.0em !important;
+  text-shadow: 0.01em -0.01em 0em;
+}
+
 .btn:focus {
   box-shadow: none;
   -webkit-box-shadow: none;
 }
 
-.btn:active {
-  box-shadow: 0.05em 0.05em 0.0em;
-  -webkit-box-shadow: 0.05em 0.05em 0.0em;
-  text-shadow: 0.01em -0.01em 0em;
+.btn:hover {
+  font-weight: bold;
 }
 
 #right {
@@ -115,6 +120,34 @@ ul {
   max-height: 200px;
   width: auto;
   max-width: 200px;
+  opacity: 0.8;
+}
+
+.image:focus {
+  outline: none;
+}
+
+.image:hover {
+  opacity: 1;
+}
+
+.loading {
+  border: none;
+  background-color: transparent;
+  animation-name: rotate;
+  animation-duration: 5s;
+  animation-iteration-count: infinite;
+  animation-timing-function: linear;
+}
+
+@keyframes rotate {
+  from {
+    transform: rotateZ(0deg);
+  }
+
+  to {
+    transform: rotateZ(360deg);
+  }
 }
 
 .media-body {

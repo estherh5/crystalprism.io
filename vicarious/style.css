@@ -57,7 +57,7 @@ a {
   color: #000000;
 }
 
-a:active, a:hover {
+a:active, a:focus, a:hover {
   color: #2d8e84;
   text-decoration: none !important;
 }
@@ -66,6 +66,20 @@ h1 {
   padding-top: 5px;
   font-weight: bold;
   line-height: 1.5;
+}
+
+.fa-plane {
+  position: absolute;
+  margin-left: -24px;
+  top: 22px;
+  font-size: 15px !important;
+}
+
+.fa-globe {
+  position: absolute;
+  top: 0;
+  font-size: 61px !important;
+  opacity: 0.2;
 }
 
 #left {
@@ -193,6 +207,16 @@ ul {
 @media only screen and (min-width: 768px) {
   #close-carousel {
     font-size: 35px;
+  }
+
+  .fa-plane {
+    margin-left: -32px;
+    top: 27px;
+    font-size: 21px !important;
+  }
+
+  .fa-globe {
+    font-size: 80px !important;
   }
 
   h1 {

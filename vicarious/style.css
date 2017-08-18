@@ -1,0 +1,150 @@
+body {
+  font-family: 'Bad Script', cursive;
+  user-select: none;
+  cursor: default;
+}
+
+::selection  {
+  background: #ffffff;
+}
+
+#carousel {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  display: none;
+  background-color: rgba(0, 0, 0, 0.74);
+  z-index: 1;
+}
+
+.carousel-item.active {
+  height: 100vh;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-image {
+  max-height: 600px;
+  max-width: 600px;
+}
+
+#header {
+  background-color: #ffff00;
+  text-align: center;
+}
+
+a {
+  color: #000000;
+}
+
+a:active, a:focus, a:hover {
+  text-decoration: none !important;
+  color: #8c8c8c;
+}
+
+h1 {
+  padding-top: 5px;
+  font-weight: bold;
+  line-height: 1.5;
+}
+
+#left {
+  background-color: #40e0d0;
+}
+
+h2 {
+  padding-top: 5px;
+  font-size: 20px;
+  line-height: 2;
+}
+
+input {
+  width: 200px;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 2px;
+  outline: none;
+  font-family: 'Bad Script', cursive;
+  font-size: 20px;
+  user-select: text;
+}
+
+input::selection {
+  background-color: #91ff80;
+}
+
+input::placeholder {
+  color: #e0e1e2;
+}
+
+.btn {
+  padding: 8px 5px 5px 5px;
+  border: 1px solid #000000;
+  outline: none;
+  background-color: #ffdb86;
+  font-family: 'Bad Script', cursive;
+  line-height: 1;
+  cursor: pointer;
+}
+
+.btn:focus {
+  box-shadow: none;
+  -webkit-box-shadow: none;
+}
+
+.btn:active {
+  box-shadow: 0.05em 0.05em 0.0em;
+  -webkit-box-shadow: 0.05em 0.05em 0.0em;
+  text-shadow: 0.01em -0.01em 0em;
+}
+
+#right {
+  background-color: #ffc0cb;
+}
+
+ul {
+  margin-top: 1rem;
+}
+
+.image {
+  height: auto;
+  max-height: 200px;
+  width: auto;
+  max-width: 200px;
+}
+
+.media-body {
+  text-align: center;
+  user-select: text;
+}
+
+.image-title {
+  font-size: 10px;
+  user-select: text;
+}
+
+@media only screen and (min-width: 768px) {
+  h1 {
+    padding-top: 10px;
+    font-size: 40px;
+  }
+
+  h2 {
+    padding-top: 10px;
+    font-size: 30px;
+  }
+
+  .btn {
+    padding-top: 10px;
+    font-size: 20px;
+  }
+
+  .image {
+    max-height: 300px;
+    max-width: 300px;
+  }
+
+  .image-title {
+    font-size: 15px;
+  }
+}

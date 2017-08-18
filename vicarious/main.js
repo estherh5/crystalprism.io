@@ -13,6 +13,8 @@ var noResultsModal = document.getElementById('modal');
 var noResultsTitle = document.getElementById('modal-title');
 var placeholders = ['Spain', 'Switzerland', 'India', 'Thailand', 'Italy', 'Canada', 'Norway']
 var submitButton = document.getElementById('submit');
+var rightPanel = document.getElementById('right');
+var loadingImage = document.getElementById('loading-image');
 var okayButton = document.getElementById('okay');
 var modalCloseButton = document.getElementById('modal-close');
 var viewButton = document.getElementById('view');
@@ -47,10 +49,12 @@ function getContent() {
     response.json().then(function (info) {
       for (var i = 0; i < info['data']['children'].length; i++) {
         if (urlsList.length >= 5) {
+          rightPanel.classList.remove('cleared');
           for (var j = 0; j < imageLinks.length; j++) {
+            loadingImage.classList.remove('loading');
             imageLinks[j].href = urlsList[j];
             imageImgs[j].src = urlsList[j];
-            imageImgs[j].classList.remove('loading');
+            imageImgs[j].classList.remove('cleared');
             imageTitles[j].href = imageTitleLinksList[j];
             imageTitles[j].innerHTML = imageTitlesList[j];
           }
@@ -64,9 +68,7 @@ function getContent() {
         if (i == info['data']['children'].length - 1) {
           after = info['data']['after'];
           if (urlsList.length == 0 && after == null) {
-            for (var j = 0; j < imageImgs.length; j++) {
-              imageImgs[j].style.animationPlayState = 'paused';
-            }
+            loadingImage.style.animationPlayState = 'paused';
             noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
             $(noResultsModal).modal('show');
             countryInput.value = '';
@@ -87,12 +89,14 @@ function setInputPlaceholder() {
 function clearImages() {
   for (var j = 0; j < imageLinks.length; j++) {
     imageLinks[j].removeAttribute('href');
-    imageImgs[j].classList.add('loading');
+    imageImgs[j].classList.add('cleared');
     imageImgs[j].style.animationPlayState = 'initial';
-    imageImgs[j].src = 'images/loading.png';
+    imageImgs[j].removeAttribute('src');
     imageTitles[j].removeAttribute('href');
     imageTitles[j].innerHTML = '';
   }
+  rightPanel.classList.add('cleared');
+  loadingImage.classList.add('loading');
   urlsList = [];
   imageTitleLinksList = [];
   imageTitlesList = [];

@@ -21,6 +21,13 @@ var carouselCloseButton = document.getElementById('close-carousel');
 var carouselItems = document.getElementsByClassName('carousel-item');
 
 // Define events
+countryInput.addEventListener('keyup', function(event) {
+  event.preventDefault();
+  if (event.keyCode == 13) {
+    submitButton.click();
+  }
+});
+
 submitButton.addEventListener('click', clearImages, false);
 okayButton.addEventListener('click', getContent, false);
 modalCloseButton.addEventListener('click', getContent, false);

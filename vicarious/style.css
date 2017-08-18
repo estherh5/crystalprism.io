@@ -8,6 +8,11 @@ body {
   background: #ffffff;
 }
 
+:focus {
+  outline: none !important;
+  text-decoration: none !important;
+}
+
 .modal-body {
   border-top: 1px solid #eceeef;
 }
@@ -32,6 +37,17 @@ body {
   max-width: 600px;
 }
 
+#close-carousel {
+  position: absolute;
+  width: 100vw;
+  outline: none;
+  top: 0;
+  right: 0;
+  font-size: 30px;
+  text-align: right;
+  color: #ffffff;
+}
+
 #header {
   background-color: #ffff00;
   text-align: center;
@@ -41,8 +57,7 @@ a {
   color: #000000;
 }
 
-a:active, a:focus, a:hover {
-  outline: none;
+a:active, a:hover {
   color: #2d8e84;
   text-decoration: none !important;
 }
@@ -123,10 +138,6 @@ ul {
   opacity: 0.8;
 }
 
-.image:focus {
-  outline: none;
-}
-
 .image:hover {
   opacity: 1;
 }
@@ -161,6 +172,10 @@ ul {
 }
 
 @media only screen and (min-width: 768px) {
+  #close-carousel {
+    font-size: 35px;
+  }
+
   h1 {
     padding-top: 10px;
     font-size: 40px;

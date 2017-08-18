@@ -15,6 +15,8 @@ var okayButton = document.getElementById('okay');
 var modalCloseButton = document.getElementById('modal-close');
 var viewButton = document.getElementById('view');
 var carousel = document.getElementById('carousel');
+var carouselCloseButton = document.getElementById('close-carousel');
+var carouselItems = document.getElementsByClassName('carousel-item');
 
 // Define events
 submitButton.addEventListener('click', clearImages, false);
@@ -22,6 +24,11 @@ okayButton.addEventListener('click', getContent, false);
 modalCloseButton.addEventListener('click', getContent, false);
 noResultsModal.addEventListener('click', getContent, false);
 viewButton.addEventListener('click', showCarousel, false);
+carouselCloseButton.addEventListener('click', hideCarousel, false);
+
+for (var i = 0; i < carouselItems.length; i++) {
+  carouselItems[i].addEventListener('click', hideCarousel, false);
+}
 
 // Define functions
 function getContent() {
@@ -83,5 +90,11 @@ function showCarousel() {
   var carouselImages = document.getElementsByClassName('carousel-image');
   for (var i = 0; i < carouselImages.length; i++) {
     carouselImages[i].src = urlsList[i];
+  }
+}
+
+function hideCarousel(e) {
+  if (e.target == this) {
+    carousel.style.display = 'none';
   }
 }

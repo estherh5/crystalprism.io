@@ -8,6 +8,10 @@ body {
   background: #ffffff;
 }
 
+.modal-body {
+  border-top: 1px solid #eceeef;
+}
+
 #carousel {
   position: fixed;
   height: 100vh;

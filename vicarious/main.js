@@ -1,18 +1,32 @@
 // Define variables
 var after = '';
 var images = document.getElementById('images');
-var submitButton = document.getElementById('submit');
+var inputValueLower = '';
 var urlsList = [];
+var imageTitleLinksList = [];
+var imageTitlesList = [];
+var imageLinks = images.getElementsByClassName('image-link');
+var imageImgs = images.getElementsByClassName('image');
+var imageTitles = images.getElementsByClassName('image-title');
+var noResultsModal = document.getElementById('modal');
+var noResultsTitle = document.getElementById('modal-title');
+var submitButton = document.getElementById('submit');
+var okayButton = document.getElementById('okay');
+var modalCloseButton = document.getElementById('modal-close');
 var viewButton = document.getElementById('view');
 var carousel = document.getElementById('carousel');
 
 // Define events
 submitButton.addEventListener('click', clearImages, false);
+okayButton.addEventListener('click', getContent, false);
+modalCloseButton.addEventListener('click', getContent, false);
+noResultsModal.addEventListener('click', getContent, false);
 viewButton.addEventListener('click', showCarousel, false);
 
 // Define functions
 function getContent() {
-  var inputValue = document.getElementById('input').value.toLowerCase();
+  inputValue = document.getElementById('input').value;
+  inputValueLower = inputValue.toLowerCase();
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after).then(function (response) {
     response.json().then(function (info) {
       for (var i = 0; i < info['data']['children'].length; i++) {
@@ -50,7 +64,7 @@ function getContent() {
           imageListItem.appendChild(titleDiv);
           titleDiv.appendChild(title);
         }
-        if (i == 99 && after != '') {
+        if (i == info['data']['children'].length - 1) {
           after = info['data']['after'];
           getContent();
         }
@@ -58,6 +72,9 @@ function getContent() {
           after = info['data']['after'];
           getContent();
         }
+        noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
+        $(noResultsModal).modal('show');
+        document.getElementById('input').value = '';
       }
     })
   })

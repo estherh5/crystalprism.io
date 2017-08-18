@@ -8,6 +8,24 @@
     <link rel="stylesheet" href="style.css">
   </head>
   <body onload="getContent();">
+    <div id="modal" class="modal fade">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modeal-header">
+            <button type="button" id="modal-close" class="close mx-3 my-3" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <h3 id="modal-title" class="modal-title mx-3 my-3"></h3>
+          </div>
+          <div class="modal-body">
+            <p>Try searching for another place.</p>
+          </div>
+          <div class="modal-footer">
+            <button id="okay" type="button" class="btn btn-primary" data-dismiss="modal">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="carousel" class="carousel slide" data-ride="carousel" data-keyboard="true" data-wrap="true" data-pause="hover">
       <div class="carousel-inner" role="listbox">
         <div class="carousel-item active">

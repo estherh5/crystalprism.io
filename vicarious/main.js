@@ -43,6 +43,7 @@ for (var i = 0; i < carouselItems.length; i++) {
 
 // Define functions
 function getContent() {
+  dimmer.style.display = 'block';
   loadingImage.style.animationPlayState = 'running';
   inputValue = countryInput.value;
   inputValueLower = inputValue.toLowerCase();
@@ -53,6 +54,8 @@ function getContent() {
         if (urlsList.length >= 5) {
           rightPanel.classList.remove('cleared');
           loadingImage.classList.remove('loading');
+          countryInput.value = '';
+          dimmer.style.display = 'none';
           return;
         }
         if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/) && info['data']['children'][i]['data']['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(info['data']['children'][i]['data']['url']) == false) {
@@ -75,6 +78,7 @@ function getContent() {
             } else if (urlsList.length != 0) {
               rightPanel.classList.remove('cleared');
               loadingImage.classList.remove('loading');
+              dimmer.style.display = 'none';
             }
             countryInput.value = '';
           } else {

@@ -54,16 +54,17 @@ function getContent() {
         }
         if (i == info['data']['children'].length - 1) {
           after = info['data']['after'];
-          getContent();
+          if (urlsList.length == 0 && after == null) {
+            for (var j = 0; j < imageImgs.length; j++) {
+              imageImgs[j].style.animationPlayState = 'paused';
+            }
+            noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
+            $(noResultsModal).modal('show');
+            document.getElementById('input').value = '';
+          } else {
+            getContent();
+          }
         }
-      }
-      if (urlsList.length == 0 && after == null) {
-        for (var j = 0; j < imageImgs.length; j++) {
-          imageImgs[j].style.animationPlayState = 'paused';
-        }
-        noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
-        $(noResultsModal).modal('show');
-        document.getElementById('input').value = '';
       }
     })
   })

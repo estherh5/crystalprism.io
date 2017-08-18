@@ -43,34 +43,39 @@ for (var i = 0; i < carouselItems.length; i++) {
 
 // Define functions
 function getContent() {
+  loadingImage.style.animationPlayState = 'running';
   inputValue = countryInput.value;
   inputValueLower = inputValue.toLowerCase();
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after).then(function (response) {
     response.json().then(function (info) {
+      after = info['data']['after'];
       for (var i = 0; i < info['data']['children'].length; i++) {
         if (urlsList.length >= 5) {
           rightPanel.classList.remove('cleared');
-          for (var j = 0; j < imageLinks.length; j++) {
-            loadingImage.classList.remove('loading');
-            imageLinks[j].href = urlsList[j];
-            imageImgs[j].src = urlsList[j];
-            imageImgs[j].classList.remove('cleared');
-            imageTitles[j].href = imageTitleLinksList[j];
-            imageTitles[j].innerHTML = imageTitlesList[j];
-          }
+          loadingImage.classList.remove('loading');
           return;
         }
         if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/) && info['data']['children'][i]['data']['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(info['data']['children'][i]['data']['url']) == false) {
           urlsList.push(info['data']['children'][i]['data']['url']);
+          var imageNumber = urlsList.indexOf(info['data']['children'][i]['data']['url']);
+          imageLinks[imageNumber].href = urlsList[imageNumber];
+          imageImgs[imageNumber].src = urlsList[imageNumber];
+          imageImgs[imageNumber].classList.remove('cleared');
           imageTitleLinksList.push('https://reddit.com' + info['data']['children'][i]['data']['permalink']);
           imageTitlesList.push(info['data']['children'][i]['data']['title']);
+          imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
+          imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
         }
         if (i == info['data']['children'].length - 1) {
-          after = info['data']['after'];
-          if (urlsList.length == 0 && after == null) {
-            loadingImage.style.animationPlayState = 'paused';
-            noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
-            $(noResultsModal).modal('show');
+          if (after == null) {
+            if (urlsList.length == 0) {
+              loadingImage.style.animationPlayState = 'paused';
+              noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
+              $(noResultsModal).modal('show');
+            } else if (urlsList.length != 0) {
+              rightPanel.classList.remove('cleared');
+              loadingImage.classList.remove('loading');
+            }
             countryInput.value = '';
           } else {
             getContent();

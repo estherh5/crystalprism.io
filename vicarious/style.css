@@ -124,6 +124,7 @@ input::placeholder {
 .btn:active {
   box-shadow: 0.05em 0.05em 0.0em !important;
   -webkit-box-shadow: 0.05em 0.05em 0.0em !important;
+  background-color: #ffc53c;
   text-shadow: 0.01em -0.01em 0em;
 }
 

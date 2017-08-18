@@ -1,6 +1,7 @@
 // Define variables
 var after = '';
 var images = document.getElementById('images');
+var countryInput = document.getElementById('input');
 var inputValueLower = '';
 var urlsList = [];
 var imageTitleLinksList = [];
@@ -10,6 +11,7 @@ var imageImgs = images.getElementsByClassName('image');
 var imageTitles = images.getElementsByClassName('image-title');
 var noResultsModal = document.getElementById('modal');
 var noResultsTitle = document.getElementById('modal-title');
+var placeholders = ['Spain', 'Switzerland', 'India', 'Thailand', 'Italy', 'Canada', 'Norway']
 var submitButton = document.getElementById('submit');
 var okayButton = document.getElementById('okay');
 var modalCloseButton = document.getElementById('modal-close');
@@ -32,7 +34,7 @@ for (var i = 0; i < carouselItems.length; i++) {
 
 // Define functions
 function getContent() {
-  inputValue = document.getElementById('input').value;
+  inputValue = countryInput.value;
   inputValueLower = inputValue.toLowerCase();
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after).then(function (response) {
     response.json().then(function (info) {
@@ -60,7 +62,7 @@ function getContent() {
             }
             noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
             $(noResultsModal).modal('show');
-            document.getElementById('input').value = '';
+            countryInput.value = '';
           } else {
             getContent();
           }
@@ -68,6 +70,11 @@ function getContent() {
       }
     })
   })
+}
+
+function setInputPlaceholder() {
+  var randomNumber = Math.floor(Math.random() * placeholders.length);
+  countryInput.placeholder = placeholders[randomNumber];
 }
 
 function clearImages() {

@@ -26,5 +26,10 @@ I started programming in January 2017. I am learning HTML, CSS, JavaScript and P
 
 [Thought Writer](http://crystalprism.io/thought-writer/index.html) is a What-You-See-Is-What-You-Get (WYSIWYG) text editor that allows you to save and retrieve your posts to and from a server. I created this text editor as a personal diary for my website's Ideas page, to document thoughts on programming, design, and life in general. The name derives from a combination of "thought book" (an old diary I used to keep) and "typewriter". The text editor allows you to add images and links to your posts, as well as a title and various formatting options via JavaScript's `execCommand` function and HTML data attributes. The editor also automatically saves your work during your browser session, in case you want to return to your post at a later time. I use Python flask server code to store and retrieve the posts, complete with their formatting, links and images.
 
+## Vicarious
+![Vicarious](images/vicarious.png)
+
+[Vicarious](http://crystalprism.io/vicarious/index.html) is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images posted on [Reddit's Travel subreddit](https://www.reddit.com/r/travel/). I used Bootstrap to design the layout of the project and make it responsive to different device sizes, as well as implement a modal and carousel. The project sends a fetch request to Reddit's API and stores all resulting images in an array, then displays up to 5 of those images that have titles containing the user's desired destination. When a user clicked on the title link for the project, 5 random images will display for inspiration.
+
 ## Thank You
 I am incredibly grateful to my teacher, [Ankur Saxena](https://github.com/as3445). His knowledge, creativity and patience has given me the confidence and inspiration to make these coding projects my own.

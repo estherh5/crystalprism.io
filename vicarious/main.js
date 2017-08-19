@@ -1,5 +1,6 @@
 // Define variables
 var after = '';
+var allImages = [];
 var images = document.getElementById('images');
 var countryInput = document.getElementById('input');
 var inputValueLower = '';
@@ -31,9 +32,9 @@ countryInput.addEventListener('keyup', function(event) {
 });
 
 submitButton.addEventListener('click', clearImages, false);
-okayButton.addEventListener('click', getContent, false);
-modalCloseButton.addEventListener('click', getContent, false);
-noResultsModal.addEventListener('click', getContent, false);
+okayButton.addEventListener('click', displayContent, false);
+modalCloseButton.addEventListener('click', displayContent, false);
+noResultsModal.addEventListener('click', displayContent, false);
 viewButton.addEventListener('click', showCarousel, false);
 carouselCloseButton.addEventListener('click', hideCarousel, false);
 
@@ -42,52 +43,66 @@ for (var i = 0; i < carouselItems.length; i++) {
 }
 
 // Define functions
-function getContent() {
-  dimmer.style.display = 'block';
-  loadingImage.style.animationPlayState = 'running';
-  inputValue = countryInput.value;
-  inputValueLower = inputValue.toLowerCase();
+function storeContent() {
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after).then(function (response) {
     response.json().then(function (info) {
       after = info['data']['after'];
       for (var i = 0; i < info['data']['children'].length; i++) {
-        if (urlsList.length >= 5) {
-          rightPanel.classList.remove('cleared');
-          loadingImage.classList.remove('loading');
-          countryInput.value = '';
-          dimmer.style.display = 'none';
-          return;
+        if (allImages.length == 6) {
+          displayContent();
         }
-        if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/) && info['data']['children'][i]['data']['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(info['data']['children'][i]['data']['url']) == false) {
-          urlsList.push(info['data']['children'][i]['data']['url']);
-          var imageNumber = urlsList.indexOf(info['data']['children'][i]['data']['url']);
-          imageLinks[imageNumber].href = urlsList[imageNumber];
-          imageImgs[imageNumber].src = urlsList[imageNumber];
-          imageImgs[imageNumber].classList.remove('cleared');
-          imageTitleLinksList.push('https://reddit.com' + info['data']['children'][i]['data']['permalink']);
-          imageTitlesList.push(info['data']['children'][i]['data']['title']);
-          imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
-          imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
+        if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/)) {
+          allImages.push(info['data']['children'][i]['data']);
         }
         if (i == info['data']['children'].length - 1) {
           if (after == null) {
-            if (urlsList.length == 0) {
-              loadingImage.style.animationPlayState = 'paused';
-              noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
-              $(noResultsModal).modal('show');
-            } else if (urlsList.length != 0) {
-              rightPanel.classList.remove('cleared');
-              loadingImage.classList.remove('loading');
-              dimmer.style.display = 'none';
-            }
-            countryInput.value = '';
+            return;
           } else {
-            getContent();
+            storeContent();
           }
         }
       }
     })
   })
+}
+
+function displayContent() {
+  dimmer.style.display = 'block';
+  loadingImage.style.animationPlayState = 'running';
+  inputValue = countryInput.value;
+  inputValueLower = inputValue.toLowerCase();
+  for (var i = 0; i < allImages.length; i++) {
+    if (urlsList.length == 5) {
+      rightPanel.classList.remove('cleared');
+      loadingImage.classList.remove('loading');
+      countryInput.value = '';
+      dimmer.style.display = 'none';
+      return;
+    }
+    if (allImages[i]['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(allImages[i]['url']) == false) {
+      urlsList.push(allImages[i]['url']);
+      var imageNumber = urlsList.indexOf(allImages[i]['url']);
+      imageLinks[imageNumber].href = urlsList[imageNumber];
+      imageImgs[imageNumber].src = urlsList[imageNumber];
+      imageImgs[imageNumber].classList.remove('cleared');
+      imageTitleLinksList.push('https://reddit.com' + allImages[i]['permalink']);
+      imageTitlesList.push(allImages[i]['title']);
+      imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
+      imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
+    }
+    if (i == allImages.length - 1) {
+      if (urlsList.length == 0) {
+        loadingImage.style.animationPlayState = 'paused';
+        noResultsTitle.innerHTML = 'No images found for "' + inputValue + '"';
+        $(noResultsModal).modal('show');
+      } else if (urlsList.length != 0) {
+        rightPanel.classList.remove('cleared');
+        loadingImage.classList.remove('loading');
+        dimmer.style.display = 'none';
+      }
+      countryInput.value = '';
+    }
+  }
 }
 
 function setInputPlaceholder() {
@@ -110,7 +125,7 @@ function clearImages() {
   imageTitleLinksList = [];
   imageTitlesList = [];
   after = '';
-  getContent();
+  displayContent();
 }
 
 function showCarousel() {

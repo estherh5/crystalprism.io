@@ -37,20 +37,29 @@ body {
   z-index: 1;
 }
 
+.carousel-item {
+  height: 100vh;
+  max-height: 100vh;
+  width: auto;
+}
+
 .carousel-item.active {
   height: 100vh;
+  max-height: 100vh;
+  width: auto;
   align-items: center;
   justify-content: center;
 }
 
 .carousel-image {
-  max-height: 600px;
-  max-width: 600px;
+  height: 100vh;
+  max-height: 100vh;
+  width: auto;
 }
 
 #close-carousel {
   position: absolute;
-  width: 100vw;
+  width: 25vw;
   outline: none;
   top: 0;
   right: 0;

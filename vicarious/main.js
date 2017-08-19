@@ -162,6 +162,7 @@ function clearImages() {
 
 function showCarousel() {
   carousel.style.display = 'initial';
+  $('.carousel').carousel('cycle');
   var carouselImages = document.getElementsByClassName('carousel-image');
   for (var i = 0; i < carouselImages.length; i++) {
     carouselImages[i].src = urlsList[i];
@@ -171,5 +172,6 @@ function showCarousel() {
 function hideCarousel(e) {
   if (e.target == this) {
     carousel.style.display = 'none';
+    $('.carousel').carousel('pause');
   }
 }

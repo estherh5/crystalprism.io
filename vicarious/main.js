@@ -13,6 +13,7 @@ var imageTitles = images.getElementsByClassName('image-title');
 var noResultsModal = document.getElementById('modal');
 var noResultsTitle = document.getElementById('modal-title');
 var placeholders = ['Spain', 'Switzerland', 'India', 'Thailand', 'Italy', 'Canada', 'Norway']
+var titleLink = document.getElementById('title-link');
 var submitButton = document.getElementById('submit');
 var rightPanel = document.getElementById('right');
 var loadingImage = document.getElementById('loading-image');
@@ -31,6 +32,7 @@ countryInput.addEventListener('keyup', function(event) {
   }
 });
 
+titleLink.addEventListener('click', clearImages, false);
 submitButton.addEventListener('click', clearImages, false);
 okayButton.addEventListener('click', displayContent, false);
 modalCloseButton.addEventListener('click', displayContent, false);
@@ -105,6 +107,32 @@ function displayContent() {
   }
 }
 
+function displayRandomContent() {
+  dimmer.style.display = 'block';
+  loadingImage.style.animationPlayState = 'running';
+  randomNumber = Math.floor(Math.random() * (allImages.length - 6));
+  for (var i = 0; i < 7; i++) {
+    if (urlsList.length == 5) {
+      rightPanel.classList.remove('cleared');
+      loadingImage.classList.remove('loading');
+      countryInput.value = '';
+      dimmer.style.display = 'none';
+      return;
+    }
+    if (urlsList.includes(allImages[randomNumber + i]['url']) == false) {
+      urlsList.push(allImages[randomNumber + i]['url']);
+      var imageNumber = urlsList.indexOf(allImages[randomNumber + i]['url']);
+      imageLinks[imageNumber].href = urlsList[imageNumber];
+      imageImgs[imageNumber].src = urlsList[imageNumber];
+      imageImgs[imageNumber].classList.remove('cleared');
+      imageTitleLinksList.push('https://reddit.com' + allImages[randomNumber + i]['permalink']);
+      imageTitlesList.push(allImages[randomNumber + i]['title']);
+      imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
+      imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
+    }
+  }
+}
+
 function setInputPlaceholder() {
   var randomNumber = Math.floor(Math.random() * placeholders.length);
   countryInput.placeholder = placeholders[randomNumber];
@@ -125,7 +153,11 @@ function clearImages() {
   imageTitleLinksList = [];
   imageTitlesList = [];
   after = '';
-  displayContent();
+  if (this == titleLink) {
+    displayRandomContent();
+  } else {
+    displayContent();
+  }
 }
 
 function showCarousel() {

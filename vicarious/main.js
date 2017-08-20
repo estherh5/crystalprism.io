@@ -34,9 +34,9 @@ countryInput.addEventListener('keyup', function(event) {
 
 titleLink.addEventListener('click', clearImages, false);
 submitButton.addEventListener('click', clearImages, false);
-okayButton.addEventListener('click', displayContent, false);
-modalCloseButton.addEventListener('click', displayContent, false);
-noResultsModal.addEventListener('click', displayContent, false);
+okayButton.addEventListener('click', displayRandomContent, false);
+modalCloseButton.addEventListener('click', displayRandomContent, false);
+noResultsModal.addEventListener('click', displayRandomContent, false);
 viewButton.addEventListener('click', showCarousel, false);
 carouselCloseButton.addEventListener('click', hideCarousel, false);
 
@@ -78,6 +78,7 @@ function displayContent() {
       rightPanel.classList.remove('cleared');
       loadingImage.classList.remove('loading');
       countryInput.value = '';
+      setInputPlaceholder();
       dimmer.style.display = 'none';
       return;
     }
@@ -101,34 +102,9 @@ function displayContent() {
         rightPanel.classList.remove('cleared');
         loadingImage.classList.remove('loading');
         dimmer.style.display = 'none';
+        setInputPlaceholder();
       }
       countryInput.value = '';
-    }
-  }
-}
-
-function displayRandomContent() {
-  dimmer.style.display = 'block';
-  loadingImage.style.animationPlayState = 'running';
-  randomNumber = Math.floor(Math.random() * (allImages.length - 6));
-  for (var i = 0; i < 7; i++) {
-    if (urlsList.length == 5) {
-      rightPanel.classList.remove('cleared');
-      loadingImage.classList.remove('loading');
-      countryInput.value = '';
-      dimmer.style.display = 'none';
-      return;
-    }
-    if (urlsList.includes(allImages[randomNumber + i]['url']) == false) {
-      urlsList.push(allImages[randomNumber + i]['url']);
-      var imageNumber = urlsList.indexOf(allImages[randomNumber + i]['url']);
-      imageImgs[imageNumber].src = urlsList[imageNumber];
-      imageImgs[imageNumber].classList.remove('cleared');
-      imageModals[imageNumber].src = urlsList[imageNumber];
-      imageTitleLinksList.push('https://reddit.com' + allImages[randomNumber + i]['permalink']);
-      imageTitlesList.push(allImages[randomNumber + i]['title']);
-      imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
-      imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
     }
   }
 }
@@ -136,6 +112,35 @@ function displayRandomContent() {
 function setInputPlaceholder() {
   var randomNumber = Math.floor(Math.random() * placeholders.length);
   countryInput.placeholder = placeholders[randomNumber];
+}
+
+function displayRandomContent(e) {
+  if (e == titleLink || this == noResultsModal && e.target == this || this.tagName.toLowerCase() == 'button') {
+    dimmer.style.display = 'block';
+    loadingImage.style.animationPlayState = 'running';
+    randomNumber = Math.floor(Math.random() * (allImages.length - 6));
+    for (var i = 0; i < 7; i++) {
+      if (urlsList.length == 5) {
+        rightPanel.classList.remove('cleared');
+        loadingImage.classList.remove('loading');
+        countryInput.value = '';
+        setInputPlaceholder();
+        dimmer.style.display = 'none';
+        return;
+      }
+      if (urlsList.includes(allImages[randomNumber + i]['url']) == false) {
+        urlsList.push(allImages[randomNumber + i]['url']);
+        var imageNumber = urlsList.indexOf(allImages[randomNumber + i]['url']);
+        imageImgs[imageNumber].src = urlsList[imageNumber];
+        imageImgs[imageNumber].classList.remove('cleared');
+        imageModals[imageNumber].src = urlsList[imageNumber];
+        imageTitleLinksList.push('https://reddit.com' + allImages[randomNumber + i]['permalink']);
+        imageTitlesList.push(allImages[randomNumber + i]['title']);
+        imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
+        imageTitles[imageNumber].innerHTML = imageTitlesList[imageNumber];
+      }
+    }
+  }
 }
 
 function clearImages() {
@@ -154,7 +159,7 @@ function clearImages() {
   imageTitlesList = [];
   after = '';
   if (this == titleLink) {
-    displayRandomContent();
+    displayRandomContent(this);
   } else {
     displayContent();
   }

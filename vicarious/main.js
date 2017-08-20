@@ -27,7 +27,9 @@ var carouselItems = document.getElementsByClassName('carousel-item');
 // Define events
 countryInput.addEventListener('keyup', function(event) {
   event.preventDefault();
-  if (event.keyCode == 13) {
+  if (noResultsModal.classList.contains('show') && event.keyCode == 13) {
+    okayButton.click();
+  } else if (!noResultsModal.classList.contains('show') && event.keyCode == 13) {
     submitButton.click();
   }
 });

@@ -24,8 +24,48 @@ body {
   z-index: 1;
 }
 
+.image-modal.show {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+}
+
+.image-close:focus, .image-close:hover {
+  color: #ffffff;
+}
+
+.image-modal .modal-dialog {
+  max-width: initial;
+  margin: 0;
+}
+
+.image-modal .modal-content, .image-modal .modal-header, .image-modal .modal-body {
+  padding: 0;
+  border: none;
+  margin: 0;
+  display: flex;
+  background-color: transparent;
+}
+
+.image-close {
+  position: absolute;
+  width: 25vw;
+  outline: none;
+  top: 0;
+  right: 0;
+  font-size: 30px;
+  text-align: right;
+  color: #ffffff;
+}
+
 .modal-body {
   border-top: 1px solid #eceeef;
+}
+
+.zoomed {
+  height: 80vh;
+  max-height: 100vh;
+  width: auto;
 }
 
 #carousel {
@@ -55,17 +95,6 @@ body {
   height: 100vh;
   max-height: 100vh;
   width: auto;
-}
-
-#close-carousel {
-  position: absolute;
-  width: 25vw;
-  outline: none;
-  top: 0;
-  right: 0;
-  font-size: 30px;
-  text-align: right;
-  color: #ffffff;
 }
 
 #header {
@@ -161,7 +190,6 @@ input::placeholder {
 }
 
 #right.cleared {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -207,6 +235,7 @@ ul {
 
 .image:hover {
   opacity: 1;
+  cursor: pointer;
 }
 
 .image.cleared {

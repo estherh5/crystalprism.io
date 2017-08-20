@@ -7,11 +7,11 @@ var inputValueLower = '';
 var urlsList = [];
 var imageTitleLinksList = [];
 var imageTitlesList = [];
-var imageLinks = images.getElementsByClassName('image-link');
+var imageModals = document.getElementsByClassName('zoomed');
 var imageImgs = images.getElementsByClassName('image');
 var imageTitles = images.getElementsByClassName('image-title');
-var noResultsModal = document.getElementById('modal');
-var noResultsTitle = document.getElementById('modal-title');
+var noResultsModal = document.getElementById('no-results-modal');
+var noResultsTitle = document.getElementById('no-results-modal-title');
 var placeholders = ['Spain', 'Switzerland', 'India', 'Thailand', 'Italy', 'Canada', 'Norway']
 var titleLink = document.getElementById('title-link');
 var submitButton = document.getElementById('submit');
@@ -84,9 +84,9 @@ function displayContent() {
     if (allImages[i]['title'].toLowerCase().indexOf(inputValueLower) != -1 && urlsList.includes(allImages[i]['url']) == false) {
       urlsList.push(allImages[i]['url']);
       var imageNumber = urlsList.indexOf(allImages[i]['url']);
-      imageLinks[imageNumber].href = urlsList[imageNumber];
       imageImgs[imageNumber].src = urlsList[imageNumber];
       imageImgs[imageNumber].classList.remove('cleared');
+      imageModals[imageNumber].src = urlsList[imageNumber];
       imageTitleLinksList.push('https://reddit.com' + allImages[i]['permalink']);
       imageTitlesList.push(allImages[i]['title']);
       imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
@@ -122,9 +122,9 @@ function displayRandomContent() {
     if (urlsList.includes(allImages[randomNumber + i]['url']) == false) {
       urlsList.push(allImages[randomNumber + i]['url']);
       var imageNumber = urlsList.indexOf(allImages[randomNumber + i]['url']);
-      imageLinks[imageNumber].href = urlsList[imageNumber];
       imageImgs[imageNumber].src = urlsList[imageNumber];
       imageImgs[imageNumber].classList.remove('cleared');
+      imageModals[imageNumber].src = urlsList[imageNumber];
       imageTitleLinksList.push('https://reddit.com' + allImages[randomNumber + i]['permalink']);
       imageTitlesList.push(allImages[randomNumber + i]['title']);
       imageTitles[imageNumber].href = imageTitleLinksList[imageNumber];
@@ -139,11 +139,11 @@ function setInputPlaceholder() {
 }
 
 function clearImages() {
-  for (var j = 0; j < imageLinks.length; j++) {
-    imageLinks[j].removeAttribute('href');
+  for (var j = 0; j < imageImgs.length; j++) {
     imageImgs[j].classList.add('cleared');
     imageImgs[j].style.animationPlayState = 'initial';
     imageImgs[j].removeAttribute('src');
+    imageModals[j].removeAttribute('src');
     imageTitles[j].removeAttribute('href');
     imageTitles[j].innerHTML = '';
   }

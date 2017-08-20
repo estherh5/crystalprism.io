@@ -22,14 +22,74 @@
   </head>
   <body onload="storeContent();setInputPlaceholder();">
     <div id="dimmer" class="fade"></div>
-    <div id="modal" class="modal fade">
+    <div id="modal-one" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="zoomed">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-two" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="zoomed">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-three" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="zoomed">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-four" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="zoomed">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="modal-five" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+            <img class="zoomed">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="no-results-modal" class="modal fade">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
-          <div class="modeal-header">
-            <button type="button" id="modal-close" class="close mx-3 my-3" data-dismiss="modal" aria-label="Close">
+          <div class="modal-header">
+            <h3 id="no-results-modal-title" class="modal-title"></h3>
+            <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
-            <h3 id="modal-title" class="modal-title mx-3 my-3"></h3>
           </div>
           <div class="modal-body">
             <p>Try searching for another place.</p>
@@ -66,7 +126,7 @@
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
-      <button id="close-carousel" type="button" class="close mx-3 mt-2 mb-3" aria-label="Close">
+      <button id="close-carousel" type="button" class="close image-close mx-3 mt-2 mb-3" aria-label="Close">
         &times;
       </button>
     </div>
@@ -106,9 +166,7 @@
           <div id="images">
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <a class="image-link mr-3" target="_blank">
-                  <img class="cleared img-fluid img-thumbnail image">
-                </a>
+                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-one">
                 <div class="media-body">
                   <a class="image-title" target="_blank">
                   </a>
@@ -117,9 +175,7 @@
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <a class="image-link mr-3" target="_blank">
-                  <img class="cleared img-fluid img-thumbnail image">
-                </a>
+                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-two">
                 <div class="media-body">
                   <a class="image-title" target="_blank">
                   </a>
@@ -128,9 +184,7 @@
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <a class="image-link mr-3" target="_blank">
-                  <img class="cleared img-fluid img-thumbnail image">
-                </a>
+                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-three">
                 <div class="media-body">
                   <a class="image-title" target="_blank">
                   </a>
@@ -139,9 +193,7 @@
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <a class="image-link mr-3" target="_blank">
-                  <img class="cleared img-fluid img-thumbnail image">
-                </a>
+                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-four">
                 <div class="media-body">
                   <a class="image-title" target="_blank">
                   </a>
@@ -150,9 +202,7 @@
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <a class="image-link mr-3" target="_blank">
-                  <img class="cleared img-fluid img-thumbnail image">
-                </a>
+                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-five">
                 <div class="media-body">
                   <a class="image-title" target="_blank">
                   </a>

@@ -49,6 +49,19 @@ body {
   z-index: 3;
 }
 
+#account-menu {
+  position: fixed;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#create-account {
+  margin-right: 7px;
+}
+
 .hidden {
   position: absolute;
   top: -9999px;
@@ -808,6 +821,10 @@ section {
     font-size: 32px;
   }
 
+  #account-menu {
+    font-size: 22px;
+  }
+
   .project-blurb {
     font-size: 15px;
   }
@@ -999,7 +1016,7 @@ section {
     margin-top: 20px;
   }
 
-  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-setting {
+  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-setting, #account-menu {
     display: none !important;
   }
 

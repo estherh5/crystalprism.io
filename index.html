@@ -20,6 +20,101 @@
     <title>Esther Hoffman</title>
   </head>
   <body onload="getEntries();">
+    <div id="theme-setting">
+      <i id="sky-icon" class="ionicons ion-ios-moon-outline"></i>
+      <button id="theme-button">Night View</button>
+    </div>
+    <div id="modal" class="hidden">
+      <div id="modal-body">
+        <button id="close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+        <div id="timespace-blurb" class="project-blurb">
+          <a class="modal-project-title" href="timespace/index.html">
+            <img class="project-icon-large" src="timespace/favicon.ico">
+            <h2>Timespace</h2>
+          </a>
+          <div class="video-player" data-project="timespace">
+            <video id="timespace-video" src="videos/timespace.mp4" type="video/mp4" data-project="timespace"></video>
+            <i id="timespace-control" class="fa fa-play" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="timespace/index.html">Timespace</a> is my first coding project. It takes numbers a step further to depict time, using them to generate movement and color to trace time's passage each second. I use JavaScript to select three digits of the current time string as the x coordinate of the circle and a different set of three digits as the y coordinate. Each circle color is a different set of six digits of the time string, converted to hexadecimal.
+          </text>
+        </div>
+        <div id="shapes-in-rain-blurb" class="project-blurb">
+          <a class="modal-project-title" href="shapes-in-rain/index.html">
+            <img id="shapes-in-rain-favicon" class="project-icon-large" src="shapes-in-rain/favicon.ico">
+            <h2>Shapes in Rain</h2>
+          </a>
+          <div class="video-player" data-project="shapes-in-rain">
+            <video id="shapes-in-rain-video" src="videos/shapes-in-rain.mp4" type="video/mp4" data-project="shapes-in-rain"></video>
+            <i id="shapes-in-rain-control" class="fa fa-play" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="shapes-in-rain/index.html">Shapes in Rain</a> incorporates randomized SVG placement to generate a peaceful scene where the user can clear shapes as they clear their mind. I use JavaScript to generate a random shape from a set of SVGs and give that shape random coordinates. When the user clicks one of the shapes, the shape gets "blasted" out of the scene, clearing the space for the heart rain that continues to fall in the background, generated from SVG cloning. The rain and shapes will clear on their own after a certain time interval to minimize system performance.
+          </text>
+        </div>
+        <div id="rhythm-of-life-blurb" class="project-blurb">
+          <a class="modal-project-title" href="rhythm-of-life/index.html">
+            <img class="project-icon-large" src="rhythm-of-life/favicon.ico">
+            <h2>Rhythm of Life</h2>
+          </a>
+          <div class="video-player" data-project="rhythm-of-life">
+            <video id="rhythm-of-life-video" src="videos/rhythm-of-life.mp4" type="video/mp4" data-project="rhythm-of-life"></video>
+            <i id="rhythm-of-life-control" class="fa fa-play dark" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="rhythm-of-life/index.html">Rhythm of Life</a> is an educational take on the classic game *Snake*. The game allows you to move a heart across an SVG canvas to seek relievers and avoid stressors to maintain a low blood pressure. As you collide with stressors, your blood pressure increases, and the game speeds up. The game board displays information about blood pressure stressors and relievers, with links to more details on websites like WebMD and the American Heart Association. The game is designed in this way because stressors will constantly arise, but you must seek out relievers to maintain good health. Once you exceed the blood pressure range for stage 2 hypertension, the game ends, and you can record your name and lifespan in the leaderboard. I use <a href="http://snapsvg.io">Snap</a> to ease canvas and object manipulation, as well as <a href="https://howlerjs.com">Howler</a> to control the background heartbeat sound. I also use Python flask server code to store and retrieve each player's lifespan and display the top 5 leaders on the game board.
+          </text>
+        </div>
+        <div id="canvashare-blurb" class="project-blurb">
+          <a class="modal-project-title" href="canvashare/index.html">
+            <img class="project-icon-large" src="canvashare/favicon.ico">
+            <h2>CanvaShare</h2>
+          </a>
+          <div class="video-player" data-project="canvashare">
+            <video id="canvashare-video" src="videos/canvashare.mp4" type="video/mp4" data-project="canvashare"></video>
+            <i id="canvashare-control" class="fa fa-play dark" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="canvashare/index.html">CanvaShare</a> is an interactive drawing program that lets you create drawings in a predefined square shape, using a series of palettes. After you create your drawing, you can give it a title and post it to the gallery and/or download a copy. The gallery displays everyone's images, and when you click one of the images, it becomes your starting canvas so you can add on to it and create a new drawing of your own. The gallery also displays the view count for each image based on the number of times it has been clicked. I use <a href="http://snapsvg.io">Snap</a> for canvas and object manipulation, as well as <a href="http://www.createjs.com/easeljs">EaselJS</a> for canvas drawing. CanvaShare is my first project that involves sending data to a backend using JavaScript's fetch method and Python flask server code.
+          </text>
+        </div>
+        <div id="thought-writer-blurb" class="project-blurb">
+          <a class="modal-project-title" href="thought-writer/index.html">
+            <img class="project-icon-large" src="thought-writer/favicon.ico">
+            <h2>Thought Writer</h2>
+          </a>
+          <div class="video-player" data-project="thought-writer">
+            <video id="thought-writer-video" src="videos/thought-writer.mp4" type="video/mp4" data-project="thought-writer"></video>
+            <i id="thought-writer-control" class="fa fa-play dark" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="thought-writer/index.html">Thought Writer</a> is a What-You-See-Is-What-You-Get (WYSIWYG) text editor that allows you to save and retrieve your posts to and from a server. I created this text editor as a personal diary for my website's Ideas page, to document thoughts on programming, design, and life in general. The name derives from a combination of "thought book" (an old diary I used to keep) and "typewriter". The text editor allows you to add images and links to your posts, as well as a title and various formatting options via JavaScript's `execCommand` function and HTML data attributes. The editor also automatically saves your work during your browser session, in case you want to return to your post at a later time. I use Python flask server code to store and retrieve the posts, complete with their formatting, links and images.
+          </text>
+        </div>
+        <div id="vicarious-blurb" class="project-blurb">
+          <a class="modal-project-title" href="vicarious/index.html">
+            <img class="project-icon-large" src="vicarious/favicon.ico">
+            <h2>Vicarious</h2>
+          </a>
+          <div class="video-player" data-project="vicarious">
+            <video id="vicarious-video" src="videos/vicarious.mp4" type="video/mp4" data-project="vicarious"></video>
+            <i id="vicarious-control" class="fa fa-play" aria-hidden="true"></i>
+          </div>
+          <text>
+            <a href="vicarious/index.html">Vicarious</a> is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images posted on <a href="https://www.reddit.com/r/travel/">Reddit's Travel subreddit</a>. I used Bootstrap to design the layout of the project and make it responsive to different device sizes, as well as implement a modal and carousel. The project sends a fetch request to Reddit's API and stores all resulting images in an array, then displays up to 5 of those images that have titles containing the user's desired destination. When a user clicked on the title link for the project, 5 random images will display for inspiration.
+          </text>
+        </div>
+        <button id="previous" class="control">
+          <span aria-hidden="true"><</span>
+        </button>
+        <button id="next" class="control">
+          <span aria-hidden="true">></span>
+        </button>
+      </div>
+    </div>
     <a id="homepage" href="index.html">
       <img id="diamond-small" class="hidden" src="images/homepage.png">
       <h1>Esther Hoffman</h1>
@@ -71,7 +166,7 @@
         <div id="projects-page" class="page hidden">
           <ul id="grid">
             <li>
-              <a class="project-link" href="timespace/index.html">
+              <div class="project-link" data-project="timespace" data-open="false">
                 <img class="project-image" src="images/timespace.png">
                 <span class="overlay">
                   <div class="preview">
@@ -79,21 +174,21 @@
                   </div>
                 </span>
                 <span class="project-title">Timespace</span>
-              </a>
+              </div>
             </li>
             <li>
-              <a class="project-link" href="shapes-in-rain/index.html">
+              <div class="project-link" data-project="shapes-in-rain" data-open="false">
                 <img class="project-image" src="images/shapes-in-rain.png">
                 <span class="overlay">
                   <div class="preview">
-                    <img class="project-icon" src="shapes-in-rain/favicon.ico">
+                    <img id="shapes-project-icon" class="project-icon" src="shapes-in-rain/favicon.ico">
                   </div>
                 </span>
                 <span class="project-title">Shapes in Rain</span>
-              </a>
+              </div>
             </li>
             <li>
-              <a class="project-link" href="rhythm-of-life/index.html">
+              <div class="project-link" data-project="rhythm-of-life" data-open="false">
                 <img class="project-image" src="images/rhythm-of-life.png">
                 <span class="overlay">
                   <div class="preview">
@@ -101,10 +196,10 @@
                   </div>
                 </span>
                 <span class="project-title">Rhythm of Life</span>
-              </a>
+              </div>
             </li>
             <li>
-              <a class="project-link" href="canvashare/index.html">
+              <div class="project-link" data-project="canvashare" data-open="false">
                 <img class="project-image" src="images/canvashare.png">
                 <span class="overlay">
                   <div class="preview">
@@ -112,10 +207,10 @@
                   </div>
                 </span>
                 <span class="project-title">CanvaShare</span>
-              </a>
+              </div>
             </li>
             <li>
-              <a class="project-link" href="thought-writer/index.html">
+              <div class="project-link" data-project="thought-writer" data-open="false">
                 <img class="project-image" src="images/thought-writer.png">
                 <span class="overlay">
                   <div class="preview">
@@ -123,10 +218,10 @@
                   </div>
                 </span>
                 <span class="project-title">Thought Writer</span>
-              </a>
+              </div>
             </li>
             <li>
-              <a class="project-link" href="vicarious/index.html">
+              <div class="project-link" data-project="vicarious" data-open="false">
                 <img class="project-image" src="images/vicarious.png">
                 <span class="overlay">
                   <div class="preview">
@@ -134,7 +229,7 @@
                   </div>
                 </span>
                 <span class="project-title">Vicarious</span>
-              </a>
+              </div>
             </li>
           </ul>
         </div>
@@ -597,10 +692,6 @@
         <div id="ideas-page" class="page hidden">
         </div>
       </div>
-    </div>
-    <div id="theme-setting">
-      <i id="sky-icon" class="ionicons ion-ios-moon-outline"></i>
-      <button id="theme-button">Night View</button>
     </div>
     <script src="https://use.fontawesome.com/02428009ba.js"></script>
     <script src="main.js"></script>

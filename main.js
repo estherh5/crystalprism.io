@@ -1,6 +1,7 @@
 // Define variables
 var themeButton = document.getElementById('theme-button');
 var skyIcon = document.getElementById('sky-icon');
+var now = new Date().getHours();
 var projectsCircle = document.getElementById('projects-circle');
 var aboutCircle = document.getElementById('about-circle');
 var photosCircle = document.getElementById('photos-circle');
@@ -11,7 +12,15 @@ var photosButton = document.getElementById('photos-button');
 var ideasButton = document.getElementById('ideas-button');
 var button = document.getElementById('projects-button');
 var page = document.getElementById('starting-page');
-var now = new Date().getHours();
+var projectLinks = document.getElementsByClassName('project-link');
+var modal = document.getElementById('modal');
+var modalBody = document.getElementById('modal-body');
+var projectBlurbs = document.getElementsByClassName('project-blurb');
+var closeButton = document.getElementById('close');
+var nextButton = document.getElementById('next');
+var previousButton = document.getElementById('previous');
+var videoPlayers = document.getElementsByClassName('video-player');
+var videos = document.getElementsByTagName('video');
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
@@ -35,6 +44,10 @@ projectsButton.onclick = displayPage;
 aboutButton.onclick = displayPage;
 photosButton.onclick = displayPage;
 ideasButton.onclick = displayPage;
+modal.onclick = closeInfo;
+nextButton.onclick = toggleNext;
+previousButton.onclick = togglePrevious;
+closeButton.onclick = closeInfo;
 
 if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localStorage.getItem('theme') != 'day' || now >= 20 && now <= 23 && localStorage.getItem('theme') != 'day') {
   document.body.classList.add('night-view');
@@ -43,6 +56,28 @@ if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localSto
   themeButton.innerHTML = 'Day View';
   localStorage.setItem('theme', 'night');
 }
+
+for (var i = 0; i < projectLinks.length; i++) {
+  projectLinks[i].addEventListener('click', openInfo, false);
+}
+
+for (var i = 0; i < videoPlayers.length; i++) {
+  videoPlayers[i].addEventListener('click', toggleVideo, false);
+}
+
+for (var i = 0; i < videos.length; i++) {
+  videos[i].addEventListener('ended', toggleControlIcon, false);
+}
+
+window.addEventListener('keyup', function(e) {
+  if (modal.classList.contains('open') && e.key == 'ArrowRight') {
+    e.preventDefault();
+    nextButton.click();
+  } else if (modal.classList.contains('open') && e.key == 'ArrowLeft') {
+    e.preventDefault();
+    previousButton.click();
+  }
+});
 
 for (var i = 0; i < childExpandables.length; i++) {
   childExpandables[i].addEventListener('click', expandSection, false);
@@ -166,6 +201,96 @@ function displayPage(e) {
   button = document.getElementById(e.target.dataset.button);
   button.classList.add('selected');
   button.style.color = button.dataset.color;
+}
+
+function openInfo() {
+  for (var i = 0; i < projectLinks.length; i++) {
+    projectLinks[i].dataset.open = 'false';
+    projectBlurbs[i].classList.remove('open');
+  }
+  modal.classList.remove('hidden');
+  modal.classList.add('open');
+  modalBody.classList.add('open');
+  document.getElementById(this.dataset.project + '-blurb').classList.add('open');
+  this.dataset.open = 'true';
+}
+
+function closeInfo(e) {
+  if (e.target == this || this.tagName.toLowerCase() == 'button') {
+    for (var i = 0; i < projectLinks.length; i++) {
+      projectLinks[i].dataset.open = 'false';
+      projectBlurbs[i].classList.remove('open');
+    }
+    modalBody.classList.remove('open');
+    modal.classList.remove('open');
+    setTimeout(function() {
+      modal.classList.add('hidden');
+    }, 1000);
+  }
+}
+
+function toggleNext() {
+  for (var i = 0; i < projectLinks.length; i++) {
+    if (projectLinks[i] == document.querySelector('[data-open=true]')) {
+      var currentProjectNumber = i;
+    }
+  }
+  for (var i = 0; i < projectLinks.length; i++) {
+    projectLinks[i].dataset.open = 'false';
+    projectBlurbs[i].classList.remove('open');
+  }
+  if (currentProjectNumber == projectLinks.length - 1) {
+    projectLinks[0].dataset.open = 'true';
+    projectBlurbs[0].classList.add('open');
+  } else {
+    projectLinks[currentProjectNumber + 1].dataset.open = 'true';
+    projectBlurbs[currentProjectNumber + 1].classList.add('open');
+  }
+}
+
+function togglePrevious() {
+  for (var i = 0; i < projectLinks.length; i++) {
+    if (projectLinks[i] == document.querySelector('[data-open=true]')) {
+      var currentProjectNumber = i;
+    }
+  }
+  for (var i = 0; i < projectLinks.length; i++) {
+    projectLinks[i].dataset.open = 'false';
+    projectBlurbs[i].classList.remove('open');
+  }
+  if (currentProjectNumber == 0) {
+    projectLinks[projectLinks.length - 1].dataset.open = 'true';
+    projectBlurbs[projectLinks.length - 1].classList.add('open');
+  } else {
+    projectLinks[currentProjectNumber - 1].dataset.open = 'true';
+    projectBlurbs[currentProjectNumber - 1].classList.add('open');
+  }
+}
+
+function toggleVideo() {
+  var video = document.getElementById(this.dataset.project + '-video');
+  var control = document.getElementById(this.dataset.project + '-control');
+  if (video.paused || video.ended) {
+    control.classList.remove('fa-play');
+    control.classList.add('fa-pause');
+    control.classList.add('playing');
+    video.classList.add('playing');
+    video.play();
+  } else {
+    control.classList.add('fa-play');
+    control.classList.remove('fa-pause');
+    control.classList.remove('playing');
+    video.classList.remove('playing');
+    video.pause();
+  }
+}
+
+function toggleControlIcon() {
+  var control = document.getElementById(this.dataset.project + '-control');
+  control.classList.remove('fa-pause');
+  control.classList.add('fa-play');
+  control.classList.remove('playing');
+  this.classList.remove('playing');
 }
 
 function expandSection() {

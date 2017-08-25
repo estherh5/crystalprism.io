@@ -137,21 +137,38 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'Poiret One', cursive;
-  font-size: 10px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
   opacity: 0;
   transition: all 1s;
 }
 
+.project-blurb a {
+  font-weight: bold;
+  color: #1ebfe8;
+  transform: scale(1);
+  transition: all 0.4s;
+}
+
+.project-blurb a:hover {
+  color: #808080;
+  transform: scale(1.1);
+}
+
 .modal-project-title {
+  width: 100%;
   margin-top: 10px;
-  margin-bottom: 15px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  font-family: 'Poiret One', cursive;
   opacity: 0.7;
   cursor: pointer;
+}
+
+.modal-project-title:hover {
+  opacity: 1;
 }
 
 .project-icon-large {
@@ -168,10 +185,6 @@ body {
 
 .night-view .project-icon-large {
   opacity: 0.4;
-}
-
-.modal-project-title:hover {
-  opacity: 1;
 }
 
 .night-view .modal-project-title:hover .project-icon-large {
@@ -191,6 +204,57 @@ body {
 
 .night-view .modal-project-title:hover h2 {
   opacity: 1;
+}
+
+.github-repo {
+  margin-bottom: 10px;
+  font-size: 15px;
+}
+
+.project-skills {
+  margin-bottom: 10px;
+  display: flex;
+  flex-flow: row wrap;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.skillset {
+  margin-right: 4px;
+  margin-left: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-skills, .project-skills .words {
+  font-size: 9px;
+  margin-right: 0px;
+}
+
+.project-skills .svg-icon {
+  height: 9px;
+  fill: #ffffff;
+}
+
+.night-view .project-skills .svg-icon {
+  fill: #000000;
+}
+
+.project-skills .svg-icon.inverse {
+  fill: #000000;
+}
+
+.night-view .project-skills .svg-icon.inverse {
+  fill: #ffffff;
+}
+
+.project-skills .svg-icon stop {
+  stop-color: #ffffff;
+}
+
+.night-view .project-skills .svg-icon stop {
+  stop-color: #000000;
 }
 
 .video-player {
@@ -218,7 +282,6 @@ body {
 .dark {
   color: #000000 !important;
 }
-
 
 .fa-play.playing, .fa-pause.playing {
   opacity: 0 !important;
@@ -248,15 +311,6 @@ video {
 video.playing {
   opacity: 1;
   transition: all 0.4s;
-}
-
-.project-blurb a {
-  font-weight: bold;
-  color: #1ebfe8;
-}
-
-.project-blurb a:hover {
-  color: #808080;
 }
 
 .control {
@@ -795,6 +849,18 @@ section {
     font-size: 40px;
   }
 
+  .github-repo {
+    font-size: 18px;
+  }
+
+  .project-skills, .project-skills .words {
+    font-size: 12px;
+  }
+
+  .project-skills .svg-icon {
+    height: 12px;
+  }
+
   .fa-play, .fa-pause {
     font-size: 80px !important;
   }
@@ -820,6 +886,11 @@ section {
 
   .project-blurb {
     font-size: 15px;
+  }
+
+  .skillset {
+    margin-right: 7.5px;
+    margin-left: 7.5px;
   }
 
   #homepage {
@@ -996,6 +1067,24 @@ section {
 
   .bullet {
     margin-left: 39px;
+  }
+}
+
+@media only screen and (min-width: 1190px) {
+  #close {
+    position: absolute;
+    top: 0px;
+    right: 0px;
+  }
+
+  #previous {
+    position: absolute;
+    left: 0px;
+  }
+
+  #next {
+    position: absolute;
+    right: 0px;
   }
 }
 

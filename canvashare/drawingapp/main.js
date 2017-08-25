@@ -37,10 +37,10 @@ function setStage() {
   startingImage = new Image();
   startingImage.crossOrigin = 'Anonymous';
   filename = document.getElementById('file-name');
-  if (sessionStorage.getItem('imageSrc') != '') {
+  if (sessionStorage.getItem('imageSrc') != null) {
     startingImage.src = sessionStorage.getItem('imageSrc');
     filename.value = '[title]';
-  } else if (sessionStorage.getItem('imageSrc') == '' && localStorage.getItem('imageSrc') != '') {
+  } else if (sessionStorage.getItem('imageSrc') == null && localStorage.getItem('imageSrc') != null) {
     startingImage.src = localStorage.getItem('imageSrc');
     filename.value = localStorage.getItem('imageName');
   } else {
@@ -58,6 +58,7 @@ function setStage() {
   drawing = new createjs.Shape();
   stageCanvas.addEventListener('stagemousedown', whenMouseDown);
   stageCanvas.addEventListener('stagemouseup', whenMouseUp);
+  stageCanvas.addEventListener('stagemouseup', saveData);
   stageCanvas.addChild(drawing);
   stageCanvas.update();
   stroke = 10;
@@ -92,7 +93,6 @@ function setStage() {
   document.getElementById('clear').onclick = clearImage;
   document.getElementById('post').onclick = postImage;
   document.getElementById('download').onclick = downloadImage;
-  setInterval(saveData, 1000);
 }
 
 function whenMouseDown(event) {
@@ -173,6 +173,10 @@ function enterTitle(e) {
 
 function clearImage() {
   stageCanvas.clear();
+  sessionStorage.removeItem('imageName');
+  sessionStorage.removeItem('imageSrc');
+  localStorage.removeItem('imageSrc');
+  localStorage.removeItem('imageName');
 }
 
 function postImage() {
@@ -203,8 +207,8 @@ function postImage() {
     }).then(function (response) {
       if (response.ok) {
         setTimeout(function () {
-          localStorage.setItem('imageSrc', '');
-          localStorage.setItem('imageName', '');
+          localStorage.removeItem('imageSrc');
+          localStorage.removeItem('imageName');
           window.location.href = '../index.html'
         }, 700);
       }

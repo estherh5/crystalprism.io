@@ -2,6 +2,7 @@
 var header = document.getElementById('header');
 var gallery = document.getElementById('gallery');
 var galleryTitle = document.getElementById('gallery-title');
+var userImage = document.getElementById('user-image');
 var requestStart = 0;
 var requestEnd = 12;
 var hoverTitles = ['"The world is but a canvas to our imagination." -Henry David Thoreau', '"Life is a great big canvas; throw all the paint you can at it." -Danny Kaye', '"A great artist can paint a great picture on a small canvas." -Charles Dudley Warner', '"I put on the canvas whatever comes into my mind." -Frida Kahlo', '"An empty canvas is a living wonder... far lovelier than certain pictures." -Wassily Kandinsky', '"I never know what I\'m going to put on the canvas. The canvas paints itself. I\'m just the middleman." -Peter Max', '"Cover the canvas at the first go, then work at it until you see nothing more to add." -Camille Pissarro', '"All I try to do is put as many colors as I can on the canvas every night." -Leslie Odom, Jr.', '"I was blown away by being able to color. Then I started to draw... bringing a blank white canvas to life was fascinating." James De La Vega'];
@@ -11,6 +12,11 @@ if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://localhost:5000/api';
 }
 var errorMessage = '';
+var newIcon = document.getElementById('new');
+var open = false;
+var userDiv = document.getElementById('user-div');
+var menu = document.getElementById('menu');
+var newImage = document.getElementById('new-image');
 
 // Define events
 window.addEventListener('scroll', function () {
@@ -21,7 +27,8 @@ window.addEventListener('scroll', function () {
   }
 })
 
-galleryTitle.onclick = sessionStorage.setItem('imageSrc', '');
+newIcon.onclick = openMenu;
+newImage.onclick = startNew;
 
 window.onscroll = displayMoreImages;
 
@@ -32,6 +39,10 @@ function setHoverTitle() {
 }
 
 function getImages() {
+  if (localStorage.getItem('imageSrc') != null) {
+    userImage.src = localStorage.getItem('imageSrc');
+    userDiv.classList.remove('hidden');
+  }
   return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
@@ -146,6 +157,34 @@ function setImageValues() {
       body: data
     })
   }
+}
+
+function openMenu() {
+  if (open) {
+    newIcon.classList.add('clicked');
+    newIcon.classList.remove('open');
+    menu.classList.remove('visible');
+    newIcon.innerHTML = 'add_circle';
+    open = false;
+    setTimeout(function() {
+      menu.classList.add('hidden');
+      newIcon.classList.remove('clicked');
+    }, 500);
+  } else {
+    newIcon.classList.add('clicked');
+    newIcon.classList.add('open');
+    menu.classList.remove('hidden');
+    menu.classList.add('visible');
+    newIcon.innerHTML = 'remove_circle';
+    open = true;
+    setTimeout(function() {
+      newIcon.classList.remove('clicked');
+    }, 500);
+  }
+}
+
+function startNew() {
+  sessionStorage.setItem('imageSrc', this.getElementsByTagName('img')[0].src);
 }
 
 function displayMoreImages() {

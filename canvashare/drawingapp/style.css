@@ -123,17 +123,6 @@ a {
   text-decoration: none;
 }
 
-#homepage {
-  position: fixed;
-  bottom: 0px;
-  right: 0px;
-  opacity: 0.7;
-}
-
-#homepage:hover {
-  opacity: 1;
-}
-
 @media only screen and (min-width: 768px) {
   #gallery i {
     height: 0px;

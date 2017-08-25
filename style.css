@@ -185,12 +185,12 @@ body {
   color: #ffffff;
 }
 
-.night-view .modal-project-title:hover h2 {
-  opacity: 1;
-}
-
 .night-view .modal-project-title h2 {
   color: #000000;
+}
+
+.night-view .modal-project-title:hover h2 {
+  opacity: 1;
 }
 
 .video-player {
@@ -672,36 +672,28 @@ button.selected {
   height: 8px;
 }
 
-.png-icon {
-  display: inline-block;
+.svg-icon {
+  height: 8px;
 }
 
-.night-view .javascript {
-  content: url('images/javascript-white.png');
+.night-view .svg-icon {
+  fill: #ffffff;
 }
 
-.night-view .flask {
-  content: url('images/flask-white.png');
+.svg-icon.inverse {
+  fill: #ffffff;
 }
 
-.night-view .aws {
-  content: url('images/aws-white.png');
+.night-view .svg-icon.inverse {
+  fill: #000000;
 }
 
-.night-view .apache {
-  content: url('images/apache-white.png');
+.svg-icon stop {
+  stop-color: #000000;
 }
 
-.night-view .ps {
-  content: url('images/ps-white.png');
-}
-
-.night-view .msoffice {
-  content: url('images/msoffice-white.png');
-}
-
-.night-view .epic {
-  content: url('images/epic-white.png');
+.night-view .svg-icon stop {
+  stop-color: #ffffff;
 }
 
 .words {
@@ -709,16 +701,17 @@ button.selected {
   font-family: 'Rajdhani', sans-serif;
   font-size: 10px;
   line-height: 2;
+  -webkit-font-smoothing: antialiased;
 }
 
-.contact > a > i > .words, .contact > .words, .projects > a > .location, .education > a > .location {
+.contact > a > i > .words, .contact > .words, .education > a > .location {
   margin-left: 0px;
   color: #7fd13b;
   font-weight: bold;
   text-shadow: none;
 }
 
-.contact > a:hover > i > .words, .projects > a:hover > .location, .education > a:hover > .location {
+.contact > a:hover > i > .words, .education > a:hover > .location {
   color: #808080;
 }
 
@@ -744,7 +737,7 @@ button.selected {
   display: none !important;
 }
 
-#about-page .project-title, .position-title, .education-title, .award-title {
+.position-title, .education-title, .award-title {
   margin-left: 0px;
   font-size: 11px;
   font-weight: bold;
@@ -756,7 +749,7 @@ button.selected {
   text-shadow: 0 -0.1px 0 #000000;
 }
 
-.projects > a, .education > a {
+.education > a {
   margin-left: 0px;
 }
 
@@ -942,6 +935,10 @@ section {
     font-size: 15px;
   }
 
+  .svg-icon {
+    height: 15px;
+  }
+
   .expand-large {
     display: initial !important;
     font-size: 12px !important;
@@ -972,7 +969,7 @@ section {
     font-style: italic;
 }
 
-  #about-page .project-title, .position-title, .education-title, .award-title {
+  .position-title, .education-title, .award-title {
     margin-left: 3px;
     font-size: 18px;
   }
@@ -982,7 +979,7 @@ section {
     font-size: 16px;
   }
 
-  .projects > a, .education > a {
+  .education > a {
     margin-left: 21px;
   }
 
@@ -1016,7 +1013,7 @@ section {
     margin-top: 20px;
   }
 
-  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, .github-repo, #theme-setting, #account-menu {
+  #page-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, #theme-setting, #account-menu {
     display: none !important;
   }
 
@@ -1037,35 +1034,15 @@ section {
     fill: #000000;
   }
 
-  .javascript {
-    content: url('images/javascript-black.png');
+  .svg-icon {
+    fill: #000000;
   }
 
-  .flask {
-    content: url('images/flask-black.png');
+  .svg-icon stop {
+    stop-color: #000000;
   }
 
-  .aws {
-    content: url('images/aws-black.png');
-  }
-
-  .apache {
-    content: url('images/apache-black.png');
-  }
-
-  .ps {
-    content: url('images/ps-black.png');
-  }
-
-  .msoffice {
-    content: url('images/msoffice-black.png');
-  }
-
-  .epic {
-    content: url('images/epic-black.png');
-  }
-
-  .project-title, .position-title, .education-title, .award-title, .dates, .location, .description {
+  .position-title, .education-title, .award-title, .dates, .location, .description {
     margin-left: 0px !important;
   }
 
@@ -1073,7 +1050,7 @@ section {
     font-size: 11.3px;
   }
 
-  #about-page .project-title, .position-title, .education-title, .award-title {
+  .position-title, .education-title, .award-title {
     font-size: 12px;
   }
 

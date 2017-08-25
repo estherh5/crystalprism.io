@@ -24,6 +24,7 @@ var videos = document.getElementsByTagName('video');
 var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
+var projectsPageLink = document.getElementById('projects-page-link');
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -48,6 +49,7 @@ modal.onclick = closeInfo;
 nextButton.onclick = toggleNext;
 previousButton.onclick = togglePrevious;
 closeButton.onclick = closeInfo;
+projectsPageLink.onclick = displayPage;
 
 if (localStorage.getItem('theme') == 'night' || now >= 0 && now <= 6 && localStorage.getItem('theme') != 'day' || now >= 20 && now <= 23 && localStorage.getItem('theme') != 'day') {
   document.body.classList.add('night-view');

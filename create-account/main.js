@@ -53,7 +53,7 @@ function createAccount() {
           $(success).modal('show');
           successTitle.innerHTML = username.toLowerCase();
           setTimeout(function() {
-            window.location = '../index.html';
+            window.location = '../sign-in/index.html';
           }, 3000);
         }
       })

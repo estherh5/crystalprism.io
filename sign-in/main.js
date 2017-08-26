@@ -47,8 +47,8 @@ function checkAccount() {
       })
     }
     if (response.status == 200) {
-      response.json().then(function (json) {
-        token = json.data;
+      response.json().then(function (json_token) {
+        localStorage.setItem('cptoken', json_token['token']);
         $(success).modal('show');
         successTitle.innerHTML = username.toLowerCase();
         setTimeout(function() {

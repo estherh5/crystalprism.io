@@ -196,23 +196,29 @@ function postImage() {
     }
   }
   if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
-    data = {image: stageCanvas.toDataURL(), likes: '0', views: '0'};
-    data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawing/' + filename.value, {
-      headers: {'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data,
-    }).catch(function (error) {
-      window.alert('Your post did not go through. Please try again soon.');
-    }).then(function (response) {
-      if (response.ok) {
-        setTimeout(function () {
-          localStorage.removeItem('imageSrc');
-          localStorage.removeItem('imageName');
-          window.location.href = '../index.html'
-        }, 700);
-      }
-    })
+    if (localStorage.getItem('cptoken') == null) {
+      window.alert('You must log in to create a post.');
+    } else {
+      data = {image: stageCanvas.toDataURL(), likes: '0', views: '0'};
+      data = JSON.stringify(data);
+      fetch(server + '/canvashare/drawing/' + filename.value, {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+        method: 'POST',
+        body: data,
+      }).catch(function (error) {
+        window.alert('Your post did not go through. Please try again soon.');
+      }).then(function (response) {
+        if (response.ok) {
+          setTimeout(function () {
+            localStorage.removeItem('imageSrc');
+            localStorage.removeItem('imageName');
+            window.location.href = '../index.html'
+          }, 700);
+        } else {
+          window.alert('You must log in to create a post.');
+        }
+      })
+    }
   }
 }
 

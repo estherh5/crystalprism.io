@@ -90,8 +90,24 @@ for (var i = 0; i < parentExpandables.length; i++) {
 }
 
 // Define functions
+function checkAccountStatus() {
+  // Update endpoint
+  return fetch(server + '/login', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).then(function (response) {
+    if (response.ok) {
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../myaccount/index.html'
+      signInLink.innerHTML = 'Sign Out';
+    } else {
+      return;
+    }
+  })
+}
+
 function getEntries() {
-  return fetch(server + '/thought-writer/entries/fasi32058vasfr23rp9pgasf@Ej2##34?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+  return fetch(server + '/thought-writer/esther_entries?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';

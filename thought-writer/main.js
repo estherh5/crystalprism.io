@@ -70,8 +70,11 @@ rightArrow.onclick = getMore;
 
 // Define functions
 function getPosts() {
-  if (localStorage.getItem('thoughtWriterID') != null) {
-    return fetch(server + '/thought-writer/entries/' + localStorage.getItem('thoughtWriterID') + '?start=' + requestStart + '&end=' + requestEnd).then(function (response) {
+  if (localStorage.getItem('cptoken') != null) {
+    return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+      method: 'GET',
+    }).then(function (response) {
       response.json().then(function (posts) {
         postArea.innerHTML = '';
         if (posts.length != 0) {
@@ -104,8 +107,6 @@ function getPosts() {
         }
       })
     })
-  } else {
-    localStorage.setItem('thoughtWriterID', Math.random().toString(36).substr(2, 16));
   }
 }
 
@@ -177,23 +178,33 @@ function submitEntry() {
   }
   if (this.innerHTML == 'Submit') {
     if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
-      var timestamp = now.getTime();
-      entry.dataset.timestamp = timestamp;
-      var hour = parseInt(now.getHours());
-      var ampm = hour >= 12 ? ' PM' : ' AM';
-      var hour = hour % 12;
-      if (hour == 0) {
-        hour = 12;
+      if (localStorage.getItem('cptoken') == null) {
+        window.alert('You must log in to create a post.');
+        return;
+      } else {
+        var timestamp = now.getTime();
+        entry.dataset.timestamp = timestamp;
+        var hour = parseInt(now.getHours());
+        var ampm = hour >= 12 ? ' PM' : ' AM';
+        var hour = hour % 12;
+        if (hour == 0) {
+          hour = 12;
+        }
+        var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML};
+        data = JSON.stringify(data);
       }
-      var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML};
-      data = JSON.stringify(data);
     }
   } else if (this.innerHTML == 'Modify') {
-    var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML};
-    data = JSON.stringify(data);
+    if (localStorage.getItem('cptoken') == null) {
+      window.alert('You must log in to create a post.');
+      return;
+    } else {
+      var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML};
+      data = JSON.stringify(data);
+    }
   }
-  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
-    headers: {'Content-Type': 'application/json'},
+  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   }).catch(function (error) {
@@ -234,8 +245,8 @@ function submitEntry() {
 }
 
 function deleteEntry() {
-  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
-    headers: {'Content-Type': 'application/json'},
+  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
   })
   if (open) {
@@ -246,8 +257,8 @@ function deleteEntry() {
 }
 
 function modifyLast() {
-  fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('thoughtWriterID') + '?timestamp=' + entry.dataset.timestamp, {
-    headers: {'Content-Type': 'application/json'},
+  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
   })
   if (open) {

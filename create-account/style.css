@@ -16,12 +16,14 @@ body {
   border: none;
 }
 
-#homepage {
+#homepage-row {
   position: fixed;
-  height: 50px;
-  width: 200px;
-  margin-top: 5px;
+  height: 75px;
   top: 0px;
+}
+
+#homepage {
+  margin-top: 5px;
   display: flex;
   align-items: center;
   align-self: center;
@@ -34,7 +36,7 @@ a {
   text-decoration: none;
 }
 
-a:hover, a:focus, #homepage:hover h1 {
+a:hover, a:focus {
   color: #808080;
   text-decoration: none;
 }
@@ -43,6 +45,11 @@ a:hover, a:focus, #homepage:hover h1 {
   position: absolute;
   height: 50px;
   opacity: 0.6;
+  filter: grayscale(1);
+}
+
+#homepage:hover #diamond-small {
+  filter: grayscale(0);
 }
 
 #homepage h1 {
@@ -52,6 +59,10 @@ a:hover, a:focus, #homepage:hover h1 {
   font-family: 'Amatic SC', cursive;
   font-size: 18px;
   font-weight: bold;
+}
+
+#homepage:hover h1 {
+  color: #000000 !important;
 }
 
 .container {
@@ -100,10 +111,14 @@ button {
   font-family: 'Bungee Hairline', cursive;
   font-weight: bold;
   cursor: pointer;
+  transform: scale(1);
+  transition: all 0.3s;
 }
 
 button:hover {
   background-color: rgba(0, 128, 0, 0.75);
+  transform: scale(1.1);
+  transition: all 0.3s;
 }
 
 button:active {

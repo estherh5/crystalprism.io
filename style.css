@@ -45,7 +45,9 @@ body {
   position: absolute;
   width: 66px;
   padding: 0px;
-  margin-top: 10px;
+  margin-top: 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
   z-index: 3;
 }
 
@@ -54,11 +56,12 @@ body {
   margin: 3px;
   top: 0px;
   right: 0px;
+  font-family: 'Rajdhani', sans-serif;
   font-size: 12px;
   z-index: 10;
 }
 
-#create-account {
+#account-link {
   margin-right: 7px;
 }
 
@@ -407,6 +410,7 @@ button.selected {
   display: flex;
   flex-direction: column;
   align-items: center;
+  font-family: 'Rajdhani', sans-serif;
 }
 
 #starting-page {
@@ -594,16 +598,20 @@ button.selected {
   transform: translateY(0px);
 }
 
+#photos-page {
+  color: #8551ff;
+}
+
+#error-message {
+  font-size: 12px;
+  color: #d24cff;
+}
+
 .entry {
   border-spacing: 0px;
   margin-bottom: 30px;
   margin-left: 2vw;
   user-select: text;
-}
-
-#error-message {
-  font-size: 25px;
-  color: #d24cff;
 }
 
 #ideas-page tr, #ideas-page td {
@@ -728,6 +736,7 @@ button.selected {
 
 .svg-icon {
   height: 8px;
+  fill: #000000;
 }
 
 .night-view .svg-icon {
@@ -880,8 +889,12 @@ section {
     font-size: 32px;
   }
 
+  #theme-button {
+    font-size: 14px;
+  }
+
   #account-menu {
-    font-size: 22px;
+    font-size: 14px;
   }
 
   .project-blurb {
@@ -1124,11 +1137,11 @@ section {
   }
 
   .svg-icon {
-    fill: #000000;
+    fill: #000000 !important;
   }
 
   .svg-icon stop {
-    stop-color: #000000;
+    stop-color: #000000 !important;
   }
 
   .position-title, .education-title, .award-title, .dates, .location, .description {

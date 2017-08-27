@@ -1,4 +1,5 @@
 // Define variables
+var logout = document.getElementById('logout');
 var submit = document.getElementById('submit');
 var usernameInput = document.getElementById('username');
 var passwordInput = document.getElementById('password');
@@ -18,6 +19,15 @@ if (window.location.hostname == 'crystalprism.io') {
 submit.onclick = checkAccount;
 
 // Define functions
+function displayLogout() {
+  if (sessionStorage.getItem('cprequest') == 'logout') {
+    $(logout).modal('show');
+    localStorage.removeItem('cpusername');
+    localStorage.removeItem('cptoken');
+    sessionStorage.removeItem('cprequest');
+  }
+}
+
 function checkAccount() {
   var username = usernameInput.value.toLowerCase();
   var password = passwordInput.value;
@@ -48,11 +58,12 @@ function checkAccount() {
     }
     if (response.status == 200) {
       response.json().then(function (json_token) {
+        localStorage.setItem('cpusername', username);
         localStorage.setItem('cptoken', json_token['token']);
         $(success).modal('show');
         successTitle.innerHTML = username.toLowerCase();
         setTimeout(function() {
-          window.location = '../index.html';
+          window.location = '../my-account/index.html';
         }, 3000);
       })
     }

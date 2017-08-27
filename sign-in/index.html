@@ -19,7 +19,7 @@
     </script>
     <title>Sign In</title>
   </head>
-  <body class="d-flex flex-column align-items-center justify-content-center">
+  <body onload="displayLogout();" class="d-flex flex-column align-items-center justify-content-center">
     <div id="blanks" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -39,6 +39,24 @@
       </div>
     </div>
   <body class="d-flex flex-column align-items-center justify-content-center">
+    <div id="logout" class="modal" data-keyboard="true" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 id="logout-title" class="modal-title">Signed out</h3>
+            <button type="button" id="logout-close" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>You have been successfully signed out.</p>
+          </div>
+          <div class="modal-footer">
+            <button id="okay" type="button" data-dismiss="modal">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
     <div id="user-fail" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -82,7 +100,7 @@
             <h3 id="success-title" class="modal-title"></h3>
           </div>
           <div class="modal-body">
-            <p>You logged in successfully. You will be redirected shortly.</p>
+            <p>You signed in successfully. You will be redirected shortly.</p>
           </div>
         </div>
       </div>

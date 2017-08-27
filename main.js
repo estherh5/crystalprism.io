@@ -101,6 +101,9 @@ function checkAccountStatus() {
       accountLink.innerHTML = 'My Account';
       accountLink.href = 'my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
     } else {
       return;
     }

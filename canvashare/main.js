@@ -1,4 +1,7 @@
 // Define variables
+var profileLink = document.getElementById('profile-link');
+var accountLink = document.getElementById('account-link');
+var signInLink = document.getElementById('sign-in-link');
 var header = document.getElementById('header');
 var gallery = document.getElementById('gallery');
 var galleryTitle = document.getElementById('gallery-title');
@@ -33,6 +36,32 @@ newImage.onclick = startNew;
 window.onscroll = displayMoreImages;
 
 // Define functions
+function checkAccountStatus() {
+  return fetch(server + '/user/verify', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).then(function (response) {
+    if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../user/my-account/index.html';
+      signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
+    } else {
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cppreviouswindow', '../../canvashare/index.html');
+      }
+    }
+  })
+}
+
 function setHoverTitle() {
   var randomNumber = Math.floor(Math.random() * hoverTitles.length);
   galleryTitle.title = hoverTitles[randomNumber];
@@ -54,11 +83,10 @@ function getImages() {
     response.json().then(function (images) {
       if (images.length != 0) {
         for (var i = 0; i < images.length; i++) {
-          var likeText = document.createElement('text');
-          likeText.dataset.image = images[i];
-          var viewText = document.createElement('text');
-          viewText.dataset.image = images[i];
-          getInfo(images[i]);
+          var imageLikes = document.createElement('div');
+          imageLikes.className = 'image-likes';
+          imageLikes.title = 'Likes';
+          imageLikes.dataset.image = images[i];
           var imageDiv = document.createElement('div');
           imageDiv.className = 'image-div';
           var imageLink = document.createElement('a');
@@ -66,35 +94,43 @@ function getImages() {
           imageLink.href = 'javascript:delay("drawingapp/index.html")';
           var imageName = document.createElement('div');
           imageName.className = 'image-name';
-          imageName.innerHTML = images[i].split(/`|.png/)[0];
+          imageName.innerHTML = images[i].substr(images[i].indexOf('/')+1).split(/`|.png/)[0];
           var image = document.createElement('img');
           image.className = 'image';
+          image.dataset.painter = images[i].substr(0, images[i].indexOf('/'));
           image.src = server + '/canvashare/drawing/' + images[i];
           var imageInfo = document.createElement('div');
           imageInfo.className = 'image-info';
-          var imageLikes = document.createElement('div');
-          imageLikes.className = 'image-likes';
-          imageLikes.title = 'Image likes';
-          if (localStorage.getItem(images[i]) == null) {
-            imageLikes.innerHTML = '<i class="heart fa fa-heart-o" aria-hidden="true"></i>';
-          } else {
-            imageLikes.innerHTML = '<i class="heart fa fa-heart" aria-hidden="true"></i>';
-          }
+          var imagePainter = document.createElement('div');
+          imagePainter.className = 'image-painter';
+          imagePainter.title = 'Painter';
           var imageViews = document.createElement('div');
           imageViews.className = 'image-views';
-          imageViews.title = 'Image copies';
-          imageViews.innerHTML = '<i class="fa fa-file-image-o" aria-hidden="true"></i>';
+          imageViews.title = 'Views';
+          imageViews.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
           gallery.append(imageDiv);
           imageDiv.append(imageName);
           imageDiv.append(imageLink);
           imageLink.append(image);
           imageDiv.append(imageInfo);
           imageInfo.append(imageLikes);
+          var likeText = document.createElement('text');
+          likeText.dataset.image = images[i];
           imageLikes.append(likeText);
           imageInfo.append(imageViews);
+          var viewText = document.createElement('text');
+          viewText.dataset.image = images[i];
           imageViews.append(viewText);
+          imageInfo.append(imagePainter);
+          var painterLink = document.createElement('a');
+          painterLink.href = '../user/index.html?username=' + images[i].substr(0, images[i].indexOf('/'));
+          var painterText = document.createElement('text');
+          painterText.className = 'painter-text';
+          painterText.dataset.image = images[i];
+          painterLink.append(painterText);
+          imagePainter.append(painterLink);
           image.onclick = setImageValues;
-          imageLikes.getElementsByTagName('i')[0].onclick = setImageValues;
+          getInfo(images[i]);
         }
       }
     })
@@ -106,8 +142,23 @@ function getInfo(imageFileName) {
     response.json().then(function (drawingInfo) {
       var parsed = JSON.parse(drawingInfo);
       var dataElements = document.querySelectorAll('[data-image="' + imageFileName + '"]');
-      dataElements[0].innerHTML = parsed['likes'];
-      dataElements[1].innerHTML = parsed['views'];
+      var unlikedHeart = document.createElement('i');
+      unlikedHeart.classList.add('heart');
+      unlikedHeart.classList.add('fa');
+      unlikedHeart.classList.add('fa-heart-o');
+      var likedHeart = document.createElement('i');
+      likedHeart.classList.add('heart');
+      likedHeart.classList.add('fa');
+      likedHeart.classList.add('fa-heart');
+      if (parsed['liked_users'].includes(localStorage.getItem('cpusername'))) {
+        dataElements[0].insertBefore(likedHeart, dataElements[0].firstChild);
+      } else {
+        dataElements[0].insertBefore(unlikedHeart, dataElements[0].firstChild);
+      }
+      dataElements[0].getElementsByTagName('i')[0].onclick = setImageValues;
+      dataElements[1].innerHTML = parsed['likes'];
+      dataElements[2].innerHTML = parsed['views'];
+      dataElements[3].innerHTML = parsed['painter'];
     })
   });
 }
@@ -119,42 +170,57 @@ function delay(URL) {
 function setImageValues() {
   if (this.classList.contains('image')) {
     sessionStorage.setItem('imageSrc', this.src);
-    currentLikes = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[0].innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[1].innerHTML;
+    currentLikes = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[1].innerHTML;
+    currentViews = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[2].innerHTML;
+    imagePainter = this.dataset.painter;
     data = {'likes': parseInt(currentLikes), 'views': parseInt(currentViews) + 1};
     data = JSON.stringify(data);
     fetch(server + '/canvashare/drawinginfo/' + this.src.split('/canvashare/drawing/')[1].split('.png')[0], {
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
     })
   } else if (this.classList.contains('fa-heart-o')) {
-    localStorage.setItem(this.nextSibling.dataset.image, 1);
-    this.classList.remove('fa-heart-o');
-    this.classList.add('fa-heart');
-    this.nextSibling.innerHTML = parseInt(this.nextSibling.innerHTML) + 1;
-    currentLikes = this.nextSibling.innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[1].innerHTML;
-    data = {'likes': currentLikes, 'views': parseInt(currentViews)};
+    heart = this;
+    likeText = this.nextSibling;
+    currentLikes = likeText.innerHTML;
+    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;
+    imagePainter = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[3].innerHTML;
+    data = {'likes': (parseInt(currentLikes) + 1).toString(), 'views': (parseInt(currentViews)).toString()};
     data = JSON.stringify(data);
     fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.image.split('.png')[0], {
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).then(function (response) {
+      if (response.ok) {
+        likeText.innerHTML = parseInt(currentLikes) + 1;
+        heart.classList.remove('fa-heart-o');
+        heart.classList.add('fa-heart');
+      } else {
+        window.alert('You must log in to like a drawing.');
+      }
     })
   } else if (this.classList.contains('fa-heart')) {
-    localStorage.removeItem(this.nextSibling.dataset.image);
-    this.classList.remove('fa-heart');
-    this.classList.add('fa-heart-o');
-    this.nextSibling.innerHTML = parseInt(this.nextSibling.innerHTML) - 1;
-    currentLikes = this.nextSibling.innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[1].innerHTML;
-    data = {'likes': currentLikes, 'views': parseInt(currentViews)};
+    heart = this;
+    likeText = this.nextSibling;
+    currentLikes = likeText.innerHTML;
+    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;
+    imagePainter = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[3].innerHTML;
+    data = {'likes': parseInt(currentLikes) - 1, 'views': parseInt(currentViews)};
     data = JSON.stringify(data);
     fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.image.split('.png')[0], {
-      headers: {'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).then(function (response) {
+      if (response.ok) {
+        heart.classList.remove('fa-heart');
+        heart.classList.add('fa-heart-o');
+        likeText.innerHTML = parseInt(currentLikes) - 1;
+      } else {
+        window.alert('You must log in to like a drawing.');
+      }
     })
   }
 }

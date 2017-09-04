@@ -5,7 +5,7 @@
     <meta name="description" content="Interactive drawing tool gallery">
     <meta name="keywords" content="gallery,drawing,canvas">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura|Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura|Material+Icons|Rajdhani" rel="stylesheet">
     <link href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -19,7 +19,7 @@
     </script>
     <title>CanvaShare</title>
   </head>
-  <body onload="setHoverTitle();getImages();">
+  <body onload="checkAccountStatus();setHoverTitle();getImages();">
     <i id="new" class="material-icons">add_circle</i>
     <div id="menu" class="hidden">
       <div id="user-div" class="icon-div hidden">
@@ -36,9 +36,19 @@
       </div>
     </div>
     <div id="header">
+      <div id="homepage-row">
+        <a id="homepage" href="../index.html">
+          <img id="diamond-small" src="../images/homepage.png">
+        </a>
+      </div>
       <a id="gallery-link" href="index.html">
         <h1 id="gallery-title">CanvaShare</h1>
       </a>
+      <div id="account-menu">
+        <a id="profile-link"></a>
+        <a id="account-link" href="../user/create-account/index.html"></a>
+        <a id="sign-in-link" href="../user/sign-in/index.html"></a>
+      </div>
     </div>
     <div id="container">
       <div id="gallery">

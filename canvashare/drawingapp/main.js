@@ -29,8 +29,42 @@ var filename;
 var server;
 var enteredName;
 var data;
+if (window.location.hostname == 'crystalprism.io') {
+  server = 'http://13.58.175.191/api';
+} else {
+  server = 'http://localhost:5000/api';
+}
 
 // Define functions
+function checkAccountStatus() {
+  var profileLink = document.getElementById('profile-link');
+  var accountLink = document.getElementById('account-link');
+  var signInLink = document.getElementById('sign-in-link');
+  return fetch(server + '/user/verify', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).then(function (response) {
+    if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('cpusername');
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../../user/my-account/index.html';
+      signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
+    } else {
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cppreviouswindow', '../../canvashare/drawingapp/index.html');
+      }
+    }
+  })
+}
+
 function setStage() {
   canvas = document.getElementById('canvas');
   context = canvas.getContext('2d');
@@ -180,11 +214,6 @@ function clearImage() {
 }
 
 function postImage() {
-  if (window.location.hostname == 'crystalprism.io') {
-    server = 'http://13.58.175.191/api';
-  } else {
-    server = 'http://localhost:5000/api';
-  }
   while (filename.value == '[title]' || filename.value == '') {
     enteredName = prompt('Enter a title for your drawing.');
     if (enteredName == '') {
@@ -201,7 +230,7 @@ function postImage() {
     } else {
       data = {image: stageCanvas.toDataURL(), likes: '0', views: '0'};
       data = JSON.stringify(data);
-      fetch(server + '/canvashare/drawing/' + filename.value, {
+      fetch(server + '/canvashare/drawing/' + localStorage.getItem('cpusername') + '/' + filename.value, {
         headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
         method: 'POST',
         body: data,

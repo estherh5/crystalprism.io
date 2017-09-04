@@ -12,6 +12,20 @@ html, body {
   visibility: hidden;
 }
 
+#account-menu {
+  position: fixed;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
+}
+
 #gallery {
   position: absolute;
   left: 0px;
@@ -124,6 +138,10 @@ a {
 }
 
 @media only screen and (min-width: 768px) {
+  #account-menu {
+    font-size: 14px;
+  }
+
   #gallery i {
     height: 0px;
     width: 0px;

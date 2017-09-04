@@ -61,7 +61,7 @@ body {
   z-index: 10;
 }
 
-#account-link {
+#profile-link, #account-link {
   margin-right: 7px;
 }
 

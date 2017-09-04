@@ -25,6 +25,7 @@ var childExpandables = document.getElementsByClassName('expand-small');
 var parentExpandables = document.getElementsByClassName('expand-large');
 var sections = document.getElementsByTagName('section');
 var projectsPageLink = document.getElementById('projects-page-link');
+var profileLink = document.getElementById('profile-link');
 var accountLink = document.getElementById('account-link');
 var signInLink = document.getElementById('sign-in-link');
 if (window.location.hostname == 'crystalprism.io') {
@@ -98,14 +99,19 @@ function checkAccountStatus() {
     method: 'GET',
   }).then(function (response) {
     if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = 'user/index.html?username=' + localStorage.getItem('cpusername');
       accountLink.innerHTML = 'My Account';
-      accountLink.href = 'my-account/index.html';
+      accountLink.href = 'user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
         sessionStorage.setItem('cprequest', 'logout');
       }
     } else {
-      return;
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
     }
   })
 }

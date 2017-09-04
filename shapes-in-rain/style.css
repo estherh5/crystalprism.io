@@ -11,6 +11,38 @@ body {
   user-select: none;
 }
 
+#account-menu {
+  position: fixed;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  color: #ffffff;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:active, button:active {
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+a:hover, button:hover {
+  color: grey;
+}
+
+a:focus, button:focus {
+  outline: none;
+}
+
 #heart {
   opacity: 0.3;
 }
@@ -87,6 +119,10 @@ body {
 }
 
 @media only screen and (min-width: 768px) {
+  #account-menu {
+    font-size: 14px;
+  }
+
   #title {
     font-size: 50px;
   }

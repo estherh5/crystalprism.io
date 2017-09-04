@@ -1,8 +1,43 @@
 // Define variables
+var profileLink = document.getElementById('profile-link');
+var accountLink = document.getElementById('account-link');
+var signInLink = document.getElementById('sign-in-link');
 var canvas = document.getElementById('canvas');
 var heart = document.getElementById('heart');
 var shapes = document.getElementsByClassName('shape');
 var score = document.getElementById('score');
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
+
+// Check if user is logged in
+function checkAccountStatus() {
+  return fetch(server + '/user/verify', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).then(function (response) {
+    if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../user/my-account/index.html';
+      signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
+    } else {
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cppreviouswindow', '../../shapes-in-rain/index.html');
+      }
+    }
+  })
+}
 
 // Resize canvas to fullscreen
 function resize() {
@@ -88,3 +123,22 @@ function createBlast() {
     document.body.style.cursor = 'url("images/blast-start.png") 25 20, auto';
   }, 500);
 }
+
+// Send score to server
+function sendScore() {
+  if (localStorage.getItem('cpusername') != null) {
+    name = localStorage.getItem('cpusername');
+    var scoreName = {
+      score: parseInt(score.innerHTML.split(' ')[1]),
+      name: name,
+    };
+    data = JSON.stringify(scoreName);
+    return fetch(server + '/shapes-in-rain', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      method: 'POST',
+      body: data,
+    })
+  }
+}
+
+window.onbeforeunload = sendScore;

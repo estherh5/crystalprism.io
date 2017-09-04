@@ -5,7 +5,7 @@
     <meta name="description" content="Interactive space that allows you to clear your mind as you clear shapes">
     <meta name="keywords" content="rain,shapes,relaxing,game">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Rajdhani" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <svg id="heart" height="0" width="0" viewBox="0 0 50 50">
@@ -65,7 +65,12 @@
     </script>
     <title>Shapes in Rain</title>
   </head>
-  <body onload="resize()">
+  <body onload="resize();checkAccountStatus();">
+    <div id="account-menu">
+      <a id="profile-link"></a>
+      <a id="account-link" href="../user/create-account/index.html"></a>
+      <a id="sign-in-link" href="../user/sign-in/index.html"></a>
+    </div>
     <div id="container">
       <div id="audio-div" data-video="i6StbRRE4eo" data-autoplay="0" data-loop="1">
       </div>

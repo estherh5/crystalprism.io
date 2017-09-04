@@ -1,4 +1,7 @@
 // Define variables
+var profileLink = document.getElementById('profile-link');
+var accountLink = document.getElementById('account-link');
+var signInLink = document.getElementById('sign-in-link');
 var requestStart = 0;
 var requestEnd = 11;
 var moreExists = false;
@@ -69,6 +72,32 @@ leftArrow.onclick = getMore;
 rightArrow.onclick = getMore;
 
 // Define functions
+function checkAccountStatus() {
+  return fetch(server + '/user/verify', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).then(function (response) {
+    if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../user/my-account/index.html';
+      signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
+    } else {
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cppreviouswindow', '../../thought-writer/index.html');
+      }
+    }
+  })
+}
+
 function getPosts() {
   if (localStorage.getItem('cptoken') != null) {
     return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd, {
@@ -111,15 +140,31 @@ function getPosts() {
 }
 
 function displayPost() {
-  backToDrawingBoard();
-  entryName.value = this.dataset.name;
-  entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
-  entry.dataset.timestamp = this.dataset.timestamp;
-  entry.dataset.date = this.dataset.date;
-  entry.dataset.time = this.dataset.time;
-  clear.innerHTML = 'Close';
-  submit.innerHTML = 'Modify';
-  remove.style.display = 'inline-block';
+  if (sessionStorage.getItem('cppostcontent') != null) {
+    entryName.value = sessionStorage.getItem('cppostname');
+    entry.innerHTML = sessionStorage.getItem('cppostcontent');
+    entry.dataset.timestamp = sessionStorage.getItem('cpposttimestamp');
+    entry.dataset.date = sessionStorage.getItem('cppostdate');
+    entry.dataset.time = sessionStorage.getItem('cpposttime');
+    clear.innerHTML = 'Close';
+    submit.innerHTML = 'Modify';
+    remove.style.display = 'inline-block';
+    sessionStorage.removeItem('cppostname');
+    sessionStorage.removeItem('cppostcontent');
+    sessionStorage.removeItem('cpposttimestamp');
+    sessionStorage.removeItem('cppostdate');
+    sessionStorage.removeItem('cpposttime');
+  } else if (this.classList.contains('post')) {
+    backToDrawingBoard();
+    entryName.value = this.dataset.name;
+    entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
+    entry.dataset.timestamp = this.dataset.timestamp;
+    entry.dataset.date = this.dataset.date;
+    entry.dataset.time = this.dataset.time;
+    clear.innerHTML = 'Close';
+    submit.innerHTML = 'Modify';
+    remove.style.display = 'inline-block';
+  }
 }
 
 function saveData() {
@@ -203,7 +248,7 @@ function submitEntry() {
       data = JSON.stringify(data);
     }
   }
-  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
@@ -245,7 +290,7 @@ function submitEntry() {
 }
 
 function deleteEntry() {
-  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
   })
@@ -257,7 +302,7 @@ function deleteEntry() {
 }
 
 function modifyLast() {
-  fetch(server + '/thought-writer/thoughts/?timestamp=' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
   })
@@ -318,7 +363,7 @@ function toggleCabinet() {
     }
     if (postArea.children.length != 0) {
       if (postArea.getElementsByClassName('post')[0].dataset.number != 0) {
-      leftArrow.classList.add('next-display');
+        leftArrow.classList.add('next-display');
       }
     }
     open = true;

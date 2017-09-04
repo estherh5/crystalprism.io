@@ -5,7 +5,7 @@
     <meta name="description" content="WYSIWYG online journal tool">
     <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Megrim|Share" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Megrim|Rajdhani|Share" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
@@ -18,85 +18,92 @@
     </script>
     <title>Thought Writer</title>
   </head>
-  <body onload="getPosts();">
-    <a href="index.html">
-      <h1 id="title">Thought Writer</h1>
-    </a>
-    <div id="container">
-      <input id="entry-name" value="[title]">
-      <div id="drawing-board">
-        <div id="format-tools">
-          <input id="color-picker" type="color" data-command="foreColor">
-          <button data-command="removeFormat">
-            <i class="fa fa-times" aria-hidden="true"></i>
-          </button>
-          <button data-command="bold">
-            <i class="fa fa-bold" aria-hidden="true"></i>
-          </button>
-          <button data-command="italic">
-            <i class="fa fa-italic" aria-hidden="true"></i>
-          </button>
-          <button data-command="underline">
-            <i class="fa fa-underline" aria-hidden="true"></i>
-          </button>
-          <button data-command="strikeThrough">
-            <i class="fa fa-strikethrough" aria-hidden="true"></i>
-          </button>
-          <button data-command="subscript">
-            <i class="fa fa-subscript" aria-hidden="true"></i>
-          </button>
-          <button data-command="superscript">
-            <i class="fa fa-superscript" aria-hidden="true"></i>
-          </button>
-          <button data-command="justifyLeft">
-            <i class="fa fa-align-left" aria-hidden="true"></i>
-          </button>
-          <button data-command="justifyCenter">
-            <i class="fa fa-align-center" aria-hidden="true"></i>
-          </button>
-          <button data-command="justifyRight">
-            <i class="fa fa-align-right" aria-hidden="true"></i>
-          </button>
-          <button data-command="justifyFull">
-            <i class="fa fa-align-justify" aria-hidden="true"></i>
-          </button>
-          <button data-command="insertOrderedList">
-            <i class="fa fa-list-ol" aria-hidden="true"></i>
-          </button>
-          <button data-command="insertUnorderedList">
-            <i class="fa fa-list-ul" aria-hidden="true"></i>
-          </button>
-          <button data-command="createLink">
-            <i class="fa fa-link" aria-hidden="true"></i>
-          </button>
-          <button data-command="unlink">
-            <i class="fa fa-chain-broken" aria-hidden="true"></i>
-          </button>
-          <button data-command="insertImage">
-            <i class="fa fa-file-image-o" aria-hidden="true"></i>
-          </button>
-        </div>
-        <div id="entry" contenteditable></div>
-        <div id="action-buttons">
-          <button id="clear" class="content-button">Clear</button>
-          <button id="submit" class="content-button">Submit</button>
-          <button id="delete" class="content-button">Delete</button>
-        </div>
-        <button id="go-back" class="content-button">Modify Last Post</button>
-        <button id="new-post" class="content-button">New Post</button>
-      </div>
+  <body onload="checkAccountStatus();getPosts();displayPost();">
+    <div id="account-menu">
+      <a id="profile-link"></a>
+      <a id="account-link" href="../user/create-account/index.html"></a>
+      <a id="sign-in-link" href="../user/sign-in/index.html"></a>
     </div>
-    <div id="cabinet">
-      <div id="cabinet-back">
-        <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
-      </div>
-      <div id="post-area">
-      </div>
-      <div id="cabinet-front">
-        <div id="handle">
-          My Posts
+    <div id="main-wrapper">
+      <a id="title-link" href="index.html">
+        <h1 id="title">Thought Writer</h1>
+      </a>
+      <div id="container">
+        <input id="entry-name" value="[title]">
+        <div id="drawing-board">
+          <div id="format-tools">
+            <input id="color-picker" type="color" data-command="foreColor">
+            <button data-command="removeFormat">
+              <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+            <button data-command="bold">
+              <i class="fa fa-bold" aria-hidden="true"></i>
+            </button>
+            <button data-command="italic">
+              <i class="fa fa-italic" aria-hidden="true"></i>
+            </button>
+            <button data-command="underline">
+              <i class="fa fa-underline" aria-hidden="true"></i>
+            </button>
+            <button data-command="strikeThrough">
+              <i class="fa fa-strikethrough" aria-hidden="true"></i>
+            </button>
+            <button data-command="subscript">
+              <i class="fa fa-subscript" aria-hidden="true"></i>
+            </button>
+            <button data-command="superscript">
+              <i class="fa fa-superscript" aria-hidden="true"></i>
+            </button>
+            <button data-command="justifyLeft">
+              <i class="fa fa-align-left" aria-hidden="true"></i>
+            </button>
+            <button data-command="justifyCenter">
+              <i class="fa fa-align-center" aria-hidden="true"></i>
+            </button>
+            <button data-command="justifyRight">
+              <i class="fa fa-align-right" aria-hidden="true"></i>
+            </button>
+            <button data-command="justifyFull">
+              <i class="fa fa-align-justify" aria-hidden="true"></i>
+            </button>
+            <button data-command="insertOrderedList">
+              <i class="fa fa-list-ol" aria-hidden="true"></i>
+            </button>
+            <button data-command="insertUnorderedList">
+              <i class="fa fa-list-ul" aria-hidden="true"></i>
+            </button>
+            <button data-command="createLink">
+              <i class="fa fa-link" aria-hidden="true"></i>
+            </button>
+            <button data-command="unlink">
+              <i class="fa fa-chain-broken" aria-hidden="true"></i>
+            </button>
+            <button data-command="insertImage">
+              <i class="fa fa-file-image-o" aria-hidden="true"></i>
+            </button>
+          </div>
+          <div id="entry" contenteditable></div>
+          <div id="action-buttons">
+            <button id="clear" class="content-button">Clear</button>
+            <button id="submit" class="content-button">Submit</button>
+            <button id="delete" class="content-button">Delete</button>
+          </div>
+          <button id="go-back" class="content-button">Modify Last Post</button>
+          <button id="new-post" class="content-button">New Post</button>
         </div>
-        <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
+      </div>
+      <div id="cabinet">
+        <div id="cabinet-back">
+          <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
+        </div>
+        <div id="post-area">
+        </div>
+        <div id="cabinet-front">
+          <div id="handle">
+            My Posts
+          </div>
+          <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
+        </div>
       </div>
     </div>
     <div id="homepage">

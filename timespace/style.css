@@ -31,6 +31,7 @@ body {
   width: 30px;
   top: 0px;
   opacity: 0.5;
+  cursor: pointer;
 }
 
 #audio-icon:hover {
@@ -44,7 +45,7 @@ body {
   border-radius: 50%;
 }
 
-#clockbox {
+#clock-container {
   width: 300px;
 }
 
@@ -104,7 +105,7 @@ body {
     width: 70px;
   }
 
-  #clockbox {
+  #clock-container {
     width: 550px;
   }
 

@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -20,60 +20,6 @@
     <title>Create Account</title>
   </head>
   <body class="d-flex flex-column align-items-center justify-content-center">
-    <div id="fix-user" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="fix-user-title" class="modal-title">Username blank</h3>
-            <button type="button" id="fix-user-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Your username cannot be blank.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="fix-char" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="fix-char-title" class="modal-title">Invalid symbols</h3>
-            <button type="button" id="fix-char-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Your username can only contain letters, numbers, dashes and underscores.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="fix-pass" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="fix-pass-title" class="modal-title">Password too short</h3>
-            <button type="button" id="fix-pass-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Your password must be at least 8 characters long.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
     <div id="retry" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -92,22 +38,10 @@
         </div>
       </div>
     </div>
-    <div id="success" class="modal" data-keyboard="true" tabindex="-1" data-backdrop="static">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="success-title" class="modal-title"></h3>
-          </div>
-          <div class="modal-body">
-            <p>Your account was created successfully. You will be redirected shortly.</p>
-          </div>
-        </div>
-      </div>
-    </div>
     <div id="homepage-row" class="row no-gutters w-100">
       <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage" href="../index.html">
-          <img id="diamond-small" src="../images/homepage.png">
+        <a id="homepage" href="../../index.html">
+          <img id="diamond-small" src="../../images/homepage.png">
           <h1>Crystal Prism</h1>
         </a>
       </div>
@@ -124,19 +58,32 @@
         </div>
       </div>
       <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-3">
+        <div class="col-4">
           <h2>Username: </h2>
         </div>
         <div class="col-auto">
-          <input id="username" type="text" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Username can only contain letters, numbers, dashes, and underscores" maxlength="100" autofocus>
+          <input id="username" type="text" maxlength="100" autofocus>
+          <div id="user-warning-one" class="warning">Username cannot be blank</div>
+          <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
         </div>
       </div>
       <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-3">
+        <div class="col-4">
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
           <input id="password" type="password" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+          <div id="pass-warning-one" class="warning">Password cannot be blank</div>
+          <div id="pass-warning-two" class="warning">Password too short</div>
+        </div>
+      </div>
+      <div class="row my-2 d-flex align-items-center justify-content-center">
+        <div class="col-4">
+          <h2>Confirm Password: </h2>
+        </div>
+        <div class="col-auto">
+          <input id="confirm-password" type="password" spellcheck="false">
+          <div id="pass-warning-three" class="warning">Passwords do not match</div>
         </div>
       </div>
       <div class="row my-3">

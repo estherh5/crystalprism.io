@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
-    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico">
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -20,25 +20,6 @@
     <title>Sign In</title>
   </head>
   <body onload="displayLogout();" class="d-flex flex-column align-items-center justify-content-center">
-    <div id="blanks" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="blanks-title" class="modal-title">Empty fields</h3>
-            <button type="button" id="blanks-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please enter both a username and password.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  <body class="d-flex flex-column align-items-center justify-content-center">
     <div id="logout" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -49,7 +30,7 @@
             </button>
           </div>
           <div class="modal-body">
-            <p>You have been successfully signed out.</p>
+            <p>You have been signed out.</p>
           </div>
           <div class="modal-footer">
             <button id="okay" type="button" data-dismiss="modal">Okay</button>
@@ -57,12 +38,12 @@
         </div>
       </div>
     </div>
-    <div id="user-fail" class="modal" data-keyboard="true" tabindex="-1">
+    <div id="cred-fail" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="user-fail-title" class="modal-title"></h3>
-            <button type="button" id="user-fail-close" class="close" data-dismiss="modal" aria-label="Close">
+            <h3 id="cred-fail-title" class="modal-title">Incorrect username/password</h3>
+            <button type="button" id="cred-fail-close" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -71,44 +52,14 @@
           </div>
           <div class="modal-footer">
             <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="password-fail" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="password-fail-title" class="modal-title">Incorrect password</h3>
-            <button type="button" id="password-fail-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please try again.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="success" class="modal" data-keyboard="true" tabindex="-1" data-backdrop="static">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="success-title" class="modal-title"></h3>
-          </div>
-          <div class="modal-body">
-            <p>You signed in successfully. You will be redirected shortly.</p>
           </div>
         </div>
       </div>
     </div>
     <div id="homepage-row" class="row no-gutters w-100">
       <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage" href="../index.html">
-          <img id="diamond-small" src="../images/homepage.png">
+        <a id="homepage" href="../../index.html">
+          <img id="diamond-small" src="../../images/homepage.png">
           <h1>Crystal Prism</h1>
         </a>
       </div>
@@ -130,6 +81,7 @@
         </div>
         <div class="col-auto">
           <input id="username" type="text" spellcheck="false" maxlength="100" autofocus>
+          <div id="user-warning" class="warning">Username cannot be blank</div>
         </div>
       </div>
       <div class="row my-2 d-flex align-items-center justify-content-center">
@@ -138,6 +90,7 @@
         </div>
         <div class="col-auto">
           <input id="password" type="password" spellcheck="false">
+          <div id="pass-warning" class="warning">Password cannot be blank</div>
         </div>
       </div>
       <div class="row my-3">

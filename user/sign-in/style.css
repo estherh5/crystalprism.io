@@ -66,6 +66,7 @@ a:hover, a:focus {
 }
 
 .container {
+  padding-right: 25px;
   box-shadow: 1px 1px #000000;
 }
 
@@ -87,14 +88,16 @@ h4 {
 h2 {
   font-family: 'Pompiere', cursive;
   font-size: 1rem;
-  text-align: center;
+  text-align: right;
 }
 
 input {
+  width: 181px;
   border-color: #c1c1c1;
   border-style: solid;
   border-width: 1px;
-  font-family: 'Bungee Hairline', cursive;
+  font-family: 'Pompiere', cursive;
+  font-size: 15px;
   cursor: text;
   user-select: text;
 }
@@ -103,6 +106,13 @@ input:focus, button:focus {
   outline: auto !important;
   outline-color: #008000 !important;
   outline-width: 3px !important;
+}
+
+.warning {
+  max-width: 181px;
+  display: none;
+  font-size: 9px;
+  color: #f00;
 }
 
 button {
@@ -154,6 +164,10 @@ button:active {
   h2 {
     font-size: 2rem;
   }
+
+  .warning {
+    font-size: 10px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -162,7 +176,6 @@ button:active {
   }
 
   h1 {
-    max-width: 25vw;
     font-size: 7.5rem;
   }
 }

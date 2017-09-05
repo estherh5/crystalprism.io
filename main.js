@@ -236,6 +236,9 @@ function openInfo() {
     projectLinks[i].dataset.open = 'false';
     projectBlurbs[i].classList.remove('open');
   }
+  document.getElementById('homepage').classList.add('grayscale');
+  document.getElementById('page-buttons').classList.add('grayscale');
+  document.getElementById('projects-page').classList.add('grayscale');
   modal.classList.remove('hidden');
   modal.classList.add('open');
   modalBody.classList.add('open');
@@ -249,6 +252,9 @@ function closeInfo(e) {
       projectLinks[i].dataset.open = 'false';
       projectBlurbs[i].classList.remove('open');
     }
+    document.getElementById('homepage').classList.remove('grayscale');
+    document.getElementById('page-buttons').classList.remove('grayscale');
+    document.getElementById('projects-page').classList.remove('grayscale');
     modalBody.classList.remove('open');
     modal.classList.remove('open');
     setTimeout(function() {

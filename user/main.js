@@ -67,6 +67,7 @@ function populatePersonal() {
         firstLastName.innerHTML = info['name'];
         email.innerHTML = info['email'];
         email.href = 'mailto:' + info['email'];
+        document.body.style.backgroundColor = info['background_color'];
         diamond.style.fill = info['color'];
         var utcDateTime = JSON.parse(info['member_since']);
         var dateTime = new Date(utcDateTime + ' UTC');

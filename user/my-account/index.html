@@ -93,6 +93,7 @@
       </div>
     </div>
     <input id="color-picker" type="color" class="hidden" disabled>
+    <input id="background-color-picker" type="color" class="hidden" disabled>
     <div id="account-menu">
       <a id="profile-link"></a>
       <a id="sign-in-link" href="../sign-in/index.html">Sign Out</a>
@@ -142,6 +143,7 @@
             <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-one">Personal</div>
             <div class="back-text h-100 w-100 d-flex flex-column justify-content-center">
               <i class="material-icons back-button" data-section="menu-one">undo</i>
+              <div id="background-color" class="col-10 col-sm-9 col-md-7"></div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
                 <div id="profile-image">
                   <svg id="diamond" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" viewbox="5 15 90 70">
@@ -224,7 +226,7 @@
                   </label>
                 </div>
               </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
+              <div class="row mb-2 mt-5 mt-md-6 mt-lg-3 d-flex justify-content-center align-items-center">
                 <div class="col-1 d-flex align-items-center justify-content-center">
                   <button id="cancel" class="form-button">cancel</button>
                   <button id="edit" class="form-button" data-editing="false">edit</button>

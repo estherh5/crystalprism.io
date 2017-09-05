@@ -22,6 +22,7 @@ var namePublicInput = document.getElementById('name-public');
 var emailInput = document.getElementById('email');
 var emailPublicInput = document.getElementById('email-public');
 var colorPicker = document.getElementById('color-picker');
+var backgroundColorPicker = document.getElementById('background-color-picker');
 var memberStat = document.getElementById('member-stat');
 var userDrawings = [];
 var likedDrawings = [];
@@ -41,11 +42,13 @@ var lastName = lastNameInput.value;
 var namePublic = namePublicInput.checked;
 var email = emailInput.value;
 var emailPublic = emailPublicInput.checked;
+var backgroundColorValue = backgroundColorPicker.value;
 var color = colorPicker.value;
 var cancelButton = document.getElementById('cancel');
 var fields = document.getElementsByTagName('input');
 var labels = document.getElementsByTagName('label');
 var checkboxes = document.getElementsByClassName('public');
+var backgroundColorDisplay = document.getElementById('background-color');
 var profileImage = document.getElementById('profile-image');
 var diamond = document.getElementById('diamond');
 var canvashareLinkOne = document.getElementById('canvashare-link-one-div');
@@ -99,6 +102,13 @@ signInLink.onclick = function() {
   sessionStorage.setItem('cprequest', 'logout');
 }
 
+backgroundColorDisplay.onclick = function(e) {
+  if (e.target == this) {
+    backgroundColorPicker.focus();
+    backgroundColorPicker.click();
+  }
+}
+
 profileImage.onclick = function() {
   colorPicker.focus();
   colorPicker.click();
@@ -107,6 +117,7 @@ profileImage.onclick = function() {
 editButton.onclick = editContent;
 submitButton.onclick = checkPassword;
 cancelButton.onclick = cancelEdit;
+backgroundColorPicker.oninput = changeColor;
 colorPicker.oninput = changeColor;
 usernameInput.onfocusout = assessUsername;
 passwordInput.onfocusout = assessPassword;
@@ -164,6 +175,8 @@ function populatePersonal() {
       namePublicInput.checked = info['name_public'];
       emailInput.value = info['email'];
       emailPublicInput.checked = info['email_public'];
+      backgroundColorPicker.value = info['background_color'];
+      backgroundColorDisplay.style.backgroundColor = info['background_color'];
       colorPicker.value = info['color'];
       diamond.style.fill = info['color'];
       utcDateTime = JSON.parse(info['member_since']);
@@ -551,6 +564,7 @@ function editContent() {
     namePublic = namePublicInput.checked;
     email = emailInput.value;
     emailPublic = emailPublicInput.checked;
+    backgroundColorValue = backgroundColorPicker.value;
     color = colorPicker.value;
     aboutInput.classList.add('editing');
     aboutInput.disabled = false;
@@ -565,6 +579,7 @@ function editContent() {
     this.innerHTML = 'save';
     this.dataset.editing = 'true';
     cancelButton.style.display = 'block';
+    backgroundColorDisplay.classList.add('editing');
     profileImage.classList.add('editing');
   }
 }
@@ -600,8 +615,9 @@ function postEdits() {
   namePublic = namePublicInput.checked;
   email = emailInput.value;
   emailPublic = emailPublicInput.checked;
+  backgroundColorValue = backgroundColorPicker.value;
   color = colorPicker.value;
-  var data = {'username': username, 'password': password, 'first_name': firstName, 'last_name': lastName, 'name_public': namePublic, 'email': email, 'email_public': emailPublic, 'color': color, 'about': about};
+  var data = {'username': username, 'password': password, 'first_name': firstName, 'last_name': lastName, 'name_public': namePublic, 'email': email, 'email_public': emailPublic, 'background_color': backgroundColorValue, 'color': color, 'about': about};
   data = JSON.stringify(data);
   return fetch(server + '/user/' + localStorage.getItem('cpusername'), {
     headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
@@ -626,6 +642,7 @@ function postEdits() {
         editButton.innerHTML = 'edit';
         editButton.dataset.editing = 'false';
         cancelButton.style.display = 'none';
+        backgroundColorDisplay.classList.remove('editing');
         profileImage.classList.remove('editing');
         passwordInput.value = '';
         if (usernameInput.value != localStorage.getItem('cpusername')) {
@@ -637,7 +654,11 @@ function postEdits() {
 }
 
 function changeColor() {
-  diamond.style.fill = this.value;
+  if (this == colorPicker) {
+    diamond.style.fill = this.value;
+  } else if (this == backgroundColorPicker) {
+    backgroundColorDisplay.style.backgroundColor = this.value;
+  }
 }
 
 function cancelEdit() {
@@ -650,6 +671,8 @@ function cancelEdit() {
   namePublicInput.checked = namePublic;
   emailInput.value = email;
   emailPublicInput.checked = emailPublic;
+  backgroundColorPicker.value = backgroundColorValue;
+  backgroundColorDisplay.style.backgroundColor = backgroundColorValue;
   colorPicker.value = color;
   diamond.style.fill = color;
   document.getElementById('user-warning-one').style.display = 'none';
@@ -670,6 +693,7 @@ function cancelEdit() {
   editButton.innerHTML = 'edit';
   editButton.dataset.editing = 'false';
   this.style.display = 'none';
+  backgroundColorDisplay.classList.remove('editing');
   profileImage.classList.remove('editing');
 }
 

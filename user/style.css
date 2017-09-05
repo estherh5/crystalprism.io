@@ -69,8 +69,7 @@ button:active {
 }
 
 #homepage {
-  width: 75px;
-  margin-top: 5px;
+  width: 60px;
   left: 25px;
   display: flex;
   align-items: center;
@@ -295,6 +294,7 @@ a:hover, a:focus {
   }
 
   #homepage {
+    width: 75px;
     height: 100px;
     margin-top: 5px;
   }

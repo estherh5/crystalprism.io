@@ -174,6 +174,10 @@ function setImageValues() {
     })
   } else if (this.classList.contains('fa-heart-o')) {
     heart = this;
+    heart.classList.add('clicked');
+    setTimeout(function() {
+      heart.classList.remove('clicked');
+    }, 500);
     likeText = this.nextSibling;
     currentLikes = likeText.innerHTML;
     currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;
@@ -194,6 +198,10 @@ function setImageValues() {
     })
   } else if (this.classList.contains('fa-heart')) {
     heart = this;
+    heart.classList.add('clicked');
+    setTimeout(function() {
+      heart.classList.remove('clicked');
+    }, 500);
     likeText = this.nextSibling;
     currentLikes = likeText.innerHTML;
     currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;

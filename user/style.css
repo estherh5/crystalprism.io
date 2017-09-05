@@ -246,6 +246,25 @@ a:hover, a:focus {
   color: red;
 }
 
+.clicked {
+  animation-name: pop;
+  animation-duration: 0.2s;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
 .image-likes, .image-views {
   width: 25%;
   padding: 1px;

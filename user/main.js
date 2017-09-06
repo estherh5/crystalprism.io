@@ -16,9 +16,16 @@ var rhythmStat = document.getElementById('rhythm-stat');
 var shapesStat = document.getElementById('shapes-stat');
 var drawingStart = 0;
 var drawingEnd = 4;
+var galleryRow = document.getElementById('gallery-row');
 var gallery = document.getElementById('gallery');
 var drawingLeftArrow = document.getElementById('drawing-left-arrow');
 var drawingRightArrow = document.getElementById('drawing-right-arrow');
+var postStart = 0;
+var postEnd = 4;
+var postAreaRow = document.getElementById('post-area-row');
+var postArea = document.getElementById('post-area');
+var postLeftArrow = document.getElementById('post-left-arrow');
+var postRightArrow = document.getElementById('post-right-arrow');
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -26,8 +33,10 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
-drawingLeftArrow.onclick = getMoreDrawings;
-drawingRightArrow.onclick = getMoreDrawings;
+drawingLeftArrow.onclick = getMore;
+drawingRightArrow.onclick = getMore;
+postLeftArrow.onclick = getMore;
+postRightArrow.onclick = getMore;
 
 // Define functions
 function checkAccountStatus() {
@@ -99,6 +108,9 @@ function populatePersonal() {
 
 function populateDrawings() {
   images = userDrawings.slice(drawingStart, drawingEnd);
+  if (images.length == 0) {
+    galleryRow.classList.add('hidden');
+  }
   if (images.length != 0) {
     gallery.innerHTML = '';
     if (images.length > 3) {
@@ -255,7 +267,7 @@ function delay(URL) {
   setTimeout(function () {window.location = URL}, 800);
 }
 
-function getMoreDrawings() {
+function getMore() {
   if (window.getComputedStyle(this).getPropertyValue('opacity') != 0) {
     if (this == drawingLeftArrow) {
       drawingStart = drawingStart - 3;
@@ -265,6 +277,70 @@ function getMoreDrawings() {
       drawingStart = drawingStart + 3;
       drawingEnd = drawingEnd + 3;
       populateDrawings();
+    } else if (this == postLeftArrow) {
+      psotStart = psotStart - 3;
+      psotEnd = psotEnd - 3;
+      populatePosts();
+    } else if (this == postRightArrow) {
+      psotStart = psotStart + 3;
+      psotEnd = psotEnd + 3;
+      populatePosts();
     }
   }
+}
+
+function populatePosts() {
+  return fetch(server + '/thought-writer/entries/' + username + '?start=' + postStart + '&end=' + postEnd).then(function (response) {
+    if (response.ok) {
+    response.json().then(function (posts) {
+      if (posts.length == 0) {
+        postAreaRow.classList.add('hidden');
+      }
+      if (posts.length != 0) {
+        postArea.innerHTML = '';
+        if (posts.length > 3) {
+          morePostsExist = true;
+          postLoadNumber = 3;
+        } else {
+          morePostsExist = false;
+          postLoadNumber = posts.length;
+        }
+        for (var i = 0; i < postLoadNumber; i++) {
+          var postDiv = document.createElement('div');
+          postDiv.className = 'post-div';
+          postDiv.dataset.number = postStart + i;
+          var postName = document.createElement('div');
+          postName.className = 'post-name';
+          postName.innerHTML = posts[i].name;
+          var post = document.createElement('div');
+          post.classList.add('post');
+          var postEntry = document.createElement('div');
+          postEntry.classList.add('post-entry');
+          postEntry.innerHTML = posts[i].content;
+          var postInfo = document.createElement('div');
+          postInfo.className = 'post-info';
+          var postTime = document.createElement('div');
+          postTime.className = 'post-time';
+          postTime.innerHTML = posts[i].date + ', ' + posts[i].time;
+          postArea.appendChild(postDiv);
+          postDiv.appendChild(postName);
+          postDiv.appendChild(post);
+          post.appendChild(postEntry);
+          postDiv.appendChild(postInfo);
+          postInfo.appendChild(postTime);
+        }
+      }
+      if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
+        postLeftArrow.classList.add('display');
+      } else {
+        postLeftArrow.classList.remove('display');
+      }
+      if (morePostsExist) {
+        postRightArrow.classList.add('display');
+      } else {
+        postRightArrow.classList.remove('display');
+      }
+    })
+    }
+  })
 }

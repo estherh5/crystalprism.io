@@ -19,7 +19,7 @@
     </script>
     <title></title>
   </head>
-  <body onload="checkAccountStatus();populatePersonal();" class="d-flex flex-column align-items-center justify-content-center">
+  <body onload="checkAccountStatus();populatePersonal();populatePosts();" class="d-flex flex-column align-items-center justify-content-center">
     <div id="user-info" class="container-fluid w-100 d-flex flex-column">
       <div id="homepage-row" class="row no-gutters w-100 d-flex align-items-center">
         <div class="col h-100 w-100 d-flex">
@@ -74,6 +74,11 @@
         <i id="drawing-left-arrow" class="material-icons left">keyboard_arrow_left</i>
         <div id="gallery" class="h-100 w-100 my-3"></div>
         <i id="drawing-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+      </div>
+      <div id="post-area-row" class="row no-gutters my-1 my-lg-2 h-100 w-100 d-flex align-items-center justify-content-center">
+        <i id="post-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+        <div id="post-area" class="h-100 w-100 my-3"></div>
+        <i id="post-right-arrow" class="material-icons right">keyboard_arrow_right</i>
       </div>
     </div>
     <script src="https://use.fontawesome.com/02428009ba.js"></script>

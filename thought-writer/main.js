@@ -95,6 +95,12 @@ function checkAccountStatus() {
   return fetch(server + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    accountLink.innerHTML = 'Create Account';
+    signInLink.innerHTML = 'Sign In';
+    signInLink.onclick = function() {
+      sessionStorage.setItem('cppreviouswindow', '../../thought-writer/index.html');
+    }
   }).then(function (response) {
     if (response.ok) {
       profileLink.innerHTML = localStorage.getItem('cpusername');
@@ -145,14 +151,14 @@ function getPosts() {
             post.dataset.timestamp = posts[i].timestamp;
             var now = new Date();
             var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
-            var hour = parseInt(date.getHours());
+            var hour = parseInt(utcDate.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
             if (hour == 0) {
               hour = 12;
             }
-            post.dataset.date = parseInt(date.getMonth() + 1) + '/' + parseInt(date.getDate()) + '/' + parseInt(date.getFullYear());
-            post.dataset.time = hour + ':' + ('0' + parseInt(date.getMinutes())).slice(-2) + ampm;
+            post.dataset.date = parseInt(utcDate.getMonth() + 1) + '/' + parseInt(utcDate.getDate()) + '/' + parseInt(utcDate.getFullYear());
+            post.dataset.time = hour + ':' + ('0' + parseInt(utcDate.getMinutes())).slice(-2) + ampm;
             post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
             var postEntry = document.createElement('div');
             postEntry.classList.add('post-entry');
@@ -191,7 +197,7 @@ function displayPost() {
     sessionStorage.removeItem('cpposttimestamp');
     sessionStorage.removeItem('cppostdate');
     sessionStorage.removeItem('cpposttime');
-  } else if (this.classList.contains('post')) {
+  } else if (this.classList != null && this.classList.contains('post')) {
     backToDrawingBoard();
     entryName.value = this.dataset.name;
     entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
@@ -344,21 +350,28 @@ function togglePublic() {
 }
 
 function deleteEntry() {
-  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
-    method: 'DELETE'
-  })
-  if (open) {
-    toggleCabinet();
+  var confirmDelete = confirm('Are you sure you want to delete this post?');
+  if (confirmDelete == true) {
+    fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      method: 'DELETE'
+    }).catch(function (error) {
+      window.alert('Your request did not go through. Please try again soon.');
+    })
+    if (open) {
+      toggleCabinet();
+    }
+    getPosts();
+    clearEntry();
   }
-  getPosts();
-  clearEntry();
 }
 
 function modifyLast() {
   fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
+  }).catch(function (error) {
+    window.alert('Your request did not go through. Please try again soon.');
   })
   if (open) {
     toggleCabinet();

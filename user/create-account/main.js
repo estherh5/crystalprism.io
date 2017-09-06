@@ -79,6 +79,8 @@ function createAccount() {
       headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
+    }).catch(function (error) {
+      window.alert('Your request did not go through. Please try again soon.');
     }).then(function(response) {
       response.text().then(function (text) {
         if (text == 'Username already exists') {

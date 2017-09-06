@@ -150,6 +150,8 @@ function checkAccountStatus() {
   return fetch(server + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    window.location.href = '../sign-in/index.html';
   }).then(function (response) {
     if (!response.ok) {
       sessionStorage.setItem('cprequest', 'logout');
@@ -164,6 +166,15 @@ function populatePersonal() {
   return fetch(server + '/user/' + localStorage.getItem('cpusername'), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    canvashareLinkOne.classList.remove('hidden');
+    canvashareLinkTwo.classList.add('hidden');
+    rhythmLink.classList.add('hidden');
+    rhythmHeader.classList.add('hidden');
+    rhythmNoScores.classList.remove('hidden');
+    shapesLink.classList.add('hidden');
+    shapesHeader.classList.add('hidden');
+    shapesNoScores.classList.remove('hidden');
   }).then(function (response) {
     response.json().then(function (info) {
       profileLink.innerHTML = localStorage.getItem('cpusername');
@@ -364,6 +375,8 @@ function populatePosts() {
   return fetch(server + '/thought-writer/entries/' + localStorage.getItem('cpusername') + '?start=' + postStart + '&end=' + postEnd, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    thoughtWriterLink.classList.remove('hidden');
   }).then(function (response) {
     if (!response.ok) {
       thoughtWriterLink.classList.remove('hidden');
@@ -434,16 +447,16 @@ function populatePosts() {
               sessionStorage.setItem('cpposttime', this.dataset.time);
             }
           }
-        }
-        if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
-          postLeftArrow.classList.add('display');
-        } else {
-          postLeftArrow.classList.remove('display');
-        }
-        if (morePostsExist) {
-          postRightArrow.classList.add('display');
-        } else {
-          postRightArrow.classList.remove('display');
+          if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
+            postLeftArrow.classList.add('display');
+          } else {
+            postLeftArrow.classList.remove('display');
+          }
+          if (morePostsExist) {
+            postRightArrow.classList.add('display');
+          } else {
+            postRightArrow.classList.remove('display');
+          }
         }
       })
     }
@@ -602,6 +615,8 @@ function checkPassword() {
   return fetch(server + '/login', {
     method: 'GET',
     headers: {'Authorization': 'Basic ' + btoa(localStorage.getItem('cpusername') + ':' + verifyPassword)}
+  }).catch(function (error) {
+    window.alert('Your request did not go through. Please try again soon.');
   }).then(function (response) {
     if (response.status == 400) {
       response.text().then(function (text) {
@@ -635,6 +650,8 @@ function postEdits() {
     headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'PUT',
     body: data,
+  }).catch(function (error) {
+    window.alert('Your request did not go through. Please try again soon.');
   }).then(function(response) {
     response.text().then(function (text) {
       if (text == 'Username already exists') {

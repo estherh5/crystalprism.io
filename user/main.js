@@ -43,6 +43,12 @@ function checkAccountStatus() {
   return fetch(server + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    accountLink.innerHTML = 'Create Account';
+    signInLink.innerHTML = 'Sign In';
+    signInLink.onclick = function() {
+      sessionStorage.setItem('cppreviouswindow', '../index.html?username=' + username);
+    }
   }).then(function (response) {
     if (response.ok) {
       profileLink.innerHTML = localStorage.getItem('cpusername');
@@ -66,7 +72,10 @@ function checkAccountStatus() {
 }
 
 function populatePersonal() {
-  return fetch(server + '/user/' + username).then(function (response) {
+  return fetch(server + '/user/' + username).catch(function (error) {
+    user.innerHTML = 'Could not load page';
+    document.title = 'Not found';
+  }).then(function (response) {
     if (response.ok) {
       response.json().then(function (info) {
         userLink.href = 'index.html?username=' + username;
@@ -199,6 +208,8 @@ function setImageValues() {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).catch(function (error) {
+      window.alert('Your like did not go through. Please try again soon.')
     }).then(function (response) {
       if (response.ok) {
         likeText.innerHTML = parseInt(currentLikes) + 1;
@@ -223,6 +234,8 @@ function setImageValues() {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).catch(function (error) {
+      window.alert('Your like did not go through. Please try again soon.')
     }).then(function (response) {
       if (response.ok) {
         heart.classList.remove('fa-heart');
@@ -339,16 +352,16 @@ function populatePosts() {
             postDiv.appendChild(postInfo);
             postInfo.appendChild(postTimeDisplay);
           }
-        }
-        if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
-          postLeftArrow.classList.add('display');
-        } else {
-          postLeftArrow.classList.remove('display');
-        }
-        if (morePostsExist) {
-          postRightArrow.classList.add('display');
-        } else {
-          postRightArrow.classList.remove('display');
+          if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
+            postLeftArrow.classList.add('display');
+          } else {
+            postLeftArrow.classList.remove('display');
+          }
+          if (morePostsExist) {
+            postRightArrow.classList.add('display');
+          } else {
+            postRightArrow.classList.remove('display');
+          }
         }
       })
     } else {

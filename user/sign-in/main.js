@@ -53,6 +53,8 @@ function checkAccount() {
   return fetch(server + '/login', {
     method: 'GET',
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)}
+  }).catch(function (error) {
+    window.alert('Your request did not go through. Please try again soon.');
   }).then(function (response) {
     if (response.status != 200) {
       $(credFail).modal('show');

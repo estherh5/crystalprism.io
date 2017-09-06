@@ -17,6 +17,12 @@ function checkAccountStatus() {
   return fetch(server + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    accountLink.innerHTML = 'Create Account';
+    signInLink.innerHTML = 'Sign In';
+    signInLink.onclick = function() {
+      sessionStorage.setItem('cppreviouswindow', '../../shapes-in-rain/index.html');
+    }
   }).then(function (response) {
     if (response.ok) {
       profileLink.innerHTML = localStorage.getItem('cpusername');

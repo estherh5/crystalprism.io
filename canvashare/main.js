@@ -40,6 +40,12 @@ function checkAccountStatus() {
   return fetch(server + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
+  }).catch(function (error) {
+    accountLink.innerHTML = 'Create Account';
+    signInLink.innerHTML = 'Sign In';
+    signInLink.onclick = function() {
+      sessionStorage.setItem('cppreviouswindow', '../../canvashare/index.html');
+    }
   }).then(function (response) {
     if (response.ok) {
       profileLink.innerHTML = localStorage.getItem('cpusername');
@@ -196,6 +202,8 @@ function setImageValues() {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).catch(function (error) {
+      window.alert('Your like did not go through. Please try again soon.')
     }).then(function (response) {
       if (response.ok) {
         likeText.innerHTML = parseInt(currentLikes) + 1;
@@ -221,6 +229,8 @@ function setImageValues() {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
+    }).catch(function (error) {
+      window.alert('Your like did not go through. Please try again soon.')
     }).then(function (response) {
       if (response.ok) {
         heart.classList.remove('fa-heart');

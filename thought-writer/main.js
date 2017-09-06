@@ -70,6 +70,8 @@ if (localStorage.getItem('postPublic') != '') {
     checkbox.classList.remove('checked');
     publicInput.checked = false;
   }
+} else {
+  entry.dataset.public = 'false';
 }
 
 for (var i = 0; i < toolbarButtons.length; i++) {
@@ -273,7 +275,7 @@ function submitEntry() {
         if (hour == 0) {
           hour = 12;
         }
-        var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML, 'public': entry.dataset.public};
+        var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML, 'public': entry.dataset.public};
         data = JSON.stringify(data);
       }
     }
@@ -282,7 +284,7 @@ function submitEntry() {
       window.alert('You must log in to create a post.');
       return;
     } else {
-      var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML, 'public': entry.dataset.public};
+      var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML, 'public': entry.dataset.public};
       data = JSON.stringify(data);
     }
   }

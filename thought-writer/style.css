@@ -215,6 +215,26 @@ button {
   min-height: 22px;
   display: flex;
   flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+#checkbox {
+  height: 9px;
+  width: 9px;
+  margin: 5px;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.checked {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='#000000' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+}
+
+#public {
+  display: none;
 }
 
 #delete {

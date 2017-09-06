@@ -13,6 +13,8 @@ var colorPicker = document.getElementById('color-picker');
 var formatTools = document.getElementById('format-tools');
 var clear = document.getElementById('clear');
 var submit = document.getElementById('submit');
+var checkbox = document.getElementById('checkbox');
+var publicInput = document.getElementById('public');
 var remove = document.getElementById('delete');
 var drawingBoard = document.getElementById('drawing-board');
 var actionButtons = document.getElementById('action-buttons');
@@ -46,6 +48,9 @@ if (localStorage.getItem('entry') != '') {
 
 if (localStorage.getItem('clearName') != '') {
   clear.innerHTML = localStorage.getItem('clearName');
+  if (localStorage.getItem('clearName') == 'Close') {
+    remove.style.display = 'inline-block';
+  }
 }
 
 if (localStorage.getItem('submitName') != '') {
@@ -56,6 +61,17 @@ if (localStorage.getItem('entryTimestamp') != '') {
   entry.dataset.timestamp = localStorage.getItem('entryTimestamp');
 }
 
+if (localStorage.getItem('postPublic') != '') {
+  entry.dataset.public = localStorage.getItem('postPublic');
+  if (localStorage.getItem('postPublic') == 'true') {
+    checkbox.classList.add('checked');
+    publicInput.checked = true;
+  } else {
+    checkbox.classList.remove('checked');
+    publicInput.checked = false;
+  }
+}
+
 for (var i = 0; i < toolbarButtons.length; i++) {
   toolbarButtons[i].addEventListener('click', executeCommand, false);
 }
@@ -64,6 +80,7 @@ colorPicker.oninput = executeCommand;
 window.onclick = enterTitle;
 clear.onclick = clearEntry;
 submit.onclick = submitEntry;
+checkbox.onclick = togglePublic;
 remove.onclick = deleteEntry;
 goBack.onclick = modifyLast;
 newPost.onclick = startNew;
@@ -100,7 +117,7 @@ function checkAccountStatus() {
 
 function getPosts() {
   if (localStorage.getItem('cptoken') != null) {
-    return fetch(server + '/thought-writer/entries?start=' + requestStart + '&end=' + requestEnd, {
+    return fetch(server + '/thought-writer/entries/' + localStorage.getItem('cpusername') + '?start=' + requestStart + '&end=' + requestEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
       method: 'GET',
     }).then(function (response) {
@@ -122,6 +139,7 @@ function getPosts() {
             }
             post.dataset.name = posts[i].name;
             post.dataset.number = requestStart + i;
+            post.dataset.public = posts[i].public;
             post.dataset.timestamp = posts[i].timestamp;
             post.dataset.date = posts[i].date;
             post.dataset.time = posts[i].time;
@@ -143,6 +161,14 @@ function displayPost() {
   if (sessionStorage.getItem('cppostcontent') != null) {
     entryName.value = sessionStorage.getItem('cppostname');
     entry.innerHTML = sessionStorage.getItem('cppostcontent');
+    entry.dataset.public = sessionStorage.getItem('cppostpublic');
+    if (sessionStorage.getItem('cppostpublic') == 'true') {
+      checkbox.classList.add('checked');
+      publicInput.checked = true;
+    } else {
+      checkbox.classList.remove('checked');
+      publicInput.checked = false;
+    }
     entry.dataset.timestamp = sessionStorage.getItem('cpposttimestamp');
     entry.dataset.date = sessionStorage.getItem('cppostdate');
     entry.dataset.time = sessionStorage.getItem('cpposttime');
@@ -151,6 +177,7 @@ function displayPost() {
     remove.style.display = 'inline-block';
     sessionStorage.removeItem('cppostname');
     sessionStorage.removeItem('cppostcontent');
+    sessionStorage.removeItem('cppostpublic');
     sessionStorage.removeItem('cpposttimestamp');
     sessionStorage.removeItem('cppostdate');
     sessionStorage.removeItem('cpposttime');
@@ -158,6 +185,14 @@ function displayPost() {
     backToDrawingBoard();
     entryName.value = this.dataset.name;
     entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
+    entry.dataset.public = this.dataset.public;
+    if (this.dataset.public == 'true') {
+      checkbox.classList.add('checked');
+      publicInput.checked = true;
+    } else {
+      checkbox.classList.remove('checked');
+      publicInput.checked = false;
+    }
     entry.dataset.timestamp = this.dataset.timestamp;
     entry.dataset.date = this.dataset.date;
     entry.dataset.time = this.dataset.time;
@@ -172,6 +207,7 @@ function saveData() {
   localStorage.setItem('entry', entry.innerHTML);
   localStorage.setItem('clearName', clear.innerHTML);
   localStorage.setItem('submitName', submit.innerHTML);
+  localStorage.setItem('postPublic', publicInput.checked.toString());
   localStorage.setItem('entryTimestamp', entry.dataset.timestamp);
 }
 
@@ -206,6 +242,8 @@ function clearEntry() {
   clear.innerHTML = 'Clear';
   submit.innerHTML = 'Submit';
   remove.style.display = '';
+  publicInput.checked = false;
+  checkbox.classList.remove('checked');
   delete entry.dataset.timestamp;
 }
 
@@ -235,7 +273,7 @@ function submitEntry() {
         if (hour == 0) {
           hour = 12;
         }
-        var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML};
+        var data = {'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML, 'public': entry.dataset.public};
         data = JSON.stringify(data);
       }
     }
@@ -244,7 +282,7 @@ function submitEntry() {
       window.alert('You must log in to create a post.');
       return;
     } else {
-      var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML};
+      var data = {'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML, 'public': entry.dataset.public};
       data = JSON.stringify(data);
     }
   }
@@ -289,6 +327,18 @@ function submitEntry() {
   }
 }
 
+function togglePublic() {
+  if (publicInput.checked) {
+    publicInput.checked = false;
+    checkbox.classList.remove('checked');
+    entry.dataset.public = 'false';
+  } else {
+    publicInput.checked = true;
+    checkbox.classList.add('checked');
+    entry.dataset.public = 'true';
+  }
+}
+
 function deleteEntry() {
   fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
@@ -318,6 +368,9 @@ function modifyLast() {
 function startNew() {
   entryName.value = '[title]';
   delete entry.dataset.timestamp;
+  delete entry.dataset.public;
+  publicInput.checked = false;
+  checkbox.classList.remove('checked');
   backToDrawingBoard();
 }
 

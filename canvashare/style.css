@@ -409,6 +409,10 @@ div {
     font-size: 14px;
   }
 
+  #gallery-link {
+    margin-top: 0px;
+  }
+
   #gallery-title {
     margin-top: 10px;
     font-size: 6em;

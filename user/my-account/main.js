@@ -399,22 +399,32 @@ function populatePosts() {
             postEntry.innerHTML = posts[i].content;
             var postInfo = document.createElement('div');
             postInfo.className = 'post-info';
-            var postTime = document.createElement('div');
-            postTime.className = 'post-time';
-            postTime.innerHTML = posts[i].date + ', ' + posts[i].time;
+            var postTimeDisplay = document.createElement('div');
+            postTimeDisplay.className = 'post-time';
+            var now = new Date();
+            var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
+            var hour = parseInt(utcDate.getHours());
+            var ampm = hour >= 12 ? ' PM' : ' AM';
+            var hour = hour % 12;
+            if (hour == 0) {
+              hour = 12;
+            }
+            var postDate = parseInt(utcDate.getMonth() + 1) + '/' + parseInt(utcDate.getDate()) + '/' + parseInt(utcDate.getFullYear());
+            var postTime = hour + ':' + ('0' + parseInt(utcDate.getMinutes())).slice(-2) + ampm;
+            postTimeDisplay.innerHTML = postDate + ', ' + postTime;
             postArea.appendChild(postDiv);
             postDiv.appendChild(postLink);
             postLink.appendChild(postName);
             postDiv.appendChild(post);
             post.appendChild(postEntry);
             postDiv.appendChild(postInfo);
-            postInfo.appendChild(postTime);
+            postInfo.appendChild(postTimeDisplay);
             postLink.dataset.name = posts[i].name;
             postLink.dataset.content = posts[i].content;
             postLink.dataset.public = posts[i].public;
             postLink.dataset.timestamp = posts[i].timestamp;
-            postLink.dataset.date = posts[i].date;
-            postLink.dataset.time = posts[i].time;
+            postLink.dataset.date = postDate;
+            postLink.dataset.time = postTime;
             postLink.onclick = function() {
               sessionStorage.setItem('cppostname', this.dataset.name);
               sessionStorage.setItem('cppostcontent', this.dataset.content);

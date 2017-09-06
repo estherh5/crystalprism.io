@@ -278,12 +278,12 @@ function getMore() {
       drawingEnd = drawingEnd + 3;
       populateDrawings();
     } else if (this == postLeftArrow) {
-      psotStart = psotStart - 3;
-      psotEnd = psotEnd - 3;
+      postStart = postStart - 3;
+      postEnd = postEnd - 3;
       populatePosts();
     } else if (this == postRightArrow) {
-      psotStart = psotStart + 3;
-      psotEnd = psotEnd + 3;
+      postStart = postStart + 3;
+      postEnd = postEnd + 3;
       populatePosts();
     }
   }
@@ -292,55 +292,67 @@ function getMore() {
 function populatePosts() {
   return fetch(server + '/thought-writer/entries/' + username + '?start=' + postStart + '&end=' + postEnd).then(function (response) {
     if (response.ok) {
-    response.json().then(function (posts) {
-      if (posts.length == 0) {
-        postAreaRow.classList.add('hidden');
-      }
-      if (posts.length != 0) {
-        postArea.innerHTML = '';
-        if (posts.length > 3) {
-          morePostsExist = true;
-          postLoadNumber = 3;
+      response.json().then(function (posts) {
+        if (posts.length == 0) {
+          postAreaRow.classList.add('hidden');
+        }
+        if (posts.length != 0) {
+          postArea.innerHTML = '';
+          if (posts.length > 3) {
+            morePostsExist = true;
+            postLoadNumber = 3;
+          } else {
+            morePostsExist = false;
+            postLoadNumber = posts.length;
+          }
+          for (var i = 0; i < postLoadNumber; i++) {
+            var postDiv = document.createElement('div');
+            postDiv.className = 'post-div';
+            postDiv.dataset.number = postStart + i;
+            var postName = document.createElement('div');
+            postName.className = 'post-name';
+            postName.innerHTML = posts[i].name;
+            var post = document.createElement('div');
+            post.classList.add('post');
+            var postEntry = document.createElement('div');
+            postEntry.classList.add('post-entry');
+            postEntry.innerHTML = posts[i].content;
+            var postInfo = document.createElement('div');
+            postInfo.className = 'post-info';
+            var postTimeDisplay = document.createElement('div');
+            postTimeDisplay.className = 'post-time';
+            var now = new Date();
+            var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
+            var hour = parseInt(utcDate.getHours());
+            var ampm = hour >= 12 ? ' PM' : ' AM';
+            var hour = hour % 12;
+            if (hour == 0) {
+              hour = 12;
+            }
+            var postDate = parseInt(utcDate.getMonth() + 1) + '/' + parseInt(utcDate.getDate()) + '/' + parseInt(utcDate.getFullYear());
+            var postTime = hour + ':' + ('0' + parseInt(utcDate.getMinutes())).slice(-2) + ampm;
+            postTimeDisplay.innerHTML = postDate + ', ' + postTime;
+            postArea.appendChild(postDiv);
+            postDiv.appendChild(postName);
+            postDiv.appendChild(post);
+            post.appendChild(postEntry);
+            postDiv.appendChild(postInfo);
+            postInfo.appendChild(postTimeDisplay);
+          }
+        }
+        if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
+          postLeftArrow.classList.add('display');
         } else {
-          morePostsExist = false;
-          postLoadNumber = posts.length;
+          postLeftArrow.classList.remove('display');
         }
-        for (var i = 0; i < postLoadNumber; i++) {
-          var postDiv = document.createElement('div');
-          postDiv.className = 'post-div';
-          postDiv.dataset.number = postStart + i;
-          var postName = document.createElement('div');
-          postName.className = 'post-name';
-          postName.innerHTML = posts[i].name;
-          var post = document.createElement('div');
-          post.classList.add('post');
-          var postEntry = document.createElement('div');
-          postEntry.classList.add('post-entry');
-          postEntry.innerHTML = posts[i].content;
-          var postInfo = document.createElement('div');
-          postInfo.className = 'post-info';
-          var postTime = document.createElement('div');
-          postTime.className = 'post-time';
-          postTime.innerHTML = posts[i].date + ', ' + posts[i].time;
-          postArea.appendChild(postDiv);
-          postDiv.appendChild(postName);
-          postDiv.appendChild(post);
-          post.appendChild(postEntry);
-          postDiv.appendChild(postInfo);
-          postInfo.appendChild(postTime);
+        if (morePostsExist) {
+          postRightArrow.classList.add('display');
+        } else {
+          postRightArrow.classList.remove('display');
         }
-      }
-      if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
-        postLeftArrow.classList.add('display');
-      } else {
-        postLeftArrow.classList.remove('display');
-      }
-      if (morePostsExist) {
-        postRightArrow.classList.add('display');
-      } else {
-        postRightArrow.classList.remove('display');
-      }
-    })
+      })
+    } else {
+      postAreaRow.classList.add('hidden');
     }
   })
 }

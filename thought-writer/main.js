@@ -143,8 +143,16 @@ function getPosts() {
             post.dataset.number = requestStart + i;
             post.dataset.public = posts[i].public;
             post.dataset.timestamp = posts[i].timestamp;
-            post.dataset.date = posts[i].date;
-            post.dataset.time = posts[i].time;
+            var now = new Date();
+            var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
+            var hour = parseInt(date.getHours());
+            var ampm = hour >= 12 ? ' PM' : ' AM';
+            var hour = hour % 12;
+            if (hour == 0) {
+              hour = 12;
+            }
+            post.dataset.date = parseInt(date.getMonth() + 1) + '/' + parseInt(date.getDate()) + '/' + parseInt(date.getFullYear());
+            post.dataset.time = hour + ':' + ('0' + parseInt(date.getMinutes())).slice(-2) + ampm;
             post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
             var postEntry = document.createElement('div');
             postEntry.classList.add('post-entry');
@@ -267,15 +275,9 @@ function submitEntry() {
         window.alert('You must log in to create a post.');
         return;
       } else {
-        var timestamp = now.getTime();
+        var timestamp = now.getTime() + (now.getTimezoneOffset() * 60000);
         entry.dataset.timestamp = timestamp;
-        var hour = parseInt(now.getHours());
-        var ampm = hour >= 12 ? ' PM' : ' AM';
-        var hour = hour % 12;
-        if (hour == 0) {
-          hour = 12;
-        }
-        var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': timestamp, 'date': parseInt(now.getMonth() + 1) + '/' + parseInt(now.getDate()) + '/' + parseInt(now.getFullYear()), 'time': hour + ':' + ('0' + parseInt(now.getMinutes())).slice(-2) + ampm, 'content': entry.innerHTML, 'public': entry.dataset.public};
+        var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': timestamp, 'content': entry.innerHTML, 'public': entry.dataset.public};
         data = JSON.stringify(data);
       }
     }
@@ -284,7 +286,7 @@ function submitEntry() {
       window.alert('You must log in to create a post.');
       return;
     } else {
-      var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'date': entry.dataset.date, 'time': entry.dataset.time, 'content': entry.innerHTML, 'public': entry.dataset.public};
+      var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'content': entry.innerHTML, 'public': entry.dataset.public};
       data = JSON.stringify(data);
     }
   }

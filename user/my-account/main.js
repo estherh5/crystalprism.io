@@ -361,7 +361,7 @@ function toggleDrawings() {
 }
 
 function populatePosts() {
-  return fetch(server + '/thought-writer/entries?start=' + postStart + '&end=' + postEnd, {
+  return fetch(server + '/thought-writer/entries/' + localStorage.getItem('cpusername') + '?start=' + postStart + '&end=' + postEnd, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
     method: 'GET',
   }).then(function (response) {
@@ -411,12 +411,14 @@ function populatePosts() {
             postInfo.appendChild(postTime);
             postLink.dataset.name = posts[i].name;
             postLink.dataset.content = posts[i].content;
+            postLink.dataset.public = posts[i].public;
             postLink.dataset.timestamp = posts[i].timestamp;
             postLink.dataset.date = posts[i].date;
             postLink.dataset.time = posts[i].time;
             postLink.onclick = function() {
               sessionStorage.setItem('cppostname', this.dataset.name);
               sessionStorage.setItem('cppostcontent', this.dataset.content);
+              sessionStorage.setItem('cppostpublic', this.dataset.public);
               sessionStorage.setItem('cpposttimestamp', this.dataset.timestamp);
               sessionStorage.setItem('cppostdate', this.dataset.date);
               sessionStorage.setItem('cpposttime', this.dataset.time);

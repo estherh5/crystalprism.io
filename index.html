@@ -31,7 +31,7 @@
     </div>
     <div id="modal" class="hidden">
       <div id="modal-body">
-        <button id="close">
+        <button id="close" class="hidden">
           <span aria-hidden="true">&times;</span>
         </button>
         <div id="timespace-blurb" class="project-blurb">
@@ -640,10 +640,10 @@
             <a href="vicarious/index.html">Vicarious</a> is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images posted on <a href="https://www.reddit.com/r/travel/">Reddit's Travel subreddit</a>. I used Bootstrap to design the layout of the project and make it responsive to different device sizes, as well as implement a modal and carousel. The project sends a fetch request to Reddit's API and stores all resulting images in an array, then displays up to 5 of those images that have titles containing the user's desired destination. When a user clicked on the title link for the project, 5 random images will display for inspiration.
           </text>
         </div>
-        <button id="previous" class="control">
+        <button id="previous" class="control hidden">
           <span aria-hidden="true"><</span>
         </button>
-        <button id="next" class="control">
+        <button id="next" class="control hidden">
           <span aria-hidden="true">></span>
         </button>
       </div>

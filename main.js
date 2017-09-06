@@ -117,7 +117,7 @@ function checkAccountStatus() {
 }
 
 function getEntries() {
-  return fetch(server + '/thought-writer/esther_entries?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
+  return fetch(server + '/thought-writer/entries/esther?start=' + requestStart + '&end=' + requestEnd).catch(function (error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
@@ -125,48 +125,55 @@ function getEntries() {
       ideasPage.append(errorMessage);
     }
   }).then(function (response) {
-    response.json().then(function (entries) {
-      if (entries.length != 0) {
-        for (var i = 0; i < entries.length; i++) {
-          var entry = document.createElement('table');
-          entry.classList.add('entry');
-          var headerRow = document.createElement('tr');
-          headerRow.classList.add('header-row');
-          var entryName = document.createElement('td');
-          entryName.classList.add('entry-name');
-          entryName.innerHTML = entries[i].name;
-          var entryDate = document.createElement('td');
-          entryDate.classList.add('entry-date');
-          entryDate.innerHTML = entries[i].date + ', ' + entries[i].time;
-          var contentRow = document.createElement('tr');
-          var entryContentArea = document.createElement('td');
-          entryContentArea.classList.add('entry-content-area');
-          entryContentArea.colSpan = '3';
-          var entryContent = document.createElement('div');
-          entryContent.classList.add('entry-content');
-          entryContent.id = entries[i].name;
-          if (entries[i].content.length >= 200) {
-            entryContent.dataset.fulltext = entries[i].content;
-            entryContent.innerHTML = entries[i].content.slice(0, 200) + '...';
-            var showTextButton = document.createElement('button');
-            showTextButton.classList.add('show-full-text');
-            showTextButton.dataset.entry = entries[i].name;
-            showTextButton.innerHTML = '<i class="fa fa-plus-square-o" aria-hidden="true"></i>';
-            showTextButton.addEventListener('click', showFullText, false);
-            entryContent.appendChild(showTextButton);
-          } else {
-            entryContent.innerHTML = entries[i].content.slice(0, 200);
+    if (response.ok) {
+      response.json().then(function (entries) {
+        if (entries.length != 0) {
+          for (var i = 0; i < entries.length; i++) {
+            var entry = document.createElement('table');
+            entry.classList.add('entry');
+            var headerRow = document.createElement('tr');
+            headerRow.classList.add('header-row');
+            var entryName = document.createElement('td');
+            entryName.classList.add('entry-name');
+            entryName.innerHTML = entries[i].name;
+            var entryDate = document.createElement('td');
+            entryDate.classList.add('entry-date');
+            entryDate.innerHTML = entries[i].date + ', ' + entries[i].time;
+            var contentRow = document.createElement('tr');
+            var entryContentArea = document.createElement('td');
+            entryContentArea.classList.add('entry-content-area');
+            entryContentArea.colSpan = '3';
+            var entryContent = document.createElement('div');
+            entryContent.classList.add('entry-content');
+            entryContent.id = entries[i].name;
+            if (entries[i].content.length >= 200) {
+              entryContent.dataset.fulltext = entries[i].content;
+              entryContent.innerHTML = entries[i].content.slice(0, 200) + '...';
+              var showTextButton = document.createElement('button');
+              showTextButton.classList.add('show-full-text');
+              showTextButton.dataset.entry = entries[i].name;
+              showTextButton.innerHTML = '<i class="fa fa-plus-square-o" aria-hidden="true"></i>';
+              showTextButton.addEventListener('click', showFullText, false);
+              entryContent.appendChild(showTextButton);
+            } else {
+              entryContent.innerHTML = entries[i].content.slice(0, 200);
+            }
+            ideasPage.appendChild(entry);
+            entry.appendChild(headerRow);
+            headerRow.appendChild(entryName);
+            headerRow.appendChild(entryDate);
+            entry.appendChild(contentRow);
+            contentRow.appendChild(entryContentArea);
+            entryContentArea.appendChild(entryContent);
           }
-          ideasPage.appendChild(entry);
-          entry.appendChild(headerRow);
-          headerRow.appendChild(entryName);
-          headerRow.appendChild(entryDate);
-          entry.appendChild(contentRow);
-          contentRow.appendChild(entryContentArea);
-          entryContentArea.appendChild(entryContent);
         }
-      }
-    })
+      })
+    } else {
+      errorMessage = document.createElement('text');
+      errorMessage.id = 'error-message';
+      errorMessage.innerHTML = 'There are no posts to display. Please check later.';
+      ideasPage.append(errorMessage);
+    }
   })
 }
 
@@ -240,6 +247,9 @@ function openInfo() {
   document.getElementById('page-buttons').classList.add('grayscale');
   document.getElementById('projects-page').classList.add('grayscale');
   modal.classList.remove('hidden');
+  closeButton.classList.remove('hidden');
+  previousButton.classList.remove('hidden');
+  nextButton.classList.remove('hidden');
   modal.classList.add('open');
   modalBody.classList.add('open');
   document.getElementById(this.dataset.project + '-blurb').classList.add('open');
@@ -259,6 +269,9 @@ function closeInfo(e) {
     modal.classList.remove('open');
     setTimeout(function() {
       modal.classList.add('hidden');
+      closeButton.classList.add('hidden');
+      previousButton.classList.add('hidden');
+      nextButton.classList.add('hidden');
     }, 1000);
   }
 }

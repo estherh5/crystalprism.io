@@ -676,6 +676,10 @@ label.editing {
     font-size: 13px;
   }
 
+  #gallery {
+    overflow: unset;
+  }
+
   .score-area {
     font-size: 18px;
   }

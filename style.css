@@ -66,9 +66,9 @@ body {
 }
 
 .hidden {
-  position: absolute;
-  top: -9999px;
-  left: -9999px;
+  position: absolute !important;
+  top: -9999px !important;
+  left: -9999px !important;
 }
 
 #modal {
@@ -638,7 +638,7 @@ button.selected {
 }
 
 .entry-name {
-  width: 79%;
+  width: 75%;
   border-top-left-radius: 10px;
   font-family: 'Shrikhand', cursive;
   font-size: 20px;
@@ -973,11 +973,12 @@ section {
   }
 
   .entry-name {
+    width: 70%;
     font-size: 25px;
   }
 
   .entry-date {
-    width: 16%;
+    width: 20%;
     font-size: 20px;
   }
 

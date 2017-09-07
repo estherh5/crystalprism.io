@@ -297,7 +297,7 @@ a:hover, a:focus {
   margin-right: 1%;
 }
 
-.post-name {
+.post-title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -426,7 +426,7 @@ a:hover, a:focus {
     width: 20%;
   }
 
-  .post-name {
+  .post-title {
     font-size: 18px;
   }
 

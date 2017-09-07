@@ -110,7 +110,7 @@ a:focus, button:focus {
   flex-direction: column;
 }
 
-#entry-name {
+#entry-title {
   height: 50px;
   width: 100%;
   border: none;
@@ -430,7 +430,7 @@ button {
     margin-top: 100px;
   }
 
-  #entry-name {
+  #entry-title {
     font-size: 25px;
   }
 

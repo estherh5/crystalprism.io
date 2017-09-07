@@ -589,7 +589,7 @@ label.editing {
   font-variant: small-caps;
 }
 
-.post-name {
+.post-title {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -825,7 +825,7 @@ label.editing {
     font-size: 35px;
   }
 
-  .post-name {
+  .post-title {
     font-size: 18px;
   }
 

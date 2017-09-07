@@ -322,9 +322,9 @@ function populatePosts() {
             var postDiv = document.createElement('div');
             postDiv.className = 'post-div';
             postDiv.dataset.number = postStart + i;
-            var postName = document.createElement('div');
-            postName.className = 'post-name';
-            postName.innerHTML = posts[i].name;
+            var postTitle = document.createElement('div');
+            postTitle.className = 'post-title';
+            postTitle.innerHTML = posts[i].title;
             var post = document.createElement('div');
             post.classList.add('post');
             var postEntry = document.createElement('div');
@@ -334,19 +334,19 @@ function populatePosts() {
             postInfo.className = 'post-info';
             var postTimeDisplay = document.createElement('div');
             postTimeDisplay.className = 'post-time';
-            var now = new Date();
-            var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
-            var hour = parseInt(utcDate.getHours());
+            var utcDateTime = JSON.parse(posts[i].timestamp);
+            var dateTime = new Date(utcDateTime + ' UTC');
+            var hour = parseInt(dateTime.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
             if (hour == 0) {
               hour = 12;
             }
-            var postDate = parseInt(utcDate.getMonth() + 1) + '/' + parseInt(utcDate.getDate()) + '/' + parseInt(utcDate.getFullYear());
-            var postTime = hour + ':' + ('0' + parseInt(utcDate.getMinutes())).slice(-2) + ampm;
+            var postDate = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
+            var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
             postTimeDisplay.innerHTML = postDate + ', ' + postTime;
             postArea.appendChild(postDiv);
-            postDiv.appendChild(postName);
+            postDiv.appendChild(postTitle);
             postDiv.appendChild(post);
             post.appendChild(postEntry);
             postDiv.appendChild(postInfo);

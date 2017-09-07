@@ -6,7 +6,7 @@ var requestStart = 0;
 var requestEnd = 11;
 var moreExists = false;
 var postArea = document.getElementById('post-area');
-var entryName = document.getElementById('entry-name');
+var entryTitle = document.getElementById('entry-title');
 var entry = document.getElementById('entry');
 var toolbarButtons = document.getElementById('format-tools').getElementsByTagName('button');
 var colorPicker = document.getElementById('color-picker');
@@ -35,11 +35,11 @@ if (window.location.hostname == 'crystalprism.io') {
 // Define events
 setInterval(saveData, 1000);
 
-if (localStorage.getItem('entryName') != '') {
-  if (localStorage.getItem('entryName') == 'Thank you for your post') {
-    localStorage.setItem('entryName', '[title]');
+if (localStorage.getItem('entryTitle') != '') {
+  if (localStorage.getItem('entryTitle') == 'Thank you for your post') {
+    localStorage.setItem('entryTitle', '[title]');
   }
-  entryName.value = localStorage.getItem('entryName');
+  entryTitle.value = localStorage.getItem('entryTitle');
 }
 
 if (localStorage.getItem('entry') != '') {
@@ -145,21 +145,21 @@ function getPosts() {
             if (open) {
               post.classList.add('post-display');
             }
-            post.dataset.name = posts[i].name;
+            post.dataset.title = posts[i].title;
             post.dataset.number = requestStart + i;
             post.dataset.public = posts[i].public;
             post.dataset.timestamp = posts[i].timestamp;
-            var now = new Date();
-            var utcDate = new Date(posts[i].timestamp - now.getTimezoneOffset() * 60000);
-            var hour = parseInt(utcDate.getHours());
+            var utcDateTime = JSON.parse(posts[i].timestamp);
+            var dateTime = new Date(utcDateTime + ' UTC');
+            var hour = parseInt(dateTime.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
             if (hour == 0) {
               hour = 12;
             }
-            post.dataset.date = parseInt(utcDate.getMonth() + 1) + '/' + parseInt(utcDate.getDate()) + '/' + parseInt(utcDate.getFullYear());
-            post.dataset.time = hour + ':' + ('0' + parseInt(utcDate.getMinutes())).slice(-2) + ampm;
-            post.title = post.dataset.name + '  ' + post.dataset.date + ', ' + post.dataset.time;
+            post.dataset.date = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
+            post.dataset.time = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
+            post.title = post.dataset.title + '  ' + post.dataset.date + ', ' + post.dataset.time;
             var postEntry = document.createElement('div');
             postEntry.classList.add('post-entry');
             postEntry.innerHTML = posts[i].content;
@@ -175,7 +175,7 @@ function getPosts() {
 
 function displayPost() {
   if (sessionStorage.getItem('cppostcontent') != null) {
-    entryName.value = sessionStorage.getItem('cppostname');
+    entryTitle.value = sessionStorage.getItem('cpposttitle');
     entry.innerHTML = sessionStorage.getItem('cppostcontent');
     entry.dataset.public = sessionStorage.getItem('cppostpublic');
     if (sessionStorage.getItem('cppostpublic') == 'true') {
@@ -191,7 +191,7 @@ function displayPost() {
     clear.innerHTML = 'Close';
     submit.innerHTML = 'Modify';
     remove.style.display = 'inline-block';
-    sessionStorage.removeItem('cppostname');
+    sessionStorage.removeItem('cpposttitle');
     sessionStorage.removeItem('cppostcontent');
     sessionStorage.removeItem('cppostpublic');
     sessionStorage.removeItem('cpposttimestamp');
@@ -199,7 +199,7 @@ function displayPost() {
     sessionStorage.removeItem('cpposttime');
   } else if (this.classList != null && this.classList.contains('post')) {
     backToDrawingBoard();
-    entryName.value = this.dataset.name;
+    entryTitle.value = this.dataset.title;
     entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
     entry.dataset.public = this.dataset.public;
     if (this.dataset.public == 'true') {
@@ -219,7 +219,7 @@ function displayPost() {
 }
 
 function saveData() {
-  localStorage.setItem('entryName', entryName.value);
+  localStorage.setItem('entryTitle', entryTitle.value);
   localStorage.setItem('entry', entry.innerHTML);
   localStorage.setItem('clearName', clear.innerHTML);
   localStorage.setItem('submitName', submit.innerHTML);
@@ -241,19 +241,19 @@ function executeCommand() {
 }
 
 function enterTitle(e) {
-  if (entryName.contains(e.target)) {
-    if (entryName.value == '[title]') {
-      entryName.value = '';
+  if (entryTitle.contains(e.target)) {
+    if (entryTitle.value == '[title]') {
+      entryTitle.value = '';
     }
   } else {
-    if (entryName.value == '') {
-      entryName.value = '[title]';
+    if (entryTitle.value == '') {
+      entryTitle.value = '[title]';
     }
   }
 }
 
 function clearEntry() {
-  entryName.value = '[title]';
+  entryTitle.value = '[title]';
   entry.innerHTML = '';
   clear.innerHTML = 'Clear';
   submit.innerHTML = 'Submit';
@@ -265,71 +265,106 @@ function clearEntry() {
 
 function submitEntry() {
   var now = new Date();
-  while (entryName.value == '[title]' || entryName.value == '') {
+  while (entryTitle.value == '[title]' || entryTitle.value == '') {
     enteredName = prompt('Specify a title for your entry.');
     if (enteredName == '') {
       enteredName = prompt('Specify a title for your entry.');
     } else if (enteredName == null) {
       return;
     } else {
-      entryName.value = enteredName;
+      entryTitle.value = enteredName;
     }
   }
   if (this.innerHTML == 'Submit') {
-    if (entryName.value != '[title]' && entryName.value != '' && entryName.value != null) {
+    if (entryTitle.value != '[title]' && entryTitle.value != '' && entryTitle.value != null) {
       if (localStorage.getItem('cptoken') == null) {
         window.alert('You must log in to create a post.');
         return;
       } else {
-        var timestamp = now.getTime() + (now.getTimezoneOffset() * 60000);
-        entry.dataset.timestamp = timestamp;
-        var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': timestamp, 'content': entry.innerHTML, 'public': entry.dataset.public};
+        var data = {'title': entryTitle.value, 'content': entry.innerHTML, 'public': entry.dataset.public};
         data = JSON.stringify(data);
       }
     }
+    fetch(server + '/thought-writer/thoughts', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      method: 'POST',
+      body: data,
+    }).catch(function (error) {
+      window.alert('Your post did not go through. Please try again soon.');
+    }).then(function (response) {
+      if (response.ok) {
+        response.text().then(function (text) {
+          if (open) {
+            toggleCabinet();
+          }
+          entry.dataset.timestamp = text;
+          getPosts();
+          drawingBoard.classList.add('entry-done-board');
+          formatTools.classList.add('entry-done-content');
+          entry.classList.add('entry-done-content');
+          actionButtons.classList.add('entry-done-content');
+          goBack.classList.add('entry-done-buttons');
+          newPost.classList.add('entry-done-buttons');
+          setTimeout (function() {
+            drawingBoard.style.justifyContent = 'center';
+            formatTools.style.display = 'none';
+            entry.style.display = 'none';
+            actionButtons.style.display = 'none';
+            goBack.style.display = 'initial';
+            newPost.style.display = 'initial';
+          }, 200);
+          sessionStorage.setItem('entryTitle', entryTitle.value);
+          sessionStorage.setItem('entry', entry.innerHTML);
+          entryTitle.value = 'Thank you for your post';
+          entryTitle.disabled = true;
+          entryTitle.style.userSelect = 'none';
+          entry.innerHTML = '';
+        })
+      }
+    })
   } else if (this.innerHTML == 'Modify') {
     if (localStorage.getItem('cptoken') == null) {
       window.alert('You must log in to create a post.');
       return;
     } else {
-      var data = {'writer': localStorage.getItem('cpusername'), 'name': entryName.value, 'timestamp': parseInt(entry.dataset.timestamp), 'content': entry.innerHTML, 'public': entry.dataset.public};
+      var data = {'writer': localStorage.getItem('cpusername'), 'title': entryTitle.value, 'timestamp': entry.dataset.timestamp, 'content': entry.innerHTML, 'public': entry.dataset.public};
       data = JSON.stringify(data);
     }
-  }
-  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
-    method: 'POST',
-    body: data,
-  }).catch(function (error) {
-    window.alert('Your post did not go through. Please try again soon.');
-  }).then(function (response) {
-    if (response.ok) {
-      if (open) {
-        toggleCabinet();
+    fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(entry.dataset.timestamp), {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      method: 'PUT',
+      body: data,
+    }).catch(function (error) {
+      window.alert('Your post did not go through. Please try again soon.');
+    }).then(function (response) {
+      if (response.ok) {
+        if (open) {
+          toggleCabinet();
+        }
+        getPosts();
+        drawingBoard.classList.add('entry-done-board');
+        formatTools.classList.add('entry-done-content');
+        entry.classList.add('entry-done-content');
+        actionButtons.classList.add('entry-done-content');
+        goBack.classList.add('entry-done-buttons');
+        newPost.classList.add('entry-done-buttons');
+        setTimeout (function() {
+          drawingBoard.style.justifyContent = 'center';
+          formatTools.style.display = 'none';
+          entry.style.display = 'none';
+          actionButtons.style.display = 'none';
+          goBack.style.display = 'initial';
+          newPost.style.display = 'initial';
+        }, 200);
+        sessionStorage.setItem('entryTitle', entryTitle.value);
+        sessionStorage.setItem('entry', entry.innerHTML);
+        entryTitle.value = 'Thank you for your post';
+        entryTitle.disabled = true;
+        entryTitle.style.userSelect = 'none';
+        entry.innerHTML = '';
       }
-      getPosts();
-      drawingBoard.classList.add('entry-done-board');
-      formatTools.classList.add('entry-done-content');
-      entry.classList.add('entry-done-content');
-      actionButtons.classList.add('entry-done-content');
-      goBack.classList.add('entry-done-buttons');
-      newPost.classList.add('entry-done-buttons');
-      setTimeout (function() {
-        drawingBoard.style.justifyContent = 'center';
-        formatTools.style.display = 'none';
-        entry.style.display = 'none';
-        actionButtons.style.display = 'none';
-        goBack.style.display = 'initial';
-        newPost.style.display = 'initial';
-      }, 200);
-      sessionStorage.setItem('entryName', entryName.value);
-      sessionStorage.setItem('entry', entry.innerHTML);
-      entryName.value = 'Thank you for your post';
-      entryName.disabled = true;
-      entryName.style.userSelect = 'none';
-      entry.innerHTML = '';
-    }
-  })
+    })
+  }
   if (this.innerHTML == 'Modify') {
     this.innerHTML = 'Submit';
     clear.innerHTML = 'Clear';
@@ -352,7 +387,7 @@ function togglePublic() {
 function deleteEntry() {
   var confirmDelete = confirm('Are you sure you want to delete this post?');
   if (confirmDelete == true) {
-    fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
+    fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(entry.dataset.timestamp), {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
       method: 'DELETE'
     }).catch(function (error) {
@@ -367,7 +402,7 @@ function deleteEntry() {
 }
 
 function modifyLast() {
-  fetch(server + '/thought-writer/thoughts?timestamp=' + entry.dataset.timestamp, {
+  fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(entry.dataset.timestamp), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
     method: 'DELETE'
   }).catch(function (error) {
@@ -378,12 +413,12 @@ function modifyLast() {
   }
   getPosts();
   backToDrawingBoard();
-  entryName.value = sessionStorage.getItem('entryName');
+  entryTitle.value = sessionStorage.getItem('entryTitle');
   entry.innerHTML = sessionStorage.getItem('entry');
 }
 
 function startNew() {
-  entryName.value = '[title]';
+  entryTitle.value = '[title]';
   delete entry.dataset.timestamp;
   delete entry.dataset.public;
   publicInput.checked = false;
@@ -406,8 +441,8 @@ function backToDrawingBoard() {
     goBack.classList.remove('entry-done-buttons');
     newPost.classList.remove('entry-done-buttons');
   }, 200);
-  entryName.disabled = false;
-  entryName.style.userSelect = 'text';
+  entryTitle.disabled = false;
+  entryTitle.style.userSelect = 'text';
 }
 
 function toggleCabinet() {

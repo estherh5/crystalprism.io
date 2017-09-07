@@ -237,7 +237,7 @@ button {
   display: none;
 }
 
-#delete {
+#close, #modify, #delete {
   display: none;
 }
 

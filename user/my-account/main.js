@@ -6,6 +6,7 @@ var frontTexts = document.getElementsByClassName('front-text');
 var backButtons = document.getElementsByClassName('back-button');
 var profileLink = document.getElementById('profile-link');
 var signInLink = document.getElementById('sign-in-link');
+var deleteButton = document.getElementById('confirm');
 var editButton = document.getElementById('edit');
 var enterPass = document.getElementById('enter-pass');
 var verifyPasswordInput = document.getElementById('verify-password');
@@ -114,6 +115,7 @@ profileImage.onclick = function() {
   colorPicker.click();
 }
 
+deleteButton.onclick = deleteAccount;
 editButton.onclick = editContent;
 submitButton.onclick = checkPassword;
 cancelButton.onclick = cancelEdit;
@@ -571,6 +573,20 @@ function flipMenuBack() {
   }
 }
 
+function deleteAccount() {
+  fetch(server + '/user/' + localStorage.getItem('cpusername'), {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+    method: 'DELETE'
+  }).catch(function (error) {
+    window.alert('Your request did not go through. Please try again soon.');
+  }).then(function (response) {
+    if (response.ok) {
+      sessionStorage.setItem('cprequest', 'delete');
+      window.location.href = '../create-account/index.html';
+    }
+  })
+}
+
 function editContent() {
   if (this.dataset.editing == 'true') {
     if (!assessUsername() || !assessPassword() || !assessPasswordMatch() || !assessEmail()) {
@@ -674,6 +690,7 @@ function postEdits() {
         backgroundColorDisplay.classList.remove('editing');
         profileImage.classList.remove('editing');
         passwordInput.value = '';
+        confirmPasswordInput.value = '';
         if (usernameInput.value != localStorage.getItem('cpusername')) {
           localStorage.setItem('cpusername', usernameInput.value);
         }

@@ -255,6 +255,30 @@ a:hover, a:focus {
   background-color: #ffffff;
 }
 
+#delete {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  background-color: transparent;
+  font-size: 12px;
+  transform: none;
+}
+
+#delete:hover {
+  transform: none;
+  color: #808080;
+}
+
+#delete:focus {
+  color: #808080;
+  outline: none !important;
+}
+
+#delete:active {
+  box-shadow: none;
+  background-color: transparent;
+}
+
 #profile-image {
   height: 70px;
   width: 70px;

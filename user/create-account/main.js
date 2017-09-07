@@ -12,7 +12,6 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
-usernameInput.onfocusout = assessUsername;
 passwordInput.onfocusout = assessPassword;
 confirmPasswordInput.onfocusout = assessPasswordMatch;
 submit.onclick = createAccount;
@@ -21,6 +20,15 @@ submit.onclick = createAccount;
 $(function () {
   $('[data-toggle="tooltip"]').tooltip();
 })
+
+function displayDeleted() {
+  if (sessionStorage.getItem('cprequest') == 'delete') {
+    $(deleted).modal('show');
+    localStorage.removeItem('cpusername');
+    localStorage.removeItem('cptoken');
+    sessionStorage.removeItem('cprequest');
+  }
+}
 
 function assessUsername() {
   var username = usernameInput.value;

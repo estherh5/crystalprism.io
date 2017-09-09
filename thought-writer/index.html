@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="WYSIWYG online journal tool">
-    <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor">
+    <meta name="description" content="Thoughts and ideas written by the public in an online shared journal">
+    <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor,public,shared,ideas">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Megrim|Rajdhani|Share" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Material+Icons|Rajdhani|Share" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
@@ -19,103 +19,31 @@
     <title>Thought Writer</title>
   </head>
   <body onload="checkAccountStatus();getPosts();">
-    <div id="homepage-row">
-      <a id="homepage" href="../index.html">
-        <img id="diamond-small" src="../images/homepage.png">
-      </a>
-    </div>
-    <div id="account-menu">
-      <a id="profile-link"></a>
-      <a id="account-link" href="../user/create-account/index.html"></a>
-      <a id="sign-in-link" href="../user/sign-in/index.html"></a>
-    </div>
-    <div id="main-wrapper">
+    <svg id="new" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+      <g>
+        <polygon id="background" points="250 120, 250 950, 800 950, 800 330, 650 120"></polygon>
+        <path d="M624 96h16l192 224v576.295c0 34.963-28.617 63.705-63.918 63.705h-480.165c-35.408 0-63.918-28.759-63.918-64.235v-735.531c0-35.488 28.693-64.235 64.088-64.235h335.912zM608 128h-320.142c-17.595 0-31.858 14.568-31.858 31.855v736.291c0 17.593 14.551 31.855 31.999 31.855h480.003c17.672 0 31.999-14.238 31.999-31.789v-544.211h-128.067c-35.309 0-63.933-28.37-63.933-64.189v-159.811zM640 144v143.719c0 17.828 14.421 32.281 31.896 32.281h118.503l-150.398-176z"/>
+      </g>
+    </svg>
+    <span id="plus">+</span>
+    <div id="header">
+      <div id="homepage-row">
+        <a id="homepage" href="../index.html">
+          <img id="diamond-small" src="../images/homepage.png">
+        </a>
+      </div>
       <a id="title-link" href="index.html">
         <h1 id="title">Thought Writer</h1>
       </a>
-      <div id="container">
-        <input id="entry-title" value="[title]">
-        <div id="drawing-board">
-          <div id="format-tools">
-            <input id="color-picker" type="color" data-command="foreColor">
-            <button data-command="removeFormat">
-              <i class="fa fa-times" aria-hidden="true"></i>
-            </button>
-            <button data-command="bold">
-              <i class="fa fa-bold" aria-hidden="true"></i>
-            </button>
-            <button data-command="italic">
-              <i class="fa fa-italic" aria-hidden="true"></i>
-            </button>
-            <button data-command="underline">
-              <i class="fa fa-underline" aria-hidden="true"></i>
-            </button>
-            <button data-command="strikeThrough">
-              <i class="fa fa-strikethrough" aria-hidden="true"></i>
-            </button>
-            <button data-command="subscript">
-              <i class="fa fa-subscript" aria-hidden="true"></i>
-            </button>
-            <button data-command="superscript">
-              <i class="fa fa-superscript" aria-hidden="true"></i>
-            </button>
-            <button data-command="justifyLeft">
-              <i class="fa fa-align-left" aria-hidden="true"></i>
-            </button>
-            <button data-command="justifyCenter">
-              <i class="fa fa-align-center" aria-hidden="true"></i>
-            </button>
-            <button data-command="justifyRight">
-              <i class="fa fa-align-right" aria-hidden="true"></i>
-            </button>
-            <button data-command="justifyFull">
-              <i class="fa fa-align-justify" aria-hidden="true"></i>
-            </button>
-            <button data-command="insertOrderedList">
-              <i class="fa fa-list-ol" aria-hidden="true"></i>
-            </button>
-            <button data-command="insertUnorderedList">
-              <i class="fa fa-list-ul" aria-hidden="true"></i>
-            </button>
-            <button data-command="createLink">
-              <i class="fa fa-link" aria-hidden="true"></i>
-            </button>
-            <button data-command="unlink">
-              <i class="fa fa-chain-broken" aria-hidden="true"></i>
-            </button>
-            <button data-command="insertImage">
-              <i class="fa fa-file-image-o" aria-hidden="true"></i>
-            </button>
-          </div>
-          <div id="entry" contenteditable></div>
-          <div id="action-buttons">
-            <button id="clear" class="content-button">Clear</button>
-            <button id="submit" class="content-button">Submit</button>
-            <button id="close" class="content-button">Close</button>
-            <button id="modify" class="content-button">Modify</button>
-            <button id="delete" class="content-button">Delete</button>
-            <div id="checkbox"></div>Public?
-            <input id="public" type="checkbox">
-          </div>
-          <button id="go-back" class="content-button">Modify Last Post</button>
-          <button id="new-post" class="content-button">New Post</button>
-        </div>
-      </div>
-      <div id="cabinet">
-        <div id="cabinet-back">
-          <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
-        </div>
-        <div id="post-area">
-        </div>
-        <div id="cabinet-front">
-          <div id="handle">
-            My Posts
-          </div>
-          <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
-        </div>
+      <div id="account-menu">
+        <a id="profile-link"></a>
+        <a id="account-link" href="../user/create-account/index.html"></a>
+        <a id="sign-in-link" href="../user/sign-in/index.html"></a>
       </div>
     </div>
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+    <div id="container">
+      <div id="post-area"></div>
+    </div>
     <script src="main.js"></script>
   </body>
 </html>

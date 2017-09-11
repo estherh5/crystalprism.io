@@ -15,51 +15,6 @@ html, body {
   background-color: #00ffff;
 }
 
-#new {
-  position: fixed;
-  height: 50px;
-  width: 50px;
-  bottom: 0px;
-  right: 0px;
-  margin: 5px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  z-index: 1;
-}
-
-#background {
-  fill: #ffff00;
-}
-
-.clicked {
-  animation-name: pop;
-  animation-duration: 0.2s;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-#plus {
-  position: fixed;
-  bottom: 7px;
-  right: 15px;
-  font-size: 48px;
-  opacity: 0.8;
-  cursor: pointer;
-  z-index: 2;
-}
-
 #header {
   position: fixed;
   left: 0px;
@@ -166,22 +121,18 @@ a:focus, button:focus {
   width: 100%;
   margin-top: 130px;
   display: flex;
-  flex-flow: row wrap;
-  align-items: flex-start;
+  flex-flow: column;
+  align-items: center;
   justify-content: center;
 }
 
 #post-area {
   position: relative;
-  max-width: 190px;
-  margin-bottom: 50px;
-  outline-style: solid;
-  outline-width: 2px;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
-  background-color: #ff90cd;
+  overflow: scroll;
 }
 
 #post-area text {
@@ -195,13 +146,15 @@ a:focus, button:focus {
   text-align: center;
 }
 
-.post-div {
-  margin-bottom: 10px;
-  margin-left: 10px;
-  margin-right: 10px;
+#post-div {
+  margin-bottom: 2%;
+  margin-left: 1%;
+  margin-right: 1%;
 }
 
-.post-title {
+#post-title {
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -209,9 +162,30 @@ a:focus, button:focus {
   line-height: 2;
 }
 
-.post-entry {
-  height: 150px;
-  width: 150px;
+#post {
+  height: 71vw;
+  max-height: 381.5px;
+  width: 71vw;
+  max-width: 381.5px;
+  padding: 5px;
+  margin-left: 10px;
+  margin-right: 10px;
+  margin-bottom: 3px;
+  outline-style: solid;
+  outline-width: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff90cd;
+  transition: all 0.4s;
+}
+
+#entry {
+  height: 65vw;
+  max-height: 350px;
+  width: 65vw;
+  max-width: 350px;
   padding: 5px;
   border-style: solid;
   border-width: 2px;
@@ -225,40 +199,114 @@ a:focus, button:focus {
   user-select: text;
 }
 
-.post-entry img {
+#entry img {
   max-width: 100%;
   max-height: 100%;
 }
 
-.post-info {
+#info {
+  margin-left: 10px;
+  margin-right: 10px;
   font-size: 10px;
 }
 
-.post-info a {
-  display: block;
+#comment-area {
+  display: flex;
+  flex-direction: column;
 }
 
-@media only screen and (min-width: 400px) {
-  #post-area {
-    max-width: 380px;
-  }
+#new-comment {
+  height: 50px;
+  width: 65vw;
+  max-width: 350px;
+  padding: 15px;
+  border-style: solid;
+  border-width: 2px;
+  outline: none;
+  resize: none;
+}
+
+.comment-div {
+  display: flex;
+  flex-flow: row wrap;
+  width: 65vw;
+  max-width: 384px;
+}
+
+.comment-content {
+  width: 75%;
+  padding-right: 5%;
+  padding-bottom: 15px;
+}
+
+.commenter {
+  width: 15%;
+  padding-left: 5%;
+  text-align: right;
+}
+
+.comment-time {
+  margin-bottom: 50px;
+}
+
+button {
+  width: fit-content;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 15px;
+  text-decoration: none;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  font-weight: bold;
+}
+
+#submit {
+  align-self: flex-end;
 }
 
 @media only screen and (min-width: 576px) {
+  body {
+    display: block;
+  }
+
+  #title {
+    position: relative;
+  }
+
   #post-area {
-    max-width: 560px;
+    max-width: 90%;
+  }
+
+  #post {
+    max-height: 436px;
+    max-width: 436px;
+  }
+
+  #entry {
+    max-height: 400px;
+    max-width: 400px;
+  }
+
+  #new-comment {
+    height: 75px;
+    max-width: 400px;
+  }
+
+  .comment-div {
+    max-width: 434px;
+  }
+
+  button {
+    font-size: 20px;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  #plus {
-    opacity: 0;
-  }
-
-  #plus:hover {
-    opacity: 0.8;
-  }
-
   #account-menu {
     font-size: 14px;
   }
@@ -273,31 +321,34 @@ a:focus, button:focus {
   }
 
   #post-area {
-    max-width: 715px;
+    max-width: 85%;
+    overflow: unset;
   }
 
-  .post-title {
+  #post-title {
     font-size: 18px;
   }
 
-  .post {
-    height: 230px;
-    width: 230px;
+  #post {
+    max-height: 545px;
+    max-width: 545px;
   }
 
-  .post-entry {
-    height: 200px;
-    width: 200px;
+  #entry {
+    max-height: 500px;
+    max-width: 500px;
     font-size: 20px;
   }
 
-  .post-info {
+  #info {
     font-size: 12px;
   }
-}
 
-@media only screen and (min-width: 1000px) {
-  #post-area {
-    max-width: 950px;
+  #new-comment {
+    max-width: 500px;
+  }
+
+  .comment-div {
+    max-width: 534px;
   }
 }

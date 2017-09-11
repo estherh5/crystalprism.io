@@ -131,25 +131,25 @@ function populateDrawings() {
     }
     for (var i = 0; i < drawingLoadNumber; i++) {
       var imageLikes = document.createElement('div');
-      imageLikes.className = 'image-likes';
+      imageLikes.classList.add('image-likes');
       imageLikes.title = 'Likes';
       imageLikes.dataset.image = images[i];
       var imageDiv = document.createElement('div');
-      imageDiv.className = 'image-div';
+      imageDiv.classList.add('image-div');
       imageDiv.dataset.number = drawingStart + i;
       var imageLink = document.createElement('a');
-      imageLink.className = 'image-link';
+      imageLink.classList.add('image-link');
       imageLink.href = 'javascript:delay("../canvashare/drawingapp/index.html")';
       var imageName = document.createElement('div');
-      imageName.className = 'image-name';
+      imageName.classList.add('image-name');
       imageName.innerHTML = images[i].substr(images[i].indexOf('/')+1).split(/`|.png/)[0];
       var image = document.createElement('img');
-      image.className = 'image';
+      image.classList.add('image');
       image.src = server + '/canvashare/drawing/' + images[i];
       var imageInfo = document.createElement('div');
-      imageInfo.className = 'image-info';
+      imageInfo.classList.add('image-info');
       var imageViews = document.createElement('div');
-      imageViews.className = 'image-views';
+      imageViews.classList.add('image-views');
       imageViews.title = 'Views';
       imageViews.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
       gallery.append(imageDiv);
@@ -320,10 +320,11 @@ function populatePosts() {
           }
           for (var i = 0; i < postLoadNumber; i++) {
             var postDiv = document.createElement('div');
-            postDiv.className = 'post-div';
+            postDiv.classList.add('post-div');
             postDiv.dataset.number = postStart + i;
-            var postTitle = document.createElement('div');
-            postTitle.className = 'post-title';
+            var postTitle = document.createElement('a');
+            postTitle.classList.add('post-title');
+            postTitle.href = 'javascript:delay("../thought-writer/post/index.html")';
             postTitle.innerHTML = posts[i].title;
             var post = document.createElement('div');
             post.classList.add('post');
@@ -331,9 +332,9 @@ function populatePosts() {
             postEntry.classList.add('post-entry');
             postEntry.innerHTML = posts[i].content;
             var postInfo = document.createElement('div');
-            postInfo.className = 'post-info';
+            postInfo.classList.add('post-info');
             var postTimeDisplay = document.createElement('div');
-            postTimeDisplay.className = 'post-time';
+            postTimeDisplay.classList.add('post-time');
             var utcDateTime = JSON.parse(posts[i].timestamp);
             var dateTime = new Date(utcDateTime + ' UTC');
             var hour = parseInt(dateTime.getHours());
@@ -345,12 +346,32 @@ function populatePosts() {
             var postDate = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
             var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
             postTimeDisplay.innerHTML = postDate + ', ' + postTime;
-            postArea.appendChild(postDiv);
-            postDiv.appendChild(postTitle);
-            postDiv.appendChild(post);
-            post.appendChild(postEntry);
-            postDiv.appendChild(postInfo);
-            postInfo.appendChild(postTimeDisplay);
+            var postComments = document.createElement('a');
+            if (posts[i].comments.length == 1) {
+              postComments.innerHTML = posts[i].comments.length + ' comment';
+            } else {
+              postComments.innerHTML = posts[i].comments.length + ' comments';
+            }
+            postComments.href = 'javascript:delay("../thought-writer/post/index.html#comments")';
+            postArea.append(postDiv);
+            postDiv.append(postTitle);
+            postDiv.append(post);
+            post.append(postEntry);
+            postDiv.append(postInfo);
+            postInfo.append(postTimeDisplay);
+            postInfo.append(postComments);
+            postTitle.dataset.writer = posts[i].writer;
+            postTitle.dataset.timestamp = posts[i].timestamp;
+            postComments.dataset.writer = posts[i].writer;
+            postComments.dataset.timestamp = posts[i].timestamp;
+            postTitle.onclick = function() {
+              sessionStorage.setItem('writer', this.dataset.writer);
+              sessionStorage.setItem('timestamp', this.dataset.timestamp);
+            }
+            postComments.onclick = function() {
+              sessionStorage.setItem('writer', this.dataset.writer);
+              sessionStorage.setItem('timestamp', this.dataset.timestamp);
+            }
           }
           if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
             postLeftArrow.classList.add('display');

@@ -89,16 +89,27 @@ function getPosts() {
           }
           for (var i = 0; i < postLoadNumber; i++) {
             var postDiv = document.createElement('div');
-            postDiv.className = 'post-div';
+            postDiv.classList.add('post-div');
             postDiv.dataset.number = postStart + i;
-            var postTitle = document.createElement('div');
-            postTitle.className = 'post-title';
+            var postTitle = document.createElement('a');
+            postTitle.classList.add('post-title');
+            postTitle.href = 'javascript:delay("post/index.html")';
             postTitle.innerHTML = posts[i].title;
             var postEntry = document.createElement('div');
             postEntry.classList.add('post-entry');
             postEntry.innerHTML = posts[i].content;
             var postInfo = document.createElement('div');
-            postInfo.className = 'post-info';
+            postInfo.classList.add('post-info');
+            var postWriter = document.createElement('a');
+            postWriter.href = '../user/index.html?username=' + posts[i].writer;
+            postWriter.innerHTML = posts[i].writer;
+            var postComments = document.createElement('a');
+            if (posts[i].comments.length == 1) {
+              postComments.innerHTML = posts[i].comments.length + ' comment';
+            } else {
+              postComments.innerHTML = posts[i].comments.length + ' comments';
+            }
+            postComments.href = 'javascript:delay("post/index.html#comments")';
             var postTimeDisplay = document.createElement('div');
             var utcDateTime = JSON.parse(posts[i].timestamp);
             var dateTime = new Date(utcDateTime + ' UTC');
@@ -111,18 +122,22 @@ function getPosts() {
             var postDate = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
             var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
             postTimeDisplay.innerHTML = postDate + ', ' + postTime;
-            var postWriter = document.createElement('a');
-            postWriter.href = '../user/index.html?username=' + posts[i].writer;
-            postWriter.innerHTML = posts[i].writer;
-            postArea.appendChild(postDiv);
-            postDiv.appendChild(postTitle);
-            postDiv.appendChild(postEntry);
-            postDiv.appendChild(postInfo);
-            postInfo.appendChild(postTimeDisplay);
-            postInfo.appendChild(postWriter);
+            postArea.append(postDiv);
+            postDiv.append(postTitle);
+            postDiv.append(postEntry);
+            postDiv.append(postInfo);
+            postInfo.append(postWriter);
+            postInfo.append(postComments);
+            postInfo.append(postTimeDisplay);
             postTitle.dataset.writer = posts[i].writer;
             postTitle.dataset.timestamp = posts[i].timestamp;
+            postComments.dataset.writer = posts[i].writer;
+            postComments.dataset.timestamp = posts[i].timestamp;
             postTitle.onclick = function() {
+              sessionStorage.setItem('writer', this.dataset.writer);
+              sessionStorage.setItem('timestamp', this.dataset.timestamp);
+            }
+            postComments.onclick = function() {
               sessionStorage.setItem('writer', this.dataset.writer);
               sessionStorage.setItem('timestamp', this.dataset.timestamp);
             }
@@ -131,6 +146,10 @@ function getPosts() {
       })
     }
   })
+}
+
+function delay(URL) {
+  setTimeout(function () {window.location = URL}, 800);
 }
 
 function displayMorePosts() {

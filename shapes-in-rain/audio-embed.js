@@ -9,15 +9,14 @@
 function onYouTubeIframeAPIReady() {
   var audioDiv = document.getElementById('audio-div');
   var audioIcon = document.createElement('img');
-  audioIcon.setAttribute('id', 'audio-icon');
-  audioIcon.style.cssText = 'cursor: pointer;';
-  audioDiv.appendChild(audioIcon);
+  audioIcon.id = 'audio-icon';
+  audioDiv.append(audioIcon);
   var audioPlayer = document.createElement('div');
-  audioPlayer.setAttribute('id', 'audio-player');
-  audioDiv.appendChild(audioPlayer);
+  audioPlayer.id = 'audio-player';
+  audioDiv.append(audioPlayer);
   function audioFunction(audioDiv) {
     var audioPlayer = audioDiv ? 'on-black.png' : 'off-black.png';
-    audioIcon.setAttribute('src', 'images/' + audioPlayer);
+    audioIcon.src = 'images/' + audioPlayer;
   }
   audioDiv.onclick = function() {
     audioiFrame.getPlayerState() === YT.PlayerState.PLAYING || audioiFrame.getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame.pauseVideo(), audioFunction(!1)) : (audioiFrame.playVideo(), audioFunction(!0));

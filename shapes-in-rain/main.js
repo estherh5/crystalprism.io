@@ -12,57 +12,58 @@ if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://localhost:5000/api';
 }
 
+// Resize canvas to fullscreen
+function resizeCanvas() {
+  canvas.setAttribute('width', window.innerWidth);
+  canvas.setAttribute('height', window.innerHeight);
+}
+
+window.addEventListener('resize', resizeCanvas, false);
+
 // Check if user is logged in
 function checkAccountStatus() {
   return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function (error) {
+  }).catch(function(error) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../../shapes-in-rain/index.html');
+      sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      profileLink.innerHTML = localStorage.getItem('username');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
       accountLink.innerHTML = 'My Account';
       accountLink.href = '../user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
+        sessionStorage.setItem('account-request', 'logout');
       }
     } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('token');
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../../shapes-in-rain/index.html');
+        sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
       }
     }
   })
 }
 
-// Resize canvas to fullscreen
-function resize() {
-  canvas.setAttribute('width', window.innerWidth);
-  canvas.setAttribute('height', window.innerHeight);
-}
-
-window.addEventListener('resize', resize, false);
-
 // Create heart shapes positioned a distance apart on the x-axis
 function cloneHeart() {
   var heartClone = heart.cloneNode(true);
+  heartClone.classList.add('heart');
   heartClone.setAttribute('class', 'heart');
   heartClone.setAttribute('height', '6%');
   heartClone.setAttribute('width', '6%');
   heartClone.setAttribute('x', '0px');
   heartClone.setAttribute('y', '0px');
-  canvas.appendChild(heartClone);
-  setTimeout(function () {
+  canvas.append(heartClone);
+  setTimeout(function() {
     heartClone.remove();
   }, 15000);
   return heartClone;
@@ -108,12 +109,12 @@ function createRandomShape() {
   randomShape.setAttribute('width', '15%');
   randomShape.setAttribute('x', randomXCoordinate + '%');
   randomShape.setAttribute('y', randomYCoordinate + '%');
-  canvas.appendChild(randomShape);
-  randomShape.onclick = function () {
+  canvas.append(randomShape);
+  randomShape.onclick = function() {
     randomShape.remove();
     score.innerHTML = 'Score: ' + (parseInt(score.innerHTML.split(' ')[1]) + 1);
   };
-  setTimeout(function () {
+  setTimeout(function() {
     randomShape.remove();
   }, 9000);
 }
@@ -126,21 +127,17 @@ document.body.onclick = createBlast;
 function createBlast() {
   document.body.style.cursor = 'url("images/create-blast.png") 25 20, auto';
   setTimeout(function() {
-    document.body.style.cursor = 'url("images/blast-start.png") 25 20, auto';
-  }, 500);
+    document.body.style.cursor = '';
+  }, 300);
 }
 
 // Send score to server
 function sendScore() {
-  if (localStorage.getItem('cpusername') != null) {
-    name = localStorage.getItem('cpusername');
-    var scoreName = {
-      score: parseInt(score.innerHTML.split(' ')[1]),
-      name: name,
-    };
-    data = JSON.stringify(scoreName);
+  if (localStorage.getItem('username') != null) {
+    var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
+    data = JSON.stringify(finalScore);
     return fetch(server + '/shapes-in-rain', {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
     })

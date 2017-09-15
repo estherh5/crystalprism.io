@@ -18,7 +18,7 @@ body {
   z-index: 1;
 }
 
-#homepage {
+#homepage-link {
   width: 50px;
   margin-top: 5px;
   display: flex;
@@ -35,9 +35,41 @@ body {
   filter: grayscale(1);
 }
 
-#homepage:hover #diamond-small {
+#homepage-link:hover #diamond-small {
   opacity: 1;
   filter: grayscale(0);
+}
+
+#account-menu {
+  position: absolute;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
+}
+
+a {
+  color: #ffffff;
+  opacity: 0.7;
+  text-decoration: none;
+}
+
+a:active, button:active {
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+a:hover, button:hover {
+  opacity: 1;
+}
+
+a:focus, button:focus {
+  outline: none;
 }
 
 #container {
@@ -84,7 +116,7 @@ body {
   font-size: 70px;
   font-weight: bold;
   color: white;
-  opacity: .9;
+  opacity: 0.9;
 }
 
 #quote {
@@ -93,14 +125,17 @@ body {
   font-size: 12px;
   font-weight: bold;
   color: white;
-  opacity: .8;
+  opacity: 0.8;
 }
 
 #stars {
-  position: fixed;
+  position: absolute;
   height: 800px;
   width: 800px;
-  background: url('images/stars.png');
+  margin: auto;
+  top: 0px;
+  bottom: 0px;
+  background-image: url('images/stars.png');
   animation-name: rotate;
   animation-duration: 1000s;
   animation-iteration-count: infinite;
@@ -139,5 +174,11 @@ body {
   #stars {
     height: 3000px;
     width: 3000px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  #account-menu {
+    font-size: 14px;
   }
 }

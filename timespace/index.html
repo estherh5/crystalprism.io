@@ -5,7 +5,7 @@
     <meta name="description" content="Clock that measures movement of time through color">
     <meta name="keywords" content="hexadecimal,time,space,color,self">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Share+Tech+Mono" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Rajdhani|Share+Tech+Mono" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <script>
@@ -19,11 +19,16 @@
     </script>
     <title>Timespace</title>
   </head>
-  <body>
+  <body onload="checkAccountStatus();">
     <div id="homepage-row">
-      <a id="homepage" href="../index.html">
+      <a id="homepage-link" href="../index.html">
         <img id="diamond-small" src="../images/homepage.png">
       </a>
+    </div>
+    <div id="account-menu">
+      <a id="profile-link"></a>
+      <a id="account-link" href="../user/create-account/index.html"></a>
+      <a id="sign-in-link" href="../user/sign-in/index.html"></a>
     </div>
     <div id="container">
       <div id="audio-div" data-video="lhonQGHFG44" data-autoplay="0" data-loop="1"></div>

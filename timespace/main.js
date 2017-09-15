@@ -1,11 +1,54 @@
 // Define variables
+var profileLink = document.getElementById('profile-link');
+var accountLink = document.getElementById('account-link');
+var signInLink = document.getElementById('sign-in-link');
 var timeDisplay = document.getElementById('time');
 var circleOne = document.getElementById('circle-one');
 var circleTwo = document.getElementById('circle-two');
 var circleThree = document.getElementById('circle-three');
 var circleFour = document.getElementById('circle-four');
+if (window.location.hostname == 'crystalprism.io') {
+  var server = 'http://13.58.175.191/api';
+} else {
+  var server = 'http://localhost:5000/api';
+}
+
+// Define events
+setInterval(everySecond, 1000);
 
 // Define functions
+function checkAccountStatus() {
+  return fetch(server + '/user/verify', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    method: 'GET',
+  }).catch(function (error) {
+    accountLink.innerHTML = 'Create Account';
+    signInLink.innerHTML = 'Sign In';
+    signInLink.onclick = function() {
+      sessionStorage.setItem('cppreviouswindow', '../../timespace/index.html');
+    }
+  }).then(function (response) {
+    if (response.ok) {
+      profileLink.innerHTML = localStorage.getItem('cpusername');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      accountLink.innerHTML = 'My Account';
+      accountLink.href = '../user/my-account/index.html';
+      signInLink.innerHTML = 'Sign Out';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cprequest', 'logout');
+      }
+    } else {
+      localStorage.removeItem('cpusername');
+      localStorage.removeItem('cptoken');
+      accountLink.innerHTML = 'Create Account';
+      signInLink.innerHTML = 'Sign In';
+      signInLink.onclick = function() {
+        sessionStorage.setItem('cppreviouswindow', '../../timespace/index.html');
+      }
+    }
+  })
+}
+
 function everySecond() {
   var now = new Date();
   var time = now.getTime().toString();
@@ -24,16 +67,14 @@ function everySecond() {
   timeDisplay.innerHTML = hours + ':' + minutes + ':' + seconds;
   circleOne.style.bottom = digitTwo + digitFour + '.' + digitFour + '%';
   circleOne.style.right = digitFour + digitTwo + '.' + digitOne + '%';
-  circleOne.style.background = '#' + circleOneColor;
+  circleOne.style.backgroundColor = '#' + circleOneColor;
   circleTwo.style.top = digitThree + digitFour + '.' + digitTwo + '%';
   circleTwo.style.right = digitFour + digitFive + '.' + digitTwo + '%';
-  circleTwo.style.background = '#' + circleTwoColor;
+  circleTwo.style.backgroundColor = '#' + circleTwoColor;
   circleThree.style.bottom = digitFive + digitFour + '.' + digitThree + '%';
   circleThree.style.left = digitFour + digitTwo + '.' + digitFive + '%';
-  circleThree.style.background = '#' + circleThreeColor;
+  circleThree.style.backgroundColor = '#' + circleThreeColor;
   circleFour.style.top = digitFour + digitOne + '.' + digitThree + '%';
   circleFour.style.left = digitOne + digitFour + '.' + digitThree + '%';
-  circleFour.style.background = '#' + circleFourColor;
+  circleFour.style.backgroundColor = '#' + circleFourColor;
 }
-
-setInterval(everySecond, 1000);

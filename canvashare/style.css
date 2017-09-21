@@ -3,24 +3,28 @@ html, body {
   width: 100%;
   margin: 0px;
   font-family: 'Chathura', sans-serif;
+  text-align: center;
   user-select: none;
+  -webkit-user-select: none;
 }
 
-#homepage-row {
+#header {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  z-index: 1;
+}
+
+#homepage-container {
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 1;
-}
-
-#homepage {
-  width: 50px;
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  color: #000000;
 }
 
 a {
@@ -33,180 +37,33 @@ a:active, button:active {
 }
 
 a:hover, button:hover {
-  color: grey;
+  color: #808080;
 }
 
 a:focus, button:focus {
   outline: none;
 }
 
-#diamond-small {
+#homepage-link {
+  width: 50px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  color: #000000;
+}
+
+#homepage-icon {
   height: 30px;
   left: 0px;
+  opacity: 0.7;
   filter: grayscale(1);
 }
 
-#homepage:hover #diamond-small {
+#homepage-link:hover #homepage-icon {
+  opacity: 1;
   filter: grayscale(0);
-}
-
-#account-menu {
-  position: absolute;
-  margin: 3px;
-  top: 0px;
-  right: 0px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  z-index: 10;
-}
-
-#profile-link, #account-link {
-  margin-right: 7px;
-}
-
-div {
-  text-align: center;
-}
-
-#new {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  font-size: 60px;
-  color: rgba(7, 179, 134, 0.82);
-  cursor: pointer;
-  transition: all 0.4s;
-  z-index: 1;
-  transition: all 0.4s;
-}
-
-#new:hover {
-  transition: all 0.4s;
-}
-
-.clicked {
-  animation-name: pop;
-  animation-duration: 0.2s;
-}
-
-.open {
-  color: #ffc0cb !important;
-  transition: all 0.4s;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-#menu {
-  position: fixed;
-  bottom: 0px;
-  right: 15px;
-  opacity: 0;
-  transform: translateY(65px);
-  transition: all 0.7s;
-  z-index: 2;
-}
-
-.visible {
-  opacity: 1 !important;
-  transform: translateY(-65px) !important;
-  transition: all 0.7s;
-}
-
-.hidden {
-  position: absolute !important;
-  bottom: -100px !important;
-}
-
-.icon-div {
-  position: relative;
-  max-height: 50px;
-  max-width: 50px;
-  margin-bottom: 15px;
-  opacity: 0.7;
-  transition: all 0.4s;
-}
-
-.icon-div:hover {
-  opacity: 1;
-  transition: all 0.4s;
-}
-
-.icon-link {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-link:active {
-  animation-name: pop;
-  animation-duration: 0.2s;
-}
-
-.icon {
-  height: 70%;
-  width: 85%;
-  border: 0.5em solid rgba(0, 0, 0, 0.08);
-  border-radius: 50%;
-  display: inline-block;
-  transform: scale(1);
-  transition: all 0.4s;
-}
-
-.icon-div:hover > a > .icon {
-  transform: scale(1.1);
-  transition: all 0.4s;
-}
-
-.fa-sign-in, .fa-plus {
-  position: absolute;
-  font-size: 30px !important;
-  color: #a5a5a5;
-  opacity: 0.5;
-  transition: all 0.4s;
-}
-
-.icon-div:hover > a > .fa-sign-in, .icon-div:hover > a > .fa-plus {
-  opacity: 1 !important;
-  transition: all 0.4s;
-}
-
-#header {
-  position: fixed;
-  left: 0px;
-  right: 0px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  background-color: rgba(255, 255, 255, 0.71);
-  opacity: 0.7;
-  z-index: 1;
-  transition: opacity 0.4s;
-}
-
-#header:hover #gallery-title {
-  opacity: 1;
-  transition: opacity 0.4s;
-}
-
-#header.shrink {
-  box-shadow: 0px 50px 1000px 110px rgba(255, 255, 255, 0.71);
-}
-
-#header.shrink:hover {
-  box-shadow: 0px 0px 40px 40px rgba(255, 255, 255, 0.71);
 }
 
 #gallery-link {
@@ -239,6 +96,20 @@ div {
 .shrink:hover #gallery-title {
   font-size: 3em;
   transition: all 0.3s;
+}
+
+#account-menu {
+  position: absolute;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
 }
 
 #container {
@@ -322,7 +193,7 @@ div {
   }
 }
 
-.image-div {
+.drawing-container {
   position: relative;
   max-height: 300px;
   max-width: 240px;
@@ -336,16 +207,16 @@ div {
   transition: all 0.4s;
 }
 
-.image-div:hover {
+.drawing-container:hover {
   opacity: 1;
   transition: all 0.4s;
 }
 
-.image-name {
+.drawing-title {
   cursor: default;
 }
 
-.image {
+.drawing {
   height: 70%;
   width: 85%;
   border: 0.3em solid rgba(0, 0, 0, 0.08);
@@ -353,7 +224,7 @@ div {
   display: inline-block;
 }
 
-.image-info {
+.drawing-info {
   width: 85%;
   max-width: 240px;
   display: flex;
@@ -361,15 +232,7 @@ div {
   z-index: 2;
 }
 
-.heart {
-  cursor: pointer;
-}
-
-.fa-heart {
-  color: red;
-}
-
-.image-likes, .image-views {
+.drawing-likes, .drawing-views {
   width: 20%;
   padding: 1px;
   font-size: 15px;
@@ -379,15 +242,137 @@ div {
   cursor: default;
 }
 
-.image-painter {
+.heart {
+  cursor: pointer;
+}
+
+.fa-heart {
+  color: #ff0000;
+}
+
+.drawing-artist {
   width: 80%;
   margin-top: 2px;
   text-align: right;
   cursor: default;
 }
 
-.painter-text {
+.artist-text {
   cursor: pointer !important;
+}
+
+#plus-icon {
+  position: fixed;
+  bottom: 10px;
+  right: 10px;
+  font-size: 60px;
+  color: #00cb96;
+  cursor: pointer;
+  transition: all 0.4s;
+  z-index: 1;
+}
+
+#plus-icon:hover {
+  transition: all 0.4s;
+}
+
+.clicked {
+  animation-name: pop;
+  animation-duration: 0.2s;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.open {
+  color: #ffc0cb !important;
+  transition: all 0.4s;
+}
+
+#create-menu {
+  position: fixed;
+  bottom: 0px;
+  right: 15px;
+  opacity: 0;
+  transform: translateY(65px);
+  transition: all 0.7s;
+  z-index: 2;
+}
+
+.visible {
+  opacity: 1 !important;
+  transform: translateY(-65px) !important;
+  transition: all 0.7s;
+}
+
+.hidden {
+  position: absolute !important;
+  bottom: -100px !important;
+}
+
+.menu-option {
+  position: relative;
+  max-height: 50px;
+  max-width: 50px;
+  margin-bottom: 15px;
+  opacity: 0.7;
+  transition: all 0.4s;
+}
+
+.menu-option:hover {
+  opacity: 1;
+  transition: all 0.4s;
+}
+
+.menu-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-image {
+  height: 70%;
+  width: 85%;
+  border: 0.5em solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  display: inline-block;
+  transform: scale(1);
+  transition: all 0.4s;
+}
+
+.menu-link:active .menu-image {
+  animation-name: pop;
+  animation-duration: 0.2s;
+}
+
+.menu-option:hover > a > .menu-image {
+  transform: scale(1.1);
+  transition: all 0.4s;
+}
+
+.fa-sign-in, .fa-plus {
+  position: absolute;
+  font-size: 30px !important;
+  color: #a5a5a5;
+  opacity: 0.5;
+  transition: all 0.4s;
+}
+
+.menu-option:hover > a > .fa-sign-in, .menu-option:hover > a > .fa-plus {
+  transform: scale(1.1);
+  opacity: 1 !important;
+  transition: all 0.4s;
 }
 
 @media only screen and (min-width: 400px) {
@@ -405,10 +390,6 @@ div {
 }
 
 @media only screen and (min-width: 768px) {
-  #account-menu {
-    font-size: 14px;
-  }
-
   #gallery-link {
     margin-top: 0px;
   }
@@ -420,6 +401,10 @@ div {
 
   .shrink:hover #gallery-title {
     font-size: 6em;
+  }
+
+  #account-menu {
+    font-size: 14px;
   }
 
   #container {
@@ -434,16 +419,16 @@ div {
     font-size: 3.3em;
   }
 
-  .image-div {
+  .drawing-container {
     margin-bottom: 3%;
   }
 
-  .image-likes, .image-views, .image-painter {
+  .drawing-likes, .drawing-views, .drawing-artist {
     opacity: 0;
     transition: all 0.4s;
   }
 
-  .image-div:hover .image-likes, .image-div:hover .image-views, .image-div:hover .image-painter {
+  .drawing-container:hover .drawing-likes, .drawing-container:hover .drawing-views, .drawing-container:hover .drawing-artist {
     opacity: 1;
     transition: all 0.4s;
   }

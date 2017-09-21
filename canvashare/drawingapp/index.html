@@ -2,25 +2,12 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Interactive drawing tool">
-    <meta name="keywords" content="drawing,canvas,palette">
+    <meta name="description" content="Community drawing tool where you can create a drawing to post to a public gallery for others to see, like, and duplicate to make their own">
+    <meta name="keywords" content="drawing,canvas,palette,editor,community,post,tool">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura|Rajdhani" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
-    <div class="hidden">
-      <canvas id="brush"></canvas>
-      <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="svg" width="20" height="20" xml:space="preserve">
-        <circle id="circle" cx="10" cy="10" r="10">
-      </svg>
-    </div>
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
-    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
-    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
-    <script src="main.js"></script>
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -32,24 +19,30 @@
     <title>CanvaShare</title>
   </head>
   <body onload="checkAccountStatus();setStage();">
-    <div id="homepage-row">
-      <a id="homepage" href="../../index.html">
-        <img id="diamond-small" src="../../images/homepage.png">
-      </a>
+    <div class="hidden">
+      <canvas id="brush"></canvas>
+      <svg id="brush-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" xml:space="preserve">
+        <circle id="brush-cursor" cx="10" cy="10" r="10">
+      </svg>
     </div>
-    <div id="account-menu">
-      <a id="profile-link"></a>
-      <a id="account-link" href="../../user/create-account/index.html"></a>
-      <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
-    </div>
-    <div id="gallery">
-      <a href="../index.html" title="Return to gallery">
-        <h1 id="gallery-link">CanvaShare</h1>
+    <div id="header">
+      <div id="homepage-container">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
+        </a>
+      </div>
+      <a id="gallery-link" href="../index.html" title="Return to gallery">
+        <h1 id="gallery-title">CanvaShare</h1>
         <i class="fa fa-undo" aria-hidden="true"></i>
       </a>
+      <div id="account-menu">
+        <a id="profile-link"></a>
+        <a id="account-link" href="../../user/create-account/index.html"></a>
+        <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
+      </div>
     </div>
-    <div id="input">
-      <input id="file-name" value="[title]">
+    <div id="title-input">
+      <input id="drawing-title" value="[title]" maxlength="25">
     </div>
     <div>
       <canvas id="canvas" width="400" height="400"></canvas>
@@ -57,7 +50,7 @@
     <div>
       <svg id="current-palette" width="400" height="40"></svg>
     </div>
-    <div id="palette-choices">
+    <div id="palette-options">
       <button data-palette="basic">Basic</button>
       <button data-palette="pastel">Pastel</button>
       <button data-palette="seashore">Seashore</button>
@@ -66,13 +59,21 @@
       <button data-palette="contrast">Contrast</button>
       <button data-palette="calico">Calico</button>
       <button data-palette="mauve">Mauve</button>
+      <button data-palette="grayscale">Grayscale</button>
     </div>
     <div>
       <button id="clear" class="action">Clear</button>
       <button id="post" class="action">Post</button>
-      <button id="download" class="action">
-        <a>Download</a>
-      </button>
+      <a id="download-link">
+        <button id="download" class="action">Download</button>
+      </a>
     </div>
+    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+    <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
+    <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
+    <script src="main.js"></script>
   </body>
 </html>

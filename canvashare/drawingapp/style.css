@@ -4,6 +4,7 @@ html, body {
   margin: 0px;
   text-align: center;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 .hidden {
@@ -12,14 +13,42 @@ html, body {
   visibility: hidden;
 }
 
-#homepage-row {
+#header {
+  position: fixed;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+#homepage-container {
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 1;
 }
 
-#homepage {
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+a:active {
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+a:hover {
+  color: #808080;
+}
+
+a:focus, button:focus {
+  outline: none;
+}
+
+#homepage-link {
   width: 50px;
   margin-top: 5px;
   display: flex;
@@ -29,33 +58,40 @@ html, body {
   color: #000000;
 }
 
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-a:active, button:active {
-  text-shadow: 0.01em -0.01em 0em #000000;
-}
-
-a:hover, button:hover {
-  color: grey;
-}
-
-a:focus, button:focus {
-  outline: none;
-}
-
-#diamond-small {
+#homepage-icon {
   height: 30px;
   left: 0px;
   opacity: 0.7;
   filter: grayscale(1);
 }
 
-#homepage:hover #diamond-small {
+#homepage-link:hover #homepage-icon {
   opacity: 1;
   filter: grayscale(0);
+}
+
+#gallery-link {
+  margin-top: 35px;
+  display: flex;
+  justify-content: center;
+}
+
+#gallery-title {
+  margin:  0px;
+  font-family: 'League Script', cursive;
+  font-weight: normal;
+  font-size: 2em;
+}
+
+#gallery-link:hover #gallery-title, #gallery-link:hover i {
+  font-weight: bold !important;
+  color: #000000 !important;
+}
+
+#gallery-link i {
+  height: 10px;
+  width: 10px;
+  visibility: visible;
 }
 
 #account-menu {
@@ -72,45 +108,11 @@ a:focus, button:focus {
   margin-right: 7px;
 }
 
-#gallery {
-  position: absolute;
-  left: 0px;
-  right: 0px;
-  margin: 0.5%;
-  margin-top: 35px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-
-#gallery a {
-  display: flex;
-  justify-content: center;
-}
-
-#gallery-link {
-  margin: 0px;
-  font-family: 'League Script', cursive;
-  font-weight: normal;
-  font-size: 2em;
-}
-
-#gallery a:hover #gallery-link {
-  font-weight: bold;
-}
-
-#gallery i {
-  height: 10px;
-  width: 10px;
-  visibility: visible;
-}
-
-#input {
+#title-input {
   margin-top: 80px;
 }
 
-#file-name {
+#drawing-title {
   border: none;
   outline: none;
   font-family: 'Chathura', sans-serif;
@@ -140,67 +142,72 @@ circle {
   cursor: pointer;
 }
 
-.chosen {
+circle.clicked {
   r: 4%;
-  stroke: darkslategrey;
+  stroke: #2f4f4f;
   stroke-width: 0.5%;
+}
+
+.outline {
+  stroke: #000000;
+  stroke-width: 1px;
 }
 
 button {
   border: 0px;
-  background: transparent;
+  background-color: rgba(0, 0, 0, 0);
   font-family: 'Chathura', sans-serif;
   font-size: 2em;
-  color: grey;
+  color: #808080;
   line-height: 1em;
   cursor: pointer;
+}
+
+button:hover {
+  color: #ff8282;
 }
 
 button:focus {
   outline: none;
 }
 
-button:hover, #save:hover {
-  color: #ff8282;
-}
-
-.clicked {
-  text-shadow: 0.01em -0.01em 0em #000000;
+button.clicked, button:active {
+  text-shadow: 0.01em -0.01em 0em;
   color: #ff8282;
 }
 
 .action {
   font-size: 3em;
-  color: grey;
+  color: #808080;
   line-height: 1.5em;
 }
 
 .action:active {
-  text-shadow: 0.01em -0.01em 0em
+  text-shadow: 0.01em -0.01em 0em;
 }
 
 @media only screen and (min-width: 768px) {
-  #account-menu {
-    font-size: 14px;
+  #gallery-link {
+    margin-top: 10px;
   }
 
-  #gallery {
-    margin-top: 0.5%;
-  }
-
-  #gallery i {
+  #gallery-link i {
     height: 0px;
     width: 0px;
     visibility: hidden;
   }
 
-  #gallery a:hover i {
+  #gallery-link:hover i {
     height: 10px;
     width: 10px;
     visibility: visible !important;
   }
 
-  #input {
+  #account-menu {
+    font-size: 14px;
+  }
+
+  #title-input {
     margin-top: 40px;
   }
 

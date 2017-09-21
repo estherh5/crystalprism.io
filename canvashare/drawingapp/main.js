@@ -23,11 +23,11 @@ var clickedButton;
 var brushCanvas;
 var ctx;
 var XMLS;
-var brushCircle;
+var brushCursor;
 var brushSVG;
-var filename;
+var drawingTitle;
 var server;
-var enteredName;
+var enteredTitle;
 var data;
 if (window.location.hostname == 'crystalprism.io') {
   server = 'http://13.58.175.191/api';
@@ -41,31 +41,31 @@ function checkAccountStatus() {
   var accountLink = document.getElementById('account-link');
   var signInLink = document.getElementById('sign-in-link');
   return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function (error) {
+  }).catch(function(error) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../../canvashare/drawingapp/index.html');
+      sessionStorage.setItem('previous-window', '../../canvashare/drawingapp/index.html');
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('cpusername');
+      profileLink.innerHTML = localStorage.getItem('username');
+      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
       accountLink.innerHTML = 'My Account';
       accountLink.href = '../../user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
+        sessionStorage.setItem('account-request', 'logout');
       }
     } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('token');
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../../canvashare/drawingapp/index.html');
+        sessionStorage.setItem('previous-window', '../../canvashare/drawingapp/index.html');
       }
     }
   })
@@ -76,20 +76,17 @@ function setStage() {
   context = canvas.getContext('2d');
   startingImage = new Image();
   startingImage.crossOrigin = 'Anonymous';
-  filename = document.getElementById('file-name');
-  if (sessionStorage.getItem('imageSrc') != null) {
-    startingImage.src = sessionStorage.getItem('imageSrc');
-    filename.value = '[title]';
-  } else if (sessionStorage.getItem('imageSrc') == null && localStorage.getItem('imageSrc') != null) {
-    startingImage.src = localStorage.getItem('imageSrc');
-    filename.value = localStorage.getItem('imageName');
+  drawingTitle = document.getElementById('drawing-title');
+  if (sessionStorage.getItem('drawing-source') != null) {
+    startingImage.src = sessionStorage.getItem('drawing-source');
+    drawingTitle.value = sessionStorage.getItem('drawing-title');
   } else {
-    startingImage.src = '';
-    filename.value = '[title]';
+    startingImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbhVKrAAAAAElFTkSuQmCC';
+    drawingTitle.value = '[title]';
   }
   setTimeout(function() {
     context.drawImage(startingImage, 0, 0);
-  }, 10);
+  }, 500);
   stageCanvas = new createjs.Stage(canvas);
   stageCanvas.autoClear = false;
   stageCanvas.enableDOMEvents(true);
@@ -99,20 +96,22 @@ function setStage() {
   stageCanvas.addEventListener('stagemousedown', whenMouseDown);
   stageCanvas.addEventListener('stagemouseup', whenMouseUp);
   stageCanvas.addEventListener('stagemouseup', saveData);
+  drawingTitle.onkeyup = saveData;
   stageCanvas.addChild(drawing);
   stageCanvas.update();
   stroke = 10;
   stagePalette = Snap('#current-palette');
-  basic = ['red', 'orange', 'yellow', 'green', 'blue', 'purple'];
-  pastel = ['#FFE4E7', '#FFC5A7', '#FFF0A5', '#FFFFA9', '#D2FFC5', '#CFFEFF'];
-  seashore = ['#594F4F', '#547980', '#45ADA8', '#9DE0AD', '#E5FCC2', '#F9EBC2'];
-  bold = ['#00A0B0', '#6A4A3C', '#CC333F', '#EB6841', '#EDC951', '#A1AD1A'];
-  oblique = ['#CA8484', '#FF3D7F', '#FF9E9D', '#8484CA', '#3FB8AF', '#7FC7AF'];
-  contrast = ['#E3D1FF', '#CBE86B', '#F2E9E1', '#1C140D', '#F9ABAB', '#95D8E5'];
-  calico = ['#F5F5C7', '#DCE9BE', '#555152', '#2E2633', '#99173C', '#46C2DD'];
-  mauve = ['#413E4A', '#73626E', '#B38184', '#F0B49E', '#F7E4BE', '#BCE4BF'];
+  basic = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080'];
+  pastel = ['#ffe4e7', '#ffc5a7', '#fff0a5', '#ffffa9', '#d2ffc5', '#cffeff'];
+  seashore = ['#594f4f', '#547980', '#45ada8', '#9de0ad', '#e5fcc2', '#f9ebc2'];
+  bold = ['#00a0b0', '#6a4a3c', '#cc333f', '#eb6841', '#edc951', '#a1ad1a'];
+  oblique = ['#ca8484', '#ff3d7f', '#ff9e9d', '#8484ca', '#3fb8af', '#7fc7af'];
+  contrast = ['#e3d1ff', '#cbe86b', '#f2e9e1', '#1c140d', '#f9abab', '#95d8e5'];
+  calico = ['#f5f5c7', '#dce9be', '#555152', '#2e2633', '#99173c', '#46c2dd'];
+  mauve = ['#413e4a', '#73626e', '#b38184', '#f0b49e', '#f7e4be', '#bce4bf'];
+  grayscale = ['#ffffff', '#999999', '#666666', '#333333', '#111111', '#000000'];
   currentPalette = basic;
-  document.getElementById('palette-choices').onclick = updatePalette;
+  document.getElementById('palette-options').onclick = updatePalette;
   currentPaint = stagePalette.circle('30%', '50%', '4%').attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
   for (var i = 1; i < currentPalette.length; i++) {
     paintChoice = currentPaint.cloneNode(true);
@@ -121,7 +120,7 @@ function setStage() {
     paintChoice.setAttribute('data-color', currentPalette[i]);
     stagePalette.append(paintChoice);
   }
-  currentPaint.classList.add('chosen');
+  currentPaint.classList.add('clicked');
   document.getElementById('current-palette').onclick = updatePaint;
   clickedButton = document.getElementsByTagName('button')[0];
   clickedButton.classList.add('clicked');
@@ -136,7 +135,9 @@ function setStage() {
 }
 
 function whenMouseDown(event) {
-  if (!event.primary) { return; }
+  if (!event.primary) {
+    return;
+  }
   oldPt = new createjs.Point(stageCanvas.mouseX, stageCanvas.mouseY);
   oldMidPt = oldPt.clone();
   drawing.graphics.clear().setStrokeStyle(stroke, 'round', 'round').beginStroke(currentPaint.dataset.color).moveTo(oldPt.x, oldPt.y).curveTo(oldPt.x - 1, oldPt.y, oldPt.x, oldPt.y);
@@ -145,7 +146,9 @@ function whenMouseDown(event) {
 }
 
 function whenMouseMove(event) {
-  if (!event.primary) { return; }
+  if (!event.primary) {
+    return;
+  }
   var midPt = new createjs.Point(oldPt.x + stageCanvas.mouseX >> 1, oldPt.y + stageCanvas.mouseY >> 1);
   drawing.graphics.clear().setStrokeStyle(stroke, 'round', 'round').beginStroke(currentPaint.dataset.color).moveTo(midPt.x, midPt.y).curveTo(oldPt.x, oldPt.y, oldMidPt.x, oldMidPt.y);
   oldPt.x = stageCanvas.mouseX;
@@ -156,101 +159,117 @@ function whenMouseMove(event) {
 }
 
 function whenMouseUp(event) {
-  if (!event.primary) { return; }
+  if (!event.primary) {
+    return;
+  }
   stageCanvas.removeEventListener('stagemousemove', whenMouseMove);
 }
 
 function updatePalette(e) {
-  if (e.target.nodeName == 'BUTTON') {
+  if (e.target.nodeName.toLowerCase() == 'button') {
     stagePalette.node.innerHTML = '';
     clickedButton.classList.remove('clicked');
     clickedButton = e.target;
     clickedButton.classList.add('clicked');
     currentPalette = eval(clickedButton.dataset.palette);
-    currentPaint.classList.remove('chosen');
+    currentPaint.classList.remove('clicked');
     for (var i = 0; i < currentPalette.length; i++) {
       paintChoice = currentPaint.cloneNode(true);
       paintChoice.setAttribute('cx', parseInt(30 + 8*i) + '%');
       paintChoice.setAttribute('fill', currentPalette[i]);
       paintChoice.setAttribute('data-color', currentPalette[i]);
+      if (currentPalette[i] == '#ffffff') {
+        paintChoice.classList.add('outline');
+      }
       stagePalette.append(paintChoice);
     }
     currentPaint = stagePalette.circle('30%', '50%', '4%').attr({fill: currentPalette[0], 'data-color': currentPalette[0]}).node;
-    currentPaint.classList.add('chosen');
+    currentPaint.classList.add('clicked');
     updateBrush();
   }
 }
 
 function updatePaint(e) {
-  if (e.target.nodeName == 'circle') {
-    currentPaint.classList.remove('chosen');
+  if (e.target.nodeName.toLowerCase() == 'circle') {
+    currentPaint.classList.remove('clicked');
     currentPaint = e.target;
-    currentPaint.classList.add('chosen');
+    currentPaint.classList.add('clicked');
     updateBrush();
   }
 }
 
 function updateBrush() {
-  brushCircle = document.getElementById('circle');
-  brushCircle.style.fill = currentPaint.dataset.color;
-  brushCircle.setAttribute('r', stroke/2);
-  brushSVG = XMLS.serializeToString(document.getElementById('svg'));
+  brushCursor = document.getElementById('brush-cursor');
+  brushCursor.setAttribute('fill', currentPaint.dataset.color);
+  brushCursor.setAttribute('r', stroke/2);
+  brushSVG = XMLS.serializeToString(document.getElementById('brush-svg'));
   canvg(brushCanvas, brushSVG);
+  canvas.style.cursor = '';
   canvas.style.cursor = 'url(' + brushCanvas.toDataURL() + ') ' + stroke + ' ' + stroke + ', auto';
 }
 
 function enterTitle(e) {
-  if (filename.contains(e.target)) {
-    if (filename.value == '[title]') {
-      filename.value = '';
+  if (drawingTitle.contains(e.target)) {
+    if (drawingTitle.value == '[title]') {
+      drawingTitle.value = '';
     }
   } else {
-    if (filename.value == '') {
-      filename.value = '[title]';
+    if (drawingTitle.value == '' || !/\S/.test(drawingTitle.value)) {
+      drawingTitle.value = '[title]';
     }
   }
 }
 
 function clearImage() {
   stageCanvas.clear();
-  sessionStorage.removeItem('imageName');
-  sessionStorage.removeItem('imageSrc');
-  localStorage.removeItem('imageSrc');
-  localStorage.removeItem('imageName');
+  startingImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbhVKrAAAAAElFTkSuQmCC';
+  context.drawImage(startingImage, 0, 0);
+  drawingTitle.value = '[title]';
+  sessionStorage.removeItem('drawing-title');
+  sessionStorage.removeItem('drawing-source');
+  localStorage.removeItem('drawing-source');
+  localStorage.removeItem('drawing-title');
 }
 
 function postImage() {
-  while (filename.value == '[title]' || filename.value == '') {
-    enteredName = prompt('Enter a title for your drawing.');
-    if (enteredName == '') {
-      enteredName = prompt('Enter a title for your drawing.');
-    } else if (enteredName == null) {
+  while (drawingTitle.value == '[title]' || drawingTitle.value == '' || !/\S/.test(drawingTitle.value)) {
+    enteredTitle = prompt('Enter a title for your drawing.');
+    if (enteredTitle == '[title]' || enteredTitle == '' || !/\S/.test(enteredTitle)) {
+      enteredTitle = prompt('Enter a title for your drawing.');
+    } else if (enteredTitle == null) {
       return;
     } else {
-      filename.value = enteredName;
+      drawingTitle.value = enteredTitle;
     }
   }
-  if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
-    if (localStorage.getItem('cptoken') == null) {
-      window.alert('You must log in to create a post.');
+  while (drawingTitle.value.indexOf('`') != -1) {
+    window.alert('Your title cannot contain "`" characters.');
+    return;
+  }
+  while (startingImage.src == 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbhVKrAAAAAElFTkSuQmCC') {
+    window.alert('Your drawing cannot be blank.');
+    return;
+  }
+  if (drawingTitle.value != '[title]' && drawingTitle.value != '' && drawingTitle.value != null && /\S/.test(drawingTitle.value)) {
+    if (localStorage.getItem('token') == null) {
+      window.alert('You must log in to post your drawing to the gallery.');
     } else {
-      data = {image: stageCanvas.toDataURL(), likes: '0', views: '0'};
+      data = {'drawing': stageCanvas.toDataURL()};
       data = JSON.stringify(data);
-      fetch(server + '/canvashare/drawing/' + localStorage.getItem('cpusername') + '/' + filename.value, {
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      fetch(server + '/canvashare/drawing/' + localStorage.getItem('username') + '/' + drawingTitle.value, {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
         method: 'POST',
         body: data,
-      }).catch(function (error) {
-        window.alert('Your post did not go through. Please try again soon.');
-      }).then(function (response) {
+      }).catch(function(error) {
+        window.alert('Your drawing did not get posted. Please try again soon.');
+      }).then(function(response) {
         if (response.ok) {
-          setTimeout(function () {
-            localStorage.removeItem('imageSrc');
-            localStorage.removeItem('imageName');
+          setTimeout(function() {
+            clearImage();
             window.location.href = '../index.html'
           }, 700);
         } else {
-          window.alert('You must log in to create a post.');
+          window.alert('You must log in to post your drawing to the gallery.');
         }
       })
     }
@@ -258,23 +277,29 @@ function postImage() {
 }
 
 function downloadImage(e) {
-  while (filename.value == '[title]' || filename.value == '') {
-    enteredName = prompt('Enter a title for your drawing.');
-    if (enteredName == '') {
-      enteredName = prompt('Enter a title for your drawing.');
-    } else if (enteredName == null) {
+  while (drawingTitle.value == '[title]' || drawingTitle.value == '') {
+    enteredTitle = prompt('Enter a title for your drawing.');
+    if (enteredTitle == '') {
+      enteredTitle = prompt('Enter a title for your drawing.');
+    } else if (enteredTitle == null) {
       return;
     } else {
-      filename.value = enteredName;
+      drawingTitle.value = enteredTitle;
     }
   }
-  if (filename.value != '[title]' && filename.value != '' && filename.value != null) {
-    e.target.href = stageCanvas.toDataURL();
-    e.target.download = filename.value;
+  while (drawingTitle.value.indexOf('`') != -1) {
+    window.alert('Your title cannot contain "`" characters.');
+    return;
+  }
+  if (drawingTitle.value != '[title]' && drawingTitle.value != '' && drawingTitle.value != null) {
+    document.getElementById('download-link').href = stageCanvas.toDataURL();
+    document.getElementById('download-link').download = drawingTitle.value;
   }
 }
 
 function saveData() {
-  localStorage.setItem('imageSrc', stageCanvas.toDataURL());
-  localStorage.setItem('imageName', filename.value);
+  sessionStorage.setItem('drawing-source', stageCanvas.toDataURL());
+  sessionStorage.setItem('drawing-title', drawingTitle.value);
+  localStorage.setItem('drawing-source', stageCanvas.toDataURL());
+  localStorage.setItem('drawing-title', drawingTitle.value);
 }

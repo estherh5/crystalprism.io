@@ -4,30 +4,35 @@ var accountLink = document.getElementById('account-link');
 var signInLink = document.getElementById('sign-in-link');
 var requestStart = 0;
 var requestEnd = 11;
-var moreExists = false;
-var postArea = document.getElementById('post-area');
-var entryTitle = document.getElementById('entry-title');
-var entry = document.getElementById('entry');
-var toolbarButtons = document.getElementById('format-tools').getElementsByTagName('button');
-var colorPicker = document.getElementById('color-picker');
-var formatTools = document.getElementById('format-tools');
-var clear = document.getElementById('clear');
-var submit = document.getElementById('submit');
-var checkbox = document.getElementById('checkbox');
-var publicInput = document.getElementById('public');
-var close = document.getElementById('close');
-var modify = document.getElementById('modify');
-var remove = document.getElementById('delete');
-var drawingBoard = document.getElementById('drawing-board');
+var morePostsExist = false;
+var postsContainer = document.getElementById('posts-container');
+var postTitle = document.getElementById('post-title');
+var post = document.getElementById('post');
+var toolbarButtons = document.getElementById('format-toolbar').getElementsByTagName('button');
+var fontColorIcon = document.getElementById('font-color-icon');
+var fontColorPicker = document.getElementById('font-color-picker');
+var toolbar = document.getElementById('format-toolbar');
+var clearButton = document.getElementById('clear');
+var submitButton = document.getElementById('submit');
+var publicCheckbox = document.getElementById('public-checkbox');
+var publicInput = document.getElementById('public-input');
+publicInput.checked = false;
+var closeButton = document.getElementById('close');
+var modifyButton = document.getElementById('modify');
+var deleteButton = document.getElementById('delete');
+var postBoard = document.getElementById('post-board');
 var actionButtons = document.getElementById('action-buttons');
-var goBack = document.getElementById('go-back');
-var newPost = document.getElementById('new-post');
+var backButton = document.getElementById('go-back');
+var continueButton = document.getElementById('continue-post');
+var newButton = document.getElementById('new-post');
 var handle = document.getElementById('handle');
 var open = false;
 var cabinetFront = document.getElementById('cabinet-front');
 var cabinetBack = document.getElementById('cabinet-back')
 var leftArrow = document.getElementById('left-arrow');
 var rightArrow = document.getElementById('right-arrow');
+var postFinished = false;
+var saveInterval = setInterval(saveData, 1000);
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -35,162 +40,160 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
-setInterval(saveData, 1000);
-
-if (localStorage.getItem('entryTitle') != null) {
-  if (localStorage.getItem('entryTitle') == 'Thank you for your post') {
-    localStorage.setItem('entryTitle', '[title]');
-  }
-  entryTitle.value = localStorage.getItem('entryTitle');
-}
-
-if (localStorage.getItem('entry') != '') {
-  entry.innerHTML = localStorage.getItem('entry');
-}
-
-if (localStorage.getItem('submitDisplay') != null) {
-  if (localStorage.getItem('submitDisplay') == 'none') {
-    clear.style.display = 'none';
-    submit.style.display = 'none';
-    close.style.display = 'inline-block';
-    modify.style.display = 'inline-block';
-    remove.style.display = 'inline-block';
-  }
-}
-
-if (localStorage.getItem('entryTimestamp') != null) {
-  entry.dataset.timestamp = localStorage.getItem('entryTimestamp');
-}
-
-if (localStorage.getItem('postPublic') != null) {
-  if (localStorage.getItem('postPublic') == 'true') {
-    checkbox.classList.add('checked');
-    publicInput.checked = true;
-  } else {
-    checkbox.classList.remove('checked');
-    publicInput.checked = false;
-  }
-}
-
 for (var i = 0; i < toolbarButtons.length; i++) {
   toolbarButtons[i].addEventListener('click', executeCommand, false);
 }
 
-colorPicker.oninput = executeCommand;
+fontColorIcon.addEventListener('click', function() {
+  fontColorPicker.focus();
+  fontColorPicker.click();
+}, false);
+
 window.onclick = enterTitle;
-clear.onclick = clearEntry;
-close.onclick = clearEntry;
-submit.onclick = submitEntry;
-modify.onclick = modifyEntry;
-checkbox.onclick = togglePublic;
-remove.onclick = deleteEntry;
-goBack.onclick = displayPost;
-newPost.onclick = startNew;
+fontColorPicker.oninput = executeCommand;
+clearButton.onclick = clearEntry;
+submitButton.onclick = submitEntry;
+closeButton.onclick = clearEntry;
+modifyButton.onclick = modifyEntry;
+deleteButton.onclick = deleteEntry;
+publicCheckbox.onclick = togglePublic;
+backButton.onclick = displayPost;
+continueButton.onclick = continuePost;
+newButton.onclick = startNew;
 handle.onclick = toggleCabinet;
-leftArrow.onclick = getMore;
-rightArrow.onclick = getMore;
+leftArrow.onclick = displayMorePosts;
+rightArrow.onclick = displayMorePosts;
 
 // Define functions
 function checkAccountStatus() {
   return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function (error) {
+  }).catch(function(error) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../../thought-writer/editor/index.html');
+      sessionStorage.setItem('previous-window', '../../thought-writer/editor/index.html');
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('cpusername');
+      profileLink.innerHTML = localStorage.getItem('username');
+      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
       accountLink.innerHTML = 'My Account';
       accountLink.href = '../../user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
+        sessionStorage.setItem('account-request', 'logout');
       }
     } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('token');
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../../thought-writer/editor/index.html');
+        sessionStorage.setItem('previous-window', '../../thought-writer/editor/index.html');
       }
+
     }
   })
 }
 
-function getPosts() {
-  if (sessionStorage.getItem('cppostcontent') != null) {
-    entryTitle.value = sessionStorage.getItem('cpposttitle');
-    entry.innerHTML = sessionStorage.getItem('cppostcontent');
-    if (sessionStorage.getItem('cppostpublic') == 'true') {
-      checkbox.classList.add('checked');
+function displayDraft() {
+  if (localStorage.getItem('post-title') != null) {
+    if (localStorage.getItem('post-title') == 'Thank you for your post') {
+      localStorage.setItem('post-title', '[title]');
+    }
+    postTitle.value = localStorage.getItem('post-title');
+  }
+  if (localStorage.getItem('post-content') != null) {
+    post.innerHTML = localStorage.getItem('post-content');
+  }
+  if (localStorage.getItem('post-public') != null) {
+    if (localStorage.getItem('post-public') == 'true') {
+      publicCheckbox.classList.add('checked');
       publicInput.checked = true;
     } else {
-      checkbox.classList.remove('checked');
+      publicCheckbox.classList.remove('checked');
       publicInput.checked = false;
     }
-    entry.dataset.timestamp = sessionStorage.getItem('cpposttimestamp');
-    entry.dataset.date = sessionStorage.getItem('cppostdate');
-    entry.dataset.time = sessionStorage.getItem('cpposttime');
-    sessionStorage.removeItem('cpposttitle');
-    sessionStorage.removeItem('cppostcontent');
-    sessionStorage.removeItem('cppostpublic');
-    sessionStorage.removeItem('cpposttimestamp');
-    sessionStorage.removeItem('cppostdate');
-    sessionStorage.removeItem('cpposttime');
-    clear.style.display = 'none';
-    submit.style.display = 'none';
-    close.style.display = 'inline-block';
-    modify.style.display = 'inline-block';
-    remove.style.display = 'inline-block';
   }
-  if (localStorage.getItem('cptoken') != null) {
-    return fetch(server + '/thought-writer/entries/' + localStorage.getItem('cpusername') + '?start=' + requestStart + '&end=' + requestEnd, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+}
+
+function postAutoFocus() {
+  post.focus();
+}
+
+function getPreviousPosts() {
+  if (sessionStorage.getItem('post-timestamp') != null) {
+    fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('username') + '/' + encodeURIComponent(sessionStorage.getItem('post-timestamp')), {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    }).catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
+    }).then(function(response) {
+      response.json().then(function(requestedPost) {
+        postTitle.value = requestedPost.title;
+        post.innerHTML = requestedPost.content;
+        if (requestedPost.public == 'true') {
+          publicCheckbox.classList.add('checked');
+          publicInput.checked = true;
+        } else {
+          publicCheckbox.classList.remove('checked');
+          publicInput.checked = false;
+        }
+        sessionStorage.removeItem('post-timestamp');
+        clearInterval(saveInterval);
+        clearButton.style.display = 'none';
+        submitButton.style.display = 'none';
+        closeButton.style.display = 'inline-block';
+        modifyButton.style.display = 'inline-block';
+        deleteButton.style.display = 'inline-block';
+      })
+    })
+  }
+  if (localStorage.getItem('token') != null) {
+    return fetch(server + '/thought-writer/entries/' + localStorage.getItem('username') + '?start=' + requestStart + '&end=' + requestEnd, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
-    }).then(function (response) {
-      response.json().then(function (posts) {
-        postArea.innerHTML = '';
-        if (posts.length != 0) {
-          if (posts.length > 10) {
-            moreExists = true;
+    }).then(function(response) {
+      response.json().then(function(previousPosts) {
+        postsContainer.innerHTML = '';
+        if (previousPosts.length != 0) {
+          if (previousPosts.length > 10) {
+            morePostsExist = true;
             loadNumber = 10;
           } else {
-            moreExists = false;
-            loadNumber = posts.length;
+            morePostsExist = false;
+            loadNumber = previousPosts.length;
           }
           for (var i = 0; i < loadNumber; i++) {
-            var post = document.createElement('div');
-            post.classList.add('post');
+            var previousPost = document.createElement('div');
+            previousPost.classList.add('previous-post');
             if (open) {
-              post.classList.add('post-display');
+              previousPost.classList.add('display');
             }
-            post.dataset.title = posts[i].title;
-            post.dataset.number = requestStart + i;
-            post.dataset.public = posts[i].public;
-            post.dataset.timestamp = posts[i].timestamp;
-            var utcDateTime = JSON.parse(posts[i].timestamp);
-            var dateTime = new Date(utcDateTime + ' UTC');
+            previousPost.dataset.title = previousPosts[i].title;
+            previousPost.dataset.number = requestStart + i;
+            previousPost.dataset.timestamp = previousPosts[i].timestamp;
+            var utcDateTime = JSON.parse(previousPosts[i].timestamp);
+            var utcDate = utcDateTime.split(' ')[0];
+            var utcTime = utcDateTime.split(' ')[1];
+            var dateTime = new Date(utcDate + 'T' + utcTime);
             var hour = parseInt(dateTime.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
             if (hour == 0) {
               hour = 12;
             }
-            post.dataset.date = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
-            post.dataset.time = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
-            post.title = post.dataset.title + '  ' + post.dataset.date + ', ' + post.dataset.time;
-            var postEntry = document.createElement('div');
-            postEntry.classList.add('post-entry');
-            postEntry.innerHTML = posts[i].content;
-            postArea.appendChild(post);
-            post.appendChild(postEntry);
-            post.onclick = displayPost;
+            previousPost.dataset.date = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
+            previousPost.dataset.time = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
+            previousPost.dataset.public = previousPosts[i].public;
+            previousPost.title = previousPost.dataset.title + '  ' + previousPost.dataset.date + ', ' + previousPost.dataset.time;
+            var postContent = document.createElement('div');
+            postContent.classList.add('previous-post-content');
+            postContent.innerHTML = previousPosts[i].content;
+            postsContainer.append(previousPost);
+            previousPost.append(postContent);
+            previousPost.onclick = displayPost;
           }
         }
       })
@@ -199,47 +202,71 @@ function getPosts() {
 }
 
 function displayPost() {
-  if (this.classList != null && this.classList.contains('post')) {
-    backToDrawingBoard();
-    entryTitle.value = this.dataset.title;
-    entry.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
+  if (this.classList.contains('previous-post')) {
+    postTitle.value = this.dataset.title;
+    post.innerHTML = this.getElementsByTagName('div')[0].innerHTML;
+    post.dataset.timestamp = this.dataset.timestamp;
     if (this.dataset.public == 'true') {
-      checkbox.classList.add('checked');
+      publicCheckbox.classList.add('checked');
       publicInput.checked = true;
     } else {
-      checkbox.classList.remove('checked');
+      publicCheckbox.classList.remove('checked');
       publicInput.checked = false;
     }
-    entry.dataset.timestamp = this.dataset.timestamp;
-    entry.dataset.date = this.dataset.date;
-    entry.dataset.time = this.dataset.time;
-  } else if (this == goBack) {
+  } else if (this == backButton) {
     if (open) {
       toggleCabinet();
     }
-    getPosts();
-    backToDrawingBoard();
-    entryTitle.value = sessionStorage.getItem('entryTitle');
-    entry.innerHTML = sessionStorage.getItem('entry');
+    fetch(server + '/thought-writer/thoughts/' + localStorage.getItem('username') + '/' + encodeURIComponent(post.dataset.timestamp), {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    }).catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
+    }).then(function(response) {
+      response.json().then(function(lastPost) {
+        postTitle.value = lastPost.title;
+        post.innerHTML = lastPost.content;
+        if (lastPost.public == 'true') {
+          publicCheckbox.classList.add('checked');
+          publicInput.checked = true;
+        } else {
+          publicCheckbox.classList.remove('checked');
+          publicInput.checked = false;
+        }
+      })
+    })
+    getPreviousPosts();
   }
-  clear.style.display = 'none';
-  submit.style.display = 'none';
-  close.style.display = 'inline-block';
-  modify.style.display = 'inline-block';
-  remove.style.display = 'inline-block';
+  flipBoard();
+  clearInterval(saveInterval);
+  clearButton.style.display = 'none';
+  submitButton.style.display = 'none';
+  closeButton.style.display = 'inline-block';
+  modifyButton.style.display = 'inline-block';
+  deleteButton.style.display = 'inline-block';
 }
 
 function saveData() {
-  localStorage.setItem('entryTitle', entryTitle.value);
-  localStorage.setItem('entry', entry.innerHTML);
-  localStorage.setItem('submitDisplay', submit.style.display);
-  localStorage.setItem('postPublic', publicInput.checked.toString());
-  localStorage.setItem('entryTimestamp', entry.dataset.timestamp);
+  localStorage.setItem('post-title', postTitle.value);
+  localStorage.setItem('post-content', post.innerHTML);
+  localStorage.setItem('post-public', publicInput.checked.toString());
+}
+
+function enterTitle(e) {
+  if (postTitle.contains(e.target)) {
+    if (postTitle.value == '[title]') {
+      postTitle.value = '';
+    }
+  } else {
+    if (postTitle.value == '' || !/\S/.test(postTitle.value)) {
+      postTitle.value = '[title]';
+    }
+  }
 }
 
 function executeCommand() {
   var command = this.dataset.command;
   if (command == 'foreColor') {
+    fontColorIcon.style.color = this.value;
     document.execCommand(command, false, this.value);
   }
   else if (command == 'insertImage' || command == 'createLink') {
@@ -250,86 +277,68 @@ function executeCommand() {
   }
 }
 
-function enterTitle(e) {
-  if (entryTitle.contains(e.target)) {
-    if (entryTitle.value == '[title]') {
-      entryTitle.value = '';
-    }
-  } else {
-    if (entryTitle.value == '') {
-      entryTitle.value = '[title]';
-    }
-  }
-}
-
 function clearEntry() {
-  entryTitle.value = '[title]';
-  entry.innerHTML = '';
-  clear.style.display = 'inline-block';
-  submit.style.display = 'inline-block';
-  close.style.display = 'none';
-  modify.style.display = 'none';
-  remove.style.display = 'none';
-  publicInput.checked = false;
-  checkbox.classList.remove('checked');
-  delete entry.dataset.timestamp;
+  if (this == closeButton) {
+    saveInterval = setInterval(saveData, 1000);
+    displayDraft();
+  } else {
+    postTitle.value = '[title]';
+    post.innerHTML = '';
+    publicInput.checked = false;
+    publicCheckbox.classList.remove('checked');
+    delete post.dataset.timestamp;
+  }
+  clearButton.style.display = 'inline-block';
+  submitButton.style.display = 'inline-block';
+  closeButton.style.display = 'none';
+  modifyButton.style.display = 'none';
+  deleteButton.style.display = 'none';
 }
 
 function submitEntry() {
-  var now = new Date();
-  while (entryTitle.value == '[title]' || entryTitle.value == '') {
-    enteredName = prompt('Specify a title for your entry.');
-    if (enteredName == '') {
-      enteredName = prompt('Specify a title for your entry.');
-    } else if (enteredName == null) {
+  while (postTitle.value == '[title]' || postTitle.value == '' || !/\S/.test(postTitle.value)) {
+    enteredTitle = prompt('Specify a title for your post.');
+    if (enteredTitle == '' || !/\S/.test(enteredTitle.value)) {
+      enteredTitle = prompt('Specify a title for your post.');
+    } else if (enteredTitle == null) {
       return;
     } else {
-      entryTitle.value = enteredName;
+      postTitle.value = enteredTitle;
     }
   }
-  if (entryTitle.value != '[title]' && entryTitle.value != '' && entryTitle.value != null) {
-    if (localStorage.getItem('cptoken') == null) {
+  if (!/\S/.test(post.innerHTML)) {
+    window.alert('Your post cannot be blank.');
+  }
+  if (postTitle.value != '[title]' && postTitle.value != '' && postTitle.value != null && /\S/.test(postTitle.value) && /\S/.test(post.innerHTML)) {
+    if (localStorage.getItem('token') == null) {
       window.alert('You must log in to create a post.');
       return;
     } else {
-      var data = {'title': entryTitle.value, 'content': entry.innerHTML, 'public': (publicInput.checked).toString()};
+      var data = {'title': postTitle.value, 'content': post.innerHTML, 'public': (publicInput.checked).toString()};
       data = JSON.stringify(data);
     }
   }
   fetch(server + '/thought-writer/thoughts', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
-  }).catch(function (error) {
+  }).catch(function(error) {
     window.alert('Your post did not go through. Please try again soon.');
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      response.text().then(function (text) {
+      response.text().then(function(text) {
         if (open) {
           toggleCabinet();
         }
-        entry.dataset.timestamp = text;
-        getPosts();
-        drawingBoard.classList.add('entry-done-board');
-        formatTools.classList.add('entry-done-content');
-        entry.classList.add('entry-done-content');
-        actionButtons.classList.add('entry-done-content');
-        goBack.classList.add('entry-done-buttons');
-        newPost.classList.add('entry-done-buttons');
-        setTimeout (function() {
-          drawingBoard.style.justifyContent = 'center';
-          formatTools.style.display = 'none';
-          entry.style.display = 'none';
-          actionButtons.style.display = 'none';
-          goBack.style.display = 'initial';
-          newPost.style.display = 'initial';
-        }, 200);
-        sessionStorage.setItem('entryTitle', entryTitle.value);
-        sessionStorage.setItem('entry', entry.innerHTML);
-        entryTitle.value = 'Thank you for your post';
-        entryTitle.disabled = true;
-        entryTitle.style.userSelect = 'none';
-        entry.innerHTML = '';
+        post.dataset.timestamp = text;
+        postFinished = true;
+        postTitle.value = 'Thank you for your post';
+        post.innerHTML = '';
+        publicInput.checked = false;
+        publicCheckbox.classList.remove('checked');
+        saveData();
+        getPreviousPosts();
+        flipBoard();
       })
     }
   })
@@ -338,141 +347,162 @@ function submitEntry() {
 function togglePublic() {
   if (publicInput.checked) {
     publicInput.checked = false;
-    checkbox.classList.remove('checked');
+    publicCheckbox.classList.remove('checked');
   } else {
     publicInput.checked = true;
-    checkbox.classList.add('checked');
+    publicCheckbox.classList.add('checked');
   }
 }
 
 function modifyEntry() {
-  if (localStorage.getItem('cptoken') == null) {
+  if (localStorage.getItem('token') == null) {
     window.alert('You must log in to create a post.');
     return;
   } else {
-    var data = {'writer': localStorage.getItem('cpusername'), 'title': entryTitle.value, 'timestamp': entry.dataset.timestamp, 'content': entry.innerHTML, 'public': (publicInput.checked).toString()};
+    var data = {'title': postTitle.value, 'timestamp': post.dataset.timestamp, 'content': post.innerHTML, 'public': (publicInput.checked).toString()};
     data = JSON.stringify(data);
   }
-  fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(entry.dataset.timestamp), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+  fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(post.dataset.timestamp), {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
     method: 'PUT',
     body: data,
-  }).catch(function (error) {
+  }).catch(function(error) {
     window.alert('Your post did not go through. Please try again soon.');
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
       if (open) {
         toggleCabinet();
       }
-      getPosts();
-      drawingBoard.classList.add('entry-done-board');
-      formatTools.classList.add('entry-done-content');
-      entry.classList.add('entry-done-content');
-      actionButtons.classList.add('entry-done-content');
-      goBack.classList.add('entry-done-buttons');
-      newPost.classList.add('entry-done-buttons');
-      setTimeout (function() {
-        drawingBoard.style.justifyContent = 'center';
-        formatTools.style.display = 'none';
-        entry.style.display = 'none';
-        actionButtons.style.display = 'none';
-        goBack.style.display = 'initial';
-        newPost.style.display = 'initial';
-      }, 200);
-      sessionStorage.setItem('entryTitle', entryTitle.value);
-      sessionStorage.setItem('entry', entry.innerHTML);
-      entryTitle.value = 'Thank you for your post';
-      entryTitle.disabled = true;
-      entryTitle.style.userSelect = 'none';
-      entry.innerHTML = '';
+      getPreviousPosts();
+      postFinished = true;
+      flipBoard();
     }
   })
-  clear.style.display = 'inline-block';
-  submit.style.display = 'inline-block';
-  close.style.display = 'none';
-  modify.style.display = 'none';
-  remove.style.display = 'none';
+  clearButton.style.display = 'inline-block';
+  submitButton.style.display = 'inline-block';
+  closeButton.style.display = 'none';
+  modifyButton.style.display = 'none';
+  deleteButton.style.display = 'none';
 }
 
 function deleteEntry() {
   var confirmDelete = confirm('Are you sure you want to delete this post?');
   if (confirmDelete == true) {
-    fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(entry.dataset.timestamp), {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+    fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(post.dataset.timestamp), {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'DELETE'
-    }).catch(function (error) {
+    }).catch(function(error) {
       window.alert('Your request did not go through. Please try again soon.');
     })
     if (open) {
       toggleCabinet();
     }
-    getPosts();
-    clearEntry();
+    getPreviousPosts();
+    displayDraft();
+    saveInterval = setInterval(saveData, 1000);
+    clearButton.style.display = 'inline-block';
+    submitButton.style.display = 'inline-block';
+    closeButton.style.display = 'none';
+    modifyButton.style.display = 'none';
+    deleteButton.style.display = 'none';
   }
+}
+
+function continuePost() {
+  flipBoard();
+  displayDraft();
 }
 
 function startNew() {
-  entryTitle.value = '[title]';
-  delete entry.dataset.timestamp;
+  postTitle.value = '[title]';
+  post.innerHTML = '';
+  delete post.dataset.timestamp;
   publicInput.checked = false;
-  checkbox.classList.remove('checked');
-  backToDrawingBoard();
+  publicCheckbox.classList.remove('checked');
+  flipBoard();
+  saveInterval = setInterval(saveData, 1000);
   if (open) {
     toggleCabinet();
   }
-  getPosts();
+  getPreviousPosts();
 }
 
-function backToDrawingBoard() {
-  drawingBoard.classList.remove('entry-done-board');
-  setTimeout (function() {
-    drawingBoard.style.justifyContent = 'flex-start';
-    formatTools.style.display = 'flex';
-    entry.style.display = 'block';
+function flipBoard() {
+  if (postFinished) {
+    if (localStorage.getItem('post-content') != '') {
+      continueButton.classList.add('finished');
+      setTimeout(function() {
+        continueButton.style.display = 'initial';
+      }, 200)
+    }
+    postBoard.classList.add('finished');
+    toolbar.classList.add('finished');
+    post.classList.add('finished');
+    actionButtons.classList.add('finished');
+    backButton.classList.add('finished');
+    newButton.classList.add('finished');
+    setTimeout(function() {
+      postBoard.style.justifyContent = 'center';
+      toolbar.style.display = 'none';
+      post.style.display = 'none';
+      actionButtons.style.display = 'none';
+      backButton.style.display = 'initial';
+      newButton.style.display = 'initial';
+    }, 200);
+    postTitle.disabled = true;
+    postTitle.style.userSelect = 'none';
+    postFinished = false;
+    clearInterval(saveInterval);
+  } else {
+    postBoard.classList.remove('finished');
+    postBoard.style.justifyContent = 'flex-start';
+    toolbar.style.display = 'flex';
+    post.style.display = 'block';
     actionButtons.style.display = 'flex';
-    goBack.style.display = 'none';
-    newPost.style.display = 'none';
-    formatTools.classList.remove('entry-done-content');
-    entry.classList.remove('entry-done-content');
-    actionButtons.classList.remove('entry-done-content');
-    goBack.classList.remove('entry-done-buttons');
-    newPost.classList.remove('entry-done-buttons');
-  }, 200);
-  entryTitle.disabled = false;
-  entryTitle.style.userSelect = 'text';
+    backButton.style.display = 'none';
+    continueButton.style.display = 'none';
+    newButton.style.display = 'none';
+    toolbar.classList.remove('finished');
+    post.classList.remove('finished');
+    actionButtons.classList.remove('finished');
+    backButton.classList.remove('finished');
+    continueButton.classList.remove('finished');
+    newButton.classList.remove('finished');
+    postTitle.disabled = false;
+    postTitle.style.userSelect = 'text';
+  }
 }
 
 function toggleCabinet() {
+  var previousPosts = document.getElementsByClassName('previous-post');
   if (open) {
-    cabinetBack.classList.remove('cabinet-back-display');
-    cabinetFront.classList.remove('cabinet-front-display');
-    allPosts = document.getElementsByClassName('post');
-    for (var i = 0; i < allPosts.length; i++) {
-      allPosts[i].classList.remove('post-display');
+    cabinetBack.classList.remove('open');
+    cabinetFront.classList.remove('open');
+    for (var i = 0; i < previousPosts.length; i++) {
+      previousPosts[i].classList.remove('display');
     }
-    leftArrow.classList.remove('next-display');
-    rightArrow.classList.remove('next-display');
+    leftArrow.classList.remove('display');
+    rightArrow.classList.remove('display');
     open = false;
   } else {
-    cabinetBack.classList.add('cabinet-back-display');
-    cabinetFront.classList.add('cabinet-front-display');
-    allPosts = document.getElementsByClassName('post');
-    for (var i = 0; i < allPosts.length; i++) {
-      allPosts[i].classList.add('post-display');
+    cabinetBack.classList.add('open');
+    cabinetFront.classList.add('open');
+    for (var i = 0; i < previousPosts.length; i++) {
+      previousPosts[i].classList.add('display');
     }
-    if (moreExists) {
-      rightArrow.classList.add('next-display');
+    if (morePostsExist) {
+      rightArrow.classList.add('display');
     }
-    if (postArea.children.length != 0) {
-      if (postArea.getElementsByClassName('post')[0].dataset.number != 0) {
-        leftArrow.classList.add('next-display');
+    if (postsContainer.children.length != 0) {
+      if (postsContainer.getElementsByClassName('previous-post')[0].dataset.number != 0) {
+        leftArrow.classList.add('display');
       }
     }
     open = true;
   }
 }
 
-function getMore() {
+function displayMorePosts() {
   if (window.getComputedStyle(this).getPropertyValue('opacity') != 0) {
     if (this.id == 'left-arrow') {
       requestStart = requestStart - 10;
@@ -481,17 +511,17 @@ function getMore() {
       requestStart = requestStart + 10;
       requestEnd = requestEnd + 10;
     }
-    getPosts();
-    setTimeout(function () {
-      if (postArea.getElementsByClassName('post')[0].dataset.number != 0) {
-        leftArrow.classList.add('next-display');
+    getPreviousPosts();
+    setTimeout(function() {
+      if (postsContainer.getElementsByClassName('previous-post')[0].dataset.number != 0) {
+        leftArrow.classList.add('display');
       } else {
-        leftArrow.classList.remove('next-display');
+        leftArrow.classList.remove('display');
       }
-      if (moreExists) {
-        rightArrow.classList.add('next-display');
+      if (morePostsExist) {
+        rightArrow.classList.add('display');
       } else {
-        rightArrow.classList.remove('next-display');
+        rightArrow.classList.remove('display');
       }
     }, 50);
   }

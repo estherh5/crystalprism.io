@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="WYSIWYG online journal tool">
-    <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor">
+    <meta name="description" content="WYSIWYG online journal tool for creating private posts for personal use and public posts to share with the community">
+    <meta name="keywords" content="WYSIWYG,journal,diary,post,thought,blog,editor">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Rajdhani|Share" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Material+Icons|Rajdhani|Share" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
     <script>
@@ -18,26 +18,31 @@
     </script>
     <title>Thought Writer</title>
   </head>
-  <body onload="checkAccountStatus();getPosts();">
-    <div id="homepage-row">
-      <a id="homepage" href="../../index.html">
-        <img id="diamond-small" src="../../images/homepage.png">
-      </a>
-    </div>
-    <div id="account-menu">
-      <a id="profile-link"></a>
-      <a id="account-link" href="../../user/create-account/index.html"></a>
-      <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
-    </div>
-    <div id="main-wrapper">
+  <body onload="checkAccountStatus();displayDraft();postAutoFocus();getPreviousPosts();">
+    <div id="header">
+      <div id="homepage-container">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
+        </a>
+      </div>
       <a id="title-link" href="../index.html">
         <h1 id="title">Thought Writer</h1>
       </a>
-      <div id="container">
-        <input id="entry-title" value="[title]">
-        <div id="drawing-board">
-          <div id="format-tools">
-            <input id="color-picker" type="color" data-command="foreColor">
+      <div id="account-menu">
+        <a id="profile-link"></a>
+        <a id="account-link" href="../../user/create-account/index.html"></a>
+        <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
+      </div>
+    </div>
+    <div id="container">
+      <div id="edit-space">
+        <input id="post-title" value="[title]" maxlength="25">
+        <div id="post-board">
+          <div id="format-toolbar">
+            <button id="font-color-icon">
+              <input id="font-color-picker" type="color" data-command="foreColor">
+              <i class="material-icons">format_color_text</i>
+            </button>
             <button data-command="removeFormat">
               <i class="fa fa-times" aria-hidden="true"></i>
             </button>
@@ -87,30 +92,29 @@
               <i class="fa fa-file-image-o" aria-hidden="true"></i>
             </button>
           </div>
-          <div id="entry" contenteditable></div>
+          <div id="post" contenteditable></div>
           <div id="action-buttons">
-            <button id="clear" class="content-button">Clear</button>
-            <button id="submit" class="content-button">Submit</button>
-            <button id="close" class="content-button">Close</button>
-            <button id="modify" class="content-button">Modify</button>
-            <button id="delete" class="content-button">Delete</button>
-            <div id="checkbox"></div>Public?
-            <input id="public" type="checkbox">
+            <button id="clear" class="action-button">Clear</button>
+            <button id="submit" class="action-button">Submit</button>
+            <button id="close" class="action-button">Close</button>
+            <button id="modify" class="action-button">Modify</button>
+            <button id="delete" class="action-button">Delete</button>
+            <div id="public-checkbox"></div>Public?
+            <input id="public-input" type="checkbox">
           </div>
-          <button id="go-back" class="content-button">Modify Last Post</button>
-          <button id="new-post" class="content-button">New Post</button>
+          <button id="go-back" class="action-button">Modify Last Post</button>
+          <button id="continue-post" class="action-button">Continue In-Progress Post</button>
+          <button id="new-post" class="action-button">New Post</button>
         </div>
       </div>
       <div id="cabinet">
         <div id="cabinet-back">
           <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
         </div>
-        <div id="post-area">
+        <div id="posts-container">
         </div>
         <div id="cabinet-front">
-          <div id="handle">
-            My Posts
-          </div>
+          <div id="handle">My Posts</div>
           <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
         </div>
       </div>

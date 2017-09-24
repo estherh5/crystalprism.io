@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Post display and comment area for Thought Writer online shared journal">
-    <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor,public,shared,ideas,comments">
+    <meta name="keywords" content="WYSIWYG,journal,diary,post,community,thought,blog,editor,public,shared,ideas,comments">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Rajdhani|Share" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
@@ -20,9 +20,9 @@
   </head>
   <body onload="checkAccountStatus();getPost();">
     <div id="header">
-      <div id="homepage-row">
-        <a id="homepage" href="../../index.html">
-          <img id="diamond-small" src="../../images/homepage.png">
+      <div id="homepage-container">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
         </a>
       </div>
       <a id="title-link" href="../index.html">
@@ -36,22 +36,22 @@
     </div>
     <div id="container">
       <div id="post-area">
-        <div id="post-div">
+        <div id="post-container">
           <div id="post-title"></div>
-          <div id="post">
-            <div id="entry"></div>
+          <div id="post-board">
+            <div id="post-content"></div>
           </div>
-          <div id="info">
-            <div id="time"></div>
-            <a id="writer"></a>
+          <div id="post-info">
+            <a id="post-writer"></a>
+            <div id="post-timestamp"></div>
           </div>
         </div>
       </div>
       <div id="comment-area">
-        <h2 id="comment-title">Leave a comment</h2>
-        <div id="new-comment" contenteditable="true"></div>
+        <h2>Leave a comment</h2>
+        <div id="new-comment-box" contenteditable="true"></div>
         <button id="submit">Submit</button>
-        <h2 id="comments-title"></h2>
+        <h2 id="comments-number"></h2>
         <div id="comments"></div>
       </div>
     </div>

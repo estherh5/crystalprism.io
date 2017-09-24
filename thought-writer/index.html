@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Thoughts and ideas written by the public in an online shared journal">
-    <meta name="keywords" content="WYSIWYG,journal,diary,thought,blog,editor,public,shared,ideas">
+    <meta name="keywords" content="WYSIWYG,journal,diary,board,post,thought,blog,editor,public,shared,ideas">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Material+Icons|Rajdhani|Share" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
@@ -18,18 +18,11 @@
     </script>
     <title>Thought Writer</title>
   </head>
-  <body onload="checkAccountStatus();getPosts();">
-    <svg id="new" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
-      <g>
-        <polygon id="background" points="250 120, 250 950, 800 950, 800 330, 650 120"></polygon>
-        <path d="M624 96h16l192 224v576.295c0 34.963-28.617 63.705-63.918 63.705h-480.165c-35.408 0-63.918-28.759-63.918-64.235v-735.531c0-35.488 28.693-64.235 64.088-64.235h335.912zM608 128h-320.142c-17.595 0-31.858 14.568-31.858 31.855v736.291c0 17.593 14.551 31.855 31.999 31.855h480.003c17.672 0 31.999-14.238 31.999-31.789v-544.211h-128.067c-35.309 0-63.933-28.37-63.933-64.189v-159.811zM640 144v143.719c0 17.828 14.421 32.281 31.896 32.281h118.503l-150.398-176z"/>
-      </g>
-    </svg>
-    <span id="plus">+</span>
+  <body onload="checkAccountStatus();loadPosts();">
     <div id="header">
-      <div id="homepage-row">
-        <a id="homepage" href="../index.html">
-          <img id="diamond-small" src="../images/homepage.png">
+      <div id="homepage-container">
+        <a id="homepage-link" href="../index.html">
+          <img id="homepage-icon" src="../images/homepage.png">
         </a>
       </div>
       <a id="title-link" href="index.html">
@@ -42,8 +35,15 @@
       </div>
     </div>
     <div id="container">
-      <div id="post-area"></div>
+      <div id="post-board"></div>
     </div>
+    <a id="new-post-link" href="editor/index.html">&#43;</a>
+    <svg id="paper-icon" xmlns="http://www.w3.org/2000/svg" version="1.1" viewBox="0 0 1024 1024">
+      <g>
+        <polygon id="paper-background" points="250 120, 250 950, 800 950, 800 330, 650 120"></polygon>
+        <path d="M624 96h16l192 224v576.295c0 34.963-28.617 63.705-63.918 63.705h-480.165c-35.408 0-63.918-28.759-63.918-64.235v-735.531c0-35.488 28.693-64.235 64.088-64.235h335.912zM608 128h-320.142c-17.595 0-31.858 14.568-31.858 31.855v736.291c0 17.593 14.551 31.855 31.999 31.855h480.003c17.672 0 31.999-14.238 31.999-31.789v-544.211h-128.067c-35.309 0-63.933-28.37-63.933-64.189v-159.811zM640 144v143.719c0 17.828 14.421 32.281 31.896 32.281h118.503l-150.398-176z"/>
+      </g>
+    </svg>
     <script src="main.js"></script>
   </body>
 </html>

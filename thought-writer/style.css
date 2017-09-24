@@ -9,55 +9,11 @@ html, body {
   background-color: #cecece;
   cursor: default;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 ::selection {
   background-color: #00ffff;
-}
-
-#new {
-  position: fixed;
-  height: 50px;
-  width: 50px;
-  bottom: 0px;
-  right: 0px;
-  margin: 5px;
-  margin-bottom: 10px;
-  cursor: pointer;
-  z-index: 1;
-}
-
-#background {
-  fill: #ffff00;
-}
-
-.clicked {
-  animation-name: pop;
-  animation-duration: 0.2s;
-}
-
-@keyframes pop {
-  0% {
-    transform: scale(1);
-  }
-
-  50% {
-    transform: scale(1.1);
-  }
-
-  100% {
-    transform: scale(1);
-  }
-}
-
-#plus {
-  position: fixed;
-  bottom: 7px;
-  right: 15px;
-  font-size: 48px;
-  opacity: 0.8;
-  cursor: pointer;
-  z-index: 2;
 }
 
 #header {
@@ -71,7 +27,7 @@ html, body {
   z-index: 1;
 }
 
-#homepage-row {
+#homepage-container {
   position: absolute;
   top: 0px;
   left: 0px;
@@ -88,14 +44,14 @@ a:active, button:active {
 }
 
 a:hover, button:hover {
-  color: grey;
+  color: #808080;
 }
 
 a:focus, button:focus {
   outline: none;
 }
 
-#homepage {
+#homepage-link {
   width: 50px;
   margin-top: 5px;
   display: flex;
@@ -105,14 +61,14 @@ a:focus, button:focus {
   color: #000000;
 }
 
-#diamond-small {
+#homepage-icon {
   height: 30px;
   left: 0px;
   opacity: 0.7;
   filter: grayscale(1);
 }
 
-#homepage:hover #diamond-small {
+#homepage-link:hover #homepage-icon {
   opacity: 1;
   filter: grayscale(0);
 }
@@ -171,7 +127,7 @@ a:focus, button:focus {
   justify-content: center;
 }
 
-#post-area {
+#post-board {
   position: relative;
   max-width: 190px;
   margin-bottom: 50px;
@@ -184,7 +140,7 @@ a:focus, button:focus {
   background-color: #ff90cd;
 }
 
-#post-area text {
+#post-board text {
   padding: 3px;
   font-size: 25px;
   cursor: default;
@@ -195,21 +151,27 @@ a:focus, button:focus {
   text-align: center;
 }
 
-.post-div {
+.post-container {
   margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .post-title {
+  width: 150px;
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 15px;
   line-height: 2;
+  overflow: scroll;
 }
 
-.post-entry {
+.post-content {
   height: 150px;
   width: 150px;
   padding: 5px;
@@ -218,51 +180,97 @@ a:focus, button:focus {
   outline: none;
   resize: none;
   background-color: #ffff00;
-  font-family: 'Cutive Mono', monospace;
   font-size: 12px;
   cursor: default;
   overflow: auto;
   user-select: text;
+  -webkit-user-select: text;
 }
 
-.post-entry img {
+.post-content img {
   max-width: 100%;
   max-height: 100%;
 }
 
 .post-info {
+  width: 150px;
   font-size: 10px;
+  align-self: baseline;
 }
 
 .post-info a {
   display: block;
 }
 
+#new-post-link {
+  position: fixed;
+  bottom: 7px;
+  right: 15px;
+  font-size: 48px;
+  color: #000000;
+  opacity: 0.8;
+  cursor: pointer;
+  transform: scale(1);
+  transition: all 0.3s;
+  z-index: 2;
+}
+
+#new-post-link:hover, #new-post-link:hover + #paper-icon {
+  color: #000000;
+  transform: scale(1.1);
+  transition: all 0.3s;
+}
+
+#new-post-link:active, #new-post-link:active + #paper-icon {
+  animation-name: pop;
+  animation-duration: 0.2s;
+}
+
+@keyframes pop {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+#paper-icon {
+  position: fixed;
+  height: 50px;
+  width: 50px;
+  bottom: 0px;
+  right: 0px;
+  margin: 5px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  transform: scale(1);
+  transition: all 0.3s;
+  z-index: 1;
+}
+
+#paper-background {
+  fill: #ffff00;
+}
+
 @media only screen and (min-width: 400px) {
-  #post-area {
+  #post-board {
     max-width: 380px;
   }
 }
 
 @media only screen and (min-width: 576px) {
-  #post-area {
+  #post-board {
     max-width: 560px;
   }
 }
 
 @media only screen and (min-width: 768px) {
-  #plus {
-    opacity: 0;
-  }
-
-  #plus:hover {
-    opacity: 0.8;
-  }
-
-  #account-menu {
-    font-size: 14px;
-  }
-
   #title {
     top: 0px;
     font-size: 70px;
@@ -272,32 +280,41 @@ a:focus, button:focus {
     font-size: 70px;
   }
 
-  #post-area {
+  #account-menu {
+    font-size: 14px;
+  }
+
+  #post-board {
     max-width: 715px;
   }
 
   .post-title {
+    width: 200px;
     font-size: 18px;
   }
 
-  .post {
-    height: 230px;
-    width: 230px;
-  }
-
-  .post-entry {
+  .post-content {
     height: 200px;
     width: 200px;
     font-size: 20px;
   }
 
   .post-info {
+    width: 200px;
     font-size: 12px;
+  }
+
+  #new-post-link {
+    opacity: 0;
+  }
+
+  #new-post-link:hover {
+    opacity: 0.8;
   }
 }
 
 @media only screen and (min-width: 1000px) {
-  #post-area {
+  #post-board {
     max-width: 950px;
   }
 }

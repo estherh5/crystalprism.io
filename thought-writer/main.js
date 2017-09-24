@@ -1,7 +1,5 @@
 // Define variables
 var header = document.getElementById('header');
-var plus = document.getElementById('plus');
-var newButton = document.getElementById('new');
 var profileLink = document.getElementById('profile-link');
 var accountLink = document.getElementById('account-link');
 var signInLink = document.getElementById('sign-in-link');
@@ -9,7 +7,7 @@ var errorMessage = '';
 var postStart = 0;
 var postEnd = 11;
 var morePostsExist = false;
-var postArea = document.getElementById('post-area');
+var postBoard = document.getElementById('post-board');
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -17,8 +15,8 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
-window.addEventListener('scroll', function () {
-  if (window.pageYOffset > 100) {
+window.addEventListener('scroll', function() {
+  if (window.pageYOffset > 60) {
     header.classList.add('shrink');
   } else if (header.classList.contains('shrink')) {
     header.classList.remove('shrink');
@@ -27,58 +25,50 @@ window.addEventListener('scroll', function () {
 
 window.onscroll = displayMorePosts;
 
-plus.onclick = function() {
-  newButton.classList.add('clicked');
-  setTimeout(function() {
-    newButton.classList.remove('clicked');
-  }, 500);
-  window.location = 'editor/index.html';
-}
-
 // Define functions
 function checkAccountStatus() {
   return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function (error) {
+  }).catch(function(error) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../../thought-writer/index.html');
+      sessionStorage.setItem('previous-window', '../../thought-writer/index.html');
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      profileLink.innerHTML = localStorage.getItem('username');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
       accountLink.innerHTML = 'My Account';
       accountLink.href = '../user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
+        sessionStorage.setItem('account-request', 'logout');
       }
     } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('token');
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../../thought-writer/index.html');
+        sessionStorage.setItem('previous-window', '../../thought-writer/index.html');
       }
     }
   })
 }
 
-function getPosts() {
-  return fetch(server + '/thought-writer/entries' + '?start=' + postStart + '&end=' + postEnd).catch(function (error) {
+function loadPosts() {
+  return fetch(server + '/thought-writer/entries' + '?start=' + postStart + '&end=' + postEnd).catch(function(error) {
     if (errorMessage == '') {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the Thought Writer diary. Please refresh the page.';
-      postArea.append(errorMessage);
+      errorMessage.innerHTML = 'There was an error loading the Thought Writer post board. Please refresh the page.';
+      postBoard.append(errorMessage);
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      response.json().then(function (posts) {
+      response.json().then(function(posts) {
         if (posts.length != 0) {
           if (posts.length > 10) {
             morePostsExist = true;
@@ -88,16 +78,16 @@ function getPosts() {
             postLoadNumber = posts.length;
           }
           for (var i = 0; i < postLoadNumber; i++) {
-            var postDiv = document.createElement('div');
-            postDiv.classList.add('post-div');
-            postDiv.dataset.number = postStart + i;
+            var postContainer = document.createElement('div');
+            postContainer.classList.add('post-container');
+            postContainer.dataset.number = postStart + i;
             var postTitle = document.createElement('a');
             postTitle.classList.add('post-title');
             postTitle.href = 'javascript:delay("post/index.html")';
             postTitle.innerHTML = posts[i].title;
-            var postEntry = document.createElement('div');
-            postEntry.classList.add('post-entry');
-            postEntry.innerHTML = posts[i].content;
+            var postContent = document.createElement('div');
+            postContent.classList.add('post-content');
+            postContent.innerHTML = posts[i].content;
             var postInfo = document.createElement('div');
             postInfo.classList.add('post-info');
             var postWriter = document.createElement('a');
@@ -112,7 +102,9 @@ function getPosts() {
             postComments.href = 'javascript:delay("post/index.html#comments")';
             var postTimeDisplay = document.createElement('div');
             var utcDateTime = JSON.parse(posts[i].timestamp);
-            var dateTime = new Date(utcDateTime + ' UTC');
+            var utcDate = utcDateTime.split(' ')[0];
+            var utcTime = utcDateTime.split(' ')[1];
+            var dateTime = new Date(utcDate + 'T' + utcTime);
             var hour = parseInt(dateTime.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
@@ -122,10 +114,10 @@ function getPosts() {
             var postDate = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
             var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
             postTimeDisplay.innerHTML = postDate + ', ' + postTime;
-            postArea.append(postDiv);
-            postDiv.append(postTitle);
-            postDiv.append(postEntry);
-            postDiv.append(postInfo);
+            postBoard.append(postContainer);
+            postContainer.append(postTitle);
+            postContainer.append(postContent);
+            postContainer.append(postInfo);
             postInfo.append(postWriter);
             postInfo.append(postComments);
             postInfo.append(postTimeDisplay);
@@ -149,15 +141,15 @@ function getPosts() {
 }
 
 function delay(URL) {
-  setTimeout(function () {window.location = URL}, 800);
+  setTimeout(function() {window.location = URL}, 800);
 }
 
 function displayMorePosts() {
   if (morePostsExist) {
     if ((document.body.scrollTop + document.body.clientHeight) >= document.body.scrollHeight - 10) {
       postStart = postEnd;
-      postEnd = postEnd + Math.floor(postArea.offsetWidth/240);
-      setTimeout(getPosts, 10);
+      postEnd = postEnd + Math.floor(postBoard.offsetWidth/240);
+      setTimeout(loadPosts, 10);
     }
   }
 }

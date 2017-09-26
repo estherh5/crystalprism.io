@@ -33,3 +33,6 @@ I started programming in January 2017. I am learning HTML, CSS, JavaScript and P
 
 ## Thank You
 I am incredibly grateful to my teacher, [Ankur Saxena](https://github.com/as3445). His knowledge, creativity and patience has given me the confidence and inspiration to make these coding projects my own.
+
+[![BrowserStack](images/browserstack.svg)](https://www.browserstack.com)
+I would also like to thank [BrowserStack](https://www.browserstack.com) for letting me use their service free of charge to test my website across browsers and devices. BrowserStack allowed me to get an accurate handle on cross-browser and cross-device compatible code, teaching me many useful browser/device quirks along the way!

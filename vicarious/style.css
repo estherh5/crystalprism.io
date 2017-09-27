@@ -1,8 +1,9 @@
 body {
   background-color: #ffff00;
   font-family: 'Bad Script', cursive;
-  user-select: none;
   cursor: default;
+  user-select: none;
+  -webkit-user-select: none;
 }
 
 ::selection  {
@@ -30,6 +31,17 @@ body {
   justify-content: center;
 }
 
+.image-close {
+  position: absolute;
+  width: 25vw;
+  outline: none;
+  top: 0px;
+  right: 0px;
+  font-size: 30px;
+  text-align: right;
+  color: #ffffff;
+}
+
 .image-close:focus, .image-close:hover {
   color: #ffffff;
 }
@@ -39,30 +51,19 @@ body {
   margin: 0;
 }
 
-.image-modal .modal-content, .image-modal .modal-header, .image-modal .modal-body {
+.image-modal .modal-content, .image-modal .modal-body {
   padding: 0;
   border: none;
   margin: 0;
   display: flex;
-  background-color: transparent;
-}
-
-.image-close {
-  position: absolute;
-  width: 25vw;
-  outline: none;
-  top: 0;
-  right: 0;
-  font-size: 30px;
-  text-align: right;
-  color: #ffffff;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .modal-body {
   border-top: 1px solid #eceeef;
 }
 
-.zoomed {
+#zoomed-image {
   height: 80vh;
   max-height: 100vh;
   width: auto;
@@ -95,16 +96,44 @@ body {
   height: 100vh;
   max-height: 100vh;
   width: auto;
+  display: block;
 }
 
-#homepage-row {
+a {
+  color: #000000;
+  text-decoration: none !important;
+  cursor: pointer;
+}
+
+a:active, button:active {
+  color: #2d8e84;
+  text-decoration: none !important;
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+a:hover, button:hover {
+  color: #2d8e84;
+  text-decoration: none !important;
+}
+
+a:focus, button:focus {
+  outline: none;
+  color: #2d8e84;
+  text-decoration: none !important;
+}
+
+#header {
+  text-align: center;
+}
+
+#homepage-container {
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 1;
 }
 
-#homepage {
+#homepage-link {
   width: 50px;
   margin-top: 5px;
   display: flex;
@@ -114,52 +143,56 @@ body {
   color: #000000;
 }
 
-#diamond-small {
+#homepage-icon {
   height: 30px;
   left: 0px;
   opacity: 0.7;
   filter: grayscale(1);
 }
 
-#homepage:hover #diamond-small {
+#homepage-link:hover #homepage-icon {
   opacity: 1;
   filter: grayscale(0);
-}
-
-#header {
-  text-align: center;
-}
-
-a {
-  color: #000000;
-}
-
-a:active, a:focus, a:hover {
-  color: #2d8e84;
-  text-decoration: none !important;
-}
-
-h1 {
-  padding-top: 5px;
-  font-weight: bold;
-  line-height: 1.5;
 }
 
 .fa-plane {
   position: absolute;
   margin-left: -24px;
+  margin-right: 24px;
   top: 22px;
   font-size: 15px !important;
 }
 
 .fa-globe {
   position: absolute;
-  top: 0;
+  top: 0px;
   font-size: 61px !important;
   opacity: 0.2;
 }
 
-#left {
+h1 {
+  padding-top: 5px;
+  margin-top: 12px;
+  font-size: 30px;
+  font-weight: normal;
+  line-height: 1.5;
+}
+
+#account-menu {
+  position: absolute;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
+}
+
+#left-panel {
   background-color: #40e0d0;
 }
 
@@ -177,7 +210,9 @@ input {
   outline: none;
   font-family: 'Bad Script', cursive;
   font-size: 20px;
+  line-height: normal;
   user-select: text;
+  -webkit-user-select: text;
 }
 
 input::selection {
@@ -199,26 +234,25 @@ input::placeholder {
 }
 
 .btn:active {
-  box-shadow: 0.05em 0.05em 0.0em !important;
-  -webkit-box-shadow: 0.05em 0.05em 0.0em !important;
+  box-shadow: 0.07em 0.07em 0.0em !important;
+  -webkit-box-shadow: 0.07em 0.07em 0.0em !important;
   background-color: #ffc53c;
   text-shadow: 0.01em -0.01em 0em;
 }
 
-.btn:focus {
+.btn:hover, .btn:focus {
   box-shadow: none;
   -webkit-box-shadow: none;
-}
-
-.btn:hover {
+  background-color: #ffc53c;
   font-weight: bold;
+  color: #000000;
 }
 
-#right {
+#right-panel {
   background-color: #ffc0cb;
 }
 
-#right.cleared {
+#right-panel.cleared {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -233,7 +267,7 @@ input::placeholder {
 .loading {
   border: none;
   display: block !important;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0);
   animation-name: rotate;
   animation-duration: 5s;
   animation-iteration-count: infinite;
@@ -269,26 +303,29 @@ ul {
 
 .image.cleared {
   border: none;
-  background-color: transparent;
+  background-color: rgba(0, 0, 0, 0);
 }
 
 .media-body {
   text-align: center;
   user-select: text;
+  -webkit-user-select: text;
 }
 
 .image-title {
   font-size: 10px;
   user-select: text;
+  -webkit-user-select: text;
 }
 
 @media only screen and (min-width: 768px) {
-  #close-carousel {
+  #carousel-close {
     font-size: 35px;
   }
 
   .fa-plane {
     margin-left: -32px;
+    margin-right: 32px;
     top: 27px;
     font-size: 21px !important;
   }
@@ -300,6 +337,10 @@ ul {
   h1 {
     padding-top: 10px;
     font-size: 40px;
+  }
+
+  #account-menu {
+    font-size: 14px;
   }
 
   h2 {

@@ -2,10 +2,10 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <meta name="description" content="Travel photo search tool that displays content from Reddit's Travel subreddit">
-    <meta name="keywords" content="travel,photo,search,reddit,subreddit">
+    <meta name="description" content="Travel photo search tool that displays content from Reddit's Travel subreddit through the Reddit API">
+    <meta name="keywords" content="travel,photo,search,reddit,subreddit,API">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bad+Script">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Bad+Script|Rajdhani">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
@@ -20,64 +20,16 @@
     </script>
     <title>Vicarious</title>
   </head>
-  <body onload="storeContent();setInputPlaceholder();">
+  <body onload="checkAccountStatus();storeImages();setLocationPlaceholder();">
     <div id="dimmer" class="fade"></div>
-    <div id="modal-one" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
+    <div id="zoomed-modal" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
+      <button class="close image-close mx-3 mt-2 mb-3" type="button" data-dismiss="modal" aria-label="Close">
         <span aria-hidden="true">&times;</span>
       </button>
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
-            <img class="zoomed img-thumbnail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="modal-two" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img class="zoomed img-thumbnail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="modal-three" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img class="zoomed img-thumbnail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="modal-four" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img class="zoomed img-thumbnail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="modal-five" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button type="button" class="close image-close mx-3 mt-2 mb-3" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img class="zoomed img-thumbnail">
+            <img id="zoomed-image" class="img-thumbnail">
           </div>
         </div>
       </div>
@@ -87,7 +39,7 @@
         <div class="modal-content">
           <div class="modal-header">
             <h3 id="no-results-modal-title" class="modal-title"></h3>
-            <button type="button" id="modal-close" class="close" data-dismiss="modal" aria-label="Close">
+            <button id="no-results-modal-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -95,68 +47,56 @@
             <p>Try searching for another place.</p>
           </div>
           <div class="modal-footer">
-            <button id="okay" type="button" class="btn" data-dismiss="modal">Okay</button>
+            <button id="okay" class="btn" type="button" data-dismiss="modal">Okay</button>
           </div>
         </div>
       </div>
     </div>
-    <div id="carousel" class="carousel slide" data-ride="carousel" data-keyboard="true" data-wrap="true" data-pause="hover">
-      <div class="carousel-inner" role="listbox">
-        <div class="carousel-item active">
-          <img class="carousel-image d-block img-fluid">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image d-block img-fluid">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image d-block img-fluid">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image d-block img-fluid">
-        </div>
-        <div class="carousel-item">
-          <img class="carousel-image d-block img-fluid">
-        </div>
+    <div id="carousel" class="carousel slide" data-ride="carousel" data-keyboard="true" tabindex="-1" data-wrap="true" data-pause="hover">
+      <div id="carousel-inner" class="carousel-inner" role="listbox">
       </div>
-      <a class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
+      <a id="carousel-prev" class="carousel-control-prev" href="#carousel" role="button" data-slide="prev">
         <span class="carousel-control-prev-icon" aria-hidden="true"></span>
         <span class="sr-only">Previous</span>
       </a>
-      <a class="carousel-control-next" href="#carousel" role="button" data-slide="next">
+      <a id="carousel-next" class="carousel-control-next" href="#carousel" role="button" data-slide="next">
         <span class="carousel-control-next-icon" aria-hidden="true"></span>
         <span class="sr-only">Next</span>
       </a>
-      <button id="close-carousel" type="button" class="close image-close mx-3 mt-2 mb-3" aria-label="Close">
-        &times;
-      </button>
-    </div>
-    <div id="homepage-row">
-      <a id="homepage" href="../index.html">
-        <img id="diamond-small" src="../images/homepage.png">
-      </a>
+      <button id="carousel-close" type="button" class="close image-close mx-3 mt-2 mb-3" aria-label="Close">&times;</button>
     </div>
     <div id="header" class="container-fluid">
       <div class="row">
+        <div id="homepage-container">
+          <a id="homepage-link" href="../index.html">
+            <img id="homepage-icon" src="../images/homepage.png">
+          </a>
+        </div>
         <div class="col d-flex align-items-center justify-content-center">
           <a id="title-link" class="d-flex h-100 align-items-center justify-content-center" href="#">
             <i class="fa fa-plane"></i>
             <i class="fa fa-globe"></i>
-            <h1 class="mt-3">Vicarious</h1>
+            <h1>Vicarious</h1>
           </a>
+        </div>
+        <div id="account-menu">
+          <a id="profile-link"></a>
+          <a id="account-link" href="../user/create-account/index.html"></a>
+          <a id="sign-in-link" href="../user/sign-in/index.html"></a>
         </div>
       </div>
     </div>
     <div class="container-fluid">
       <div class="row justify-content-center">
-        <div id="left" class="col d-flex flex-column align-items-center">
+        <div id="left-panel" class="col d-flex flex-column align-items-center">
           <div class="row">
             <div class="col">
-              <h2 id="where" class="my-3">Where do you want to go?</h2>
+              <h2 class="my-3">Where do you want to go?</h2>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <input id="input" class="mb-3" type="text" spellcheck="true" autocomplete="on" autofocus>
+              <input id="location-input" class="mb-3" type="text" spellcheck="true" autocomplete="on" autofocus>
             </div>
           </div>
           <div class="row">
@@ -165,52 +105,47 @@
             </div>
           </div>
         </div>
-        <div id="right" class="cleared col d-flex flex-column">
+        <div id="right-panel" class="cleared col d-flex flex-column">
           <img id="loading-image" class="loading" src="images/loading.png">
-          <button id="view" class="btn mt-3 align-self-end">View All</button>
-          <div id="images">
+          <button id="view-all" class="btn mt-3 align-self-end">View All</button>
+          <div id="images-container">
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-one">
+                <img class="cleared img-fluid img-thumbnail image">
                 <div class="media-body">
-                  <a class="image-title" target="_blank">
-                  </a>
+                  <a class="image-title" target="_blank"></a>
                 </div>
               </li>
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-two">
+                <img class="cleared img-fluid img-thumbnail image">
                 <div class="media-body">
-                  <a class="image-title" target="_blank">
-                  </a>
+                  <a class="image-title" target="_blank"></a>
                 </div>
               </li>
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-three">
+                <img class="cleared img-fluid img-thumbnail image">
                 <div class="media-body">
-                  <a class="image-title" target="_blank">
-                  </a>
+                  <a class="image-title" target="_blank"></a>
                 </div>
               </li>
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-four">
+                <img class="cleared img-fluid img-thumbnail image">
                 <div class="media-body">
-                  <a class="image-title" target="_blank">
-                  </a>
+                  <a class="image-title" target="_blank"></a>
                 </div>
               </li>
             </ul>
             <ul class="list-unstyled">
               <li class="media align-items-center">
-                <img class="cleared img-fluid img-thumbnail image" data-toggle="modal" data-target="#modal-five">
+                <img class="cleared img-fluid img-thumbnail image">
                 <div class="media-body">
-                  <a class="image-title" target="_blank">
-                  </a>
+                  <a class="image-title" target="_blank"></a>
                 </div>
               </li>
             </ul>

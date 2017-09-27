@@ -11,47 +11,11 @@ body {
   user-select: none;
 }
 
-#homepage-row {
+#homepage-container {
   position: absolute;
   top: 0px;
   left: 0px;
   z-index: 1;
-}
-
-#homepage-link {
-  width: 50px;
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
-  align-self: center;
-  justify-content: center;
-  color: #000000;
-}
-
-#diamond-small {
-  height: 30px;
-  left: 0px;
-  opacity: 0.7;
-  filter: grayscale(1);
-}
-
-#homepage-link:hover #diamond-small {
-  opacity: 1;
-  filter: grayscale(0);
-}
-
-#account-menu {
-  position: absolute;
-  margin: 3px;
-  top: 0px;
-  right: 0px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  z-index: 10;
-}
-
-#profile-link, #account-link {
-  margin-right: 7px;
 }
 
 a {
@@ -70,6 +34,42 @@ a:hover, button:hover {
 
 a:focus, button:focus {
   outline: none;
+}
+
+#homepage-link {
+  width: 50px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  color: #000000;
+}
+
+#homepage-icon {
+  height: 30px;
+  left: 0px;
+  opacity: 0.7;
+  filter: grayscale(1);
+}
+
+#homepage-link:hover #homepage-icon {
+  opacity: 1;
+  filter: grayscale(0);
+}
+
+#account-menu {
+  position: absolute;
+  margin: 3px;
+  top: 0px;
+  right: 0px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  z-index: 10;
+}
+
+#profile-link, #account-link {
+  margin-right: 7px;
 }
 
 #container {

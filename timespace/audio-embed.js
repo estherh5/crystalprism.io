@@ -10,10 +10,10 @@ function onYouTubeIframeAPIReady() {
   var audioDiv = document.getElementById('audio-div');
   var audioIcon = document.createElement('img');
   audioIcon.id = 'audio-icon';
-  audioDiv.appendChild(audioIcon);
+  audioDiv.append(audioIcon);
   var audioPlayer = document.createElement('div');
   audioPlayer.id = 'audio-player';
-  audioDiv.appendChild(audioPlayer);
+  audioDiv.append(audioPlayer);
   function audioFunction(audioDiv) {
     var audioPlayer = audioDiv ? 'on-white.png' : 'off-white.png';
     audioIcon.src = 'images/' + audioPlayer;

@@ -19,31 +19,31 @@ setInterval(everySecond, 1000);
 // Define functions
 function checkAccountStatus() {
   return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function (error) {
+  }).catch(function(error) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../../timespace/index.html');
+      sessionStorage.setItem('previous-window', '../../timespace/index.html');
     }
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = '../user/index.html?username=' + localStorage.getItem('cpusername');
+      profileLink.innerHTML = localStorage.getItem('username');
+      profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
       accountLink.innerHTML = 'My Account';
       accountLink.href = '../user/my-account/index.html';
       signInLink.innerHTML = 'Sign Out';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
+        sessionStorage.setItem('account-request', 'logout');
       }
     } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+      localStorage.removeItem('username');
+      localStorage.removeItem('token');
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../../timespace/index.html');
+        sessionStorage.setItem('previous-window', '../../timespace/index.html');
       }
     }
   })

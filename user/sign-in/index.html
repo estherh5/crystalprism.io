@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Login page for Crystal Prism, where you can sign in with your username and password to access various projects and content.">
+    <meta name="description" content="Login page for Crystal Prism, where you can sign in with your username and password to access various projects and content">
     <meta name="keywords" content="sign in, login, username, password, Crystal Prism">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
@@ -19,13 +19,13 @@
     </script>
     <title>Sign In</title>
   </head>
-  <body onload="displayLogout();" class="d-flex flex-column align-items-center justify-content-center">
+  <body class="d-flex flex-column align-items-center justify-content-center">
     <div id="logout" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h3 id="logout-title" class="modal-title">Signed out</h3>
-            <button type="button" id="logout-close" class="close" data-dismiss="modal" aria-label="Close">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -33,17 +33,17 @@
             <p>You have been signed out.</p>
           </div>
           <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
+            <button id="logout-okay" type="button" data-dismiss="modal">Okay</button>
           </div>
         </div>
       </div>
     </div>
-    <div id="cred-fail" class="modal" data-keyboard="true" tabindex="-1">
+    <div id="incorrect" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="cred-fail-title" class="modal-title">Incorrect username/password</h3>
-            <button type="button" id="cred-fail-close" class="close" data-dismiss="modal" aria-label="Close">
+            <h3 id="incorrect-title" class="modal-title">Incorrect username/password</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -51,27 +51,27 @@
             <p>Please try again.</p>
           </div>
           <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
+            <button id="incorrect-okay" type="button" data-dismiss="modal">Okay</button>
           </div>
         </div>
       </div>
     </div>
-    <div id="homepage-row" class="row no-gutters w-100">
+    <div id="homepage-container" class="row no-gutters w-100">
       <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage" href="../../index.html">
-          <img id="diamond-small" src="../../images/homepage.png">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
           <h1>Crystal Prism</h1>
         </a>
       </div>
     </div>
-    <div class="container fluid">
+    <div class="container">
       <div class="row my-3 no-gutters">
         <div class="col-8">
           <h1>Sign in</h1>
         </div>
         <div class="col-4">
           <a href="../create-account/index.html">
-            <h4 id="create">Need an account?</h4>
+            <h4 id="create-link">Need an account?</h4>
           </a>
         </div>
       </div>
@@ -80,7 +80,7 @@
           <h2>Username: </h2>
         </div>
         <div class="col-auto">
-          <input id="username" type="text" spellcheck="false" maxlength="100" autofocus>
+          <input id="username-input" type="text" spellcheck="false" maxlength="50" autofocus>
           <div id="user-warning" class="warning">Username cannot be blank</div>
         </div>
       </div>
@@ -89,7 +89,7 @@
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
-          <input id="password" type="password" spellcheck="false">
+          <input id="password-input" type="password" spellcheck="false">
           <div id="pass-warning" class="warning">Password cannot be blank</div>
         </div>
       </div>

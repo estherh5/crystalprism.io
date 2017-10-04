@@ -6,8 +6,12 @@ body {
   -webkit-user-select: none;
 }
 
-::selection  {
-  background: #ffffff;
+::selection {
+  background-color: #ffffff;
+}
+
+::-moz-selection {
+  background-color: #ffffff;
 }
 
 :focus {
@@ -25,17 +29,47 @@ body {
   z-index: 1;
 }
 
-.image-modal.show {
-  display: flex !important;
+.modal-body {
+  border-top: 1px solid #eceeef;
+}
+
+#carousel {
+  position: fixed;
+  height: 100vh;
+  width: 100vw;
+  display: none;
   align-items: center;
   justify-content: center;
+  background-color: rgba(0, 0, 0, 0.74);
+  z-index: 1;
+}
+
+.carousel-item {
+  height: 80vh;
+  max-height: 100vh;
+  width: auto;
+}
+
+.carousel-item.active {
+  height: 80vh;
+  max-height: 100vh;
+  width: auto;
+  align-items: center;
+  justify-content: center;
+}
+
+.carousel-image {
+  height: 80vh;
+  max-height: 100vh;
+  width: auto;
+  display: block;
 }
 
 .image-close {
   position: absolute;
   width: 25vw;
   outline: none;
-  top: 0px;
+  top: 15px;
   right: 0px;
   font-size: 30px;
   text-align: right;
@@ -44,59 +78,6 @@ body {
 
 .image-close:focus, .image-close:hover {
   color: #ffffff;
-}
-
-.image-modal .modal-dialog {
-  max-width: initial;
-  margin: 0;
-}
-
-.image-modal .modal-content, .image-modal .modal-body {
-  padding: 0;
-  border: none;
-  margin: 0;
-  display: flex;
-  background-color: rgba(0, 0, 0, 0);
-}
-
-.modal-body {
-  border-top: 1px solid #eceeef;
-}
-
-#zoomed-image {
-  height: 80vh;
-  max-height: 100vh;
-  width: auto;
-}
-
-#carousel {
-  position: fixed;
-  height: 100vh;
-  width: 100vw;
-  display: none;
-  background-color: rgba(0, 0, 0, 0.74);
-  z-index: 1;
-}
-
-.carousel-item {
-  height: 100vh;
-  max-height: 100vh;
-  width: auto;
-}
-
-.carousel-item.active {
-  height: 100vh;
-  max-height: 100vh;
-  width: auto;
-  align-items: center;
-  justify-content: center;
-}
-
-.carousel-image {
-  height: 100vh;
-  max-height: 100vh;
-  width: auto;
-  display: block;
 }
 
 a {
@@ -216,6 +197,10 @@ input {
 }
 
 input::selection {
+  background-color: #91ff80;
+}
+
+input::-moz-selection {
   background-color: #91ff80;
 }
 

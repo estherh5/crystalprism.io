@@ -20,26 +20,14 @@
     </script>
     <title>Vicarious</title>
   </head>
-  <body onload="checkAccountStatus();storeImages();setLocationPlaceholder();">
+  <body>
     <div id="dimmer" class="fade"></div>
-    <div id="zoomed-modal" class="image-modal modal fade" data-keyboard="true" tabindex="-1">
-      <button class="close image-close mx-3 mt-2 mb-3" type="button" data-dismiss="modal" aria-label="Close">
-        <span aria-hidden="true">&times;</span>
-      </button>
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-body">
-            <img id="zoomed-image" class="img-thumbnail">
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="no-results-modal" class="modal fade">
+    <div id="no-results-modal" class="modal fade" data-keyboard="false">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h3 id="no-results-modal-title" class="modal-title"></h3>
-            <button id="no-results-modal-close" type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <button id="no-results-modal-close" class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -47,7 +35,25 @@
             <p>Try searching for another place.</p>
           </div>
           <div class="modal-footer">
-            <button id="okay" class="btn" type="button" data-dismiss="modal">Okay</button>
+            <button id="no-results-okay" class="btn" type="button" data-dismiss="modal">Okay</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="error" class="modal fade" data-keyboard="false">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Error loading page</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <p>There was an error loading the photographs. Please refresh the page.</p>
+          </div>
+          <div class="modal-footer">
+            <button id="error-okay" class="btn" type="button" data-dismiss="modal">Okay</button>
           </div>
         </div>
       </div>

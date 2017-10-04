@@ -3,14 +3,15 @@ body {
   font-family: 'Rajdhani', sans-serif;
   cursor: default;
   user-select: none;
+  -webkit-user-select: none;
 }
 
 ::selection {
   background-color: #ffb1b1;
 }
 
-b {
-  text-shadow: 0.1px 0.1px #000000;
+::-moz-selection {
+  background-color: #ffb1b1;
 }
 
 .hidden {
@@ -19,37 +20,73 @@ b {
   left: -9999px;
 }
 
-button {
-  border: none;
-  background-color: #ffb1b1;
-  font-family: 'Bungee Hairline', cursive;
-  font-weight: bold;
-  cursor: pointer;
-  transform: scale(1);
-  transition: all 0.3s;
+#profile-container {
+  height: 100vh;
 }
 
-button:hover {
-  background-color: rgba(0, 128, 0, 0.75);
-  transform: scale(1.1);
-  transition: all 0.3s;
+#header {
+  position: fixed;
+  height: 43px;
+  border-bottom: 4px solid #000000;
+  left: 0px;
+  right: 0px;
+  background-color: #ffffff;
+  z-index: 1;
 }
 
-button:focus {
-  outline: auto !important;
-  outline-color: #008000 !important;
-  outline-width: 3px !important;
+#homepage-container {
+  top: 0px;
+  left: 0px;
+  z-index: 1;
 }
 
-button:active {
-  box-shadow: 1px 1px #000000;
-  background-color: rgba(0, 128, 0, 0.75);
-  text-shadow: 0.1px 0.1px 0px #000000;
+a {
+  color: #000000;
+  text-decoration: none;
+}
+
+a:active {
+  text-shadow: 0.01em -0.01em 0em #000000;
+}
+
+a:hover {
+  color: #808080;
+  text-decoration: none;
+}
+
+a:focus {
+  outline: none;
+  color: #808080;
+  text-decoration: none;
+}
+
+#homepage-link {
+  width: 50px;
+  margin-top: 5px;
+  display: flex;
+  align-items: center;
+  align-self: center;
+  justify-content: center;
+  color: #000000;
+}
+
+#homepage-icon {
+  height: 30px;
+  left: 0px;
+  opacity: 0.7;
+  filter: grayscale(1);
+}
+
+#homepage-link:hover #homepage-icon {
+  opacity: 1;
+  filter: grayscale(0);
 }
 
 #account-menu {
   position: absolute;
-  right: 5px;
+  margin-right: 3px;
+  top: 0px;
+  right: 0px;
   font-family: 'Rajdhani', sans-serif;
   font-size: 12px;
   z-index: 10;
@@ -59,85 +96,21 @@ button:active {
   margin-right: 7px;
 }
 
-#homepage-row {
-  position: absolute;
-  height: 55px;
-  border-bottom: 4px solid #000000;
-  left: 0px;
-  background-color: #ffffff;
-  z-index: 1;
-}
-
-#homepage {
-  width: 60px;
-  left: 25px;
-  display: flex;
-  align-items: center;
+#profile-icon-row {
+  position: fixed;
+  min-height: fit-content;
+  margin-top: 22px;
   align-self: center;
-  justify-content: center;
-  color: #000000;
+  z-index: 2;
 }
 
-a {
-  color: #000000;
-  text-decoration: none;
-}
-
-a:hover, a:focus {
-  color: #808080;
-  text-decoration: none;
-}
-
-#diamond-small {
-  height: 30px;
-  left: 0px;
-  opacity: 0.6;
-  filter: grayscale(1);
-}
-
-#homepage:hover #diamond-small {
-  filter: grayscale(0);
-}
-
-#homepage h1 {
-  position: absolute;
-  margin: 0px;
-  margin-top: 2px;
-  font-family: 'Amatic SC', cursive;
-  font-size: 13px;
-  font-weight: bold;
-}
-
-#homepage:hover h1 {
-  color: #000000 !important;
-}
-
-#user-info {
-  height: 100vh;
-}
-
-#user-row {
-  min-height: fit-content;
-  margin-top: 38px;
-}
-
-#my-account {
-  min-height: fit-content;
-  font-family: 'Sail', cursive;
-}
-
-#my-account h1 {
-  margin-top: 6px;
-  font-size: 2em !important;
-}
-
-#profile-image {
+#profile-icon {
   height: 70px;
   width: 70px;
-  border: #000000;
-  border-width: 4px;
-  border-style: solid;
+  border-color: #000000;
   border-radius: 35px;
+  border-style: solid;
+  border-width: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -148,24 +121,34 @@ a:hover, a:focus {
 #diamond {
   height: 40px;
   margin-top: 5px;
-  fill: #000000;
+  fill: #ffffff;
 }
 
-.user-data {
-  text-align: center;
-  font-size: 12px;
+#user-link-row {
+  position: fixed;
+  min-height: fit-content;
+  margin-top: 90px;
+  align-self: center;
+  font-family: 'Sail', cursive;
 }
 
-#about {
-  max-width: 300px;
-  margin-top: 10px;
-  font-style: italic;
-  user-select: text;
+#user-link-row h1 {
+  margin-top: 6px;
+  font-size: 24px !important;
+}
+
+#profile-info {
+  margin-top: 120px;
 }
 
 #name {
   font-size: 18px;
   font-weight: bold;
+}
+
+.user-data {
+  font-size: 12px;
+  text-align: center;
 }
 
 #email {
@@ -176,73 +159,94 @@ a:hover, a:focus {
   margin-right: 5px;
 }
 
+#about-blurb {
+  max-width: 300px;
+  margin-top: 10px;
+  font-style: italic;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
 #gallery-row, #post-area-row {
   min-height: 250px;
   flex-wrap: nowrap;
 }
 
+.left, .right {
+  font-size: 30px;
+  opacity: 0;
+}
+
+.display {
+  opacity: 0.7 !important;
+  cursor: pointer;
+}
+
+.display:hover {
+  opacity: 1 !important;
+}
+
 #gallery, #post-area {
-  max-width: 500px;
-  font-family: 'Chathura', sans-serif;
-  text-align: center;
+  max-width: 311px;
   display: flex;
   flex-flow: row wrap;
   align-items: center;
   justify-content: center;
+  font-family: 'Chathura', sans-serif;
+  text-align: center;
   overflow: scroll;
 }
 
-#gallery text, #post-area text {
-  padding: 3px;
-  font-size: 25px;
-  cursor: default;
-}
-
-.image-div {
+.drawing-container {
   position: relative;
-  max-height: 200px;
-  max-width: 160px;
-  margin-top: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
   font-size: 25px;
   line-height: 0.5em;
-  opacity: 0.7;
-  transition: all 0.4s;
 }
 
-.image-div:hover {
-  opacity: 1;
-  transition: all 0.4s;
+.drawing-title {
+  width: 136px;
+  line-height: 0.8;
+  cursor: pointer;
 }
 
-.image-name {
-  cursor: default;
-}
-
-.image {
-  height: 70%;
-  width: 85%;
-  border: 0.3em solid rgba(0, 0, 0, 0.08);
-  margin-top: 2%;
-  background-color: #ffffff;
-}
-
-.image-link {
+.drawing-link {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-.image-info {
-  width: 85%;
-  max-width: 240px;
+.drawing {
+  height: 136px;
+  width: 136px;
+  border: 0.3em solid rgba(0, 0, 0, 0.08);
+  margin-top: 2%;
+  margin-left: 10px;
+  margin-right: 10px;
+  background-color: #ffffff;
+  transition: all 0.4s;
+}
+
+.drawing-info {
+  width: 136px;
   display: flex;
 }
 
+.drawing-likes, .drawing-views {
+  width: 31%;
+  padding: 1px;
+  font-size: 15px;
+  text-align: left;
+  line-height: 0.8em;
+  opacity: 0.6;
+  cursor: default;
+}
+
 .fa-heart {
-  color: red;
+  color: #ff0000;
 }
 
 .clicked {
@@ -264,52 +268,40 @@ a:hover, a:focus {
   }
 }
 
-.image-likes, .image-views {
-  width: 25%;
-  padding: 1px;
-  font-size: 15px;
-  text-align: left;
-  line-height: 0.8em;
-  opacity: 0.6;
+#gallery text, #post-area text {
+  padding: 3px;
+  font-size: 25px;
   cursor: default;
-}
-
-.left, .right {
-  font-size: 30px;
-  opacity: 0;
-}
-
-.display {
-  opacity: 0.7 !important;
-  cursor: pointer;
-}
-
-.display:hover {
-  opacity: 1 !important;
 }
 
 #post-area {
   font-family: 'Cutive Mono', monospace;
 }
 
-.post-div {
-  margin-left: 1%;
-  margin-right: 1%;
+.post-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
 
 .post-title {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 137px;
   font-size: 15px;
+  text-align: center;
+  text-overflow: ellipsis;
+  line-height: 1.5;
+  cursor: pointer;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .post {
-  height: 130px;
-  width: 130px;
+  height: 137px;
+  width: 137px;
+  margin-bottom: 3px;
   margin-left: 10px;
   margin-right: 10px;
-  margin-bottom: 3px;
   outline-style: solid;
   outline-width: 2px;
   display: flex;
@@ -317,38 +309,42 @@ a:hover, a:focus {
   align-items: center;
   justify-content: center;
   background-color: #ff90cd;
-  opacity: 0.7;
   transition: all 0.4s;
 }
 
-.post:hover {
-  opacity: 1;
-  transition: all 0.4s;
-}
-
-.post-entry {
-  height: 108px;
-  width: 108px;
+.post-content {
+  height: 120px;
+  width: 120px;
+  padding: 5px;
   border-style: solid;
   border-width: 2px;
   outline: none;
   resize: none;
   background-color: #ffff00;
-  font-family: 'Megrim', cursive;
   font-size: 12px;
-  cursor: text;
+  text-align: left;
+  cursor: default;
   overflow: auto;
   user-select: text;
+  -webkit-user-select: text;
 }
 
-.post-entry img {
-  max-width: 100%;
+.post-content img {
   max-height: 100%;
+  max-width: 100%;
 }
 
 .post-info {
+  width: 137px;
   margin-left: 10px;
   font-size: 10px;
+  text-align: left;
+}
+
+@media only screen and (min-width: 576px) {
+  #gallery, #post-area {
+    max-width: 500px;
+  }
 }
 
 @media only screen and (min-width: 768px) {
@@ -356,43 +352,7 @@ a:hover, a:focus {
     font-size: 14px;
   }
 
-  #homepage {
-    width: 75px;
-    height: 100px;
-    margin-top: 5px;
-  }
-
-  #diamond-small {
-    height: 50px;
-  }
-
-  #homepage h1 {
-    margin-top: 3px;
-    font-size: 16px;
-  }
-
-  #account-menu {
-    font-size: 14px;
-  }
-
-  #homepage-row {
-    height: 75px;
-  }
-
-  #homepage {
-    height: 100px;
-    margin-top: 5px;
-  }
-
-  #my-account h1 {
-    font-size: 2.5em !important;
-  }
-
-  #user-row {
-    margin-top: 54px;
-  }
-
-  #profile-image {
+  #profile-icon {
     height: 90px;
     width: 90px;
     border-radius: 45px;
@@ -401,6 +361,18 @@ a:hover, a:focus {
   #diamond {
     height: 60px;
     margin-top: 6px;
+  }
+
+  #user-link-row {
+    margin-top: 111px;
+  }
+
+  #user-link-row h1 {
+    font-size: 30px !important;
+  }
+
+  #profile-info {
+    margin-top: 150px;
   }
 
   #gallery-row, #post-area-row {
@@ -412,36 +384,46 @@ a:hover, a:focus {
     overflow: unset;
   }
 
-  .image-div {
-    max-height: 220px;
-    max-width: 220px;
+  .drawing-container {
     margin-bottom: 1%;
   }
 
-  .image-name {
+  .drawing-title {
+    width: 181px;
     font-size: 30px;
   }
 
-  .image-likes, .image-views {
+  .drawing {
+    height: 178px;
+    width: 181px;
+  }
+
+  .drawing-info {
+    width: 181px;
+  }
+
+  .drawing-likes, .drawing-views {
     width: 20%;
   }
 
   .post-title {
+    width: 181px;
     font-size: 18px;
   }
 
   .post {
-    height: 180px;
-    width: 180px;
+    height: 181px;
+    width: 181px;
   }
 
-  .post-entry {
-    height: 150px;
-    width: 150px;
+  .post-content {
+    height: 160px;
+    width: 160px;
     font-size: 20px;
   }
 
   .post-info {
+    width: 181px;
     font-size: 12px;
   }
 }

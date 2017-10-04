@@ -3,29 +3,29 @@ var profileLink = document.getElementById('profile-link');
 var accountLink = document.getElementById('account-link');
 var signInLink = document.getElementById('sign-in-link');
 var username = window.location.search.split('username=')[1];
-var user = document.getElementById('user');
+var profileTitle = document.getElementById('profile-title');
 var userLink = document.getElementById('user-link');
 var userData = document.getElementsByClassName('user-data');
-var about = document.getElementById('about');
-var firstLastName = document.getElementById('name');
+var aboutBlurb = document.getElementById('about-blurb');
+var name = document.getElementById('name');
 var email = document.getElementById('email');
 var diamond = document.getElementById('diamond');
 var memberStat = document.getElementById("member-stat");
 var userDrawings = [];
-var rhythmStat = document.getElementById('rhythm-stat');
-var shapesStat = document.getElementById('shapes-stat');
-var drawingStart = 0;
-var drawingEnd = 4;
+var drawingsStart = 0;
+var drawingsEnd = 4;
 var galleryRow = document.getElementById('gallery-row');
 var gallery = document.getElementById('gallery');
-var drawingLeftArrow = document.getElementById('drawing-left-arrow');
-var drawingRightArrow = document.getElementById('drawing-right-arrow');
-var postStart = 0;
-var postEnd = 4;
+var drawingsLeftArrow = document.getElementById('drawing-left-arrow');
+var drawingsRightArrow = document.getElementById('drawing-right-arrow');
+var rhythmStat = document.getElementById('rhythm-stat');
+var shapesStat = document.getElementById('shapes-stat');
+var postsStart = 0;
+var postsEnd = 4;
 var postAreaRow = document.getElementById('post-area-row');
 var postArea = document.getElementById('post-area');
-var postLeftArrow = document.getElementById('post-left-arrow');
-var postRightArrow = document.getElementById('post-right-arrow');
+var postsLeftArrow = document.getElementById('posts-left-arrow');
+var postsRightArrow = document.getElementById('posts-right-arrow');
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
@@ -33,65 +33,78 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
-drawingLeftArrow.onclick = getMore;
-drawingRightArrow.onclick = getMore;
-postLeftArrow.onclick = getMore;
-postRightArrow.onclick = getMore;
+window.addEventListener('load', checkAccountStatus, false);
+window.addEventListener('load', loadPersonal, false);
+window.addEventListener('load', loadPosts, false);
+drawingsLeftArrow.onclick = loadMoreContent;
+drawingsRightArrow.onclick = loadMoreContent;
+postsLeftArrow.onclick = loadMoreContent;
+postsRightArrow.onclick = loadMoreContent;
 
 // Define functions
 function checkAccountStatus() {
-  return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken')},
-    method: 'GET',
-  }).catch(function (error) {
+  if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
-      sessionStorage.setItem('cppreviouswindow', '../index.html?username=' + username);
+      sessionStorage.setItem('previous-window', '../index.html?username=' + username);
     }
-  }).then(function (response) {
-    if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('cpusername');
-      profileLink.href = 'index.html?username=' + localStorage.getItem('cpusername');
-      accountLink.innerHTML = 'My Account';
-      accountLink.href = 'my-account/index.html';
-      signInLink.innerHTML = 'Sign Out';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('cprequest', 'logout');
-      }
-    } else {
-      localStorage.removeItem('cpusername');
-      localStorage.removeItem('cptoken');
+  } else {
+    return fetch(server + '/user/verify', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    }).catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
-        sessionStorage.setItem('cppreviouswindow', '../index.html?username=' + username);
+        sessionStorage.setItem('previous-window', '../index.html?username=' + username);
       }
-    }
-  })
+    }).then(function(response) {
+      if (response.ok) {
+        profileLink.innerHTML = localStorage.getItem('username');
+        profileLink.href = 'index.html?username=' + localStorage.getItem('username');
+        accountLink.innerHTML = 'My Account';
+        accountLink.href = 'my-account/index.html';
+        signInLink.innerHTML = 'Sign Out';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('account-request', 'logout');
+        }
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('previous-window', '../index.html?username=' + username);
+        }
+      }
+    })
+  }
 }
 
-function populatePersonal() {
-  return fetch(server + '/user/' + username).catch(function (error) {
-    user.innerHTML = 'Could not load page';
+function loadPersonal() {
+  return fetch(server + '/user/' + username).catch(function(error) {
+    profileTitle.innerHTML = 'Could not load page';
     document.title = 'Not found';
-  }).then(function (response) {
+  }).then(function(response) {
     if (response.ok) {
-      response.json().then(function (info) {
+      response.json().then(function(info) {
         userLink.href = 'index.html?username=' + username;
-        user.innerHTML = username;
+        profileTitle.innerHTML = username;
         document.title = username;
-        about.innerHTML = info['about'];
-        firstLastName.innerHTML = info['name'];
+        aboutBlurb.innerHTML = info['about'];
+        name.innerHTML = info['name'];
         email.innerHTML = info['email'];
         email.href = 'mailto:' + info['email'];
         document.body.style.backgroundColor = info['background_color'];
-        diamond.style.fill = info['color'];
+        diamond.style.fill = info['icon_color'];
         var utcDateTime = JSON.parse(info['member_since']);
-        var dateTime = new Date(utcDateTime + ' UTC');
+        var utcDate = utcDateTime.split(' ')[0];
+        var utcTime = utcDateTime.split(' ')[1];
+        var dateTime = new Date(utcDate + 'T' + utcTime);
         memberStat.innerHTML = 'Member since ' + parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
-        userDrawings = info['images'];
-        populateDrawings();
+        userDrawings = info['drawings'];
+        loadDrawings();
         var star = document.createElement('i');
         star.classList.add('fa');
         star.classList.add('fa-star');
@@ -109,87 +122,88 @@ function populatePersonal() {
         }
       })
     } else {
-      user.innerHTML = 'User does not exist';
+      profileTitle.innerHTML = 'User does not exist';
       document.title = 'Not found';
     }
   })
 }
 
-function populateDrawings() {
-  images = userDrawings.slice(drawingStart, drawingEnd);
-  if (images.length == 0) {
+function loadDrawings() {
+  drawings = userDrawings.slice(drawingsStart, drawingsEnd);
+  if (drawings.length == 0) {
     galleryRow.classList.add('hidden');
   }
-  if (images.length != 0) {
+  if (drawings.length != 0) {
     gallery.innerHTML = '';
-    if (images.length > 3) {
+    if (drawings.length > 3) {
       moreDrawingsExist = true;
-      var drawingLoadNumber = 3;
+      var drawingsLoadNumber = 3;
     } else {
       moreDrawingsExist = false;
-      var drawingLoadNumber = images.length;
+      var drawingsLoadNumber = drawings.length;
     }
-    for (var i = 0; i < drawingLoadNumber; i++) {
-      var imageLikes = document.createElement('div');
-      imageLikes.classList.add('image-likes');
-      imageLikes.title = 'Likes';
-      imageLikes.dataset.image = images[i];
-      var imageDiv = document.createElement('div');
-      imageDiv.classList.add('image-div');
-      imageDiv.dataset.number = drawingStart + i;
-      var imageLink = document.createElement('a');
-      imageLink.classList.add('image-link');
-      imageLink.href = 'javascript:delay("../canvashare/drawingapp/index.html")';
-      var imageName = document.createElement('div');
-      imageName.classList.add('image-name');
-      imageName.innerHTML = images[i].substr(images[i].indexOf('/')+1).split(/`|.png/)[0];
-      var image = document.createElement('img');
-      image.classList.add('image');
-      image.src = server + '/canvashare/drawing/' + images[i];
-      var imageInfo = document.createElement('div');
-      imageInfo.classList.add('image-info');
-      var imageViews = document.createElement('div');
-      imageViews.classList.add('image-views');
-      imageViews.title = 'Views';
-      imageViews.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
-      gallery.append(imageDiv);
-      imageDiv.append(imageName);
-      imageDiv.append(imageLink);
-      imageLink.append(image);
-      imageDiv.append(imageInfo);
-      imageInfo.append(imageLikes);
+    for (var i = 0; i < drawingsLoadNumber; i++) {
+      var drawingLikes = document.createElement('div');
+      drawingLikes.classList.add('drawing-likes');
+      drawingLikes.title = 'Likes';
+      drawingLikes.dataset.drawing = drawings[i];
+      var drawingContainer = document.createElement('div');
+      drawingContainer.classList.add('drawing-container');
+      drawingContainer.dataset.number = drawingsStart + i;
+      var drawingLink = document.createElement('a');
+      drawingLink.classList.add('drawing-link');
+      drawingLink.title = 'View drawing';
+      drawingLink.href = 'javascript:delay("../canvashare/drawingapp/index.html")';
+      var drawingTitle = document.createElement('div');
+      drawingTitle.classList.add('drawing-title');
+      drawingTitle.innerHTML = drawings[i].substr(drawings[i].indexOf('/')+1).split(/`|.png/)[0];
+      var drawing = document.createElement('img');
+      drawing.classList.add('drawing');
+      drawing.src = server + '/canvashare/drawing/' + drawings[i];
+      var drawingInfo = document.createElement('div');
+      drawingInfo.classList.add('drawing-info');
+      var drawingViews = document.createElement('div');
+      drawingViews.classList.add('drawing-views');
+      drawingViews.title = 'Views';
+      drawingViews.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
+      gallery.append(drawingContainer);
+      drawingContainer.append(drawingLink);
+      drawingLink.append(drawingTitle);
+      drawingContainer.append(drawing);
+      drawingContainer.append(drawingInfo);
+      drawingInfo.append(drawingLikes);
       var likeText = document.createElement('text');
-      likeText.dataset.image = images[i];
-      imageLikes.append(likeText);
-      imageInfo.append(imageViews);
+      likeText.dataset.drawing = drawings[i];
+      drawingLikes.append(likeText);
+      drawingInfo.append(drawingViews);
       var viewText = document.createElement('text');
-      viewText.dataset.image = images[i];
-      imageViews.append(viewText);
-      image.onclick = setImageValues;
-      getInfo(images[i]);
+      viewText.dataset.drawing = drawings[i];
+      drawingViews.append(viewText);
+      drawing.onclick = setDrawingValues;
+      getDrawingInfo(drawings[i]);
     }
-    if (gallery.getElementsByClassName('image-div')[0].dataset.number != 0) {
-      drawingLeftArrow.classList.add('display');
+    if (gallery.getElementsByClassName('drawing-container')[0].dataset.number != 0) {
+      drawingsLeftArrow.classList.add('display');
     } else {
-      drawingLeftArrow.classList.remove('display');
+      drawingsLeftArrow.classList.remove('display');
     }
     if (moreDrawingsExist) {
-      drawingRightArrow.classList.add('display');
+      drawingsRightArrow.classList.add('display');
     } else {
-      drawingRightArrow.classList.remove('display');
+      drawingsRightArrow.classList.remove('display');
     }
   }
 }
 
-function setImageValues() {
-  if (this.classList.contains('image')) {
-    sessionStorage.setItem('imageSrc', this.src);
-    currentLikes = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[1].innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.src.split('/canvashare/drawing/')[1] + '"]')[2].innerHTML;
+function setDrawingValues() {
+  if (this.classList.contains('drawing')) {
+    sessionStorage.setItem('drawing-source', this.src);
+    currentLikes = document.querySelectorAll('[data-drawing="' + this.src.split('/canvashare/drawing/')[1] + '"]')[1].innerHTML;
+    currentViews = document.querySelectorAll('[data-drawing="' + this.src.split('/canvashare/drawing/')[1] + '"]')[2].innerHTML;
     data = {'likes': parseInt(currentLikes), 'views': parseInt(currentViews) + 1};
     data = JSON.stringify(data);
     fetch(server + '/canvashare/drawinginfo/' + this.src.split('/canvashare/drawing/')[1].split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
     })
@@ -201,16 +215,16 @@ function setImageValues() {
     }, 500);
     likeText = this.nextSibling;
     currentLikes = likeText.innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;
+    currentViews = document.querySelectorAll('[data-drawing="' + this.nextSibling.dataset.drawing + '"]')[2].innerHTML;
     data = {'likes': (parseInt(currentLikes) + 1).toString(), 'views': (parseInt(currentViews)).toString()};
     data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.image.split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.drawing.split('.png')[0], {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
-    }).catch(function (error) {
+    }).catch(function(error) {
       window.alert('Your like did not go through. Please try again soon.')
-    }).then(function (response) {
+    }).then(function(response) {
       if (response.ok) {
         likeText.innerHTML = parseInt(currentLikes) + 1;
         heart.classList.remove('fa-heart-o');
@@ -227,16 +241,16 @@ function setImageValues() {
     }, 500);
     likeText = this.nextSibling;
     currentLikes = likeText.innerHTML;
-    currentViews = document.querySelectorAll('[data-image="' + this.nextSibling.dataset.image + '"]')[2].innerHTML;
+    currentViews = document.querySelectorAll('[data-drawing="' + this.nextSibling.dataset.drawing + '"]')[2].innerHTML;
     data = {'likes': parseInt(currentLikes) - 1, 'views': parseInt(currentViews)};
     data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.image.split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('cptoken'), 'Content-Type': 'application/json'},
+    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.drawing.split('.png')[0], {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data
-    }).catch(function (error) {
+    }).catch(function(error) {
       window.alert('Your like did not go through. Please try again soon.')
-    }).then(function (response) {
+    }).then(function(response) {
       if (response.ok) {
         heart.classList.remove('fa-heart');
         heart.classList.add('fa-heart-o');
@@ -248,11 +262,11 @@ function setImageValues() {
   }
 }
 
-function getInfo(imageFileName) {
-  return fetch(server + '/canvashare/drawinginfo/' + imageFileName.split('.png')[0]).then(function (response) {
-    response.json().then(function (drawingInfo) {
+function getDrawingInfo(drawingFileName) {
+  return fetch(server + '/canvashare/drawinginfo/' + drawingFileName.split('.png')[0]).then(function(response) {
+    response.json().then(function(drawingInfo) {
       var parsed = JSON.parse(drawingInfo);
-      var dataElements = document.querySelectorAll('[data-image="' + imageFileName + '"]');
+      var dataElements = document.querySelectorAll('[data-drawing="' + drawingFileName + '"]');
       var unlikedHeart = document.createElement('i');
       unlikedHeart.classList.add('heart');
       unlikedHeart.classList.add('fa');
@@ -261,13 +275,13 @@ function getInfo(imageFileName) {
       likedHeart.classList.add('heart');
       likedHeart.classList.add('fa');
       likedHeart.classList.add('fa-heart');
-      if (parsed['liked_users'].includes(localStorage.getItem('cpusername'))) {
+      if (parsed['liked_users'].includes(localStorage.getItem('username'))) {
         dataElements[0].insertBefore(likedHeart, dataElements[0].firstChild);
       } else {
         dataElements[0].insertBefore(unlikedHeart, dataElements[0].firstChild);
       }
-      likedHeart.onclick = setImageValues;
-      unlikedHeart.onclick = setImageValues;
+      likedHeart.onclick = setDrawingValues;
+      unlikedHeart.onclick = setDrawingValues;
       likedHeart.style.cursor = 'pointer';
       unlikedHeart.style.cursor = 'pointer';
       dataElements[1].innerHTML = parsed['likes'];
@@ -277,35 +291,35 @@ function getInfo(imageFileName) {
 }
 
 function delay(URL) {
-  setTimeout(function () {window.location = URL}, 800);
+  setTimeout(function() {window.location = URL}, 800);
 }
 
-function getMore() {
+function loadMoreContent() {
   if (window.getComputedStyle(this).getPropertyValue('opacity') != 0) {
-    if (this == drawingLeftArrow) {
-      drawingStart = drawingStart - 3;
-      drawingEnd = drawingEnd - 3;
-      populateDrawings();
-    } else if (this == drawingRightArrow) {
-      drawingStart = drawingStart + 3;
-      drawingEnd = drawingEnd + 3;
-      populateDrawings();
-    } else if (this == postLeftArrow) {
-      postStart = postStart - 3;
-      postEnd = postEnd - 3;
-      populatePosts();
-    } else if (this == postRightArrow) {
-      postStart = postStart + 3;
-      postEnd = postEnd + 3;
-      populatePosts();
+    if (this == drawingsLeftArrow) {
+      drawingsStart = drawingsStart - 3;
+      drawingsEnd = drawingsEnd - 3;
+      loadDrawings();
+    } else if (this == drawingsRightArrow) {
+      drawingsStart = drawingsStart + 3;
+      drawingsEnd = drawingsEnd + 3;
+      loadDrawings();
+    } else if (this == postsLeftArrow) {
+      postsStart = postsStart - 3;
+      postsEnd = postsEnd - 3;
+      loadPosts();
+    } else if (this == postsRightArrow) {
+      postsStart = postsStart + 3;
+      postsEnd = postsEnd + 3;
+      loadPosts();
     }
   }
 }
 
-function populatePosts() {
-  return fetch(server + '/thought-writer/entries/' + username + '?start=' + postStart + '&end=' + postEnd).then(function (response) {
+function loadPosts() {
+  return fetch(server + '/thought-writer/entries/' + username + '?start=' + postsStart + '&end=' + postsEnd).then(function(response) {
     if (response.ok) {
-      response.json().then(function (posts) {
+      response.json().then(function(posts) {
         if (posts.length == 0) {
           postAreaRow.classList.add('hidden');
         }
@@ -313,30 +327,33 @@ function populatePosts() {
           postArea.innerHTML = '';
           if (posts.length > 3) {
             morePostsExist = true;
-            postLoadNumber = 3;
+            postsLoadNumber = 3;
           } else {
             morePostsExist = false;
-            postLoadNumber = posts.length;
+            postsLoadNumber = posts.length;
           }
-          for (var i = 0; i < postLoadNumber; i++) {
-            var postDiv = document.createElement('div');
-            postDiv.classList.add('post-div');
-            postDiv.dataset.number = postStart + i;
+          for (var i = 0; i < postsLoadNumber; i++) {
+            var postContainer = document.createElement('div');
+            postContainer.classList.add('post-container');
+            postContainer.dataset.number = postsStart + i;
             var postTitle = document.createElement('a');
             postTitle.classList.add('post-title');
+            postTitle.title = 'View post page';
             postTitle.href = 'javascript:delay("../thought-writer/post/index.html")';
             postTitle.innerHTML = posts[i].title;
             var post = document.createElement('div');
             post.classList.add('post');
             var postEntry = document.createElement('div');
-            postEntry.classList.add('post-entry');
+            postEntry.classList.add('post-content');
             postEntry.innerHTML = posts[i].content;
             var postInfo = document.createElement('div');
             postInfo.classList.add('post-info');
             var postTimeDisplay = document.createElement('div');
             postTimeDisplay.classList.add('post-time');
             var utcDateTime = JSON.parse(posts[i].timestamp);
-            var dateTime = new Date(utcDateTime + ' UTC');
+            var utcDate = utcDateTime.split(' ')[0];
+            var utcTime = utcDateTime.split(' ')[1];
+            var dateTime = new Date(utcDate + 'T' + utcTime);
             var hour = parseInt(dateTime.getHours());
             var ampm = hour >= 12 ? ' PM' : ' AM';
             var hour = hour % 12;
@@ -347,17 +364,18 @@ function populatePosts() {
             var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
             postTimeDisplay.innerHTML = postDate + ', ' + postTime;
             var postComments = document.createElement('a');
+            postComments.title = 'View post comments';
             if (posts[i].comments.length == 1) {
               postComments.innerHTML = posts[i].comments.length + ' comment';
             } else {
               postComments.innerHTML = posts[i].comments.length + ' comments';
             }
             postComments.href = 'javascript:delay("../thought-writer/post/index.html#comments")';
-            postArea.append(postDiv);
-            postDiv.append(postTitle);
-            postDiv.append(post);
+            postArea.append(postContainer);
+            postContainer.append(postTitle);
+            postContainer.append(post);
             post.append(postEntry);
-            postDiv.append(postInfo);
+            postContainer.append(postInfo);
             postInfo.append(postTimeDisplay);
             postInfo.append(postComments);
             postTitle.dataset.writer = posts[i].writer;
@@ -373,15 +391,15 @@ function populatePosts() {
               sessionStorage.setItem('timestamp', this.dataset.timestamp);
             }
           }
-          if (postArea.getElementsByClassName('post-div')[0].dataset.number != 0) {
-            postLeftArrow.classList.add('display');
+          if (postArea.getElementsByClassName('post-container')[0].dataset.number != 0) {
+            postsLeftArrow.classList.add('display');
           } else {
-            postLeftArrow.classList.remove('display');
+            postsLeftArrow.classList.remove('display');
           }
           if (morePostsExist) {
-            postRightArrow.classList.add('display');
+            postsRightArrow.classList.add('display');
           } else {
-            postRightArrow.classList.remove('display');
+            postsRightArrow.classList.remove('display');
           }
         }
       })

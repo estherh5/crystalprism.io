@@ -16,6 +16,10 @@ html, body {
   background-color: #00ffff;
 }
 
+::-moz-selection {
+  background-color: #00ffff;
+}
+
 #header {
   left: 0px;
   right: 0px;

@@ -40,6 +40,11 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define events
+window.addEventListener('load', checkAccountStatus, false);
+window.addEventListener('load', displayDraft, false);
+window.addEventListener('load', postAutoFocus, false);
+window.addEventListener('load', getPreviousPosts, false);
+
 for (var i = 0; i < toolbarButtons.length; i++) {
   toolbarButtons[i].addEventListener('click', executeCommand, false);
 }
@@ -66,36 +71,43 @@ rightArrow.onclick = displayMorePosts;
 
 // Define functions
 function checkAccountStatus() {
-  return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  }).catch(function(error) {
+  if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
       sessionStorage.setItem('previous-window', '../../thought-writer/editor/index.html');
     }
-  }).then(function(response) {
-    if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('username');
-      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
-      accountLink.innerHTML = 'My Account';
-      accountLink.href = '../../user/my-account/index.html';
-      signInLink.innerHTML = 'Sign Out';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('account-request', 'logout');
-      }
-    } else {
-      localStorage.removeItem('username');
-      localStorage.removeItem('token');
+  } else {
+    return fetch(server + '/user/verify', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    }).catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
         sessionStorage.setItem('previous-window', '../../thought-writer/editor/index.html');
       }
-
-    }
-  })
+    }).then(function(response) {
+      if (response.ok) {
+        profileLink.innerHTML = localStorage.getItem('username');
+        profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
+        accountLink.innerHTML = 'My Account';
+        accountLink.href = '../../user/my-account/index.html';
+        signInLink.innerHTML = 'Sign Out';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('account-request', 'logout');
+        }
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('previous-window', '../../thought-writer/editor/index.html');
+        }
+      }
+    })
+  }
 }
 
 function displayDraft() {
@@ -318,7 +330,7 @@ function submitEntry() {
       data = JSON.stringify(data);
     }
   }
-  fetch(server + '/thought-writer/thoughts', {
+  return fetch(server + '/thought-writer/thoughts', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
@@ -362,7 +374,7 @@ function modifyEntry() {
     var data = {'title': postTitle.value, 'timestamp': post.dataset.timestamp, 'content': post.innerHTML, 'public': (publicInput.checked).toString()};
     data = JSON.stringify(data);
   }
-  fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(post.dataset.timestamp), {
+  return fetch(server + '/thought-writer/thoughts?timestamp=' + encodeURIComponent(post.dataset.timestamp), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
     method: 'PUT',
     body: data,
@@ -376,13 +388,13 @@ function modifyEntry() {
       getPreviousPosts();
       postFinished = true;
       flipBoard();
+      clearButton.style.display = 'inline-block';
+      submitButton.style.display = 'inline-block';
+      closeButton.style.display = 'none';
+      modifyButton.style.display = 'none';
+      deleteButton.style.display = 'none';
     }
   })
-  clearButton.style.display = 'inline-block';
-  submitButton.style.display = 'inline-block';
-  closeButton.style.display = 'none';
-  modifyButton.style.display = 'none';
-  deleteButton.style.display = 'none';
 }
 
 function deleteEntry() {

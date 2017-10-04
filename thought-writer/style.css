@@ -16,6 +16,10 @@ html, body {
   background-color: #00ffff;
 }
 
+::-moz-selection {
+  background-color: #00ffff;
+}
+
 #header {
   position: fixed;
   left: 0px;
@@ -162,13 +166,13 @@ a:focus, button:focus {
 }
 
 .post-title {
-  width: 150px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 160px;
   font-size: 15px;
+  text-align: center;
+  text-overflow: ellipsis;
   line-height: 2;
-  overflow: scroll;
+  overflow: hidden;
+  white-space: nowrap;
 }
 
 .post-content {
@@ -193,7 +197,7 @@ a:focus, button:focus {
 }
 
 .post-info {
-  width: 150px;
+  width: 160px;
   font-size: 10px;
   align-self: baseline;
 }
@@ -289,7 +293,7 @@ a:focus, button:focus {
   }
 
   .post-title {
-    width: 200px;
+    width: 210px;
     font-size: 18px;
   }
 
@@ -300,7 +304,7 @@ a:focus, button:focus {
   }
 
   .post-info {
-    width: 200px;
+    width: 210px;
     font-size: 12px;
   }
 

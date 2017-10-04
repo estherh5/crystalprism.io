@@ -80,7 +80,7 @@ a:focus, button:focus {
   margin:  0px;
   font-family: 'League Script', cursive;
   font-weight: normal;
-  font-size: 2em;
+  font-size: 24px;
 }
 
 #gallery-link:hover #gallery-title, #gallery-link:hover i {
@@ -91,6 +91,7 @@ a:focus, button:focus {
 #gallery-link i {
   height: 10px;
   width: 10px;
+  font-size: 12px;
   visibility: visible;
 }
 
@@ -116,9 +117,9 @@ a:focus, button:focus {
   border: none;
   outline: none;
   font-family: 'Chathura', sans-serif;
-  font-size: 3em;
+  font-size: 36px;
   text-align: center;
-  line-height: 1.3em;
+  line-height: 1.5;
   opacity: 1;
 }
 
@@ -157,9 +158,9 @@ button {
   border: 0px;
   background-color: rgba(0, 0, 0, 0);
   font-family: 'Chathura', sans-serif;
-  font-size: 2em;
+  font-size: 24px;
   color: #808080;
-  line-height: 1em;
+  line-height: 1;
   cursor: pointer;
 }
 
@@ -177,9 +178,9 @@ button.clicked, button:active {
 }
 
 .action {
-  font-size: 3em;
+  font-size: 36px;
   color: #808080;
-  line-height: 1.5em;
+  line-height: 1.5;
 }
 
 .action:active {
@@ -191,9 +192,14 @@ button.clicked, button:active {
     margin-top: 10px;
   }
 
+  #gallery-title {
+    font-size: 36px;
+  }
+
   #gallery-link i {
     height: 0px;
     width: 0px;
+    font-size: 18px;
     visibility: hidden;
   }
 
@@ -208,7 +214,7 @@ button.clicked, button:active {
   }
 
   #title-input {
-    margin-top: 40px;
+    margin-top: 60px;
   }
 
   #current-palette {
@@ -216,12 +222,12 @@ button.clicked, button:active {
   }
 
   button {
-    font-size: 1.6em;
-    line-height: 1.8em;
+    font-size: 19px;
+    line-height: 2;
   }
 
   .action {
-    font-size: 2.5em;
-    line-height: 1em;
+    font-size: 30px;
+    line-height: 1;
   }
 }

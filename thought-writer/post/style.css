@@ -16,6 +16,10 @@ html, body {
   background-color: #00ffff;
 }
 
+::-moz-selection {
+  background-color: #00ffff;
+}
+
 #header {
   position: fixed;
   left: 0px;
@@ -220,6 +224,9 @@ a:focus, button:focus {
   border-width: 2px;
   outline: none;
   resize: none;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 .comment-container {

@@ -77,7 +77,7 @@ a:focus, button:focus {
 #gallery-title {
   margin: 0px;
   font-family: 'League Script', cursive;
-  font-size: 4em;
+  font-size: 48px;
   font-weight: normal;
   line-height: 1;
   transition: all 0.4s;
@@ -89,12 +89,12 @@ a:focus, button:focus {
 }
 
 .shrink #gallery-title {
-  font-size: 2em;
+  font-size: 24px;
   transition: all 0.3s;
 }
 
 .shrink:hover #gallery-title {
-  font-size: 3em;
+  font-size: 36px;
   transition: all 0.3s;
 }
 
@@ -138,7 +138,7 @@ a:focus, button:focus {
 
 #error-message {
   margin-top: 50px;
-  font-size: 2.5em;
+  font-size: 30px;
   font-style: italic;
   line-height: 1;
   animation-name: color;
@@ -195,14 +195,15 @@ a:focus, button:focus {
 
 .drawing-container {
   position: relative;
-  max-height: 300px;
-  max-width: 240px;
-  margin-bottom: 5%;
+  margin-top: 10px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  font-size: 2em;
-  line-height: 0.5em;
+  font-size: 24px;
+  line-height: 0.5;
   opacity: 0.7;
   transition: all 0.4s;
 }
@@ -213,20 +214,20 @@ a:focus, button:focus {
 }
 
 .drawing-title {
+  width: 240px;
   cursor: default;
 }
 
 .drawing {
-  height: 70%;
-  width: 85%;
+  height: 240px;
+  width: 240px;
   border: 0.3em solid rgba(0, 0, 0, 0.08);
-  margin-top: 5%;
+  margin-top: 10px;
   display: inline-block;
 }
 
 .drawing-info {
-  width: 85%;
-  max-width: 240px;
+  width: 240px;
   display: flex;
   cursor: default;
   z-index: 2;
@@ -237,7 +238,7 @@ a:focus, button:focus {
   padding: 1px;
   font-size: 15px;
   text-align: left;
-  line-height: 0.8em;
+  line-height: 0.8;
   opacity: 0.6;
   cursor: default;
 }
@@ -377,11 +378,11 @@ a:focus, button:focus {
 
 @media only screen and (min-width: 400px) {
   #gallery-title {
-    font-size: 4em;
+    font-size: 48px;
   }
 
   .shrink:hover #gallery-title {
-    font-size: 4em;
+    font-size: 48px;
   }
 
   #gallery {
@@ -396,11 +397,11 @@ a:focus, button:focus {
 
   #gallery-title {
     margin-top: 10px;
-    font-size: 6em;
+    font-size: 72px;
   }
 
   .shrink:hover #gallery-title {
-    font-size: 6em;
+    font-size: 72px;
   }
 
   #account-menu {
@@ -416,11 +417,7 @@ a:focus, button:focus {
   }
 
   #error-message {
-    font-size: 3.3em;
-  }
-
-  .drawing-container {
-    margin-bottom: 3%;
+    font-size: 40px;
   }
 
   .drawing-likes, .drawing-views, .drawing-artist {

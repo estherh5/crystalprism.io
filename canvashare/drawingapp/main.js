@@ -36,39 +36,51 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 // Define functions
+window.addEventListener('load', checkAccountStatus, false);
+window.addEventListener('load', setStage, false);
+
+// Define functions
 function checkAccountStatus() {
   var profileLink = document.getElementById('profile-link');
   var accountLink = document.getElementById('account-link');
   var signInLink = document.getElementById('sign-in-link');
-  return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  }).catch(function(error) {
+  if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
       sessionStorage.setItem('previous-window', '../../canvashare/drawingapp/index.html');
     }
-  }).then(function(response) {
-    if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('username');
-      profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
-      accountLink.innerHTML = 'My Account';
-      accountLink.href = '../../user/my-account/index.html';
-      signInLink.innerHTML = 'Sign Out';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('account-request', 'logout');
-      }
-    } else {
-      localStorage.removeItem('username');
-      localStorage.removeItem('token');
+  } else {
+    return fetch(server + '/user/verify', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    }).catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
         sessionStorage.setItem('previous-window', '../../canvashare/drawingapp/index.html');
       }
-    }
-  })
+    }).then(function(response) {
+      if (response.ok) {
+        profileLink.innerHTML = localStorage.getItem('username');
+        profileLink.href = '../../user/index.html?username=' + localStorage.getItem('username');
+        accountLink.innerHTML = 'My Account';
+        accountLink.href = '../../user/my-account/index.html';
+        signInLink.innerHTML = 'Sign Out';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('account-request', 'logout');
+        }
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('previous-window', '../../canvashare/drawingapp/index.html');
+        }
+      }
+    })
+  }
 }
 
 function setStage() {
@@ -79,7 +91,13 @@ function setStage() {
   drawingTitle = document.getElementById('drawing-title');
   if (sessionStorage.getItem('drawing-source') != null) {
     startingImage.src = sessionStorage.getItem('drawing-source');
-    drawingTitle.value = sessionStorage.getItem('drawing-title');
+    sessionStorage.removeItem('drawing-source');
+    if (sessionStorage.getItem('drawing-title') != null) {
+      drawingTitle.value = sessionStorage.getItem('drawing-title');
+      sessionStorage.removeItem('drawing-title');
+    } else {
+      drawingTitle.value = '[title]';
+    }
   } else {
     startingImage.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbhVKrAAAAAElFTkSuQmCC';
     drawingTitle.value = '[title]';

@@ -26,50 +26,63 @@ if (window.location.hostname == 'crystalprism.io') {
 sessionStorage.removeItem('drawing-title');
 sessionStorage.removeItem('drawing-source');
 
+window.addEventListener('load', checkAccountStatus, false);
+window.addEventListener('load', setHoverTitle, false);
+window.addEventListener('load', loadDrawings, false);
+
 window.addEventListener('scroll', function() {
   if (window.pageYOffset > 60) {
     header.classList.add('shrink');
   } else if (header.classList.contains('shrink')) {
     header.classList.remove('shrink');
   }
-})
+}, false);
+
+window.addEventListener('scroll', displayMoreDrawings, false);
 
 window.onbeforeunload = toggleMenu;
 plusIcon.onclick = toggleMenu;
 newLink.onclick = setDrawingSource;
-window.onscroll = displayMoreDrawings;
 
 // Define functions
 function checkAccountStatus() {
-  return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  }).catch(function(error) {
+  if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
       sessionStorage.setItem('previous-window', '../../canvashare/index.html');
     }
-  }).then(function(response) {
-    if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('username');
-      profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
-      accountLink.innerHTML = 'My Account';
-      accountLink.href = '../user/my-account/index.html';
-      signInLink.innerHTML = 'Sign Out';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('account-request', 'logout');
-      }
-    } else {
-      localStorage.removeItem('username');
-      localStorage.removeItem('token');
+  } else {
+    return fetch(server + '/user/verify', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    }).catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
         sessionStorage.setItem('previous-window', '../../canvashare/index.html');
       }
-    }
-  })
+    }).then(function(response) {
+      if (response.ok) {
+        profileLink.innerHTML = localStorage.getItem('username');
+        profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
+        accountLink.innerHTML = 'My Account';
+        accountLink.href = '../user/my-account/index.html';
+        signInLink.innerHTML = 'Sign Out';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('account-request', 'logout');
+        }
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('previous-window', '../../canvashare/index.html');
+        }
+      }
+    })
+  }
 }
 
 function setHoverTitle() {

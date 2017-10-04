@@ -111,8 +111,8 @@ a:focus, button:focus {
 }
 
 #title {
-  alignment-baseline: middle;
-  font-family: Bungee Shade;
+  dominant-baseline: central;
+  font-family: 'Bungee Shade', cursive;;
   font-size: 30px;
   font-style: italic;
   font-weight: bold;
@@ -122,8 +122,8 @@ a:focus, button:focus {
 }
 
 #score {
-  alignment-baseline: middle;
-  font-family: Bungee Shade;
+  dominant-baseline: central;
+  font-family: 'Bungee Shade', cursive;;
   font-size: 20px;
   font-style: italic;
   font-weight: bold;

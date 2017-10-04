@@ -18,40 +18,51 @@ function resizeCanvas() {
   canvas.setAttribute('height', window.innerHeight);
 }
 
+window.addEventListener('load', resizeCanvas, false);
 window.addEventListener('resize', resizeCanvas, false);
 
 // Check if user is logged in
 function checkAccountStatus() {
-  return fetch(server + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  }).catch(function(error) {
+  if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
     signInLink.onclick = function() {
       sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
     }
-  }).then(function(response) {
-    if (response.ok) {
-      profileLink.innerHTML = localStorage.getItem('username');
-      profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
-      accountLink.innerHTML = 'My Account';
-      accountLink.href = '../user/my-account/index.html';
-      signInLink.innerHTML = 'Sign Out';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('account-request', 'logout');
-      }
-    } else {
-      localStorage.removeItem('username');
-      localStorage.removeItem('token');
+  } else {
+    return fetch(server + '/user/verify', {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    }).catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
       signInLink.onclick = function() {
         sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
       }
-    }
-  })
+    }).then(function(response) {
+      if (response.ok) {
+        profileLink.innerHTML = localStorage.getItem('username');
+        profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
+        accountLink.innerHTML = 'My Account';
+        accountLink.href = '../user/my-account/index.html';
+        signInLink.innerHTML = 'Sign Out';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('account-request', 'logout');
+        }
+      } else {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
+        signInLink.onclick = function() {
+          sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
+        }
+      }
+    })
+  }
 }
+
+window.addEventListener('load', checkAccountStatus, false);
 
 // Create heart shapes positioned a distance apart on the x-axis
 function cloneHeart() {

@@ -2,10 +2,10 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="User account page for Crystal Prism, where you can view your account details and update your identifying information.">
+    <meta name="description" content="User account page for Crystal Prism, where you can view your account details and update your identifying information">
     <meta name="keywords" content="account, information, identity, username, password, statistics, Crystal Prism">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Bungee+Shade|Chathura|Cutive+Mono|League+Script|Material+Icons|Megrim|Pompiere|Rajdhani|Sail|Share|Tangerine|Wire+One">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Bungee+Shade|Chathura|Cutive+Mono|League+Script|Material+Icons|Pompiere|Rajdhani|Sail|Share|Tangerine|Wire+One">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
     <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico">
@@ -19,13 +19,13 @@
     </script>
     <title>My Account</title>
   </head>
-  <body onload="displaySuccess();checkAccountStatus();populatePersonal();populatePosts();">
+  <body>
     <div id="success" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h3 id="success-title" class="modal-title"></h3>
-            <button type="button" id="blanks-close" class="close" data-dismiss="modal" aria-label="Close">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -38,17 +38,17 @@
         </div>
       </div>
     </div>
-    <div id="enter-pass" class="modal" data-keyboard="true" tabindex="-1">
+    <div id="verify" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="enter-pass-title" class="modal-title">Please enter your password to verify changes:</h3>
-            <button type="button" id="password-fail-close" class="close" data-dismiss="modal" aria-label="Close">
+            <h3 class="modal-title">Please enter your password to verify changes:</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
           <div class="modal-body">
-            <input id="verify-password" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autofocus>
+            <input id="verify-password-input" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autofocus>
           </div>
           <div class="modal-footer">
             <button id="submit" type="button" data-dismiss="modal">Submit</button>
@@ -56,12 +56,12 @@
         </div>
       </div>
     </div>
-    <div id="password-fail" class="modal" data-keyboard="true" tabindex="-1">
+    <div id="incorrect" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="password-fail-title" class="modal-title">Incorrect password</h3>
-            <button type="button" id="password-fail-close" class="close" data-dismiss="modal" aria-label="Close">
+            <h3 class="modal-title">Incorrect password</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -74,30 +74,12 @@
         </div>
       </div>
     </div>
-    <div id="retry" class="modal" data-keyboard="true" tabindex="-1">
+    <div id="confirm-delete" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="retry-title" class="modal-title"></h3>
-            <button type="button" id="retry-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please select a different username.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="delete-account" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="delete-account-title" class="modal-title">Are you sure you want to delete your account?</h3>
-            <button type="button" id="delete-account-close" class="close" data-dismiss="modal" aria-label="Close">
+            <h3 class="modal-title">Are you sure you want to delete your account?</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -108,143 +90,130 @@
         </div>
       </div>
     </div>
-    <input id="color-picker" type="color" class="hidden" disabled>
-    <input id="background-color-picker" type="color" class="hidden" disabled>
-    <div id="account-menu">
-      <a id="profile-link"></a>
-      <a id="sign-in-link" href="../sign-in/index.html">Sign Out</a>
-    </div>
-    <div class="container-fluid">
-      <div id="homepage-row" class="row no-gutters w-100">
-        <div class="col d-flex flex-column align-items-center justify-content-center">
-          <a id="homepage" href="../../index.html">
-            <img id="diamond-small" src="../../images/homepage.png">
-            <h1>Crystal Prism</h1>
-          </a>
-        </div>
+    <div id="header">
+      <div id="homepage-container">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
+        </a>
       </div>
-      <div id="my-account" class="row no-gutters w-100">
+      <div class="row no-gutters w-100">
         <div class="col d-flex flex-column align-items-center justify-content-center">
           <a href="index.html">
-            <h1>My Account</h1>
+            <h1 id="title">My Account</h1>
           </a>
         </div>
       </div>
+      <div id="account-menu">
+        <a id="profile-link"></a>
+        <a id="sign-out-link" href="../sign-in/index.html">Sign Out</a>
+      </div>
+    </div>
+    <div class="container-fluid">
       <div class="row w-100 no-gutters">
         <div class="col-auto w-100 d-flex align-items-center justify-content-center">
-          <nav id="navbar" class="navbar align-self-start">
-            <ul id="navlist" class="nav nav-pills">
+          <nav id="navbar" class="navbar w-100 align-self-start">
+            <ul class="nav nav-pills">
               <li class="nav-item">
-                <a class="nav-link active" href="#menu-one">Personal</a>
+                <a class="nav-link active" href="#personal-menu">Personal</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#menu-two">Scores</a>
+                <a class="nav-link" href="#scores-menu">Scores</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#menu-three">Drawings</a>
+                <a class="nav-link" href="#drawings-menu">Drawings</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#menu-four">Posts</a>
+                <a class="nav-link" href="#posts-menu">Posts</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#menu-five">Stats</a>
+                <a class="nav-link" href="#stats-menu">Stats</a>
               </li>
             </ul>
           </nav>
         </div>
       </div>
-      <div id="menu-row" class="row w-100 no-gutters">
-        <div id="menus" class="col" data-spy="scroll" data-target="#navbar" data-offset="0">
-          <div id="menu-one" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
-            <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-one">Personal</div>
-            <div class="back-text h-100 w-100 d-flex flex-column justify-content-center">
-              <i class="material-icons back-button" data-section="menu-one">undo</i>
-              <div id="background-color" class="col-10 col-sm-9 col-md-7">
-                <button id="delete" type="button" data-toggle="modal" data-target="#delete-account">Delete Account</button>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div id="profile-image">
-                  <svg id="diamond" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" viewbox="5 15 90 70">
-                    <g>
-                      <path d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z"/>
-                    </g>
-                  </svg>
+      <div id="menu-container" class="row w-100 no-gutters">
+        <div id="menu-scroll-area" class="col" data-spy="scroll" data-target="#navbar" data-offset="0">
+          <div id="personal-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+            <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="personal-menu">Personal</div>
+            <div class="back-menu h-100 w-100 d-flex flex-column justify-content-center">
+              <i class="material-icons back-button" data-section="personal-menu">undo</i>
+              <div id="profile-background" class="container-fluid">
+                <button id="delete" type="button" data-toggle="modal" data-target="#confirm-delete">Delete Account</button>
+                <input id="background-color-picker" type="color" disabled>
+                <div id="profile-icon-row" class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div id="profile-icon">
+                    <input id="icon-color-picker" type="color" disabled>
+                    <svg id="diamond" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:cc="http://creativecommons.org/ns#" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:svg="http://www.w3.org/2000/svg" xmlns="http://www.w3.org/2000/svg" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" viewBox="5 15 90 70">
+                      <g>
+                        <path d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z"/>
+                      </g>
+                    </svg>
+                  </div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center">
+                  <div class="col-7 col-sm-6 user-data">
+                    <textarea id="about-input" class="form-control" type="text" placeholder="Write something about yourself for others to see" maxlength="110" disabled></textarea>
+                  </div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div class="field-title">Username:</div>
+                  <div class="col-5 user-data">
+                    <input id="username-input" class="form-control" type="text" spellcheck="false" maxlength="50" disabled>
+                    <div id="user-warning-one" class="warning">Username cannot be blank</div>
+                    <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
+                    <div id="user-warning-three" class="warning">Username already exists</div>
+                  </div>
+                  <div class="col-1 user-data"></div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div class="field-title">Password:</div>
+                  <div class="col-5 user-data">
+                    <input id="password-input" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
+                    <div id="pass-warning-one" class="warning">Password must be at least 8 characters long</div>
+                  </div>
+                  <div class="col-1 user-data"></div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div class="field-title">Confirm password:</div>
+                  <div class="col-5 user-data">
+                    <input id="confirm-password-input" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
+                    <div id="pass-warning-two" class="warning">Passwords do not match</div>
+                  </div>
+                  <div class="col-1 user-data"></div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div class="field-title">Name:</div>
+                  <div class="col-2 user-data">
+                    <input id="first-name-input" class="form-control" type="text" spellcheck="false" placeholder="First" disabled>
+                  </div>
+                  <div class="col-3 user-data">
+                    <input id="last-name-input" class="form-control" type="text" spellcheck="false" placeholder="Last" disabled>
+                  </div>
+                  <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
+                    <text class="public-text">Public?</text>
+                    <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
+                      <input id="name-public-input" type="checkbox" class="custom-control-input" disabled>
+                      <span class="custom-control-indicator public" data-input="name-public-input"></span>
+                    </label>
+                  </div>
+                </div>
+                <div class="row my-2 my-md-2 my-lg-3 d-flex justify-content-center align-items-center">
+                  <div class="field-title">Email address:</div>
+                  <div class="col-5 user-data">
+                    <input id="email-input" class="form-control" type="email" spellcheck="false" disabled>
+                    <div id="email-warning" class="warning">Email address should include "@" symbol</div>
+                  </div>
+                  <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
+                    <text class="public-text">Public?</text>
+                    <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
+                      <input id="email-public-input" type="checkbox" class="custom-control-input" disabled>
+                      <span class="custom-control-indicator public" data-input="email-public-input"></span>
+                    </label>
+                  </div>
                 </div>
               </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center">
-                <div id="about-col" class="col-7 col-sm-6 user-data">
-                  <textarea id="about" class="form-control" type="text" placeholder="Write something about yourself for others to see" maxlength="110" disabled></textarea>
-                </div>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-md-2">
-                  Username:
-                </div>
-                <div class="col-5 col-sm-3 user-data">
-                  <input id="username" class="form-control" type="text" spellcheck="false" maxlength="100" disabled>
-                  <div id="user-warning-one" class="warning">Username cannot be blank</div>
-                  <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
-                </div>
-                <div class="col-1 user-data">
-                </div>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-md-2">
-                  Password:
-                </div>
-                <div class="col-5 col-sm-3 user-data">
-                  <input id="password" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
-                  <div id="pass-warning-one" class="warning">Password too short</div>
-                </div>
-                <div class="col-1 user-data">
-                </div>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-md-2">
-                  Confirm password:
-                </div>
-                <div class="col-5 col-sm-3 user-data">
-                  <input id="confirm-password" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
-                  <div id="pass-warning-two" class="warning">Passwords do not match</div>
-                </div>
-                <div class="col-1 user-data">
-                </div>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-md-2">
-                  Name:
-                </div>
-                <div class="col-2 col-sm-1 user-data d-flex align-items-center justify-content-center">
-                  <input id="first-name" class="form-control" type="text" spellcheck="false" placeholder="First" disabled>
-                </div>
-                <div class="col-3 col-sm-2 user-data">
-                  <input id="last-name" class="form-control" type="text" spellcheck="false" placeholder="Last" disabled>
-                </div>
-                <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
-                  <text class="public-text">Public?</text>
-                  <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
-                    <input id="name-public" type="checkbox" class="custom-control-input" disabled>
-                    <span class="custom-control-indicator public" data-input="name-public"></span>
-                  </label>
-                </div>
-              </div>
-              <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-md-2">
-                  Email address:
-                </div>
-                <div class="col-5 col-sm-3 user-data">
-                  <input id="email" class="form-control" type="email" spellcheck="false" disabled>
-                  <div id="email-warning" class="warning">Email address should include "@" symbol</div>
-                </div>
-                <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
-                  <text class="public-text">Public?</text>
-                  <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
-                    <input id="email-public" type="checkbox" class="custom-control-input" disabled>
-                    <span class="custom-control-indicator public" data-input="email-public"></span>
-                  </label>
-                </div>
-              </div>
-              <div class="row mb-2 mt-5 mt-md-6 mt-lg-3 d-flex justify-content-center align-items-center">
+              <div class="row mt-2 d-flex justify-content-center align-items-center">
                 <div class="col-1 d-flex align-items-center justify-content-center">
                   <button id="cancel" class="form-button">cancel</button>
                   <button id="edit" class="form-button" data-editing="false">edit</button>
@@ -252,9 +221,13 @@
               </div>
             </div>
           </div>
-          <div id="menu-two" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
-            <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-two">Scores</div>
-            <div class="back-text h-100 w-100 d-flex align-items-center justify-content-center">
+          <div id="scores-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+            <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="scores-menu">Scores</div>
+            <div class="back-menu h-100 w-100 d-flex align-items-center justify-content-center">
+              <div class="arrow-container">
+                <i id="rhythm-up-arrow" class="material-icons up">keyboard_arrow_up</i>
+                <i id="rhythm-down-arrow" class="material-icons down">keyboard_arrow_down</i>
+              </div>
               <div id="rhythm-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="rhythm-link" class="hidden">
                   <a href="../../rhythm-of-life/index.html">Rhythm of Life</a>
@@ -276,10 +249,6 @@
                   </div>
                 </div>
                 <div id="rhythm-score-data" class="w-100"></div>
-              </div>
-              <div class="col-1">
-                <i id="rhythm-up-arrow" class="material-icons up">keyboard_arrow_up</i>
-                <i id="rhythm-down-arrow" class="material-icons down">keyboard_arrow_down</i>
               </div>
               <div id="shapes-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="shapes-link" class="hidden">
@@ -303,100 +272,88 @@
                 </div>
                 <div id="shapes-score-data" class="w-100"></div>
               </div>
-              <div class="coł-1">
+              <div class="arrow-container">
                 <i id="shapes-up-arrow" class="material-icons up">keyboard_arrow_up</i>
                 <i id="shapes-down-arrow" class="material-icons down">keyboard_arrow_down</i>
               </div>
-              <i class="material-icons back-button" data-section="menu-two">undo</i>
+              <i class="material-icons back-button" data-section="scores-menu">undo</i>
             </div>
           </div>
-          <div id="menu-three" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
-            <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-three">Drawings</div>
-            <div class="back-text h-100 w-100 d-flex flex-column align-items-center justify-content-end">
-              <div id="drawing-menu">
+          <div id="drawings-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+            <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="drawings-menu">Drawings</div>
+            <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-end">
+              <div id="drawings-menu-options">
                 <button id="mine" class="selected">Mine</button>
                 <button id="liked">Liked</button>
               </div>
               <div id="gallery"></div>
-              <div id="canvashare-link-one-div" class="row my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
+              <div id="canvashare-link-container-one" class="canvashare-link-container row my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
                 <div class="col">
                   You don't have any drawings! Create one?
                   <br>
                   <a class="canvashare-link" href="../../canvashare/index.html">CanvaShare</a>
                 </div>
               </div>
-              <div id="canvashare-link-two-div" class="row my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
+              <div id="canvashare-link-container-two" class="canvashare-link-container row my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
                 <div class="col">
                   You haven't liked any drawings! Care to browse?
                   <br>
                   <a class="canvashare-link" href="../../canvashare/index.html">CanvaShare</a>
                 </div>
               </div>
-              <i class="material-icons back-button" data-section="menu-three">undo</i>
-              <i id="drawing-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-              <i id="drawing-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+              <i class="material-icons back-button" data-section="drawings-menu">undo</i>
+              <i id="drawings-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+              <i id="drawings-right-arrow" class="material-icons right">keyboard_arrow_right</i>
             </div>
           </div>
-          <div id="menu-four" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
-            <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-four">Posts</div>
-            <div class="back-text h-100 w-100 d-flex flex-column align-items-center justify-content-center">
+          <div id="posts-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+            <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="posts-menu">Posts</div>
+            <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-center">
               <div id="post-area" class="h-100 w-100"></div>
-              <div id="thought-writer-link-div" class="row h-100 w-100 my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
+              <div id="thought-writer-link-container" class="row h-100 w-100 my-2 my-lg-3 d-flex justify-content-center align-items-center hidden">
                 <div class="col">
                   You don't have any posts! Create one?
                   <br>
                   <a id="thought-writer-link" href="../../thought-writer/index.html">Thought Writer</a>
                 </div>
               </div>
-              <i class="material-icons back-button" data-section="menu-four">undo</i>
-              <i id="post-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-              <i id="post-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+              <i class="material-icons back-button" data-section="posts-menu">undo</i>
+              <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+              <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
             </div>
           </div>
-          <div id="menu-five" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
-            <div class="front-text h-100 w-100 d-flex align-items-center justify-content-center" data-section="menu-five">Stats</div>
-            <div class="back-text h-100 w-100 d-flex flex-column justify-content-center">
-              <i class="material-icons back-button" data-section="menu-five">undo</i>
+          <div id="stats-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+            <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="stats-menu">Stats</div>
+            <div class="back-menu h-100 w-100 d-flex flex-column justify-content-center">
+              <i class="material-icons back-button" data-section="stats-menu">undo</i>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div id="stats-image">
+                <div>
                   <i class="fa fa-star" aria-hidden="true"></i>
                 </div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Member since:
-                </div>
+                <div class="field-title col-3 col-lg-2">Member since:</div>
                 <div id="member-stat" class="col-3 user-data"></div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Rhythm of Life plays:
-                </div>
+                <div class="field-title col-3 col-lg-2">Rhythm of Life plays:</div>
                 <div id="rhythm-plays-stat" class="col-3 user-data"></div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Shapes in Rain plays:
-                </div>
+                <div class="field-title col-3 col-lg-2">Shapes in Rain plays:</div>
                 <div id="shapes-plays-stat" class="col-3 user-data"></div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Drawings created:
-                </div>
-                <div id="drawing-stat" class="col-3 user-data"></div>
+                <div class="field-title col-3 col-lg-2">Drawings created:</div>
+                <div id="drawings-stat" class="col-3 user-data"></div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Drawings liked:
-                </div>
+                <div class="field-title col-3 col-lg-2">Drawings liked:</div>
                 <div id="liked-stat" class="col-3 user-data"></div>
               </div>
               <div class="row my-2 my-lg-3 d-flex justify-content-center align-items-center">
-                <div class="field-title col-3 col-lg-2">
-                  Posts written:
-                </div>
-                <div id="post-stat" class="col-3 user-data"></div>
+                <div class="field-title col-3 col-lg-2">Posts written:</div>
+                <div id="posts-stat" class="col-3 user-data"></div>
               </div>
             </div>
           </div>

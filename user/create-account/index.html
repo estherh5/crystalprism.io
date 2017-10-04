@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="Registration page for Crystal Prism, where you can create a unique username and password to access various projects and content.">
+    <meta name="description" content="Registration page for Crystal Prism, where you can create a unique username and password to access various projects and content">
     <meta name="keywords" content="register, username, password, login, Crystal Prism, sign up">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
@@ -19,13 +19,13 @@
     </script>
     <title>Create Account</title>
   </head>
-  <body onload="displayDeleted();" class="d-flex flex-column align-items-center justify-content-center">
+  <body class="d-flex flex-column align-items-center justify-content-center">
     <div id="deleted" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h3 id="deleted-title" class="modal-title">Your account has been deleted</h3>
-            <button type="button" id="deleted-close" class="close" data-dismiss="modal" aria-label="Close">
+            <button id="deleted-close" class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -38,40 +38,22 @@
         </div>
       </div>
     </div>
-    <div id="retry" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 id="retry-title" class="modal-title"></h3>
-            <button type="button" id="retry-close" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please select a different username.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="homepage-row" class="row no-gutters w-100">
+    <div id="homepage-container" class="row no-gutters w-100">
       <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage" href="../../index.html">
-          <img id="diamond-small" src="../../images/homepage.png">
+        <a id="homepage-link" href="../../index.html">
+          <img id="homepage-icon" src="../../images/homepage.png">
           <h1>Crystal Prism</h1>
         </a>
       </div>
     </div>
-    <div class="container fluid">
+    <div class="container">
       <div class="row my-3 no-gutters">
         <div class="col-8">
           <h1>Create Account</h1>
         </div>
         <div class="col-4">
           <a href="../sign-in/index.html">
-            <h4 id="login">Already have an account?</h4>
+            <h4 id="login-link">Already have an account?</h4>
           </a>
         </div>
       </div>
@@ -80,9 +62,10 @@
           <h2>Username: </h2>
         </div>
         <div class="col-auto">
-          <input id="username" type="text" maxlength="100" autofocus>
+          <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
           <div id="user-warning-one" class="warning">Username cannot be blank</div>
           <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
+          <div id="user-warning-three" class="warning">Username already exists</div>
         </div>
       </div>
       <div class="row my-2 d-flex align-items-center justify-content-center">
@@ -90,7 +73,7 @@
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
-          <input id="password" type="password" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+          <input id="password-input" type="password" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
           <div id="pass-warning-one" class="warning">Password cannot be blank</div>
           <div id="pass-warning-two" class="warning">Password too short</div>
         </div>
@@ -100,7 +83,7 @@
           <h2>Confirm Password: </h2>
         </div>
         <div class="col-auto">
-          <input id="confirm-password" type="password" spellcheck="false">
+          <input id="confirm-password-input" type="password" spellcheck="false">
           <div id="pass-warning-three" class="warning">Passwords do not match</div>
         </div>
       </div>

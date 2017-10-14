@@ -1,93 +1,72 @@
-// Define variables
-var profileLink = document.getElementById('profile-link');
-var accountLink = document.getElementById('account-link');
-var signInLink = document.getElementById('sign-in-link');
-var canvas = document.getElementById('canvas');
-var heart = document.getElementById('heart');
-var shapes = document.getElementsByClassName('shape');
+// Define global variables
+var game = document.getElementById('game');
 var score = document.getElementById('score');
-if (window.location.hostname == 'crystalprism.io') {
-  var server = 'http://13.58.175.191/api';
-} else {
-  var server = 'http://localhost:5000/api';
+var shapeObjects = document.getElementsByClassName('shape');
+var shapes = []; // Array to store SVG shapes
+
+
+// Define load functions
+window.onload = function() {
+  // Create page header (from common.js script)
+  createPageHeader();
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+  // Resize game to full screen
+  resizeGame();
+  return;
 }
 
-// Resize canvas to fullscreen
-function resizeCanvas() {
-  canvas.setAttribute('width', window.innerWidth);
-  canvas.setAttribute('height', window.innerHeight);
+
+// Resize game to full screen on load and when window is resized
+window.addEventListener('resize', resizeGame, false);
+
+function resizeGame() {
+  game.setAttribute('width', window.innerWidth);
+  game.setAttribute('height', window.innerHeight);
+  return;
 }
 
-window.addEventListener('load', resizeCanvas, false);
-window.addEventListener('resize', resizeCanvas, false);
 
-// Check if user is logged in
-function checkAccountStatus() {
-  if (localStorage.getItem('token') == null) {
-    accountLink.innerHTML = 'Create Account';
-    signInLink.innerHTML = 'Sign In';
-    signInLink.onclick = function() {
-      sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
-    }
-  } else {
-    return fetch(server + '/user/verify', {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-      method: 'GET',
-    }).catch(function(error) {
-      accountLink.innerHTML = 'Create Account';
-      signInLink.innerHTML = 'Sign In';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
-      }
-    }).then(function(response) {
-      if (response.ok) {
-        profileLink.innerHTML = localStorage.getItem('username');
-        profileLink.href = '../user/index.html?username=' + localStorage.getItem('username');
-        accountLink.innerHTML = 'My Account';
-        accountLink.href = '../user/my-account/index.html';
-        signInLink.innerHTML = 'Sign Out';
-        signInLink.onclick = function() {
-          sessionStorage.setItem('account-request', 'logout');
-        }
-      } else {
-        localStorage.removeItem('username');
-        localStorage.removeItem('token');
-        accountLink.innerHTML = 'Create Account';
-        signInLink.innerHTML = 'Sign In';
-        signInLink.onclick = function() {
-          sessionStorage.setItem('previous-window', '../../shapes-in-rain/index.html');
-        }
-      }
-    })
-  }
+// Store SVG shapes in array when their containing objects load
+for (var i = 0; i < shapeObjects.length; i++) {
+  shapeObjects[i].addEventListener('load', function() {
+    shapes.push(this.contentDocument.getElementsByTagName('svg')[0]);
+    return;
+  }, false);
 }
 
-window.addEventListener('load', checkAccountStatus, false);
 
-// Create heart shapes positioned a distance apart on the x-axis
+// Create heart rain every 2.5 seconds, with hearts moving down screen every 15 ms
+setInterval(multiplyHeart, 2500);
+setInterval(rain, 15);
+
+// Clone heart SVG and append it to game space
 function cloneHeart() {
+  var heart = document.getElementById('heart').contentDocument.getElementsByTagName('svg')[0];
   var heartClone = heart.cloneNode(true);
   heartClone.classList.add('heart');
-  heartClone.setAttribute('class', 'heart');
   heartClone.setAttribute('height', '6%');
   heartClone.setAttribute('width', '6%');
   heartClone.setAttribute('x', '0px');
   heartClone.setAttribute('y', '0px');
-  canvas.append(heartClone);
+  game.append(heartClone);
+  // Remove heart from screen after 15 seconds to minimize performance lag
   setTimeout(function() {
     heartClone.remove();
+    return;
   }, 15000);
   return heartClone;
 }
 
+// Multiply heart shape 6 times
 function multiplyHeart() {
   for (var i = 0; i < 6; i++) {
+    // Clone heart SVG and set x-coordinate
     var heartClone = cloneHeart();
     heartClone.setAttribute('x', i * 18.8 + '%');
   };
+  return;
 }
-
-setInterval(multiplyHeart, 2500);
 
 // Move heart shapes down y-axis like rain
 function rain() {
@@ -96,63 +75,89 @@ function rain() {
     var intY = parseFloat(heartClones[i].getAttribute('y'));
     heartClones[i].setAttribute('y', intY + 1 + 'px');
   }
+  return;
 }
 
-setInterval(rain, 15);
 
-// Create random shapes at random x and y coordinates with minimal text overlap
+// Create random shape at random x- and y-coordinates with minimal text overlap every 2 seconds
+setInterval(createRandomShape, 2000);
+
 function createRandomShape() {
+  // Generate random y-coordinate between 20 and 80
   var randomYCoordinate = Math.random() * 60 + 20;
+  // If random y-coordinate overlaps with text (between 30% and 60% of screen), generate x-coordinate to minimize overlap
   if (randomYCoordinate > 30 && randomYCoordinate < 60) {
-    var rightOrLeftOfText = Math.floor(Math.random() * 2) + 1;
-    if (rightOrLeftOfText == 1) {
+    // Generate number 1 or 2 randomly to determine if x-coordinate should be to right or left of text
+    var rightOrLeft = Math.floor(Math.random() * 2) + 1;
+    // If number is 1, set x-coordinate as random number to left of text (between 5 and 10)
+    if (rightOrLeft == 1) {
       var randomXCoordinate = Math.random() * 5 + 5;
-    } else {
-      var randomXCoordinate = Math.random() * 5 + 85;
     }
-  } else {
+    // Otherwise, set x-coordinate as random number to right of text (between 90 and 95)
+    else {
+      var randomXCoordinate = Math.random() * 5 + 90;
+    }
+  }
+  // If random y-coordinate does not overlap with text, generate random x-coordinate between 20 and 80
+  else {
     var randomXCoordinate = Math.random() * 60 + 20;
   }
+  // Create random shape from shapes array and append to game space
   var randomNumber = Math.floor(Math.random() * shapes.length);
   var randomShape = shapes[randomNumber].cloneNode(true);
-  randomShape.classList.remove('shape');
   randomShape.setAttribute('height', '15%');
   randomShape.setAttribute('width', '15%');
   randomShape.setAttribute('x', randomXCoordinate + '%');
   randomShape.setAttribute('y', randomYCoordinate + '%');
-  canvas.append(randomShape);
+  game.append(randomShape);
+  // Remove shape from game and increase score when shape is clicked
   randomShape.onclick = function() {
     randomShape.remove();
     score.innerHTML = 'Score: ' + (parseInt(score.innerHTML.split(' ')[1]) + 1);
-  };
+    return;
+  }
+  // Remove random shape after 9 seconds
   setTimeout(function() {
     randomShape.remove();
+    return;
   }, 9000);
+  return;
 }
 
-setInterval(createRandomShape, 2000);
 
 // Create blast on click
 document.body.onclick = createBlast;
 
 function createBlast() {
-  document.body.style.cursor = 'url("images/create-blast.png") 25 20, auto';
+  // Change cursor to filled in blast shape on click
+  document.body.style.cursor = 'url("images/blast-filled.svg") 25 20, auto';
+  // Set cursor back to blast outline after 300 ms
   setTimeout(function() {
     document.body.style.cursor = '';
+    return;
   }, 300);
+  return;
 }
 
-// Send score to server
+
+// Send score to server when user exits page
+window.onbeforeunload = sendScore;
+
 function sendScore() {
+  // If user is logged in, determine server based on window location and send score
   if (localStorage.getItem('username') != null) {
+    if (window.location.hostname == 'crystalprism.io') {
+      var server = 'https://13.58.175.191/api';
+    } else {
+      var server = 'http://localhost:5000/api';
+    }
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
     data = JSON.stringify(finalScore);
     return fetch(server + '/shapes-in-rain', {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
-    })
+    });
   }
+  return;
 }
-
-window.onbeforeunload = sendScore;

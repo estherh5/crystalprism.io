@@ -1,4 +1,5 @@
 *
 !.gitignore
-!*.png
 !*.jpg
+!*.png
+!*.svg

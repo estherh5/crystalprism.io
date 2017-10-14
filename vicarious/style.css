@@ -41,7 +41,12 @@ body {
   align-items: center;
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.74);
+  cursor: pointer;
   z-index: 1;
+}
+
+.carousel-inner {
+  cursor: default;
 }
 
 .carousel-item {
@@ -89,7 +94,7 @@ a {
 a:active, button:active {
   color: #2d8e84;
   text-decoration: none !important;
-  text-shadow: 0.01em -0.01em 0em #000000;
+  text-shadow: 0.1px -0.1px 0px #000000;
 }
 
 a:hover, button:hover {
@@ -108,7 +113,7 @@ a:focus, button:focus {
 }
 
 #homepage-container {
-  position: absolute;
+  position: fixed;
   top: 0px;
   left: 0px;
   z-index: 1;
@@ -160,7 +165,7 @@ h1 {
 }
 
 #account-menu {
-  position: absolute;
+  position: fixed;
   margin: 3px;
   top: 0px;
   right: 0px;
@@ -219,10 +224,10 @@ input::placeholder {
 }
 
 .btn:active {
-  box-shadow: 0.07em 0.07em 0.0em !important;
-  -webkit-box-shadow: 0.07em 0.07em 0.0em !important;
+  box-shadow: 1px 1px 0px !important;
+  -webkit-box-shadow: 1px 1px 0px !important;
   background-color: #ffc53c;
-  text-shadow: 0.01em -0.01em 0em;
+  text-shadow: 0.1px -0.1px 0px;
 }
 
 .btn:hover, .btn:focus {
@@ -245,6 +250,8 @@ input::placeholder {
 }
 
 #loading-image {
+  height: 100px;
+  width: 100px;
   position: absolute;
   display: none;
 }
@@ -270,7 +277,7 @@ input::placeholder {
 }
 
 ul {
-  margin-top: 1rem;
+  margin-top: 10px;
 }
 
 .image {

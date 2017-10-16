@@ -51,7 +51,7 @@ body {
   }
 
   a:active, button:active {
-    text-shadow: 0.01em -0.01em 0em #000000;
+    text-shadow: 0.1px -0.1px 0px #000000;
   }
 
   a:hover, button:hover {
@@ -98,7 +98,7 @@ body {
     margin-right: 7px;
   }
 
-  #warning {
+  #warning, #warning-mobile {
     display: none;
   }
 
@@ -130,18 +130,17 @@ body {
     box-shadow: inset 0 0.1px 1.1px rgba(0, 0, 0, 0.6);
   }
 
-  button.inactive {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-
   button:hover {
     background-color: #d4d4d4;
   }
 
+  #pause::first-letter, #restart::first-letter, #learn-more-desktop::first-letter {
+    text-decoration: underline;
+  }
+
   #sound {
     width: 30px;
-    background-image: url('images/on.png');
+    background-image: url('images/on.svg');
     background-position: center;
     background-size: 80% 80%;
     background-repeat: no-repeat;
@@ -227,7 +226,7 @@ body {
     margin-top: 2.5px;
   }
 
-  #game {
+  #game-board {
     position: relative;
     height: 600px;
     width: 420px;
@@ -236,7 +235,7 @@ body {
     display: flex;
   }
 
-  #canvas {
+  #svg-game {
     height: 100%;
     width: 100%;
     background-color: #ceebff;
@@ -251,12 +250,17 @@ body {
     bottom: 0px;
     left: 0px;
     right: 0px;
+    visibility: hidden;
     display: flex;
     background: #e8e8e8 no-repeat center 20%;
     font-size: 29px;
     line-height: 38px;
     flex-direction: column;
     cursor: default;
+  }
+
+  #start-screen-desktop {
+    visibility: visible;
   }
 
   #start-title {
@@ -267,7 +271,6 @@ body {
   }
 
   #pause-screen-desktop, #pause-screen-mobile, #game-over-screen {
-    visibility: hidden;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -282,14 +285,13 @@ body {
     line-height: 50px;
   }
 
-  #information-screen {
-    visibility: hidden;
+  #learn-more-screen {
     display: flex;
     flex-direction: column;
     opacity: 1;
   }
 
-  #information-screen a {
+  #learn-more-screen a {
     font-weight: bold;
   }
 
@@ -351,7 +353,7 @@ body {
     font-size: 24px;
   }
 
-  #submit, #retry {
+  #retry {
     font-size: 20px;
   }
 
@@ -419,7 +421,7 @@ body {
     width: 62px;
   }
 
-  #game {
+  #game-board {
     height: 780px;
   }
 
@@ -462,7 +464,7 @@ body {
     width: 540px;
   }
 
-  #game {
+  #game-board {
     width: 540px;
   }
 }
@@ -505,7 +507,7 @@ body {
     width: 90px;
   }
 
-  #game {
+  #game-board {
     height: 1080px;
     width: 600px;
   }
@@ -548,7 +550,7 @@ body {
     font-size: 60px;
   }
 
-  #submit, #retry {
+  #retry {
     font-size: 45px;
   }
 
@@ -611,7 +613,7 @@ body {
     margin-top: 5px;
   }
 
-  #game {
+  #game-board {
     height: 840px;
     width: 960px;
   }
@@ -651,7 +653,7 @@ body {
     font-size: 55px;
   }
 
-  #submit, #retry {
+  #retry {
     font-size: 50px;
   }
 

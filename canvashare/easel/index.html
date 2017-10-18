@@ -5,9 +5,16 @@
     <meta name="description" content="Community drawing tool where you can create a drawing to post to a public gallery for others to see, like, and duplicate to make their own">
     <meta name="keywords" content="drawing,canvas,palette,editor,community,post,tool">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura|Rajdhani" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+
+    <!-- Google Fonts and CSS stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=League+Script|Chathura|Rajdhani" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+
+    <!-- Font Awesome script -->
+    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- Google Analytics script to track page views -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -16,64 +23,79 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+
     <title>CanvaShare</title>
   </head>
   <body>
+    <!-- Brush SVG used as cursor on drawing canvas -->
     <div class="hidden">
       <canvas id="brush"></canvas>
-      <svg id="brush-svg" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="20" height="20" xml:space="preserve">
+      <svg id="brush-svg" xmlns="http://www.w3.org/2000/svg" width="20" height="20">
         <circle id="brush-cursor" cx="10" cy="10" r="10">
       </svg>
     </div>
-    <div id="header">
-      <div id="homepage-container">
-        <a id="homepage-link" href="../../index.html">
-          <img id="homepage-icon" src="../../images/homepage.png">
-        </a>
-      </div>
-      <a id="gallery-link" href="../index.html" title="Return to gallery">
-        <h1 id="gallery-title">CanvaShare</h1>
-        <i class="fa fa-undo" aria-hidden="true"></i>
-      </a>
-      <div id="account-menu">
-        <a id="profile-link"></a>
-        <a id="account-link" href="../../user/create-account/index.html"></a>
-        <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
-      </div>
-    </div>
+
+    <!-- Link to gallery -->
+    <a id="gallery-link" href="../index.html" title="Return to gallery">
+      <h1 id="gallery-title" class="small">CanvaShare</h1>
+      <!-- Back arrow that displays next to gallery link -->
+      <i class="fa fa-undo" aria-hidden="true"></i>
+    </a>
+
+    <!-- Drawing title input -->
     <div id="title-input">
-      <input id="drawing-title" value="[title]" maxlength="25">
+      <input id="drawing-title" placeholder="[title]" maxlength="25">
     </div>
+
+    <!-- Drawing canvas -->
     <div>
       <canvas id="canvas" width="400" height="400"></canvas>
     </div>
+
+    <!-- Current drawing palette -->
     <div>
       <svg id="current-palette" width="400" height="40"></svg>
     </div>
+
+    <!-- Palette option buttons -->
     <div id="palette-options">
-      <button data-palette="basic">Basic</button>
-      <button data-palette="pastel">Pastel</button>
-      <button data-palette="seashore">Seashore</button>
-      <button data-palette="bold">Bold</button>
-      <button data-palette="oblique">Oblique</button>
-      <button data-palette="contrast">Contrast</button>
-      <button data-palette="calico">Calico</button>
-      <button data-palette="mauve">Mauve</button>
-      <button data-palette="grayscale">Grayscale</button>
+      <button class="palette" data-palette="basic">Basic</button>
+      <button class="palette" data-palette="pastel">Pastel</button>
+      <button class="palette" data-palette="seashore">Seashore</button>
+      <button class="palette" data-palette="bold">Bold</button>
+      <button class="palette" data-palette="oblique">Oblique</button>
+      <button class="palette" data-palette="contrast">Contrast</button>
+      <button class="palette" data-palette="calico">Calico</button>
+      <button class="palette" data-palette="mauve">Mauve</button>
+      <button class="palette" data-palette="grayscale">Grayscale</button>
     </div>
+
+    <!-- Drawing option buttons -->
     <div>
+      <!-- Clear drawing -->
       <button id="clear" class="action">Clear</button>
+      <!-- Post drawing to gallery -->
       <button id="post" class="action">Post</button>
+      <!-- Download drawing -->
       <a id="download-link">
         <button id="download" class="action">Download</button>
       </a>
     </div>
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- EaselJS script -->
     <script src="https://code.createjs.com/easeljs-0.8.2.min.js"></script>
+
+    <!-- Snap.svg script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/snap.svg/0.4.1/snap.svg-min.js"></script>
+
+    <!-- canvg scripts -->
     <script type="text/javascript" src="http://canvg.github.io/canvg/rgbcolor.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/StackBlur.js"></script>
     <script type="text/javascript" src="http://canvg.github.io/canvg/canvg.js"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../../common.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>

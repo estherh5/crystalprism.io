@@ -2,12 +2,19 @@
 <html>
   <head>
     <meta charset="UTF-8">
-    <meta name="description" content="WYSIWYG online journal tool for creating private posts for personal use and public posts to share with the community">
-    <meta name="keywords" content="WYSIWYG,journal,diary,post,thought,blog,editor">
+    <meta name="description" content="Online journal tool for creating private posts for personal use and public posts to share with the community">
+    <meta name="keywords" content="journal,diary,post,thought,writer,blog,editor">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Material+Icons|Rajdhani|Share" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+
+    <!-- Google Fonts and CSS stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Material+Icons|Rajdhani|Share" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+
+    <!-- Font Awesome script -->
+    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- Google Analytics script to track page views -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -16,28 +23,28 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+
     <title>Thought Writer</title>
   </head>
   <body>
-    <div id="header">
-      <div id="homepage-container">
-        <a id="homepage-link" href="../../index.html">
-          <img id="homepage-icon" src="../../images/homepage.png">
-        </a>
-      </div>
-      <a id="title-link" href="../index.html">
-        <h1 id="title">Thought Writer</h1>
-      </a>
-      <div id="account-menu">
-        <a id="profile-link"></a>
-        <a id="account-link" href="../../user/create-account/index.html"></a>
-        <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
-      </div>
-    </div>
-    <div id="container">
+    <!-- Page title -->
+    <a id="title-link" href="../index.html">
+      <h1 id="title">Thought Writer</h1>
+    </a>
+
+    <!-- Main page container -->
+    <div id="editor-container">
+
+      <!-- Post editing space -->
       <div id="edit-space">
-        <input id="post-title" value="[title]" maxlength="25">
-        <div id="post-board">
+
+        <!-- Input for post title -->
+        <input id="post-title" placeholder="[title]" maxlength="25">
+
+        <!-- Pink post background -->
+        <div id="post-background">
+
+          <!-- Toolbar for post editing (buttons with data-commands and icons) -->
           <div id="format-toolbar">
             <button id="font-color-icon">
               <input id="font-color-picker" type="color" data-command="foreColor">
@@ -92,34 +99,53 @@
               <i class="fa fa-file-image-o" aria-hidden="true"></i>
             </button>
           </div>
-          <div id="post" contenteditable></div>
+
+          <!-- Contenteditable div for post writing -->
+          <div id="post-content" contenteditable></div>
+
+          <!-- Post action buttons -->
           <div id="action-buttons">
-            <button id="clear" class="action-button">Clear</button>
-            <button id="submit" class="action-button">Submit</button>
-            <button id="close" class="action-button">Close</button>
-            <button id="modify" class="action-button">Modify</button>
-            <button id="delete" class="action-button">Delete</button>
+            <button id="clear-post" class="action-button">Clear</button>
+            <button id="submit-post" class="action-button">Submit</button>
+            <button id="close-post" class="action-button">Close</button>
+            <button id="modify-post" class="action-button">Modify</button>
+            <button id="delete-post" class="action-button">Delete</button>
+            <!-- Custom checkbox for setting post to public -->
             <div id="public-checkbox"></div>Public?
-            <input id="public-input" type="checkbox">
+            <!-- Hidden input for setting post to public -->
+            <input id="public-input" type="checkbox" checked="false">
           </div>
+
+          <!-- Post buttons that appear after post is written or modified -->
+          <button id="go-board" class="action-button">Go to Public Post Board</button>
           <button id="go-back" class="action-button">Modify Last Post</button>
           <button id="continue-post" class="action-button">Continue In-Progress Post</button>
           <button id="new-post" class="action-button">New Post</button>
+
         </div>
       </div>
+
+      <!-- Cabinet that displays user's previous posts -->
       <div id="cabinet">
         <div id="cabinet-back">
+          <!-- Left arrow that appears when browsing through posts -->
           <i id="left-arrow" class="fa fa-angle-double-left" aria-hidden="true"></i>
         </div>
-        <div id="posts-container">
-        </div>
+        <!-- Container where previous posts are loaded from server -->
+        <div id="posts-container"></div>
         <div id="cabinet-front">
-          <div id="handle">My Posts</div>
+          <!-- Cabinet handle that user clicks to open/close cabinet -->
+          <div id="handle" title="Click to see the posts you have written">My Posts</div>
+          <!-- Right arrow that appears when browsing through posts -->
           <i id="right-arrow" class="fa fa-angle-double-right" aria-hidden="true"></i>
         </div>
       </div>
+
     </div>
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../../common.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>

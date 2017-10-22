@@ -3,11 +3,18 @@
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Post display and comment area for Thought Writer online shared journal">
-    <meta name="keywords" content="WYSIWYG,journal,diary,post,community,thought,blog,editor,public,shared,ideas,comments">
+    <meta name="keywords" content="journal,diary,post,community,thought,writer,blog,editor,public,shared,ideas,comments">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Rajdhani|Share" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
     <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+
+    <!-- Google Fonts and CSS stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Rajdhani|Share" rel="stylesheet">
+    <link href="../style.css" rel="stylesheet">
+
+    <!-- Font Awesome script -->
+    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- Google Analytics script to track page views -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -16,46 +23,46 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+
     <title>Thought Writer</title>
   </head>
   <body>
-    <div id="header">
-      <div id="homepage-container">
-        <a id="homepage-link" href="../../index.html">
-          <img id="homepage-icon" src="../../images/homepage.png">
-        </a>
-      </div>
-      <a id="title-link" href="../index.html">
-        <h1 id="title">Thought Writer</h1>
-      </a>
-      <div id="account-menu">
-        <a id="profile-link"></a>
-        <a id="account-link" href="../../user/create-account/index.html"></a>
-        <a id="sign-in-link" href="../../user/sign-in/index.html"></a>
-      </div>
-    </div>
-    <div id="container">
-      <div id="post-area">
-        <div id="post-container">
-          <div id="post-title"></div>
-          <div id="post-board">
-            <div id="post-content"></div>
-          </div>
-          <div id="post-info">
-            <a id="post-writer"></a>
-            <div id="post-timestamp"></div>
-          </div>
+    <!-- Page title -->
+    <a id="title-link" href="../index.html">
+      <h1 id="title">Thought Writer</h1>
+    </a>
+
+    <!-- Main page container -->
+    <div id="post-page-container">
+      <!-- Post container, with post title, content, timestamp, and writer -->
+      <div id="post-container">
+        <div id="post-title"></div>
+        <div id="post-background">
+          <div id="post-content"></div>
+        </div>
+        <div id="post-info">
+          <div id="post-timestamp"></div>
+          <a id="post-writer"></a>
         </div>
       </div>
+
+      <!-- Comments container -->
       <div id="comment-area">
         <h2>Leave a comment</h2>
+        <!-- Contenteditable div for writing comment -->
         <div id="new-comment-box" contenteditable></div>
-        <button id="submit">Submit</button>
-        <h2 id="comments-number"></h2>
+        <button id="submit-comment">Submit</button>
+        <!-- Display of comment count -->
+        <h2 id="comment-count"></h2>
+        <!-- List of comments loaded from server -->
         <div id="comments"></div>
       </div>
+
     </div>
-    <script src="https://use.fontawesome.com/02428009ba.js"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../../common.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>

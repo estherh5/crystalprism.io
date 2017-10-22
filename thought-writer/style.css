@@ -1,8 +1,8 @@
 html, body {
   height: 100vh;
   width: 100vw;
-  margin: 0px;
   padding: 0px;
+  margin: 0px;
   top: 0px;
   left: 0px;
   font-family: 'Cutive Mono', monospace;
@@ -44,10 +44,10 @@ a {
 }
 
 a:active, button:active {
-  text-shadow: 0.01em -0.01em 0em #000000;
+  text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover, button:hover {
+a:hover, button:hover, .post-title:hover, .post-comments:hover {
   color: #808080;
 }
 
@@ -85,7 +85,7 @@ a:focus, button:focus {
 }
 
 #title {
-  position: fixed;
+  position: absolute;
   width: fit-content;
   top: 30px;
   margin: 0px;
@@ -95,16 +95,7 @@ a:focus, button:focus {
   font-weight: normal;
   text-align: center;
   transition: font-size 0.4s;
-}
-
-.shrink #title {
-  font-size: 2em;
-  transition: all 0.4s;
-}
-
-.shrink:hover #title {
-  font-size: 52px;
-  transition: font-size 0.4s;
+  z-index: 2;
 }
 
 #account-menu {
@@ -121,7 +112,7 @@ a:focus, button:focus {
   margin-right: 7px;
 }
 
-#container {
+#container, #post-page-container {
   position: absolute;
   width: 100%;
   margin-top: 130px;
@@ -151,7 +142,7 @@ a:focus, button:focus {
 }
 
 #error-message {
-  font-size: 2.5em;
+  font-size: 30px;
   text-align: center;
 }
 
@@ -173,6 +164,7 @@ a:focus, button:focus {
   line-height: 2;
   overflow: hidden;
   white-space: nowrap;
+  cursor: pointer;
 }
 
 .post-content {
@@ -182,7 +174,6 @@ a:focus, button:focus {
   border-style: solid;
   border-width: 2px;
   outline: none;
-  resize: none;
   background-color: #ffff00;
   font-size: 12px;
   cursor: default;
@@ -198,12 +189,17 @@ a:focus, button:focus {
 
 .post-info {
   width: 160px;
+  margin-top: 5px;
   font-size: 10px;
   align-self: baseline;
 }
 
 .post-info a {
   display: block;
+}
+
+.post-comments {
+  cursor: pointer;
 }
 
 #new-post-link {
@@ -262,6 +258,406 @@ a:focus, button:focus {
   fill: #ffff00;
 }
 
+#post-page-container {
+  flex-flow: column;
+  align-items: center;
+}
+
+#post-container {
+  margin-bottom: 2%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+
+#post-title {
+  margin-left: 10px;
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 15px;
+  line-height: 2;
+}
+
+#post-background {
+  height: 71vw;
+  max-height: 381.5px;
+  width: 71vw;
+  max-width: 381.5px;
+  padding: 5px;
+  margin-bottom: 3px;
+  margin-left: 10px;
+  margin-right: 10px;
+  outline-style: solid;
+  outline-width: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #ff90cd;
+  transition: all 0.4s;
+}
+
+#post-content {
+  height: 65vw;
+  max-height: 350px;
+  width: 65vw;
+  max-width: 350px;
+  padding: 5px;
+  border-style: solid;
+  border-width: 2px;
+  outline: none;
+  resize: none;
+  background-color: #ffff00;
+  font-size: 12px;
+  cursor: default;
+  overflow: auto;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+#post-content > a {
+  text-decoration: underline;
+}
+
+
+#post-content img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+#post-info {
+  margin-left: 10px;
+  margin-right: 10px;
+  font-size: 10px;
+}
+
+#comment-area {
+  display: flex;
+  flex-direction: column;
+}
+
+#new-comment-box {
+  height: 50px;
+  width: 65vw;
+  max-width: 350px;
+  padding: 15px;
+  border-style: solid;
+  border-width: 2px;
+  outline: none;
+  resize: none;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.comment-container {
+  width: 65vw;
+  max-width: 384px;
+  display: flex;
+  flex-flow: row wrap;
+}
+
+.comment-content {
+  width: 75%;
+  padding-right: 5%;
+  padding-bottom: 15px;
+}
+
+.commenter {
+  width: 15%;
+  padding-left: 5%;
+  text-align: right;
+}
+
+.comment-timestamp {
+  margin-bottom: 50px;
+}
+
+button {
+  width: fit-content;
+  border: none;
+  outline: none;
+  display: flex;
+  background: none;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 15px;
+  text-decoration: none;
+  line-height: 20px;
+  cursor: pointer;
+}
+
+button:hover {
+  font-weight: bold;
+}
+
+#submit-comment {
+  align-self: flex-end;
+}
+
+#editor-container {
+  min-height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+#edit-space {
+  position: relative;
+  width: 100%;
+  margin-top: 90px;
+  margin-bottom: 100px;
+  display: flex;
+  flex: 1;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+input {
+  height: 50px;
+  width: 100%;
+  border: none;
+  outline: none;
+  background: none;
+  font-family: 'Cutive Mono', monospace;
+  font-weight: bold;
+  text-align: center;
+}
+
+.finished {
+  transform: rotateX(180deg);
+  transition: transform 0.5s;
+}
+
+#format-toolbar {
+  height: 5vw;
+  min-height: 22px;
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+#format-toolbar button {
+  margin: -3.5px;
+  font-size: 10px;
+}
+
+.material-icons {
+  font-size: inherit;
+}
+
+#font-color-icon {
+  z-index: 1;
+}
+
+#font-color-picker {
+  position: relative;
+  height: 0px;
+  width: 0px;
+  padding: 0px;
+  border: 0px;
+  margin: 0px;
+  top: 50%;
+  left: 50%;
+  opacity: 0;
+  z-index: 0;
+}
+
+#font-color-picker:focus {
+  opacity: 0 !important;
+  z-index: 0;
+}
+
+#action-buttons {
+  height: 5vw;
+  min-height: 22px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+}
+
+.action-button {
+  margin-left: 5px;
+  margin-right: 5px;
+  font-family: 'Cutive Mono', monospace;
+  font-size: 15px;
+  text-decoration: none;
+  line-height: 20px;
+}
+
+.action-button:hover {
+  font-weight: bold;
+}
+
+.action-button.finished {
+  transform: rotateX(180deg);
+  transition: transform 0.5s;
+}
+
+#close-post, #modify-post, #delete-post {
+  display: none;
+}
+
+#public-checkbox {
+  height: 9px;
+  width: 9px;
+  border: 1px solid #000000;
+  border-radius: 3px;
+  margin: 5px;
+  background-color: #ffffff;
+  cursor: pointer;
+}
+
+.checked {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3E%3Cpath fill='%23000000' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3E%3C/svg%3E");
+}
+
+#public-input {
+  display: none;
+}
+
+#go-board, #go-back, #continue-post, #new-post {
+  height: 50px;
+  display: none;
+}
+
+#cabinet, #cabinet-back, #cabinet-front {
+  position: relative;
+  width: 200px;
+  height: 100px;
+  margin: auto;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transition: all 0.5s;
+  z-index: 1;
+}
+
+#cabinet {
+  justify-content: baseline;
+}
+
+#cabinet-back, #cabinet-front {
+  position: absolute;
+  border-style: solid;
+  border-width: 2px;
+  justify-content: center;
+  background-color: #a9a9b1;
+}
+
+#cabinet-back {
+  background-color: #94949c;
+}
+
+#cabinet-back.open {
+  transform: translateX(-40px);
+  transition: all 0.5s;
+}
+
+#left-arrow {
+  position: absolute;
+  top: 0px;
+  left: 4px;
+  font-size: 15px !important;
+  opacity: 0;
+}
+
+#left-arrow.display, #right-arrow.display {
+  opacity: 0.5;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+#left-arrow.display:hover, #right-arrow.display:hover {
+  opacity: 1;
+}
+
+#posts-container {
+  display: flex;
+}
+
+.previous-post {
+  height: 30px;
+  width: 10px;
+  margin-left: -2px;
+  margin-right: -2px;
+  outline-style: solid;
+  outline-width: 2px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  align-self: flex-start;
+  justify-content: center;
+  background-color: #ffff00;
+  cursor: pointer;
+  transition: all 0.5s;
+}
+
+.previous-post.display {
+  width: 30px;
+  transform: translateY(-20px);
+  transition: all 0.5s;
+  z-index: 0;
+}
+
+.previous-post.display:hover {
+  transform: translateY(-40px);
+  transition: all 0.5s;
+}
+
+.previous-post-content {
+  height: 20px;
+  width: 20px;
+  outline: none;
+  resize: none;
+  background-color: #ffff00;
+  font-size: 6px;
+  overflow: hidden;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.previous-post-content:hover {
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.previous-post-content img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.previous-post-content:hover::-webkit-scrollbar {
+  width: 2px;
+  background-color: rgba(72, 72, 72, 0.35);
+}
+
+#cabinet-front.open {
+  transform: translateX(40px);
+  transition: all 0.5s;
+}
+
+#handle {
+  padding: 2px;
+  border-style: solid;
+  border-width: 2px;
+  background-color: #f5f5dd;
+  cursor: pointer;
+  z-index: 1;
+}
+
+#right-arrow {
+  position: absolute;
+  top: 0px;
+  left: 188px;
+  font-size: 15px !important;
+  opacity: 0;
+}
+
 @media only screen and (min-width: 400px) {
   #post-board {
     max-width: 380px;
@@ -272,15 +668,62 @@ a:focus, button:focus {
   #post-board {
     max-width: 560px;
   }
+
+  #post-background {
+    max-height: 436px;
+    max-width: 436px;
+  }
+
+  #post-content {
+    max-height: 400px;
+    max-width: 400px;
+  }
+
+  #new-comment-box {
+    height: 75px;
+    max-width: 400px;
+  }
+
+  .comment-container {
+    max-width: 434px;
+  }
+
+  button {
+    font-size: 20px;
+  }
+
+  #edit-space {
+    margin-bottom: 60px;
+    align-items: center;
+  }
+
+  #format-toolbar button {
+    font-size: 15px;
+  }
+
+  .action-button {
+    margin-left: 10px;
+    margin-right: 10px;
+    font-size: 20px;
+  }
+
+  #cabinet-back, #cabinet-front {
+    top: -2px;
+  }
+
+  #left-arrow {
+    font-size: 30px !important;
+  }
+
+  #right-arrow {
+    left: 179px;
+    font-size: 30px !important;
+  }
 }
 
 @media only screen and (min-width: 768px) {
   #title {
     top: 0px;
-    font-size: 70px;
-  }
-
-  .shrink:hover #title {
     font-size: 70px;
   }
 
@@ -314,6 +757,37 @@ a:focus, button:focus {
 
   #new-post-link:hover {
     opacity: 0.8;
+  }
+
+  #post-title {
+    font-size: 18px;
+  }
+
+  #post-background {
+    max-height: 545px;
+    max-width: 545px;
+  }
+
+  #post-content {
+    max-height: 500px;
+    max-width: 500px;
+    font-size: 20px;
+  }
+
+  #post-info {
+    font-size: 12px;
+  }
+
+  #new-comment-box {
+    max-width: 500px;
+  }
+
+  .comment-container {
+    max-width: 534px;
+  }
+
+  #format-toolbar button {
+    margin: -0.5px;
   }
 }
 

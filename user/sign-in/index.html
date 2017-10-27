@@ -5,10 +5,14 @@
     <meta name="description" content="Login page for Crystal Prism, where you can sign in with your username and password to access various projects and content">
     <meta name="keywords" content="sign in, login, username, password, Crystal Prism">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico">
+
+    <!-- Google Fonts, Bootstrap, and CSS stylesheets -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Rajdhani|Sail">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Google Analytics script to track page views -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -17,14 +21,16 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+
     <title>Sign In</title>
   </head>
   <body class="d-flex flex-column align-items-center justify-content-center">
+    <!-- Successful account logout modal -->
     <div id="logout" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="logout-title" class="modal-title">Signed out</h3>
+            <h3 class="modal-title">Signed out</h3>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -38,11 +44,13 @@
         </div>
       </div>
     </div>
+
+    <!-- Incorrect username/password modal -->
     <div id="incorrect" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="incorrect-title" class="modal-title">Incorrect username/password</h3>
+            <h3 class="modal-title">Incorrect username/password</h3>
             <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -56,52 +64,64 @@
         </div>
       </div>
     </div>
-    <div id="homepage-container" class="row no-gutters w-100">
-      <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage-link" href="../../index.html">
-          <img id="homepage-icon" src="../../images/homepage.png">
-          <h1>Crystal Prism</h1>
-        </a>
-      </div>
-    </div>
+
+    <!-- Main page container -->
     <div class="container">
+
+      <!-- Sign in title row -->
       <div class="row my-3 no-gutters">
         <div class="col-8">
-          <h1>Sign in</h1>
+          <h1 class="title">Sign in</h1>
         </div>
+        <!-- Link to Create Account page -->
         <div class="col-4">
           <a href="../create-account/index.html">
-            <h4 id="create-link">Need an account?</h4>
+            <h4>Need an account?</h4>
           </a>
         </div>
       </div>
+
+      <!-- Username input -->
       <div class="row my-2 d-flex align-items-center justify-content-center">
         <div class="col-3">
           <h2>Username: </h2>
         </div>
         <div class="col-auto">
           <input id="username-input" type="text" spellcheck="false" maxlength="50" autofocus>
+          <!-- Warning that username cannot be blank when user submits credentials -->
           <div id="user-warning" class="warning">Username cannot be blank</div>
         </div>
       </div>
+
+      <!-- Password input -->
       <div class="row my-2 d-flex align-items-center justify-content-center">
         <div class="col-3">
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
           <input id="password-input" type="password" spellcheck="false">
+          <!-- Warning that password cannot be blank when user submits credentials -->
           <div id="pass-warning" class="warning">Password cannot be blank</div>
         </div>
       </div>
+
+      <!-- Submit button -->
       <div class="row my-3">
         <div class="col d-flex align-items-center justify-content-center">
           <button id="submit" type="submit">Submit</button>
         </div>
       </div>
+
     </div>
+
+    <!-- Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../../common.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>

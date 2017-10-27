@@ -1,410 +1,468 @@
-// Define varaibles
-var profileLink = document.getElementById('profile-link');
-var accountLink = document.getElementById('account-link');
-var signInLink = document.getElementById('sign-in-link');
-var username = window.location.search.split('username=')[1];
-var profileTitle = document.getElementById('profile-title');
-var userLink = document.getElementById('user-link');
-var userData = document.getElementsByClassName('user-data');
-var aboutBlurb = document.getElementById('about-blurb');
-var name = document.getElementById('name');
-var email = document.getElementById('email');
-var diamond = document.getElementById('diamond');
-var memberStat = document.getElementById("member-stat");
-var userDrawings = [];
-var drawingsStart = 0;
-var drawingsEnd = 4;
-var galleryRow = document.getElementById('gallery-row');
+// Define global variables
+var username = window.location.search.split('username=')[1]; // Requested username to display profile for
+var drawingStart = 0; // Range start for number of drawings to request from server
+var drawingEnd = 4; // Range end for number of drawings to request from server
+var postStart = 0; // Range start for number of posts to request from server
+var postEnd = 4; // Range end for number of posts to request from server
 var gallery = document.getElementById('gallery');
-var drawingsLeftArrow = document.getElementById('drawing-left-arrow');
-var drawingsRightArrow = document.getElementById('drawing-right-arrow');
-var rhythmStat = document.getElementById('rhythm-stat');
-var shapesStat = document.getElementById('shapes-stat');
-var postsStart = 0;
-var postsEnd = 4;
-var postAreaRow = document.getElementById('post-area-row');
-var postArea = document.getElementById('post-area');
-var postsLeftArrow = document.getElementById('posts-left-arrow');
-var postsRightArrow = document.getElementById('posts-right-arrow');
+var postList = document.getElementById('post-list');
+// Determine server based on window location
 if (window.location.hostname == 'crystalprism.io') {
   var server = 'http://13.58.175.191/api';
 } else {
   var server = 'http://localhost:5000/api';
 }
 
-// Define events
-window.addEventListener('load', checkAccountStatus, false);
-window.addEventListener('load', loadPersonal, false);
-window.addEventListener('load', loadPosts, false);
-drawingsLeftArrow.onclick = loadMoreContent;
-drawingsRightArrow.onclick = loadMoreContent;
-postsLeftArrow.onclick = loadMoreContent;
-postsRightArrow.onclick = loadMoreContent;
 
-// Define functions
-function checkAccountStatus() {
-  if (localStorage.getItem('token') == null) {
-    accountLink.innerHTML = 'Create Account';
-    signInLink.innerHTML = 'Sign In';
-    signInLink.onclick = function() {
-      sessionStorage.setItem('previous-window', '../index.html?username=' + username);
-    }
-  } else {
-    return fetch(server + '/user/verify', {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-      method: 'GET',
-    }).catch(function(error) {
-      accountLink.innerHTML = 'Create Account';
-      signInLink.innerHTML = 'Sign In';
-      signInLink.onclick = function() {
-        sessionStorage.setItem('previous-window', '../index.html?username=' + username);
-      }
-    }).then(function(response) {
-      if (response.ok) {
-        profileLink.innerHTML = localStorage.getItem('username');
-        profileLink.href = 'index.html?username=' + localStorage.getItem('username');
-        accountLink.innerHTML = 'My Account';
-        accountLink.href = 'my-account/index.html';
-        signInLink.innerHTML = 'Sign Out';
-        signInLink.onclick = function() {
-          sessionStorage.setItem('account-request', 'logout');
-        }
-      } else {
-        localStorage.removeItem('username');
-        localStorage.removeItem('token');
-        accountLink.innerHTML = 'Create Account';
-        signInLink.innerHTML = 'Sign In';
-        signInLink.onclick = function() {
-          sessionStorage.setItem('previous-window', '../index.html?username=' + username);
-        }
-      }
-    })
-  }
+// Define load functions
+window.onload = function() {
+  // Create page header (from common.js script)
+  createPageHeader();
+  // Apply additional style to header
+  document.getElementById('header').classList.add('divider');
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+  // Load profile user's personal information to profile from server
+  loadPersonal();
+  // Load profile user's drawings to profile gallery from server
+  loadDrawings();
+  // Load profile user's posts to profile post area from server
+  loadPosts();
+  return;
 }
 
+// Load profile user's personal information to profile from server
 function loadPersonal() {
-  return fetch(server + '/user/' + username).catch(function(error) {
-    profileTitle.innerHTML = 'Could not load page';
+  return fetch(server + '/user/' + encodeURIComponent(username))
+  .catch(function(error) {
+    // Display error if server is down
+    document.getElementById('profile-title').innerHTML = 'Could not load page';
     document.title = 'Not found';
+    return;
   }).then(function(response) {
     if (response.ok) {
       response.json().then(function(info) {
-        userLink.href = 'index.html?username=' + username;
-        profileTitle.innerHTML = username;
+        // Set profile username display and page title to requested username
+        document.getElementById('user-link').href = 'index.html?username=' + username;
+        document.getElementById('profile-title').innerHTML = username;
         document.title = username;
-        aboutBlurb.innerHTML = info['about'];
-        name.innerHTML = info['name'];
-        email.innerHTML = info['email'];
-        email.href = 'mailto:' + info['email'];
+        // Populate user's about me blurb, name, email address, background color, and icon color
+        document.getElementById('about-blurb').innerHTML = info['about'];
+        document.getElementById('name').innerHTML = info['name'];
+        document.getElementById('email').innerHTML = info['email'];
+        document.getElementById('email').href = 'mailto:' + info['email'];
         document.body.style.backgroundColor = info['background_color'];
-        diamond.style.fill = info['icon_color'];
-        var utcDateTime = JSON.parse(info['member_since']);
-        var utcDate = utcDateTime.split(' ')[0];
-        var utcTime = utcDateTime.split(' ')[1];
-        var dateTime = new Date(utcDate + 'T' + utcTime);
-        memberStat.innerHTML = 'Member since ' + parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
-        userDrawings = info['drawings'];
-        loadDrawings();
-        var star = document.createElement('i');
-        star.classList.add('fa');
-        star.classList.add('fa-star');
-        rhythmStat.parentNode.insertBefore(star, rhythmStat);
-        rhythmStat.innerHTML = 'Rhythm of Life high score: <b>' + info['rhythm_high_lifespan'] + '</b>';
-        var starTwo = document.createElement('i');
-        starTwo.classList.add('fa');
-        starTwo.classList.add('fa-star');
-        shapesStat.parentNode.insertBefore(starTwo, shapesStat);
-        shapesStat.innerHTML = 'Shapes in Rain high score: <b>' + info['shapes_high_score'] + '</b>';
-        for (var i = 0; i < userData.length; i++) {
-          if (userData[i].innerHTML == '') {
-            userData[i].parentNode.classList.add('hidden');
+        document.getElementById('diamond').contentDocument.getElementById('diamond-svg')
+        .style.fill = info['icon_color'];
+        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY' format
+        var dateTime = new Date(info['member_since']);
+        document.getElementById("member-stat").innerHTML = 'Member since ' + dateTime.toLocaleDateString();
+        // Display high scores for Rhythm of Life and Shapes in Rain
+        document.getElementById('rhythm-stat').innerHTML = info['rhythm_high_lifespan'];
+        document.getElementById('shapes-stat').innerHTML = info['shapes_high_score'];
+        // Hide any personal information fields that are blank
+        for (var i = 0; i < document.getElementsByClassName('user-data').length; i++) {
+          if (document.getElementsByClassName('user-data')[i].innerHTML == '') {
+            document.getElementsByClassName('user-data')[i].parentNode.classList
+            .add('hidden');
           }
         }
-      })
-    } else {
-      profileTitle.innerHTML = 'User does not exist';
-      document.title = 'Not found';
+      });
+      return;
     }
-  })
-}
-
-function loadDrawings() {
-  drawings = userDrawings.slice(drawingsStart, drawingsEnd);
-  if (drawings.length == 0) {
-    galleryRow.classList.add('hidden');
-  }
-  if (drawings.length != 0) {
-    gallery.innerHTML = '';
-    if (drawings.length > 3) {
-      moreDrawingsExist = true;
-      var drawingsLoadNumber = 3;
-    } else {
-      moreDrawingsExist = false;
-      var drawingsLoadNumber = drawings.length;
-    }
-    for (var i = 0; i < drawingsLoadNumber; i++) {
-      var drawingLikes = document.createElement('div');
-      drawingLikes.classList.add('drawing-likes');
-      drawingLikes.title = 'Likes';
-      drawingLikes.dataset.drawing = drawings[i];
-      var drawingContainer = document.createElement('div');
-      drawingContainer.classList.add('drawing-container');
-      drawingContainer.dataset.number = drawingsStart + i;
-      var drawingLink = document.createElement('a');
-      drawingLink.classList.add('drawing-link');
-      drawingLink.title = 'View drawing';
-      drawingLink.href = 'javascript:delay("../canvashare/drawingapp/index.html")';
-      var drawingTitle = document.createElement('div');
-      drawingTitle.classList.add('drawing-title');
-      drawingTitle.innerHTML = drawings[i].substr(drawings[i].indexOf('/')+1).split(/`|.png/)[0];
-      var drawing = document.createElement('img');
-      drawing.classList.add('drawing');
-      drawing.src = server + '/canvashare/drawing/' + drawings[i];
-      var drawingInfo = document.createElement('div');
-      drawingInfo.classList.add('drawing-info');
-      var drawingViews = document.createElement('div');
-      drawingViews.classList.add('drawing-views');
-      drawingViews.title = 'Views';
-      drawingViews.innerHTML = '<i class="fa fa-eye" aria-hidden="true"></i>';
-      gallery.append(drawingContainer);
-      drawingContainer.append(drawingLink);
-      drawingLink.append(drawingTitle);
-      drawingContainer.append(drawing);
-      drawingContainer.append(drawingInfo);
-      drawingInfo.append(drawingLikes);
-      var likeText = document.createElement('text');
-      likeText.dataset.drawing = drawings[i];
-      drawingLikes.append(likeText);
-      drawingInfo.append(drawingViews);
-      var viewText = document.createElement('text');
-      viewText.dataset.drawing = drawings[i];
-      drawingViews.append(viewText);
-      drawing.onclick = setDrawingValues;
-      getDrawingInfo(drawings[i]);
-    }
-    if (gallery.getElementsByClassName('drawing-container')[0].dataset.number != 0) {
-      drawingsLeftArrow.classList.add('display');
-    } else {
-      drawingsLeftArrow.classList.remove('display');
-    }
-    if (moreDrawingsExist) {
-      drawingsRightArrow.classList.add('display');
-    } else {
-      drawingsRightArrow.classList.remove('display');
-    }
-  }
-}
-
-function setDrawingValues() {
-  if (this.classList.contains('drawing')) {
-    sessionStorage.setItem('drawing-source', this.src);
-    currentLikes = document.querySelectorAll('[data-drawing="' + this.src.split('/canvashare/drawing/')[1] + '"]')[1].innerHTML;
-    currentViews = document.querySelectorAll('[data-drawing="' + this.src.split('/canvashare/drawing/')[1] + '"]')[2].innerHTML;
-    data = {'likes': parseInt(currentLikes), 'views': parseInt(currentViews) + 1};
-    data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawinginfo/' + this.src.split('/canvashare/drawing/')[1].split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data
-    })
-  } else if (this.classList.contains('fa-heart-o')) {
-    heart = this;
-    heart.classList.add('clicked');
-    setTimeout(function() {
-      heart.classList.remove('clicked');
-    }, 500);
-    likeText = this.nextSibling;
-    currentLikes = likeText.innerHTML;
-    currentViews = document.querySelectorAll('[data-drawing="' + this.nextSibling.dataset.drawing + '"]')[2].innerHTML;
-    data = {'likes': (parseInt(currentLikes) + 1).toString(), 'views': (parseInt(currentViews)).toString()};
-    data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.drawing.split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data
-    }).catch(function(error) {
-      window.alert('Your like did not go through. Please try again soon.')
-    }).then(function(response) {
-      if (response.ok) {
-        likeText.innerHTML = parseInt(currentLikes) + 1;
-        heart.classList.remove('fa-heart-o');
-        heart.classList.add('fa-heart');
-      } else {
-        window.alert('You must log in to like a drawing.');
-      }
-    })
-  } else if (this.classList.contains('fa-heart')) {
-    heart = this;
-    heart.classList.add('clicked');
-    setTimeout(function() {
-      heart.classList.remove('clicked');
-    }, 500);
-    likeText = this.nextSibling;
-    currentLikes = likeText.innerHTML;
-    currentViews = document.querySelectorAll('[data-drawing="' + this.nextSibling.dataset.drawing + '"]')[2].innerHTML;
-    data = {'likes': parseInt(currentLikes) - 1, 'views': parseInt(currentViews)};
-    data = JSON.stringify(data);
-    fetch(server + '/canvashare/drawinginfo/' + this.nextSibling.dataset.drawing.split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data
-    }).catch(function(error) {
-      window.alert('Your like did not go through. Please try again soon.')
-    }).then(function(response) {
-      if (response.ok) {
-        heart.classList.remove('fa-heart');
-        heart.classList.add('fa-heart-o');
-        likeText.innerHTML = parseInt(currentLikes) - 1;
-      } else {
-        window.alert('You must log in to like a drawing.');
-      }
-    })
-  }
-}
-
-function getDrawingInfo(drawingFileName) {
-  return fetch(server + '/canvashare/drawinginfo/' + drawingFileName.split('.png')[0]).then(function(response) {
-    response.json().then(function(drawingInfo) {
-      var parsed = JSON.parse(drawingInfo);
-      var dataElements = document.querySelectorAll('[data-drawing="' + drawingFileName + '"]');
-      var unlikedHeart = document.createElement('i');
-      unlikedHeart.classList.add('heart');
-      unlikedHeart.classList.add('fa');
-      unlikedHeart.classList.add('fa-heart-o');
-      var likedHeart = document.createElement('i');
-      likedHeart.classList.add('heart');
-      likedHeart.classList.add('fa');
-      likedHeart.classList.add('fa-heart');
-      if (parsed['liked_users'].includes(localStorage.getItem('username'))) {
-        dataElements[0].insertBefore(likedHeart, dataElements[0].firstChild);
-      } else {
-        dataElements[0].insertBefore(unlikedHeart, dataElements[0].firstChild);
-      }
-      likedHeart.onclick = setDrawingValues;
-      unlikedHeart.onclick = setDrawingValues;
-      likedHeart.style.cursor = 'pointer';
-      unlikedHeart.style.cursor = 'pointer';
-      dataElements[1].innerHTML = parsed['likes'];
-      dataElements[2].innerHTML = parsed['views'];
-    })
+    // Display error if server responds with error
+    document.getElementById('profile-title').innerHTML = 'User does not exist';
+    document.title = 'Not found';
+    return;
   });
 }
 
-function delay(URL) {
-  setTimeout(function() {window.location = URL}, 800);
-}
-
-function loadMoreContent() {
-  if (window.getComputedStyle(this).getPropertyValue('opacity') != 0) {
-    if (this == drawingsLeftArrow) {
-      drawingsStart = drawingsStart - 3;
-      drawingsEnd = drawingsEnd - 3;
-      loadDrawings();
-    } else if (this == drawingsRightArrow) {
-      drawingsStart = drawingsStart + 3;
-      drawingsEnd = drawingsEnd + 3;
-      loadDrawings();
-    } else if (this == postsLeftArrow) {
-      postsStart = postsStart - 3;
-      postsEnd = postsEnd - 3;
-      loadPosts();
-    } else if (this == postsRightArrow) {
-      postsStart = postsStart + 3;
-      postsEnd = postsEnd + 3;
-      loadPosts();
+// Load profile user's drawings to profile gallery from server
+function loadDrawings() {
+  return fetch(server + '/canvashare/gallery/' + encodeURIComponent(username) + '?start=' + drawingStart + '&end=' + drawingEnd)
+  .then(function(response) {
+    if (response.ok) {
+      response.json().then(function(drawings) {
+        // If there are no drawings sent from server, hide user's gallery on profile
+        if (drawings.length == 0) {
+          document.getElementById('gallery-row').classList.add('hidden');
+          var moreDrawingsOnServer = false;
+          return;
+        }
+        // Otherwise, clear gallery to load new drawings from server
+        gallery.innerHTML = '';
+        // Assess if there are more than requested drawings - 1 (number of loaded drawings) on server
+        if (drawings.length > (drawingEnd - drawingStart - 1)) {
+          var moreDrawingsOnServer = true;
+          var drawingLoadNumber = drawingEnd - drawingStart - 1;
+        }
+        // If there are not, load all drawings sent from server
+        else {
+          var moreDrawingsOnServer = false;
+          var drawingLoadNumber = drawings.length;
+        }
+        for (var i = 0; i < drawingLoadNumber; i++) {
+          // Create container for drawing and its components
+          var drawingContainer = document.createElement('div');
+          drawingContainer.classList.add('drawing-container');
+          // Set data-number attribute to track the drawing number for displaying more drawings later
+          drawingContainer.dataset.number = drawingStart + i;
+          // Create container for drawing title
+          var drawingTitle = document.createElement('div');
+          drawingTitle.classList.add('drawing-title');
+          // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+          drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
+          // Create drawing image
+          var drawing = document.createElement('img');
+          drawing.classList.add('drawing');
+          drawing.src = server + '/canvashare/drawing/' + encodeURIComponent(drawings[i]);
+          drawing.title = 'View drawing';
+          // Create container for drawing artist and number of likes and views
+          var drawingInfo = document.createElement('div');
+          drawingInfo.classList.add('drawing-info');
+          // Create container for number of drawing likes
+          var drawingLikes = document.createElement('div');
+          drawingLikes.classList.add('drawing-likes');
+          drawingLikes.title = 'Likes';
+          // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+          drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
+          // Create text to display number of likes
+          var likeText = document.createElement('text');
+          // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+          likeText.dataset.drawing = encodeURIComponent(drawings[i]);
+          // Create drawing views container
+          var drawingViews = document.createElement('div');
+          drawingViews.classList.add('drawing-views');
+          drawingViews.title = 'Views';
+          // Create eye icon to display with drawing views
+          var viewsIcon = document.createElement('i');
+          viewsIcon.classList.add('fa');
+          viewsIcon.classList.add('fa-eye');
+          // Create text to display number of views
+          var viewText = document.createElement('text');
+          // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+          viewText.dataset.drawing = encodeURIComponent(drawings[i]);
+          gallery.append(drawingContainer);
+          drawingContainer.append(drawingTitle);
+          drawingContainer.append(drawing);
+          drawingContainer.append(drawingInfo);
+          drawingInfo.append(drawingLikes);
+          drawingLikes.append(likeText);
+          drawingInfo.append(drawingViews);
+          drawingViews.append(viewsIcon);
+          drawingViews.append(viewText);
+          // Update number of views when user clicks drawing
+          drawing.onclick = updateViews;
+          // Fill in drawing title, views, and likes
+          getDrawingInfo(encodeURIComponent(drawings[i]));
+        }
+        // If first drawing displayed in gallery is not drawing 0 (i.e., there are lower-numbered drawings to display), display left navigation arrow
+        if (gallery.getElementsByClassName('drawing-container')[0].dataset.number != 0) {
+          document.getElementById('drawing-left-arrow').classList.add('display');
+        }
+        // Otherwise, hide left arrow
+        else {
+          document.getElementById('drawing-left-arrow').classList.remove('display');
+        }
+        // If there are more drawings on the server, display right navigation arrow
+        if (moreDrawingsOnServer) {
+          document.getElementById('drawing-right-arrow').classList.add('display');
+        }
+        // Otherwise, hide right arrow
+        else {
+          document.getElementById('drawing-right-arrow').classList.remove('display');
+        }
+      });
+      return;
     }
-  }
+    // Hide user's gallery from profile if server responds with error
+    document.getElementById('gallery-row').classList.add('hidden');
+    return;
+  });
 }
 
+// Get title and number of views and likes for passed drawing file
+function getDrawingInfo(drawingFile) {
+  return fetch(server + '/canvashare/drawing-info/' + drawingFile.split('.png')[0])
+  .then(function(response) {
+    response.json().then(function(drawingInfo) {
+      // Get elements that have data-drawing attribute set as file name
+      var fileElements = document.querySelectorAll('[data-drawing="' + drawingFile + '"]');
+      // Set title and number of likes and views for drawing
+      fileElements[0].innerHTML = drawingInfo['title'];
+      fileElements[2].innerHTML = drawingInfo['likes'];
+      fileElements[3].innerHTML = drawingInfo['views'];
+      // If current user liked the drawing, display a filled-in red heart in likes container
+      if (drawingInfo['liked_users'].includes(localStorage.getItem('username'))) {
+        var likedHeart = document.createElement('i');
+        likedHeart.classList.add('fa');
+        likedHeart.classList.add('fa-heart');
+        fileElements[1].insertBefore(likedHeart, fileElements[1].firstChild);
+        // Update like count when user clicks heart
+        likedHeart.onclick = updateLikes;
+        return;
+      }
+      // Otherwise, display an empty heart outline
+      var unlikedHeart = document.createElement('i');
+      unlikedHeart.classList.add('fa');
+      unlikedHeart.classList.add('fa-heart-o');
+      fileElements[1].insertBefore(unlikedHeart, fileElements[1].firstChild);
+      // Update like count when user clicks heart
+      unlikedHeart.onclick = updateLikes;
+      return;
+    });
+  });
+}
+
+// Update drawing's view count
+function updateViews() {
+  // Set sessionStorage items for drawing's source, used to populate easel on redirected webpage
+  sessionStorage.setItem('drawing-source', this.src);
+  // Send request to server to update view count
+  data = JSON.stringify({'request': 'view'});
+  return fetch(server + '/canvashare/drawing-info/' + this.src
+  .split('/canvashare/drawing/')[1].split('.png')[0], {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    method: 'POST',
+    body: data,
+  }).catch(function(error) {
+    // Display error message if server is down
+    window.alert('Your request did not go through. Please try again soon.')
+  }).then(function(response) {
+    // If server responds without error, redirect to easel page
+    if (response.ok) {
+      window.location = '../canvashare/easel/index.html';
+      return;
+    }
+    // Otherwise, display error message
+    window.alert('Your request did not go through. Please try again soon.');
+    return;
+  });
+}
+
+// Update drawing's like count
+function updateLikes() {
+  // If heart is already filled in, decrease drawing like count
+  if (this.classList.contains('fa-heart')) {
+    var heart = this;
+    // Add click animation to create pop effect
+    heart.classList.add('clicked');
+    // Remove clicked class from heart to allow animation to play when clicked again
+    setTimeout(function() {
+      heart.classList.remove('clicked');
+      return;
+    }, 500);
+    // Send request to server to decrease like count
+    data = JSON.stringify({'request': 'unlike'});
+    return fetch(server + '/canvashare/drawing-info/' + heart.nextSibling.dataset
+    .drawing.split('.png')[0], {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+      method: 'POST',
+      body: data,
+    }).catch(function(error) {
+      // Display error message if server is down
+      window.alert('Your like did not go through. Please try again soon.');
+      return;
+    }).then(function(response) {
+      // If server responds without error, remove heart fill and decrease like count user sees
+      if (response.ok) {
+        var likeText = heart.nextSibling;
+        var currentLikes = likeText.innerHTML;
+        heart.classList.remove('fa-heart');
+        heart.classList.add('fa-heart-o');
+        likeText.innerHTML = parseInt(currentLikes) - 1;
+        return;
+      }
+      // Otherwise, display error message
+      window.alert('You must log in to like a drawing.');
+      return;
+    });
+  }
+  // Otherwise, increase like count
+  var heart = this;
+  // Add click animation to create pop effect
+  heart.classList.add('clicked');
+  // Remove clicked class from heart to allow animation to play when clicked again
+  setTimeout(function() {
+    heart.classList.remove('clicked');
+    return;
+  }, 500);
+  // Send request to server to increase like count
+  data = JSON.stringify({'request': 'like'});
+  return fetch(server + '/canvashare/drawing-info/' + heart.nextSibling.dataset
+  .drawing.split('.png')[0], {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    method: 'POST',
+    body: data,
+  }).catch(function(error) {
+    // Display error message if server is down
+    window.alert('Your like did not go through. Please try again soon.');
+    return;
+  }).then(function(response) {
+    // If server responds without error, fill in heart and increase like count user sees
+    if (response.ok) {
+      var likeText = heart.nextSibling;
+      var currentLikes = likeText.innerHTML;
+      likeText.innerHTML = parseInt(currentLikes) + 1;
+      heart.classList.remove('fa-heart-o');
+      heart.classList.add('fa-heart');
+      return;
+    }
+    // Otherwise, display error message
+    window.alert('You must log in to like a drawing.');
+    return;
+  });
+}
+
+// Load user's posts to profile post area from server
 function loadPosts() {
-  return fetch(server + '/thought-writer/entries/' + username + '?start=' + postsStart + '&end=' + postsEnd).then(function(response) {
+  return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(username) + '?start=' + postStart + '&end=' + postEnd)
+  .then(function(response) {
     if (response.ok) {
       response.json().then(function(posts) {
+        // If there are no posts sent from server, hide user's post area on profile
         if (posts.length == 0) {
-          postAreaRow.classList.add('hidden');
+          document.getElementById('post-list-row').classList.add('hidden');
+          var morePostsOnServer = false;
+          return;
         }
-        if (posts.length != 0) {
-          postArea.innerHTML = '';
-          if (posts.length > 3) {
-            morePostsExist = true;
-            postsLoadNumber = 3;
+        // Otherwise, clear post area to display new posts from server
+        postList.innerHTML = '';
+        // Assess if there are more than requested posts - 1 (number of loaded posts) on server
+        if (posts.length > (postEnd - postStart - 1)) {
+          var morePostsOnServer = true;
+          var postLoadNumber = postEnd - postStart - 1;
+        }
+        // If there are not, load all posts sent from server
+        else {
+          var morePostsOnServer = false;
+          var postLoadNumber = posts.length;
+        }
+        for (var i = 0; i < postLoadNumber; i++) {
+          // Create container for post and its components
+          var postContainer = document.createElement('div');
+          postContainer.classList.add('post-container');
+          // Set data-number attribute to track the post number for displaying more posts later
+          postContainer.dataset.number = postStart + i;
+          // Create container for post title
+          var postTitle = document.createElement('div');
+          postTitle.classList.add('post-title');
+          postTitle.innerHTML = posts[i].title;
+          postTitle.title = 'View post page';
+          // Set data-writer and data-timestamp attributes to save in sessionStorage when clicked
+          postTitle.dataset.writer = posts[i].writer;
+          postTitle.dataset.timestamp = posts[i].timestamp;
+          // Create container for post background
+          var postBoard = document.createElement('div');
+          postBoard.classList.add('post-board');
+          // Create container with post content
+          var postContent = document.createElement('div');
+          postContent.classList.add('post-content');
+          postContent.innerHTML = posts[i].content;
+          // Create container for post timestamp and comment number
+          var postInfo = document.createElement('div');
+          postInfo.classList.add('post-info');
+          // Create container for post timestamp
+          var postTimestamp = document.createElement('div');
+          postTimestamp.classList.add('post-time');
+          // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+          var dateTime = new Date(posts[i].timestamp);
+          postTimestamp.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+          // Create container for number of post comments
+          var postComments = document.createElement('div');
+          postComments.classList.add('post-comments');
+          postComments.title = 'View post comments';
+          if (posts[i].comments.length == 1) {
+            postComments.innerHTML = posts[i].comments.length + ' comment';
           } else {
-            morePostsExist = false;
-            postsLoadNumber = posts.length;
+            postComments.innerHTML = posts[i].comments.length + ' comments';
           }
-          for (var i = 0; i < postsLoadNumber; i++) {
-            var postContainer = document.createElement('div');
-            postContainer.classList.add('post-container');
-            postContainer.dataset.number = postsStart + i;
-            var postTitle = document.createElement('a');
-            postTitle.classList.add('post-title');
-            postTitle.title = 'View post page';
-            postTitle.href = 'javascript:delay("../thought-writer/post/index.html")';
-            postTitle.innerHTML = posts[i].title;
-            var post = document.createElement('div');
-            post.classList.add('post');
-            var postEntry = document.createElement('div');
-            postEntry.classList.add('post-content');
-            postEntry.innerHTML = posts[i].content;
-            var postInfo = document.createElement('div');
-            postInfo.classList.add('post-info');
-            var postTimeDisplay = document.createElement('div');
-            postTimeDisplay.classList.add('post-time');
-            var utcDateTime = JSON.parse(posts[i].timestamp);
-            var utcDate = utcDateTime.split(' ')[0];
-            var utcTime = utcDateTime.split(' ')[1];
-            var dateTime = new Date(utcDate + 'T' + utcTime);
-            var hour = parseInt(dateTime.getHours());
-            var ampm = hour >= 12 ? ' PM' : ' AM';
-            var hour = hour % 12;
-            if (hour == 0) {
-              hour = 12;
-            }
-            var postDate = parseInt(dateTime.getMonth() + 1) + '/' + parseInt(dateTime.getDate()) + '/' + parseInt(dateTime.getFullYear());
-            var postTime = hour + ':' + ('0' + parseInt(dateTime.getMinutes())).slice(-2) + ampm;
-            postTimeDisplay.innerHTML = postDate + ', ' + postTime;
-            var postComments = document.createElement('a');
-            postComments.title = 'View post comments';
-            if (posts[i].comments.length == 1) {
-              postComments.innerHTML = posts[i].comments.length + ' comment';
-            } else {
-              postComments.innerHTML = posts[i].comments.length + ' comments';
-            }
-            postComments.href = 'javascript:delay("../thought-writer/post/index.html#comments")';
-            postArea.append(postContainer);
-            postContainer.append(postTitle);
-            postContainer.append(post);
-            post.append(postEntry);
-            postContainer.append(postInfo);
-            postInfo.append(postTimeDisplay);
-            postInfo.append(postComments);
-            postTitle.dataset.writer = posts[i].writer;
-            postTitle.dataset.timestamp = posts[i].timestamp;
-            postComments.dataset.writer = posts[i].writer;
-            postComments.dataset.timestamp = posts[i].timestamp;
-            postTitle.onclick = function() {
-              sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('timestamp', this.dataset.timestamp);
-            }
-            postComments.onclick = function() {
-              sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('timestamp', this.dataset.timestamp);
-            }
+          // Set data-writer and data-timestamp attributes to save in sessionStorage when clicked
+          postComments.dataset.writer = posts[i].writer;
+          postComments.dataset.timestamp = posts[i].timestamp;
+          postList.append(postContainer);
+          postContainer.append(postTitle);
+          postContainer.append(postBoard);
+          postBoard.append(postContent);
+          postContainer.append(postInfo);
+          postInfo.append(postTimestamp);
+          postInfo.append(postComments);
+          // Set sessionStorage items when post title is clicked and go to post page
+          postTitle.onclick = function() {
+            sessionStorage.setItem('writer', this.dataset.writer);
+            sessionStorage.setItem('timestamp', this.dataset.timestamp);
+            window.location = '../thought-writer/post/index.html';
+            return;
           }
-          if (postArea.getElementsByClassName('post-container')[0].dataset.number != 0) {
-            postsLeftArrow.classList.add('display');
-          } else {
-            postsLeftArrow.classList.remove('display');
-          }
-          if (morePostsExist) {
-            postsRightArrow.classList.add('display');
-          } else {
-            postsRightArrow.classList.remove('display');
+          // Set sessionStorage items when post comment number is clicked and go to post page's comments
+          postComments.onclick = function() {
+            sessionStorage.setItem('writer', this.dataset.writer);
+            sessionStorage.setItem('timestamp', this.dataset.timestamp);
+            window.location = '../thought-writer/post/index.html#comments';
+            return;
           }
         }
-      })
-    } else {
-      postAreaRow.classList.add('hidden');
+        // If first post displayed in post area is not post 0 (i.e., there are lower-numbered posts to display), display left navigation arrow
+        if (postList.getElementsByClassName('post-container')[0].dataset.number != 0) {
+          document.getElementById('posts-left-arrow').classList.add('display');
+        }
+        // Otherwise, hide left arrow
+        else {
+          document.getElementById('posts-left-arrow').classList.remove('display');
+        }
+        // If there are more posts on the server, display right navigation arrow
+        if (morePostsOnServer) {
+          document.getElementById('posts-right-arrow').classList.add('display');
+        }
+        // Otherwise, hide right arrow
+        else {
+          document.getElementById('posts-right-arrow').classList.remove('display');
+        }
+      });
+      return;
     }
-  })
+    // Hide user's post area from profile if server responds with error
+    document.getElementById('post-list-row').classList.add('hidden');
+    return;
+  });
+}
+
+// Request lower-numbered drawings if left arrow is clicked in profile gallery
+document.getElementById('drawing-left-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    drawingStart = drawingStart - 3;
+    drawingEnd = drawingEnd - 3;
+    loadDrawings();
+  }
+  return;
+}
+
+// Request higher-numbered drawings if right arrow is clicked in profile gallery
+document.getElementById('drawing-right-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    drawingStart = drawingStart + 3;
+    drawingEnd = drawingEnd + 3;
+    loadDrawings();
+  }
+  return;
+}
+
+// Request lower-numbered posts if left arrow is clicked in profile post area
+document.getElementById('posts-left-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    postStart = postStart - 3;
+    postEnd = postEnd - 3;
+    loadPosts();
+  }
+  return;
+}
+
+// Request higher-numbered posts if right arrow is clicked in profile post area
+document.getElementById('posts-right-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    postStart = postStart + 3;
+    postEnd = postEnd + 3;
+    loadPosts();
+  }
+  return;
 }

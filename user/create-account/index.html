@@ -5,10 +5,14 @@
     <meta name="description" content="Registration page for Crystal Prism, where you can create a unique username and password to access various projects and content">
     <meta name="keywords" content="register, username, password, login, Crystal Prism, sign up">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Sail">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
-    <link rel="stylesheet" href="style.css">
     <link rel="shortcut icon" type="image/x-icon" href="../../favicon.ico">
+
+    <!-- Google Fonts, Bootstrap, and CSS stylesheets -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Amatic+SC|Bungee+Hairline|Pompiere|Rajdhani|Sail">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/css/bootstrap.min.css" integrity="sha384-rwoIResjU2yc3z8GV/NPeZWAv56rSmLldC3R/AZzGRnGxQQKnKkoFVhFQhNUwEyJ" crossorigin="anonymous">
+    <link rel="stylesheet" href="../style.css">
+
+    <!-- Google Analytics script to track page views -->
     <script>
       (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
       (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -17,15 +21,17 @@
       ga('create', 'UA-91236421-1', 'auto');
       ga('send', 'pageview');
     </script>
+
     <title>Create Account</title>
   </head>
   <body class="d-flex flex-column align-items-center justify-content-center">
+    <!-- Deleted account modal -->
     <div id="deleted" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
           <div class="modal-header">
-            <h3 id="deleted-title" class="modal-title">Your account has been deleted</h3>
-            <button id="deleted-close" class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <h3 class="modal-title">Your account has been deleted</h3>
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
           </div>
@@ -38,64 +44,79 @@
         </div>
       </div>
     </div>
-    <div id="homepage-container" class="row no-gutters w-100">
-      <div class="col d-flex flex-column align-items-center justify-content-center">
-        <a id="homepage-link" href="../../index.html">
-          <img id="homepage-icon" src="../../images/homepage.png">
-          <h1>Crystal Prism</h1>
-        </a>
-      </div>
-    </div>
+
+    <!-- Main page container -->
     <div class="container">
+
+      <!-- Create Account title row -->
       <div class="row my-3 no-gutters">
         <div class="col-8">
-          <h1>Create Account</h1>
+          <h1 class="title">Create Account</h1>
         </div>
+        <!-- Link to Sign in page -->
         <div class="col-4">
           <a href="../sign-in/index.html">
-            <h4 id="login-link">Already have an account?</h4>
+            <h4>Already have an account?</h4>
           </a>
         </div>
       </div>
+
+      <!-- Username input -->
       <div class="row my-2 d-flex align-items-center justify-content-center">
         <div class="col-4">
           <h2>Username: </h2>
         </div>
         <div class="col-auto">
           <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
+          <!-- Warnings that appear when user submits errored username -->
           <div id="user-warning-one" class="warning">Username cannot be blank</div>
           <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
           <div id="user-warning-three" class="warning">Username already exists</div>
         </div>
       </div>
+
+      <!-- Password input -->
       <div class="row my-2 d-flex align-items-center justify-content-center">
         <div class="col-4">
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
           <input id="password-input" type="password" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+          <!-- Warnings that appear when user submits errored password -->
           <div id="pass-warning-one" class="warning">Password cannot be blank</div>
           <div id="pass-warning-two" class="warning">Password too short</div>
         </div>
       </div>
+
+      <!-- Confirm password input -->
       <div class="row my-2 d-flex align-items-center justify-content-center">
         <div class="col-4">
           <h2>Confirm Password: </h2>
         </div>
         <div class="col-auto">
           <input id="confirm-password-input" type="password" spellcheck="false">
+          <!-- Warnings that appear when confirmation password does not match original password -->
           <div id="pass-warning-three" class="warning">Passwords do not match</div>
         </div>
       </div>
+
+      <!-- Submit button -->
       <div class="row my-3">
         <div class="col d-flex align-items-center justify-content-center">
           <button id="submit" type="submit">Create</button>
         </div>
       </div>
+
     </div>
+
+    <!-- Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../../common.js"></script>
     <script src="main.js"></script>
+
   </body>
 </html>

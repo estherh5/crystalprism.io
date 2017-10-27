@@ -1,4 +1,6 @@
 body {
+  display: flex;
+  flex-direction: column;
   background-color: #ffff00;
   font-family: 'Bad Script', cursive;
   cursor: default;
@@ -108,37 +110,10 @@ a:focus, button:focus {
   text-decoration: none !important;
 }
 
-#header {
-  text-align: center;
-}
-
-#homepage-container {
-  position: fixed;
-  top: 0px;
-  left: 0px;
-  z-index: 1;
-}
-
-#homepage-link {
-  width: 50px;
-  margin-top: 5px;
-  display: flex;
-  align-items: center;
+#title-link {
+  width: fit-content;
   align-self: center;
-  justify-content: center;
-  color: #000000;
-}
-
-#homepage-icon {
-  height: 30px;
-  left: 0px;
-  opacity: 0.7;
-  filter: grayscale(1);
-}
-
-#homepage-link:hover #homepage-icon {
-  opacity: 1;
-  filter: grayscale(0);
+  z-index: 1;
 }
 
 .fa-plane {
@@ -162,20 +137,6 @@ h1 {
   font-size: 30px;
   font-weight: normal;
   line-height: 1.5;
-}
-
-#account-menu {
-  position: fixed;
-  margin: 3px;
-  top: 0px;
-  right: 0px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  z-index: 10;
-}
-
-#profile-link, #account-link {
-  margin-right: 7px;
 }
 
 #left-panel {
@@ -329,10 +290,6 @@ ul {
   h1 {
     padding-top: 10px;
     font-size: 40px;
-  }
-
-  #account-menu {
-    font-size: 14px;
   }
 
   h2 {

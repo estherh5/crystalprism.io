@@ -1,6 +1,6 @@
 // Define global variables
-var requestStart = 0; // Range start for number of drawings to request from server
-var requestEnd = 12; // Range end for number of drawings to request from server
+var requestStart = 0; // Range start for number of drawings to request
+var requestEnd = 12; // Range end for number of drawings to request
 var errorMessage = null;
 var moreDrawingsOnServer = false;
 var gallery = document.getElementById('gallery');
@@ -16,7 +16,8 @@ if (window.location.hostname == 'crystalprism.io') {
 
 // Define load functions
 window.onload = function() {
-  // Remove sessionStorage items from previous drawing clicks so user can select new or blank drawing to start from
+  // Remove sessionStorage items from previous drawing clicks so user can
+  // select new or blank drawing to start from
   sessionStorage.removeItem('drawing-title');
   sessionStorage.removeItem('drawing-source');
   // Create page header (from common.js script)
@@ -34,7 +35,8 @@ window.onload = function() {
     // Set drawing source as in-progress drawing when option is clicked
     continueOption.onclick = setDrawingSource;
     // Add preview of locally stored in-progress drawing to continue option button
-    document.getElementById('drawing-draft').src = localStorage.getItem('drawing-source');
+    document.getElementById('drawing-draft').src = localStorage
+    .getItem('drawing-source');
   }
   return;
 }
@@ -62,12 +64,14 @@ function setHoverTitle() {
 // Load drawings to gallery from server
 function loadDrawings() {
   return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd)
+  // Display error message if server is down and error isn't already
+  // displayed (i.e., prevent multiple errors when scrolling to load more
+  // drawings)
   .catch(function(error) {
-    // Display error message if server is down and error isn't already displayed (i.e., prevent multiple errors when scrolling to load more drawings)
     if (errorMessage == null) {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the CanvaShare gallery. Please refresh the page.';
+      errorMessage.innerHTML = 'There was an error loading the gallery. Please refresh the page.';
       gallery.append(errorMessage);
       return;
     }
@@ -76,7 +80,8 @@ function loadDrawings() {
       response.json().then(function(drawings) {
         // Add drawings to gallery if there is at least 1 sent from server
         if (drawings.length != 0) {
-          // Assess if there are more than requested drawings - 1 (number of loaded drawings) on server
+          // Assess if there are more than requested drawings - 1 (number of
+          // loaded drawings) on server
           if (drawings.length > (requestEnd - requestStart - 1)) {
             moreDrawingsOnServer = true;
             var drawingLoadNumber = requestEnd - requestStart - 1;
@@ -93,7 +98,8 @@ function loadDrawings() {
             // Create container for drawing title
             var drawingTitle = document.createElement('div');
             drawingTitle.classList.add('drawing-title');
-            // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+            // Set data-drawing attribute as drawing file name for later
+            // identification, with URI-encoded characters
             drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
             // Create drawing image
             var drawing = document.createElement('img');
@@ -106,11 +112,13 @@ function loadDrawings() {
             var drawingLikes = document.createElement('div');
             drawingLikes.classList.add('drawing-likes');
             drawingLikes.title = 'Likes';
-            // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+            // Set data-drawing attribute as drawing file name for later
+            // identification, with URI-encoded characters
             drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
             // Create text to display number of likes
             var likeText = document.createElement('text');
-            // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+            // Set data-drawing attribute as drawing file name for later
+            // identification, with URI-encoded characters
             likeText.dataset.drawing = encodeURIComponent(drawings[i]);
             // Create drawing views container
             var drawingViews = document.createElement('div');
@@ -122,7 +130,8 @@ function loadDrawings() {
             viewsIcon.classList.add('fa-eye');
             // Create text to display number of views
             var viewText = document.createElement('text');
-            // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+            // Set data-drawing attribute as drawing file name for later
+            // identification, with URI-encoded characters
             viewText.dataset.drawing = encodeURIComponent(drawings[i]);
             // Create container for drawing artist
             var drawingArtist = document.createElement('div');
@@ -132,7 +141,8 @@ function loadDrawings() {
             var artistLink = document.createElement('a');
             artistLink.href = '../user/index.html?username=' + drawings[i]
             .substr(0, drawings[i].indexOf('/'));
-            artistLink.innerHTML = drawings[i].substr(0, drawings[i].indexOf('/'));
+            artistLink.innerHTML = drawings[i].substr(0, drawings[i]
+            .indexOf('/'));
             gallery.append(drawingContainer);
             drawingContainer.append(drawingTitle);
             drawingContainer.append(drawing);
@@ -161,7 +171,7 @@ function loadDrawings() {
     if (errorMessage == null) {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the CanvaShare gallery. Please refresh the page.';
+      errorMessage.innerHTML = 'There was an error loading the gallery. Please refresh the page.';
       gallery.append(errorMessage);
       return;
     }
@@ -170,17 +180,20 @@ function loadDrawings() {
 
 // Get title and number of views and likes for passed drawing file
 function getDrawingInfo(drawingFile) {
-  return fetch(server + '/canvashare/drawing-info/' + drawingFile.split('.png')[0])
-  .then(function(response) {
+  return fetch(server + '/canvashare/drawing-info/' + drawingFile
+  .split('.png')[0]).then(function(response) {
     response.json().then(function(drawingInfo) {
       // Get elements that have data-drawing attribute set as file name
-      var fileElements = document.querySelectorAll('[data-drawing="' + drawingFile + '"]');
+      var fileElements = document
+      .querySelectorAll('[data-drawing="' + drawingFile + '"]');
       // Set title and number of likes and views for drawing
       fileElements[0].innerHTML = drawingInfo['title'];
       fileElements[2].innerHTML = drawingInfo['likes'];
       fileElements[3].innerHTML = drawingInfo['views'];
-      // If current user liked the drawing, display a filled-in red heart in likes container
-      if (drawingInfo['liked_users'].includes(localStorage.getItem('username'))) {
+      // If current user liked the drawing, display a filled-in red heart in
+      // likes container
+      if (drawingInfo['liked_users'].includes(localStorage
+      .getItem('username'))) {
         var likedHeart = document.createElement('i');
         likedHeart.classList.add('fa');
         likedHeart.classList.add('fa-heart');
@@ -203,19 +216,23 @@ function getDrawingInfo(drawingFile) {
 
 // Update drawing's view count
 function updateViews() {
-  // Set sessionStorage items for drawing's source, used to populate easel on redirected webpage
+  // Set sessionStorage items for drawing's source, used to populate easel on
+  // redirected webpage
   sessionStorage.setItem('drawing-source', this.src);
   // Send request to server to update view count
   data = {'request': 'view'};
   data = JSON.stringify(data);
   return fetch(server + '/canvashare/drawing-info/' + this.src
   .split('/canvashare/drawing/')[1].split('.png')[0], {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
-  }).catch(function(error) {
-    // Display error message if server is down
-    window.alert('Your request did not go through. Please try again soon.')
+  })
+  // Display error message if server is down
+  .catch(function(error) {
+    window.alert('Your request did not go through. Please try again soon.');
+    return;
   }).then(function(response) {
     // If server responds without error, redirect to easel page
     if (response.ok) {
@@ -235,24 +252,28 @@ function updateLikes() {
     var heart = this;
     // Add click animation to create pop effect
     heart.classList.add('clicked');
-    // Remove clicked class from heart to allow animation to play when clicked again
+    // Remove clicked class from heart to allow animation to play when clicked
+    // again
     setTimeout(function() {
       heart.classList.remove('clicked');
       return;
     }, 500);
     // Send request to server to decrease like count
     data = JSON.stringify({'request': 'unlike'});
-    return fetch(server + '/canvashare/drawing-info/' + heart.nextSibling.dataset
-    .drawing.split('.png')[0], {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    return fetch(server + '/canvashare/drawing-info/' + heart.nextSibling
+    .dataset.drawing.split('.png')[0], {
+      headers: {'Authorization': 'Bearer ' + localStorage
+      .getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
-    }).catch(function(error) {
-      // Display error message if server is down
+    })
+    // Display error message if server is down
+    .catch(function(error) {
       window.alert('Your like did not go through. Please try again soon.');
       return;
     }).then(function(response) {
-      // If server responds without error, remove heart fill and decrease like count user sees
+      // If server responds without error, remove heart fill and decrease like
+      // count user sees
       if (response.ok) {
         var likeText = heart.nextSibling;
         var currentLikes = likeText.innerHTML;
@@ -270,7 +291,8 @@ function updateLikes() {
   var heart = this;
   // Add click animation to create pop effect
   heart.classList.add('clicked');
-  // Remove clicked class from heart to allow animation to play when clicked again
+  // Remove clicked class from heart to allow animation to play when clicked
+  // again
   setTimeout(function() {
     heart.classList.remove('clicked');
     return;
@@ -279,15 +301,18 @@ function updateLikes() {
   data = JSON.stringify({'request': 'like'});
   return fetch(server + '/canvashare/drawing-info/' + heart.nextSibling.dataset
   .drawing.split('.png')[0], {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
-  }).catch(function(error) {
-    // Display error message if server is down
+  })
+  // Display error message if server is down
+  .catch(function(error) {
     window.alert('Your like did not go through. Please try again soon.');
     return;
   }).then(function(response) {
-    // If server responds without error, fill in heart and increase like count user sees
+    // If server responds without error, fill in heart and increase like count
+    // user sees
     if (response.ok) {
       var likeText = heart.nextSibling;
       var currentLikes = likeText.innerHTML;
@@ -306,13 +331,15 @@ function updateLikes() {
 window.addEventListener('scroll', requestMoreDrawings, false);
 
 function requestMoreDrawings() {
-  // If user has scrolled more than 90% of way down page and the server has more drawings, update request numbers
+  // If user has scrolled more than 90% of way down page and the server has
+  // more drawings, update request numbers
   if (percentScrolled() > 90 && moreDrawingsOnServer) {
     // Set drawing request start number to previous end number
     requestStart = requestEnd;
-    // Set drawing request end number to previous end number + number of drawings that can fit in one row of gallery
+    // Set drawing request end number to previous end number + number of
+    // drawings that can fit in one row of gallery
     requestEnd = requestEnd + Math.floor((gallery.offsetWidth) / (document
-      .getElementsByClassName('drawing-container')[0].offsetWidth));
+    .getElementsByClassName('drawing-container')[0].offsetWidth));
     // Load drawings with new request numbers
     loadDrawings();
   }
@@ -328,10 +355,10 @@ function percentScrolled(){
       document.body.clientHeight, document.documentElement.clientHeight);
   // Determine window height (different for different browsers)
   var windowHeight = window.innerHeight || (document.documentElement || document
-    .body).clientHeight;
+  .body).clientHeight;
   // Determine how far from top user has scrolled down page
   var scrollTop = window.pageYOffset || (document.documentElement || document
-    .body.parentNode || document.body).scrollTop;
+  .body.parentNode || document.body).scrollTop;
   // Determine length scrollbar can travel down
   var scrollLength = documentHeight - windowHeight;
   // Return percentage scrolled down page
@@ -365,7 +392,8 @@ function toggleMenu() {
     setTimeout(function() {
       // Hide menu after it moves down the page to close
       menu.classList.add('hidden');
-      // Remove clicked class from icon to allow animation to play when clicked again
+      // Remove clicked class from icon to allow animation to play when clicked
+      // again
       plusIcon.classList.remove('clicked');
       return;
     }, 500);
@@ -379,7 +407,8 @@ function toggleMenu() {
   // Set icon to opened view (minus sign)
   plusIcon.innerHTML = 'remove_circle';
   menuOpen = true;
-  // Remove clicked class from icon to allow animation to play when clicked again
+  // Remove clicked class from icon to allow animation to play when clicked
+  // again
   setTimeout(function() {
     plusIcon.classList.remove('clicked');
     return;
@@ -387,22 +416,26 @@ function toggleMenu() {
   return;
 }
 
-// Set sessionStorage drawing source as source of previewed drawing and open that drawing on easel page when user clicks menu option
+// Set sessionStorage drawing source as source of previewed drawing and open
+// that drawing on easel page when user clicks menu option
 document.getElementById('new-option').onclick = setDrawingSource;
 
 function setDrawingSource() {
   // Add click animation to create pop effect
   this.classList.add('clicked');
-  // Remove clicked class from clicked menu option to allow animation to play if clicked again
+  // Remove clicked class from clicked menu option to allow animation to play
+  // if clicked again
   setTimeout(function() {
     this.classList.remove('clicked');
     return;
   }, 500);
   // Set sessionStorage items for drawing source and title
-  sessionStorage.setItem('drawing-source', this.getElementsByTagName('img')[0].src);
+  sessionStorage.setItem('drawing-source', this.getElementsByTagName('img')[0]
+  .src);
   // Use locally stored drawing title if user clicks Continue option
   if (this == continueOption) {
-    sessionStorage.setItem('drawing-title', localStorage.getItem('drawing-title'));
+    sessionStorage.setItem('drawing-title', localStorage
+    .getItem('drawing-title'));
   }
   // Go to easel page
   window.location = 'easel/index.html';

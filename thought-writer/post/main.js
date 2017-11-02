@@ -30,13 +30,16 @@ function loadPost() {
   var commentCount = document.getElementById('comment-count');
   // Request post based on items stored in sessionStorage
   return fetch(server + '/thought-writer/post?writer=' + encodeURIComponent(sessionStorage
-    .getItem('writer')) + '&timestamp=' + encodeURIComponent(sessionStorage.getItem('timestamp')))
-  // Display error message if server is down and error isn't already displayed (i.e., prevent multiple errors if user submits comment and requests to reload post)
+  .getItem('writer')) + '&timestamp=' + encodeURIComponent(sessionStorage
+  .getItem('timestamp')))
+  // Display error message if server is down and error isn't already displayed
+  // (i.e., prevent multiple errors if user submits comment and requests to
+  // reload post)
   .catch(function(error) {
     if (errorMessage == null) {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the Thought Writer post. Please refresh the page.';
+      errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
       // Clear post and append error message
       document.getElementById('post-background').innerHTML = '';
       document.getElementById('post-background').append(errorMessage);
@@ -50,9 +53,11 @@ function loadPost() {
         postTitle.innerHTML = post.title;
         // Add post content to post content container
         postContent.innerHTML = post.content;
-        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+        // HH:MM AM/PM' format
         var dateTime = new Date(post.timestamp);
-        postTimestamp.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+        postTimestamp.innerHTML = dateTime.toLocaleString()
+        .replace(/:\d{2}\s/,' ');
         // Add link to writer's profile
         postWriter.href = '../../user/index.html?username=' + post.writer;
         postWriter.innerHTML = post.writer;
@@ -82,9 +87,11 @@ function loadPost() {
           // Create container for comment timestamp
           var commentTimestamp = document.createElement('div');
           commentTimestamp.classList.add('comment-timestamp');
-          // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+          // Convert UTC timestamp from server to local timestamp in
+          // 'MM/DD/YYYY, HH:MM AM/PM' format
           var dateTime = new Date(post.comments[i].timestamp);
-          commentTimestamp.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+          commentTimestamp.innerHTML = dateTime.toLocaleString()
+          .replace(/:\d{2}\s/,' ');
           comments.append(commentContainer);
           commentContainer.append(commentContent);
           commentContainer.append(commenter);
@@ -97,7 +104,7 @@ function loadPost() {
     if (errorMessage == null) {
       errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the Thought Writer post. Please refresh the page.';
+      errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
       // Clear page container and append error message
       document.getElementById('container').innerHTML = '';
       document.getElementById('container').append(errorMessage);
@@ -112,7 +119,8 @@ document.getElementById('submit-comment').onclick = submitComment;
 
 function submitComment() {
   var newComment = document.getElementById('new-comment-box');
-  // If comment does not contain any non-space characters, display warning to user
+  // If comment does not contain any non-space characters, display warning to
+  // user
   if (!/\S/.test(newComment.innerHTML)) {
     window.alert('Your comment cannot be blank.');
     return;
@@ -120,8 +128,10 @@ function submitComment() {
   // Otherwise, send comment to server
   data = JSON.stringify({'content': newComment.innerHTML});
   return fetch(server + '/thought-writer/comment?writer=' + encodeURIComponent(postWriter
-    .innerHTML) + '&timestamp=' + encodeURIComponent(sessionStorage.getItem('timestamp')), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+  .innerHTML) + '&timestamp=' + encodeURIComponent(sessionStorage
+  .getItem('timestamp')), {
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })

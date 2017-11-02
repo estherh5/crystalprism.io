@@ -8,7 +8,8 @@ if (window.location.hostname == 'crystalprism.io') {
   var root = 'https://crystalprism.io';
 } else {
   var server = 'http://localhost:5000/api';
-  var root = window.location.href.split('estherh5.github.io')[0] + 'estherh5.github.io';
+  var root = window.location.href
+  .split('estherh5.github.io')[0] + 'estherh5.github.io';
 }
 
 
@@ -24,7 +25,8 @@ function createPageHeader() {
   var homepageIcon = document.createElement('img');
   homepageIcon.id = 'homepage-icon';
   homepageIcon.src = root + '/images/homepage.png';
-  // Create account menu with links to profile, create account page, and sign in page
+  // Create account menu with links to profile, create account page, and sign
+  // in page
   var accountMenu = document.createElement('div');
   accountMenu.id = 'account-menu';
   profileLink = document.createElement('a');
@@ -53,15 +55,19 @@ function checkIfLoggedIn() {
   if (localStorage.getItem('token') == null) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
-    // Store current window for user to return to after logging in, if current window is not homepage, Create Account, or Sign In pages
-    if (window.location.href != root + '/index.html' && window.location.href != root + '/user/create-account/index.html' && window.location.href != root + '/user/sign-in/index.html') {
+    // Store current window for user to return to after logging in, if current
+    // window is not homepage, Create Account, or Sign In pages
+    if (window.location.href != root + '/index.html' && window.location
+    .href != root + '/user/create-account/index.html' && window.location
+    .href != root + '/user/sign-in/index.html') {
       signInLink.onclick = function() {
         sessionStorage.setItem('previous-window', window.location.href);
         return;
       }
     }
   }
-  // Otherwise, check if the user is logged in by sending their token to the server
+  // Otherwise, check if the user is logged in by sending their token to the
+  // server
   else {
     return fetch(server + '/user/verify', {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
@@ -70,8 +76,11 @@ function checkIfLoggedIn() {
       // Set account menu to default if server is down
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
-      // Store current window for user to return to after logging in, if current window is not homepage, Create Account, or Sign In pages
-      if (window.location.href != root + '/index.html' && window.location.href != root + '/user/create-account/index.html' && window.location.href != root + '/user/sign-in/index.html') {
+      // Store current window for user to return to after logging in, if
+      // current window is not homepage, Create Account, or Sign In pages
+      if (window.location.href != root + '/index.html' && window.location
+      .href != root + '/user/create-account/index.html' && window.location
+      .href != root + '/user/sign-in/index.html') {
         signInLink.onclick = function() {
           sessionStorage.setItem('previous-window', window.location.href);
           return;
@@ -79,28 +88,35 @@ function checkIfLoggedIn() {
       }
       return false;
     }).then(function(response) {
-      // If server verifies token is correct, display link to profile, My Account page, and Sign In page (with "Sign Out" title)
+      // If server verifies token is correct, display link to profile, My
+      // Account page, and Sign In page (with "Sign Out" title)
       if (response.ok) {
         profileLink.innerHTML = localStorage.getItem('username');
-        profileLink.href = root + '/user/index.html?username=' + localStorage.getItem('username');
+        profileLink.href = root + '/user/index.html?username=' + localStorage
+        .getItem('username');
         accountLink.innerHTML = 'My Account';
         accountLink.href = root + '/user/my-account/index.html';
         signInLink.innerHTML = 'Sign Out';
-        // Send request to log user out when Sign In page link ("Sign Out" title) is clicked
+        // Send request to log user out when Sign In page link ("Sign Out"
+        // title) is clicked
         signInLink.onclick = function() {
           sessionStorage.setItem('account-request', 'logout');
           return;
         }
         return true;
       }
-      // Otherwise, set account menu to default and remove username and token from localStorage
+      // Otherwise, set account menu to default and remove username and token
+      // from localStorage
       else {
         localStorage.removeItem('username');
         localStorage.removeItem('token');
         accountLink.innerHTML = 'Create Account';
         signInLink.innerHTML = 'Sign In';
-        // Store current window for user to return to after logging in, if current window is not homepage, Create Account, or Sign In pages
-        if (window.location.href != root + '/index.html' && window.location.href != root + '/user/create-account/index.html' && window.location.href != root + '/user/sign-in/index.html') {
+        // Store current window for user to return to after logging in, if
+        // current window is not homepage, Create Account, or Sign In pages
+        if (window.location.href != root + '/index.html' && window.location
+        .href != root + '/user/create-account/index.html' && window.location
+        .href != root + '/user/sign-in/index.html') {
           signInLink.onclick = function() {
             sessionStorage.setItem('previous-window', window.location.href);
             return;

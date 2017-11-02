@@ -1,5 +1,5 @@
 // Define global variables
-var afterValue = '';
+var after = ''; // Value used by Reddit's API to get next set of images
 var allImages = []; // Array to store images from Reddit API
 var rightPanel = document.getElementById('right-panel');
 var loadingImage = document.getElementById('loading-image');
@@ -42,9 +42,9 @@ window.onload = function() {
 // Store all travel images from Reddit's API in an array
 function storeImages() {
   // Retrieve 100 images from Reddit's Travel subreddit
-  return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + afterValue)
+  return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after)
+  // Display error modal if server is down
   .catch(function(error) {
-    // Display error modal if server is down
     $(error).modal('show');
     // Focus on okay button after modal displays
     setTimeout(function() {
@@ -55,23 +55,29 @@ function storeImages() {
   }).then(function(response) {
     if (response.ok) {
       response.json().then(function(info) {
-        // Get "after" value, which Reddit's API uses to retrieve next set of images
-        afterValue = info['data']['after'];
+        // Get "after" value, which Reddit's API uses to retrieve next set of
+        // images
+        after = info['data']['after'];
         for (var i = 0; i < info['data']['children'].length; i++) {
-          // When 5 images have been found, get their data (URL, title, etc.) and display them on page
+          // When 5 images have been found, get their data (URL, title, etc.)
+          // and display them on page
           if (allImages.length == 5) {
             findImages('');
           }
-          // If the URL item in the Reddit data contains an image file extension, store the URL in the allImages array
-          if (info['data']['children'][i]['data']['url'].match(/(.jpg|.jpeg|.png|.tif)/)) {
+          // If the URL item in the Reddit data contains an image file
+          // extension, store the URL in the allImages array
+          if (info['data']['children'][i]['data']['url']
+          .match(/(.jpg|.jpeg|.png|.tif)/)) {
             allImages.push(info['data']['children'][i]['data']);
           }
           if (i == info['data']['children'].length - 1) {
-            // If this is the last object from the Reddit data and the "after" value is null, return
-            if (afterValue == null) {
+            // If this is the last object from the Reddit data and the "after"
+            // value is null, return
+            if (after == null) {
               return;
             }
-            // Otherwise, run the function again using a fetch request with the new "after" value
+            // Otherwise, run the function again using a fetch request with the
+            // new "after" value
             storeImages();
           }
         }
@@ -88,7 +94,8 @@ function storeImages() {
   });
 }
 
-// Display random API images when no images match user's search term and user exits modal
+// Display random API images when no images match user's search term and user
+// exits modal
 noResultsModal.onclick = function(e) {
   // Only call function if user clicks on area outside of modal body
   if (e.target == this) {
@@ -107,7 +114,8 @@ noResultsCloseButton.onclick = function() {
   return;
 }
 
-// Close modal and display random images when modal is open and escape key is clicked
+// Close modal and display random images when modal is open and escape key is
+// clicked
 window.addEventListener('keyup', function(e) {
   if (noResultsModal.classList.contains('show') && e.keyCode == 27) {
     e.preventDefault();
@@ -117,12 +125,14 @@ window.addEventListener('keyup', function(e) {
 }, false);
 
 
-// Find API images that match input term (input is blank on load to match on first 5 images)
+// Find API images that match input term (input is blank on load to match on
+// first 5 images)
 function findImages(input) {
   // Display loading style and animation while images load
   document.getElementById('dimmer').style.display = 'block';
   loadingImage.style.animationPlayState = 'running';
-  // If input is 'random', generate a random list of 5 images from the API results
+  // If input is 'random', generate a random list of 5 images from the API
+  // results
   if (input == 'random') {
     randomNumber = Math.floor(Math.random() * (allImages.length - 6));
     searchList = allImages.slice(randomNumber, randomNumber + 5);
@@ -138,7 +148,8 @@ function findImages(input) {
     searchList = allImages;
   }
   for (var i = 0; i < searchList.length; i++) {
-    // Remove loading style and animation, populate carousel, and display images on page when 5 images are found
+    // Remove loading style and animation, populate carousel, and display
+    // images on page when 5 images are found
     if (imageURLs.length == 5) {
       rightPanel.classList.remove('cleared');
       loadingImage.classList.remove('loading');
@@ -147,14 +158,17 @@ function findImages(input) {
       displayImages();
       return;
     }
-    // Search through images to find match with input search term and image title, ignoring images already in search results list
-    if (searchList[i]['title'].toLowerCase().indexOf(input.toLowerCase()) != -1 && imageURLs.includes(searchList[i]['url']) == false) {
+    // Search through images to find match with input search term and image
+    // title, ignoring images already in search results list
+    if (searchList[i]['title'].toLowerCase().indexOf(input.toLowerCase()) != -1
+    && imageURLs.includes(searchList[i]['url']) == false) {
       imageURLs.push(searchList[i]['url']);
       imageTitleLinks.push('https://reddit.com' + searchList[i]['permalink']);
       imageTitleTexts.push(searchList[i]['title']);
     }
     if (i == searchList.length - 1) {
-      // If search has reached end of images list and found no matching images, display no results modal and clear carousel
+      // If search has reached end of images list and found no matching images,
+      // display no results modal and clear carousel
       if (imageURLs.length == 0) {
         loadingImage.style.animationPlayState = 'paused';
         noResultsTitle.innerHTML = 'No images found for "' + input + '"';
@@ -167,7 +181,9 @@ function findImages(input) {
         populateCarousel();
         return;
       }
-      // If search has reached end of API images list and found at least 1 matching image, populate carousel, display images, and remove loading style and animation
+      // If search has reached end of API images list and found at least 1
+      // matching image, populate carousel, display images, and remove loading
+      // style and animation
       populateCarousel();
       displayImages();
       rightPanel.classList.remove('cleared');
@@ -195,12 +211,14 @@ function displayImages() {
   return;
 }
 
-// Clear images from page if user clicks page title, submit button, or enter key in search input field to search for image
+// Clear images from page if user clicks page title, submit button, or enter
+// key in search input field to search for image
 titleLink.onclick = clearImages;
 submitButton.onclick = clearImages;
 
 locationInput.addEventListener('keyup', function(e) {
-  // Clear images when enter key is clicked and no results modal is not displayed
+  // Clear images when enter key is clicked and no results modal is not
+  // displayed
   if (!noResultsModal.classList.contains('show') && e.keyCode == 13) {
     e.preventDefault();
     clearImages();
@@ -224,8 +242,9 @@ function clearImages() {
   imageURLs = [];
   imageTitleLinks = [];
   imageTitleTexts = [];
-  afterValue = '';
-  // If user clicked page title or search input field is blank, display random images
+  after = '';
+  // If user clicked page title or search input field is blank, display random
+  // images
   if (this == titleLink || locationInput.value == '') {
     findImages('random');
     return;
@@ -241,7 +260,8 @@ function populateCarousel() {
   // Clear current carousel images
   document.getElementById('carousel-inner').innerHTML = '';
   for (var i = 0; i < imageURLs.length; i++) {
-    // Hide carousel navigation buttons if there is only a single image (or no images) to cycle through
+    // Hide carousel navigation buttons if there is only a single image (or no
+    // images) to cycle through
     if (imageURLs.length < 2) {
       carouselPrev.style.display = 'none';
       carouselNext.style.display = 'none';
@@ -262,7 +282,8 @@ function populateCarousel() {
   return;
 }
 
-// Open carousel to specified image number in cycle (start from beginning when View All button is clicked)
+// Open carousel to specified image number in cycle (start from beginning when
+// View All button is clicked)
 viewButton.addEventListener('click', function() {
   openCarousel(0);
   return;
@@ -286,7 +307,8 @@ function openCarousel(number) {
   return;
 }
 
-// Close carousel when close button is clicked or when area outside carousel image is clicked
+// Close carousel when close button is clicked or when area outside carousel
+// image is clicked
 carouselCloseButton.onclick = closeCarousel;
 
 carousel.onclick = function(e) {
@@ -300,7 +322,8 @@ function closeCarousel() {
   var carouselItems = document.getElementsByClassName('carousel-item');
   // Pause carousel cycle
   $('.carousel').carousel('pause');
-  // Remove active class from all carousel items to clear previous cycle of images
+  // Remove active class from all carousel items to clear previous cycle of
+  // images
   for (var i = 0; i < carouselItems.length; i++) {
     carouselItems[i].classList.remove('active');
   }
@@ -330,7 +353,8 @@ window.addEventListener('keyup', function(e) {
 
 // Set random country placeholder in search input field
 function setLocationPlaceholder() {
-  var locationPlaceholders = ['Spain', 'Switzerland', 'India', 'Thailand', 'Italy', 'Canada', 'Norway'];
+  var locationPlaceholders = ['Spain', 'Switzerland', 'India', 'Thailand',
+  'Italy', 'Canada', 'Norway'];
   var randomNumber = Math.floor(Math.random() * locationPlaceholders.length);
   locationInput.placeholder = locationPlaceholders[randomNumber];
   return;

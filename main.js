@@ -6,8 +6,8 @@ var themeButton = document.getElementById('theme-button');
 var skyIcon = document.getElementById('sky-icon');
 var navCircles = document.getElementsByClassName('nav-circle');
 var navButtons = document.getElementsByClassName('nav-button');
-var selectedButton = navButtons[0]; // Variable to track button associated with current page of SPA
-var selectedPage = document.getElementById('splash-page'); // Variable to track current page of SPA
+var selectedButton = navButtons[0]; // Button associated with current page of SPA
+var selectedPage = document.getElementById('splash-page'); // Current page of SPA
 var projects = document.getElementsByClassName('project-listing');
 var modalBackground = document.getElementById('modal-background');
 var modalBody = document.getElementById('modal-body');
@@ -35,7 +35,8 @@ window.onload = function() {
   // Load posts to Ideas page
   loadPosts();
   // Add inverse color class to SVG icons in Projects page modal
-  for (var i = 0; i < document.getElementsByClassName('modal-object').length; i++) {
+  for (var i = 0; i < document.getElementsByClassName('modal-object')
+  .length; i++) {
     document.getElementsByClassName('modal-object')[i].contentDocument
     .getElementsByTagName('svg')[0].classList.add('inverse');
   }
@@ -43,7 +44,8 @@ window.onload = function() {
 }
 
 
-// Set page theme to night view or Day View when page is loaded or theme button is clicked
+// Set page theme to night view or Day View when page is loaded or theme button
+// is clicked
 themeButton.onclick = setTheme;
 
 function setTheme() {
@@ -80,7 +82,8 @@ function setTheme() {
 function addNightView() {
   document.body.classList.add('night-view');
   // Add night view class to SVG icons loaded in objects
-  for (var i = 0; i < document.getElementsByClassName('svg-icon-object').length; i++) {
+  for (var i = 0; i < document.getElementsByClassName('svg-icon-object')
+  .length; i++) {
     document.getElementsByClassName('svg-icon-object')[i].contentDocument
     .getElementsByTagName('svg')[0].classList.add('night-view');
   }
@@ -96,7 +99,8 @@ function addNightView() {
 function removeNightView() {
   document.body.classList.remove('night-view');
   // Remove night view class to SVG icons loaded in objects
-  for (var i = 0; i < document.getElementsByClassName('svg-icon-object').length; i++) {
+  for (var i = 0; i < document.getElementsByClassName('svg-icon-object')
+  .length; i++) {
     document.getElementsByClassName('svg-icon-object')[i].contentDocument
     .getElementsByTagName('svg')[0].classList.remove('night-view');
   }
@@ -121,13 +125,15 @@ for (var i = 0; i < navCircles.length; i++) {
   }, false);
 }
 
-// Set Projects page as URL hash when Projects page link is clicked from About page
+// Set Projects page as URL hash when Projects page link is clicked from
+// About page
 document.getElementById('projects-page-link').onclick = function() {
   window.location.hash = this.dataset.page;
   return;
 }
 
-// Display requested page when window's URL hash changes (when navigating pages in SPA) and track via Google Analytics
+// Display requested page when window's URL hash changes (when navigating pages
+// in SPA) and track via Google Analytics
 window.onhashchange = function() {
   // Set Google Analytics page to [page URL]/[hash string]
   ga('set', 'page', '/' + (window.location.hash.split('#')[1]));
@@ -153,7 +159,8 @@ function togglePage() {
   selectedButton.classList.remove('selected');
   selectedButton.style.color = '';
   // Add bold/color style of button for the requested page
-  selectedButton = document.getElementById((window.location.hash).split('#')[1] + '-button');
+  selectedButton = document.getElementById((window.location.hash)
+  .split('#')[1] + '-button');
   selectedButton.classList.add('selected');
   selectedButton.style.color = selectedButton.dataset.color;
   return;
@@ -178,7 +185,8 @@ function openModal() {
   modalBackground.classList.add('open');
   modalBody.classList.add('open');
   // Display project overview for the project the user clicked to open modal
-  document.getElementById(this.dataset.project + '-overview').classList.add('open');
+  document.getElementById(this.dataset.project + '-overview').classList
+  .add('open');
   this.dataset.displayed = 'true';
   return;
 }
@@ -197,7 +205,8 @@ function toggleProject() {
     }
   }
   if (this == nextButton) {
-    // If current project displayed is the last project in the list of projects, display first project when next button is clicked
+    // If current project displayed is the last project in the list of projects,
+    // display first project when next button is clicked
     if (currentProjectNumber == projects.length - 1) {
       projects[0].dataset.displayed = 'true';
       projectOverviews[0].classList.add('open');
@@ -208,7 +217,8 @@ function toggleProject() {
     projectOverviews[currentProjectNumber + 1].classList.add('open');
     return;
   }
-  // If current project displayed is the first project in the list of projects, display last project when previous button is clicked
+  // If current project displayed is the first project in the list of projects,
+  // display last project when previous button is clicked
   if (currentProjectNumber == 0) {
     projects[projects.length - 1].dataset.displayed = 'true';
     projectOverviews[projects.length - 1].classList.add('open');
@@ -307,7 +317,8 @@ window.addEventListener('keydown', function(e) {
     e.preventDefault();
     previousButton.click();
     return;
-  // Click displayed video to toggle video play state when modal is open and space key is clicked
+  // Click displayed video to toggle video play state when modal is open and
+  // space key is clicked
   } else if (modalBackground.classList.contains('open') && e.keyCode == 32) {
     e.preventDefault();
     for (var i = 0; i < projectOverviews.length; i++) {
@@ -334,17 +345,19 @@ function loadPosts() {
   } else {
     var server = 'http://localhost:5000/api';
   }
-  return fetch(server + '/thought-writer/post-board/esther').catch(function(error) {
-    // Display error if server is down
+  return fetch(server + '/thought-writer/post-board/esther')
+  // Display error if server is down
+  .catch(function(error) {
     var errorMessage = document.createElement('text');
     errorMessage.id = 'error-message';
-    errorMessage.innerHTML = 'There was an error loading the Ideas page. Please refresh the page.';
+    errorMessage.innerHTML = 'There was an error loading the page. Please refresh.';
     document.getElementById('ideas-page').append(errorMessage);
     return;
   }).then(function(response) {
     if (response.ok) {
       response.json().then(function(posts) {
-        // Add post(s) to Ideas page if there is at least one post sent from server
+        // Add post(s) to Ideas page if there is at least one post sent
+        // from server
         if (posts.length != 0) {
           for (var i = 0; i < posts.length; i++) {
             // Create table for post header and body rows
@@ -358,9 +371,11 @@ function loadPosts() {
             postTitle.innerHTML = posts[i].title;
             var postTimestamp = document.createElement('td');
             postTimestamp.classList.add('post-timestamp');
-            // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+            // Convert UTC timestamp from server to local timestamp in
+            // 'MM/DD/YYYY, HH:MM AM/PM' format
             var dateTime = new Date(posts[i].timestamp);
-            postTimestamp.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+            postTimestamp.innerHTML = dateTime.toLocaleString()
+            .replace(/:\d{2}\s/,' ');
             // Create body row with post content in cell
             var postBody = document.createElement('tr');
             var postContainer = document.createElement('td');
@@ -371,7 +386,8 @@ function loadPosts() {
             postContent.id = posts[i].title;
             // Display preview of post if >= 200 characters
             if (posts[i].content.length >= 200) {
-              // Store full text in data-fulltext attribute to load if user expands preview
+              // Store full text in data-fulltext attribute to load if user
+              // expands preview
               postContent.dataset.fulltext = posts[i].content;
               postContent.innerHTML = posts[i].content.slice(0, 200) + '...';
               var toggleTextIcon = document.createElement('i');
@@ -405,13 +421,14 @@ function loadPosts() {
     // Display error message if server returned error
     var errorMessage = document.createElement('text');
     errorMessage.id = 'error-message';
-    errorMessage.innerHTML = 'There are no posts to display. Please check later.';
+    errorMessage.innerHTML = 'There are no posts right now. Please check later.';
     document.getElementById('ideas-page').append(errorMessage);
     return;
   });
 }
 
-// Display/hide full post text if user clicks plus/minus icon for posts with previews
+// Display/hide full post text if user clicks plus/minus icon for posts with
+// previews
 function toggleFullText() {
   // Display full text if plus icon is displayed
   if (this.getElementsByTagName('i')[0].classList.contains('fa-plus-square-o')) {
@@ -432,7 +449,8 @@ function toggleFullText() {
 }
 
 
-// Expand/collapse parent section or child subsection when chevron is clicked on About page
+// Expand/collapse parent section or child subsection when chevron is clicked
+// on About page
 for (var i = 0; i < parentSections.length; i++) {
   parentSections[i].addEventListener('click', toggleSection, false);
 }
@@ -444,17 +462,21 @@ for (var i = 0; i < childSections.length; i++) {
 function toggleSection() {
   if (window.innerWidth >= 768 || (document.documentElement || document.body)
   .clientWidth >= 768) {
-    // If section/subsection is already expanded, collapse the section/subsection
+    // If section/subsection is already expanded, collapse it
     if (this.dataset.expanded == 'true') {
       // Change span icon to expand chevron
       this.getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
       this.getElementsByTagName('span')[0].classList.add('fa-chevron-right');
-      // Collapse specified section/subsection (specified by data-start and data-end attributes)
-      for (var i = parseInt(this.dataset.start); i < parseInt(this.dataset.end); i++) {
+      // Collapse specified section/subsection (specified by data-start and
+      // data-end attributes)
+      for (var i = parseInt(this.dataset.start); i < parseInt(this.dataset
+      .end); i++) {
         sectionDetails[i].style.visibility = 'hidden';
         sectionDetails[i].style.height = '0px';
-        childSections[i].getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
-        childSections[i].getElementsByTagName('span')[0].classList.add('fa-chevron-right');
+        childSections[i].getElementsByTagName('span')[0].classList
+        .remove('fa-chevron-down');
+        childSections[i].getElementsByTagName('span')[0].classList
+        .add('fa-chevron-right');
         childSections[i].dataset.expanded = 'false';
       }
       this.dataset.expanded = 'false';
@@ -466,12 +488,16 @@ function toggleSection() {
       // Change span icon to collapse chevron
       this.getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
       this.getElementsByTagName('span')[0].classList.add('fa-chevron-down');
-      // Expand specified section/subsection (specified by data-start and data-end attributes)
-      for (var i = parseInt(this.dataset.start); i < parseInt(this.dataset.end); i++) {
+      // Expand specified section/subsection (specified by data-start and
+      // data-end attributes)
+      for (var i = parseInt(this.dataset.start); i < parseInt(this.dataset
+      .end); i++) {
         sectionDetails[i].style.visibility = 'visible';
         sectionDetails[i].style.height = 'inherit';
-        childSections[i].getElementsByTagName('span')[0].classList.remove('fa-chevron-right');
-        childSections[i].getElementsByTagName('span')[0].classList.add('fa-chevron-down');
+        childSections[i].getElementsByTagName('span')[0].classList
+        .remove('fa-chevron-right');
+        childSections[i].getElementsByTagName('span')[0].classList
+        .add('fa-chevron-down');
         childSections[i].dataset.expanded = 'true';
       }
       this.dataset.expanded = 'true';
@@ -481,26 +507,34 @@ function toggleSection() {
     }
     // Get sibling subsections if user clicked a child subsection
     if (this.classList.contains('expand-child')) {
-      siblingSections = document.querySelectorAll('[data-parent="' + this.dataset.parent + '"]');
+      siblingSections = document.querySelectorAll('[data-parent="' + this
+      .dataset.parent + '"]');
     }
-    // If child subsection and its siblings are now all expanded from above logic, change the parent section to expanded state
-    if (this.dataset.expanded == 'true' && this.classList.contains('expand-child') && areAllExpanded(siblingSections)) {
-      parentSections[this.dataset.parent].getElementsByTagName('span')[0].classList
-      .remove('fa-chevron-right');
-      parentSections[this.dataset.parent].getElementsByTagName('span')[0].classList
-      .add('fa-chevron-down');
+    // If child subsection and its siblings are now all expanded from above
+    // logic, change the parent section to expanded state
+    if (this.dataset.expanded == 'true' && this.classList
+    .contains('expand-child') && areAllExpanded(siblingSections)) {
+      parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+      .classList.remove('fa-chevron-right');
+      parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+      .classList.add('fa-chevron-down');
       parentSections[this.dataset.parent].dataset.expanded = 'true';
-      parentSections[this.dataset.parent].getElementsByTagName('text')[0].innerHTML = 'Collapse All';
+      parentSections[this.dataset.parent].getElementsByTagName('text')[0]
+      .innerHTML = 'Collapse All';
       return;
     }
-    // If child subsection is now collapsed from above logic, change the parent section to collapsed state if it's not already in that state
-    if (this.dataset.expanded == 'false' && this.classList.contains('expand-child') && parentSections[this.dataset.parent].dataset.expanded == 'true') {
-      parentSections[this.dataset.parent].getElementsByTagName('span')[0].classList
-      .remove('fa-chevron-down');
-      parentSections[this.dataset.parent].getElementsByTagName('span')[0].classList
-      .add('fa-chevron-right');
+    // If child subsection is now collapsed from above logic, change the parent
+    // section to collapsed state if it's not already in that state
+    if (this.dataset.expanded == 'false' && this.classList
+    .contains('expand-child') && parentSections[this.dataset.parent].dataset
+    .expanded == 'true') {
+      parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+      .classList.remove('fa-chevron-down');
+      parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+      .classList.add('fa-chevron-right');
       parentSections[this.dataset.parent].dataset.expanded = 'false';
-      parentSections[this.dataset.parent].getElementsByTagName('text')[0].innerHTML = 'Expand All';
+      parentSections[this.dataset.parent].getElementsByTagName('text')[0]
+      .innerHTML = 'Expand All';
       return;
     }
     return;

@@ -33,17 +33,17 @@ var editButton = document.getElementById('edit');
 var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('cancel');
 var verifyPassInput = document.getElementById('verify-password-input');
-var editingPersonal = false; // Variable to track if user is editing information in Personal menu
+var editingPersonal = false; // If user is editing information in Personal menu
 
 // Define global variables for Scores menu
 var rhythmScores = []; // Array of user's Rhythm of Life scores
 var shapesScores = []; // Array of user's Shapes in Rain scores
-var displayedScores = []; // Array of displayed scores (sliced from rhythmScores or shapesScores)
-var rhythmScoresStart = 0; // Range start for number of scores to display from array
-var rhythmScoresEnd = 11; // Range end for number of scores to display from array
-var shapesScoresStart = 0; // Range start for number of scores to display from array
-var shapesScoresEnd = 11; // Range end for number of scores to display from array
-var moreScoresToDisplay = false; // Variable to track if there are more scores that can be displayed
+var displayedScores = []; // Array of displayed scores
+var rhythmScoresStart = 0; // Range start for number of scores to display
+var rhythmScoresEnd = 11; // Range end for number of scores to display
+var shapesScoresStart = 0; // Range start for number of scores to display
+var shapesScoresEnd = 11; // Range end for number of scores to display
+var moreScoresToDisplay = false; // If there are more scores to display in array
 var rhythmLink = document.getElementById('rhythm-link');
 var rhythmHeader = document.getElementById('rhythm-header');
 var rhythmNoScores = document.getElementById('rhythm-no-scores');
@@ -60,9 +60,9 @@ var shapesUpArrow = document.getElementById('shapes-up-arrow');
 var shapesDownArrow = document.getElementById('shapes-down-arrow');
 
 // Define global variables for Drawings menu
-var drawingStart = 0; // Range start for number of drawings to request from server / display from array
-var drawingEnd = 7; // Range end for number of drawings to request from server / display from array
-var moreDrawingsToDisplay = false; // Variable to track if there are more drawings that can be displayed
+var drawingStart = 0; // Range start for number of drawings to request/display
+var drawingEnd = 7; // Range end for number of drawings to request/display
+var moreDrawingsToDisplay = false; // If there are more drawings to display in array
 var canvashareLinkOne = document.getElementById('canvashare-link-container-one');
 var canvashareLinkTwo = document.getElementById('canvashare-link-container-two');
 var canvashareLinkThree = document.getElementById('canvashare-link-container-three');
@@ -75,9 +75,9 @@ var liked = document.getElementById('liked');
 // Define global variables for Posts menu
 var thoughtWriterLinkOne = document.getElementById('thought-writer-link-container-one');
 var thoughtWriterLinkTwo = document.getElementById('thought-writer-link-container-two');
-var postStart = 0; // Range start for number of posts to request from server / display from array
-var postEnd = 7; // Range end for number of posts to request from server / display from array
-var morePostsExist = false; // Variable to track if there are more posts that can be displayed
+var postStart = 0; // Range start for number of posts to request/display
+var postEnd = 7; // Range end for number of posts to request/display
+var morePostsExist = false; // If there are more posts to display in array
 var postArea = document.getElementById('post-area');
 var postRightArrow = document.getElementById('posts-right-arrow');
 var postLeftArrow = document.getElementById('posts-left-arrow');
@@ -99,12 +99,14 @@ window.onload = function() {
     window.location = '../sign-in/index.html';
     return;
   }
-  // Display confirmation of account creation if user redirected from Create Account page
+  // Display confirmation of account creation if user redirected from Create
+  // Account page
   if (sessionStorage.getItem('account-request') == 'create') {
     confirmCreation();
   }
   // Get SVG from diamond object once it loads
-  diamond = document.getElementById('diamond').contentDocument.getElementById('diamond-svg');
+  diamond = document.getElementById('diamond').contentDocument
+  .getElementById('diamond-svg');
   // Load user's personal information from server
   loadPersonal();
   // Load user's drawings from server
@@ -117,7 +119,8 @@ window.onload = function() {
 // Display confirmation of account creation
 function confirmCreation() {
   // Display successful account creation modal with new username as title
-  document.getElementById('success-title').innerHTML = localStorage.getItem('username');
+  document.getElementById('success-title').innerHTML = localStorage
+  .getItem('username');
   $(success).modal('show');
   // Focus on Okay button to close modal
   document.getElementById('okay').focus();
@@ -131,8 +134,9 @@ function loadPersonal() {
   return fetch(server + '/user', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function(error) {
-    // If server is down, display error banners in Scores menu
+  })
+  // If server is down, display error banners in Scores menu
+  .catch(function(error) {
     rhythmLink.classList.add('hidden');
     rhythmHeader.classList.add('hidden');
     rhythmNoScores.classList.add('hidden');
@@ -145,7 +149,8 @@ function loadPersonal() {
   }).then(function(response) {
     if (response.ok) {
       response.json().then(function(info) {
-        // Fill in user's personal information to Personal menu and stats to Stats menu
+        // Fill in user's personal information to Personal menu and stats to
+        // Stats menu
         aboutInput.value = info['about'];
         usernameInput.value = info['username'];
         firstNameInput.value = info['first_name'];
@@ -159,22 +164,28 @@ function loadPersonal() {
         updateFontColors();
         iconColorPicker.value = info['icon_color'];
         diamond.style.fill = info['icon_color'];
-        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY' format
+        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY'
+        // format
         var dateTime = new Date(info['member_since']);
-        document.getElementById('member-stat').innerHTML = dateTime.toLocaleDateString();
-        document.getElementById('rhythm-plays-stat').innerHTML = info['rhythm_plays'];
+        document.getElementById('member-stat').innerHTML = dateTime
+        .toLocaleDateString();
+        document.getElementById('rhythm-plays-stat')
+        .innerHTML = info['rhythm_plays'];
         rhythmScores = info['rhythm_scores'];
         // Load Rhythm of Life scores to Scores menu with array from server
         displayScores('rhythm');
-        document.getElementById('shapes-plays-stat').innerHTML = info['shapes_plays'];
+        document.getElementById('shapes-plays-stat')
+        .innerHTML = info['shapes_plays'];
         shapesScores = info['shapes_scores'];
         // Load Shapes in Rain scores to Scores menu with array from server
         displayScores('shapes');
         likedDrawings = info['liked_drawings'];
-        document.getElementById('drawings-stat').innerHTML = info['drawing_number'];
+        document.getElementById('drawings-stat')
+        .innerHTML = info['drawing_number'];
         document.getElementById('liked-stat').innerHTML = likedDrawings.length;
         document.getElementById('posts-stat').innerHTML = info['post_number'];
-        document.getElementById('comments-stat').innerHTML = info['comment_number'];
+        document.getElementById('comments-stat')
+        .innerHTML = info['comment_number'];
       });
       return;
     }
@@ -203,11 +214,13 @@ function displayScores(game) {
       rhythmNoScores.classList.remove('hidden');
       return;
     }
-    // Otherwise, set displayed scores as scores array sliced to requested number of scores
+    // Otherwise, set displayed scores as scores array sliced to requested
+    // number of scores
     displayedScores = rhythmScores.slice(rhythmScoresStart, rhythmScoresEnd);
     var scoresStart = rhythmScoresStart;
     var scoresEnd = rhythmScoresEnd;
-    // Unhide Scores menu header for Rhythm of Life scores and hide error and no score banners
+    // Unhide Scores menu header for Rhythm of Life scores and hide error and
+    // no score banners
     rhythmLink.classList.remove('hidden');
     rhythmHeader.classList.remove('hidden');
     rhythmError.classList.add('hidden');
@@ -228,11 +241,13 @@ function displayScores(game) {
       shapesNoScores.classList.remove('hidden');
       return;
     }
-    // Otherwise, set displayed scores as scores array sliced to requested number of scores
+    // Otherwise, set displayed scores as scores array sliced to requested
+    // number of scores
     displayedScores = shapesScores.slice(shapesScoresStart, shapesScoresEnd);
     var scoresStart = shapesScoresStart;
     var scoresEnd = shapesScoresEnd;
-    // Unhide Scores menu header for Shapes in Rain scores and hide error and no score banners
+    // Unhide Scores menu header for Shapes in Rain scores and hide error and
+    // no score banners
     shapesLink.classList.remove('hidden');
     shapesHeader.classList.remove('hidden');
     shapesError.classList.add('hidden');
@@ -243,7 +258,8 @@ function displayScores(game) {
     var upArrow = shapesUpArrow;
     var downArrow = shapesDownArrow;
   }
-  // If there are scores to display in array, assess if there are more than sliced scores - 1 (number of displayed scores) in array
+  // If there are scores to display in array, assess if there are more than
+  // sliced scores - 1 (number of displayed scores) in array
   if (displayedScores.length != 0) {
     if (displayedScores.length > (scoresEnd - scoresStart - 1)) {
       moreScoresToDisplay = true;
@@ -262,9 +278,11 @@ function displayScores(game) {
       scoreRow.classList.add('w-100');
       scoreRow.classList.add('d-flex');
       scoreRow.classList.add('justify-content-center');
-      // Set data-number attribute to track the score number for displaying more scores later
+      // Set data-number attribute to track the score number for displaying
+      // more scores later
       scoreRow.dataset.number = scoresStart + i;
-      // Create column for displaying star next to first score in total scores array (high score)
+      // Create column for displaying star next to first score in total scores
+      // array (high score)
       var starCol = document.createElement('div');
       starCol.classList.add('col-1');
       if (scoreRow.dataset.number == 0) {
@@ -287,15 +305,18 @@ function displayScores(game) {
       // Create column for score timestamp
       var scoreTimestampCol = document.createElement('div');
       scoreTimestampCol.classList.add('col-6');
-      // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+      // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+      // HH:MM AM/PM' format
       var dateTime = new Date(displayedScores[i].timestamp);
-      scoreTimestampCol.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+      scoreTimestampCol.innerHTML = dateTime.toLocaleString()
+      .replace(/:\d{2}\s/,' ');
       scoreData.append(scoreRow);
       scoreRow.append(starCol);
       scoreRow.append(scoreCol);
       scoreRow.append(scoreTimestampCol);
     }
-    // If first score displayed in score area is not score 0 (i.e., there are lower-numbered scores to display), display up navigation arrow
+    // If first score displayed in score area is not score 0 (i.e., there are
+    // lower-numbered scores to display), display up navigation arrow
     if (scoreData.getElementsByClassName('row')[0].dataset.number != 0) {
       upArrow.classList.add('display');
     }
@@ -321,8 +342,9 @@ function loadDrawings() {
     .getItem('username')) + '?start=' + drawingStart + '&end=' + drawingEnd, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function(error) {
-    // If server is down, clear drawing area and hide navigation arrows
+  })
+  // If server is down, clear drawing area and hide navigation arrows
+  .catch(function(error) {
     drawingArea.innerHTML = '';
     drawingLeftArrow.classList.remove('display');
     drawingRightArrow.classList.remove('display');
@@ -339,7 +361,8 @@ function loadDrawings() {
       });
       return;
     }
-    // Otherwise, if server responds with error, clear drawing area and hide navigation arrows
+    // Otherwise, if server responds with error, clear drawing area and hide
+    // navigation arrows
     drawingArea.innerHTML = '';
     drawingLeftArrow.classList.remove('display');
     drawingRightArrow.classList.remove('display');
@@ -353,13 +376,15 @@ function loadDrawings() {
 
 // Display passed array of drawings in drawing area
 function displayDrawings(drawings) {
-  // If there are no drawings sent from server, clear drawing area and display CanvaShare link
+  // If there are no drawings sent from server, clear drawing area and display
+  // CanvaShare link
   if (drawings.length == 0) {
     drawingArea.innerHTML = '';
     // Hide left and right navigation arrows
     drawingLeftArrow.classList.remove('display');
     drawingRightArrow.classList.remove('display');
-    // If user is on the "Mine" view in the Drawings menu, display link to create drawings
+    // If user is on the "Mine" view in the Drawings menu, display link to
+    // create drawings
     if (mine.classList.contains('selected')) {
       canvashareLinkOne.classList.add('hidden');
       canvashareLinkTwo.classList.remove('hidden');
@@ -378,7 +403,8 @@ function displayDrawings(drawings) {
   canvashareLinkThree.classList.add('hidden');
   // Clear drawing area to populate with passed array of drawings
   drawingArea.innerHTML = '';
-  // Assess if there are more than requested drawings - 1 (number of loaded drawings) in array
+  // Assess if there are more than requested drawings - 1 (number of loaded
+  // drawings) in array
   if (drawings.length > (drawingEnd - drawingStart - 1)) {
     moreDrawingsToDisplay = true;
     var drawingsLoadNumber = 6;
@@ -392,12 +418,14 @@ function displayDrawings(drawings) {
     // Create container for drawing and its components
     var drawingContainer = document.createElement('div');
     drawingContainer.classList.add('drawing-container');
-    // Set data-number attribute to track the drawing number for displaying more drawings later
+    // Set data-number attribute to track the drawing number for displaying
+    // more drawings later
     drawingContainer.dataset.number = drawingStart + i;
     // Create container for drawing title
     var drawingTitle = document.createElement('div');
     drawingTitle.classList.add('drawing-title');
-    // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+    // Set data-drawing attribute as drawing file name for later identification,
+    // with URI-encoded characters
     drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
     // Create drawing image
     var drawing = document.createElement('img');
@@ -411,11 +439,13 @@ function displayDrawings(drawings) {
     var drawingLikes = document.createElement('div');
     drawingLikes.classList.add('drawing-likes');
     drawingLikes.title = 'Likes';
-    // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+    // Set data-drawing attribute as drawing file name for later
+    // identification, with URI-encoded characters
     drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
     // Create text to display number of likes
     var likeText = document.createElement('text');
-    // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+    // Set data-drawing attribute as drawing file name for later
+    // identification, with URI-encoded characters
     likeText.dataset.drawing = encodeURIComponent(drawings[i]);
     // Create drawing views container
     var drawingViews = document.createElement('div');
@@ -427,7 +457,8 @@ function displayDrawings(drawings) {
     viewsIcon.classList.add('fa-eye');
     // Create text to display number of views
     var viewText = document.createElement('text');
-    // Set data-drawing attribute as drawing file name for later identification, with URI-encoded characters
+    // Set data-drawing attribute as drawing file name for later
+    // identification, with URI-encoded characters
     viewText.dataset.drawing = encodeURIComponent(drawings[i]);
     drawingArea.append(drawingContainer);
     drawingContainer.append(drawingTitle);
@@ -447,8 +478,10 @@ function displayDrawings(drawings) {
     // Fill in drawing title, views, and likes
     getDrawingInfo(encodeURIComponent(drawings[i]));
   }
-  // If first drawing displayed in drawing area is not drawing 0 (i.e., there are lower-numbered drawings to display), display left navigation arrow
-  if (drawingArea.getElementsByClassName('drawing-container')[0].dataset.number != 0) {
+  // If first drawing displayed in drawing area is not drawing 0 (i.e., there
+  // are lower-numbered drawings to display), display left navigation arrow
+  if (drawingArea.getElementsByClassName('drawing-container')[0].dataset
+  .number != 0) {
     drawingLeftArrow.classList.add('display');
   }
   // Otherwise, hide left arrow
@@ -468,11 +501,12 @@ function displayDrawings(drawings) {
 
 // Get title and number of views and likes for passed drawing file
 function getDrawingInfo(drawingFile) {
-  return fetch(server + '/canvashare/drawing-info/' + drawingFile.split('.png')[0])
-  .then(function(response) {
+  return fetch(server + '/canvashare/drawing-info/' + drawingFile
+  .split('.png')[0]).then(function(response) {
     response.json().then(function(drawingInfo) {
       // Get elements that have data-drawing attribute set as file name
-      var fileElements = document.querySelectorAll('[data-drawing="' + drawingFile + '"]');
+      var fileElements = document
+      .querySelectorAll('[data-drawing="' + drawingFile + '"]');
       // Set title and number of likes and views for drawing
       fileElements[0].innerHTML = drawingInfo['title'];
       fileElements[2].innerHTML = drawingInfo['likes'];
@@ -493,8 +527,9 @@ function loadPosts() {
     .getItem('username')) + '?start=' + postStart + '&end=' + postEnd, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
-  }).catch(function(error) {
-    // If server is down, clear post area and hide navigation arrows
+  })
+  // If server is down, clear post area and hide navigation arrows
+  .catch(function(error) {
     postArea.innerHTML = '';
     postLeftArrow.classList.remove('display');
     postRightArrow.classList.remove('display');
@@ -505,7 +540,8 @@ function loadPosts() {
   }).then(function(response) {
     if (response.ok) {
       response.json().then(function(posts) {
-        // If there are no posts sent from server, clear post area and hide navigation arrows
+        // If there are no posts sent from server, clear post area and hide
+        // navigation arrows
         if (posts.length == 0) {
           postArea.innerHTML = '';
           postLeftArrow.classList.remove('display');
@@ -519,7 +555,8 @@ function loadPosts() {
         postArea.innerHTML = '';
         thoughtWriterLinkOne.classList.add('hidden');
         thoughtWriterLinkTwo.classList.add('hidden');
-        // Assess if there are more than requested posts - 1 (number of loaded posts) on server
+        // Assess if there are more than requested posts - 1 (number of loaded
+        // posts) on server
         if (posts.length > (postEnd - postStart - 1)) {
           morePostsExist = true;
           postsLoadNumber = postEnd - postStart - 1;
@@ -533,7 +570,8 @@ function loadPosts() {
           // Create container for post and its components
           var postContainer = document.createElement('div');
           postContainer.classList.add('post-container');
-          // Set data-number attribute to track the post number for displaying more posts later
+          // Set data-number attribute to track the post number for displaying
+          // more posts later
           postContainer.dataset.number = postStart + i;
           // Create container for post title
           var postTitle = document.createElement('div');
@@ -555,9 +593,11 @@ function loadPosts() {
           // Create container for post timestamp
           var postTimestamp = document.createElement('div');
           postTimestamp.classList.add('post-time');
-          // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+          // Convert UTC timestamp from server to local timestamp in
+          // 'MM/DD/YYYY, HH:MM AM/PM' format
           var dateTime = new Date(posts[i].timestamp);
-          postTimestamp.innerHTML = dateTime.toLocaleString().replace(/:\d{2}\s/,' ');
+          postTimestamp.innerHTML = dateTime.toLocaleString()
+          .replace(/:\d{2}\s/,' ');
           // Create container for number of post comments if post is public
           if (posts[i].public) {
             var postComments = document.createElement('div');
@@ -568,10 +608,12 @@ function loadPosts() {
             } else {
               postComments.innerHTML = posts[i].comments.length + ' comments';
             }
-            // Set data-writer and data-timestamp attributes to save in sessionStorage when clicked
+            // Set data-writer and data-timestamp attributes to save in
+            // sessionStorage when clicked
             postComments.dataset.writer = localStorage.getItem('username');
             postComments.dataset.timestamp = posts[i].timestamp;
-            // Set sessionStorage items when post comment number is clicked and go to post page's comments
+            // Set sessionStorage items when post comment number is clicked and
+            // go to post page's comments
             postComments.onclick = function() {
               sessionStorage.setItem('writer', this.dataset.writer);
               sessionStorage.setItem('timestamp', this.dataset.timestamp);
@@ -591,15 +633,18 @@ function loadPosts() {
           postContainer.append(postInfo);
           postInfo.append(postTimestamp);
           postInfo.append(postComments);
-          // Set sessionStorage timestamp item when post title is clicked and go to editor page
+          // Set sessionStorage timestamp item when post title is clicked and
+          // go to editor page
           postTitle.onclick = function() {
             sessionStorage.setItem('timestamp', this.dataset.timestamp);
             window.location = '../../thought-writer/editor/index.html';
             return;
           }
         }
-        // If first post displayed in post area is not post 0 (i.e., there are lower-numbered posts to display), display left navigation arrow
-        if (postArea.getElementsByClassName('post-container')[0].dataset.number != 0) {
+        // If first post displayed in post area is not post 0 (i.e., there are
+        // lower-numbered posts to display), display left navigation arrow
+        if (postArea.getElementsByClassName('post-container')[0].dataset
+        .number != 0) {
           postLeftArrow.classList.add('display');
         }
         // Otherwise, hide left arrow
@@ -617,7 +662,8 @@ function loadPosts() {
       });
       return;
     }
-    // Otherwise, if server responds with error, clear post area and hide navigation arrows
+    // Otherwise, if server responds with error, clear post area and hide
+    // navigation arrows
     postArea.innerHTML = '';
     postLeftArrow.classList.remove('display');
     postRightArrow.classList.remove('display');
@@ -631,13 +677,16 @@ function loadPosts() {
 
 // Define menu navigation functions
 
-// Flip menu from front to back view and vice versa when front menus and back buttons are clicked respectively
+// Flip menu from front to back view and vice versa when front menus and back
+// buttons are clicked respectively
 for (var i = 0; i < document.getElementsByClassName('front-menu').length; i++) {
-  document.getElementsByClassName('front-menu')[i].addEventListener('click', flipMenu, false);
+  document.getElementsByClassName('front-menu')[i]
+  .addEventListener('click', flipMenu, false);
 }
 
 for (var i = 0; i < document.getElementsByClassName('back-button').length; i++) {
-  document.getElementsByClassName('back-button')[i].addEventListener('click', flipMenu, false);
+  document.getElementsByClassName('back-button')[i]
+  .addEventListener('click', flipMenu, false);
 }
 
 function flipMenu() {
@@ -693,7 +742,8 @@ shapesDownArrow.onclick = function() {
 // Request lower-numbered drawings if left arrow is clicked in Drawings menu
 drawingLeftArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    // If user is on Mine view in Drawings menu, request lower-numbered drawings from server
+    // If user is on Mine view in Drawings menu, request lower-numbered
+    // drawings from server
     if (mine.classList.contains('selected')) {
       drawingStart = drawingStart - 6;
       drawingEnd = drawingEnd - 6;
@@ -711,7 +761,8 @@ drawingLeftArrow.onclick = function() {
 // Request higher-numbered drawings if right arrow is clicked in Drawings menu
 drawingRightArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    // If user is on Mine view in Drawings menu, request higher-numbered drawings from server
+    // If user is on Mine view in Drawings menu, request higher-numbered
+    // drawings from server
     if (mine.classList.contains('selected')) {
       drawingStart = drawingStart + 6;
       drawingEnd = drawingEnd + 6;
@@ -726,7 +777,8 @@ drawingRightArrow.onclick = function() {
   return;
 }
 
-// Request lower-numbered posts from server if left arrow is clicked in Posts menu
+// Request lower-numbered posts from server if left arrow is clicked in Posts
+// menu
 postLeftArrow.onclick = function() {
   if (this.classList.contains('display')) {
     postStart = postStart - 6;
@@ -736,7 +788,8 @@ postLeftArrow.onclick = function() {
   return;
 }
 
-// Request higher-numbered posts from server if right arrow is clicked in Posts menu
+// Request higher-numbered posts from server if right arrow is clicked in Posts
+// menu
 postRightArrow.onclick = function() {
   if (this.classList.contains('display')) {
     postStart = postStart + 6;
@@ -754,7 +807,8 @@ function toggleDrawings() {
   // Set drawing request numbers to starting numbers
   drawingStart = 0;
   drawingEnd = 7;
-  // If the Liked button is clicked, set the button as selected and display requested drawings
+  // If the Liked button is clicked, set the button as selected and display
+  // requested drawings
   if (this == liked) {
     liked.classList.add('selected');
     mine.classList.remove('selected');
@@ -776,14 +830,17 @@ document.getElementById('confirm').onclick = deleteAccount;
 
 function deleteAccount() {
   return fetch(server + '/user', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'DELETE',
-  }).catch(function(error) {
-    // Display warning if server is down
+  })
+  // Display warning if server is down
+  .catch(function(error) {
     window.alert('Your request did not go through. Please try again soon.');
     return;
   }).then(function(response) {
-    // Take user to Create Account page with request to delete account if server responds without error
+    // Take user to Create Account page with request to delete account if
+    // server responds without error
     if (response.ok) {
       sessionStorage.setItem('account-request', 'delete');
       window.location.href = '../create-account/index.html';
@@ -795,7 +852,8 @@ function deleteAccount() {
   });
 }
 
-// Click hidden color picker input when profile background is clicked (must focus first to open)
+// Click hidden color picker input when profile background is clicked (must
+// focus first to open)
 profileBackground.onclick = function(e) {
   if (e.target == this) {
     backgroundColorPicker.focus();
@@ -804,9 +862,12 @@ profileBackground.onclick = function(e) {
   return;
 }
 
-// Click hidden color picker input when profile rows are clicked (must focus first to open)
-for (var i = 0; i < profileBackground.getElementsByClassName('row').length; i++) {
-  profileBackground.getElementsByClassName('row')[i].addEventListener('click', function(e) {
+// Click hidden color picker input when profile rows are clicked (must focus
+// first to open)
+for (var i = 0; i < profileBackground.getElementsByClassName('row')
+.length; i++) {
+  profileBackground.getElementsByClassName('row')[i]
+  .addEventListener('click', function(e) {
     if (e.target == this) {
       backgroundColorPicker.focus();
       backgroundColorPicker.click();
@@ -815,14 +876,16 @@ for (var i = 0; i < profileBackground.getElementsByClassName('row').length; i++)
   }, false);
 }
 
-// Assess darkness of user's profile background color and adjust font color of menu items to light/dark in response
+// Assess darkness of user's profile background color and adjust font color of
+// menu items to light/dark in response
 function updateFontColors() {
-  var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(backgroundColorPicker
-    .value);
+  var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+  .exec(backgroundColorPicker.value);
   var r = parseInt(rgb[1], 16);
   var g = parseInt(rgb[2], 16);
   var b = parseInt(rgb[3], 16);
-  // If user is editing information in Personal menu, only change color of title elements for inputs and Delete Account button
+  // If user is editing information in Personal menu, only change color of
+  // title elements for inputs and Delete Account button
   if (editingPersonal) {
     if (r + g + b > 382) {
       profileBackground.classList.remove('light');
@@ -880,21 +943,24 @@ function updateFontColors() {
   return;
 }
 
-// Click hidden color picker input when profile icon is clicked (must focus first to open)
+// Click hidden color picker input when profile icon is clicked (must focus
+// first to open)
 diamond.onclick = function() {
   iconColorPicker.focus();
   iconColorPicker.click();
   return;
 }
 
-// Click hidden color picker input when profile icon container is clicked (must focus first to open)
+// Click hidden color picker input when profile icon container is clicked (must
+// focus first to open)
 profileIcon.onclick = function() {
   iconColorPicker.focus();
   iconColorPicker.click();
   return;
 }
 
-// Change color of profile background when user selects color from background color picker
+// Change color of profile background when user selects color from background
+// color picker
 backgroundColorPicker.oninput = function() {
   profileBackground.style.backgroundColor = this.value;
   // Update field font colors based on background color
@@ -902,7 +968,8 @@ backgroundColorPicker.oninput = function() {
   return;
 }
 
-// Change diamond profile icon color when user selects color from icon color picker
+// Change diamond profile icon color when user selects color from icon color
+// picker
 iconColorPicker.oninput = function() {
   diamond.style.fill = this.value;
   return;
@@ -913,14 +980,16 @@ usernameInput.onfocusout = assessUsername;
 
 function assessUsername() {
   var username = usernameInput.value;
-  // Display warning that username cannot be blank if input has no non-space characters
+  // Display warning that username cannot be blank if input has no non-space
+  // characters
   if (!/\S/.test(username)) {
     document.getElementById('user-warning-two').style.display = 'none';
     document.getElementById('user-warning-three').style.display = 'none';
     document.getElementById('user-warning-one').style.display = 'block';
     return false;
   }
-  // Display warning that username has unacceptable characters if there are non-alphanumeric, underscore, or dash characters
+  // Display warning that username has unacceptable characters if there are
+  // non-alphanumeric, underscore, or dash characters
   if (!username.match(/^[a-zA-Z0-9_-]+$/)) {
     document.getElementById('user-warning-one').style.display = 'none';
     document.getElementById('user-warning-three').style.display = 'none';
@@ -939,7 +1008,8 @@ passwordInput.onfocusout = assessPassword;
 
 function assessPassword() {
   var password = passwordInput.value;
-  // Display warning that password is too short if input is less than 8 characters
+  // Display warning that password is too short if input is less than 8
+  // characters
   if (password.length > 0 && password.length < 8) {
     document.getElementById('pass-warning-one').style.display = 'block';
     return false;
@@ -949,7 +1019,8 @@ function assessPassword() {
   return true;
 }
 
-// Determine if confirmation password matches original password when user focuses out of field
+// Determine if confirmation password matches original password when user
+// focuses out of field
 confirmPassInput.onfocusout = assessPasswordMatch;
 
 function assessPasswordMatch() {
@@ -965,13 +1036,15 @@ function assessPasswordMatch() {
   return true;
 }
 
-// Determine if email address has errors when user focuses out of field or public checkbox
+// Determine if email address has errors when user focuses out of field or
+// public checkbox
 emailInput.onfocusout = assessEmail;
 emailPublicInput.onfocusout = assessEmail;
 
 function assessEmail() {
   var email = emailInput.value;
-  // If email address is marked as public or is not blank and is missing an "@" symbol, display warning
+  // If email address is marked as public or is not blank and is missing an "@"
+  // symbol, display warning
   if ((email.length > 0 || emailPublicInput.checked) && !email.match('@')) {
     document.getElementById('email-warning').style.display = 'block';
     return false;
@@ -981,7 +1054,8 @@ function assessEmail() {
   return true;
 }
 
-// Enter edit mode when Edit button is clicked or save edits when in edit mode in Personal menu
+// Enter edit mode when Edit button is clicked or save edits when in edit mode
+// in Personal menu
 editButton.onclick = editPersonal;
 
 function editPersonal() {
@@ -1021,14 +1095,16 @@ function editPersonal() {
   return;
 }
 
-// If user is in edit mode, check that username, password, confirm password, and email address fields have no errors when user clicks Save button
+// If user is in edit mode, check that username, password, confirm password,
+// and email address fields have no errors when user clicks Save button
 saveButton.onclick = function() {
   if (editingPersonal) {
     // Do nothing if errors are present
     if (!assessUsername() || !assessPassword() || !assessPasswordMatch() || !assessEmail()) {
       return;
     }
-    // If user requests to change username or password, prompt user to enter password to verify changes in modal
+    // If user requests to change username or password, prompt user to enter
+    // password to verify changes in modal
     if (usernameInput.value != localStorage.getItem('username') || passwordInput
     .value != '') {
       $(verify).modal('show');
@@ -1043,7 +1119,8 @@ saveButton.onclick = function() {
   return;
 }
 
-// Click Submit button when enter key is clicked in verify password input when submitting edits to personal information
+// Click Submit button when enter key is clicked in verify password input when
+// submitting edits to personal information
 verifyPassInput.addEventListener('keyup', function(e) {
   if (e.keyCode == 13) {
     e.preventDefault();
@@ -1052,7 +1129,8 @@ verifyPassInput.addEventListener('keyup', function(e) {
   return;
 }, false);
 
-// Check that password is correct in verify password input when submitting edits to personal information
+// Check that password is correct in verify password input when submitting
+// edits to personal information
 document.getElementById('submit').onclick = checkPassword;
 
 function checkPassword() {
@@ -1060,14 +1138,17 @@ function checkPassword() {
   // Clear verify password input in case user needs to verify edits again
   verifyPassInput.value = '';
   return fetch(server + '/login', {
-    headers: {'Authorization': 'Basic ' + btoa(localStorage.getItem('username') + ':' + verifyPassword)},
+    headers: {'Authorization': 'Basic ' + btoa(localStorage
+    .getItem('username') + ':' + verifyPassword)},
     method: 'GET',
-  }).catch(function(error) {
-    // Display warning if server is down
+  })
+  // Display warning if server is down
+  .catch(function(error) {
     window.alert('Your request did not go through. Please try again soon.');
     return;
   }).then(function(response) {
-    // If user's password was incorrect, display modal with verify password field to try again
+    // If user's password was incorrect, display modal with verify password
+    // field to try again
     if (response.status == 400) {
       response.text().then(function(text) {
         if (text == 'Incorrect password') {
@@ -1103,11 +1184,13 @@ function submitEdits() {
     'about': aboutInput.value
   });
   return fetch(server + '/user', {
-    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage
+    .getItem('token')},
     method: 'PUT',
     body: data,
-  }).catch(function(error) {
-    // Display error if server is down
+  })
+  // Display error if server is down
+  .catch(function(error) {
     window.alert('Your request did not go through. Please try again soon.');
     return;
   }).then(function(response) {
@@ -1118,7 +1201,8 @@ function submitEdits() {
           document.getElementById('user-warning-three').style.display = 'block';
           return;
         }
-        // Otherwise, if username is now different, update localStorage username and token and profile link
+        // Otherwise, if username is now different, update localStorage
+        // username and token and profile link
         if (usernameInput.value != localStorage.getItem('username')) {
           localStorage.removeItem('username');
           localStorage.setItem('username', usernameInput.value);
@@ -1168,7 +1252,8 @@ function submitEdits() {
 cancelButton.onclick = cancelEdits;
 
 function cancelEdits() {
-  // Return Personal menu fields to initial values set when user clicked Edit button
+  // Return Personal menu fields to initial values set when user clicked Edit
+  // button
   iconColorPicker.value = iconColor;
   diamond.style.fill = iconColor;
   aboutInput.value = aboutBlurb;

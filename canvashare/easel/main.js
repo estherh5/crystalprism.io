@@ -36,14 +36,17 @@ window.onload = function() {
 
 // Set up drawing space
 function assembleEasel() {
-  // Create new image as initial starting drawing and set CORS requests as anonymous (no credentials required to display image)
+  // Create new image as initial starting drawing and set CORS requests as
+  // anonymous (no credentials required to display image)
   initialDrawing = new Image();
   initialDrawing.crossOrigin = 'Anonymous';
-  // Set initial drawing source as sessionStorage item if not null (i.e., if user came from gallery)
+  // Set initial drawing source as sessionStorage item if not null (i.e., if
+  // user came from gallery)
   if (sessionStorage.getItem('drawing-source') != null) {
     initialDrawing.src = sessionStorage.getItem('drawing-source');
     sessionStorage.removeItem('drawing-source');
-    // Set drawing title as sessionStorage item if not null (i.e., if user is continuing previous drawing from gallery)
+    // Set drawing title as sessionStorage item if not null (i.e., if user is
+    // continuing previous drawing from gallery)
     if (sessionStorage.getItem('drawing-title') != null) {
       drawingTitle.value = sessionStorage.getItem('drawing-title');
       sessionStorage.removeItem('drawing-title');
@@ -53,7 +56,8 @@ function assembleEasel() {
       drawingTitle.value = '';
     }
   }
-  // Otherwise, set initial drawing source as localStorage item if not null (i.e., if user came to easel page directly)
+  // Otherwise, set initial drawing source as localStorage item if not null
+  // (i.e., if user came to easel page directly)
   else if (localStorage.getItem('drawing-source') != null) {
     initialDrawing.src = localStorage.getItem('drawing-source');
     // Set drawing title as localStorage item if not null
@@ -65,7 +69,8 @@ function assembleEasel() {
       drawingTitle.value = '';
     }
   }
-  // Otherwise, set initial drawing source to blank white canvas with blank title
+  // Otherwise, set initial drawing source to blank white canvas with blank
+  // title
   else {
     initialDrawing.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAAAAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbhVKrAAAAAElFTkSuQmCC';
     drawingTitle.value = '';
@@ -117,11 +122,13 @@ function assembleEasel() {
 
 // Update palette colors when user clicks palette option
 for (var i = 0; i < document.getElementsByClassName('palette').length; i++) {
-  document.getElementsByClassName('palette')[i].addEventListener('click', updatePalette, false);
+  document.getElementsByClassName('palette')[i]
+  .addEventListener('click', updatePalette, false);
 }
 
 function updatePalette() {
-  // Remove selected class from previous palette button and add it to clicked palette button
+  // Remove selected class from previous palette button and add it to clicked
+  // palette button
   currentPaletteButton.classList.remove('selected');
   currentPaletteButton = this;
   currentPaletteButton.classList.add('selected');
@@ -131,15 +138,18 @@ function updatePalette() {
   currentPaint.classList.remove('selected');
   // Update palette colors with new palette's colors
   for (var i = 0; i < document.getElementsByClassName('paint').length; i++) {
-    document.getElementsByClassName('paint')[i].setAttribute('fill', currentPalette[i]);
-    document.getElementsByClassName('paint')[i].setAttribute('data-color', currentPalette[i]);
+    document.getElementsByClassName('paint')[i]
+    .setAttribute('fill', currentPalette[i]);
+    document.getElementsByClassName('paint')[i]
+    .setAttribute('data-color', currentPalette[i]);
     document.getElementsByClassName('paint')[i].classList.remove('outline');
     // Add outline around white color in palette
     if (currentPalette[i] == '#ffffff') {
       document.getElementsByClassName('paint')[i].classList.add('outline');
     }
   }
-  // Set first paint color as selected paint and update user's cursor on canvas to reflect color
+  // Set first paint color as selected paint and update user's cursor on canvas
+  // to reflect color
   currentPaint = document.getElementsByClassName('paint')[0];
   currentPaint.classList.add('selected');
   updateBrush();
@@ -148,7 +158,8 @@ function updatePalette() {
 
 // Update current paint color to paint user clicks
 function updatePaint() {
-  // Remove selected class from previously selected paint color and add it to clicked paint color
+  // Remove selected class from previously selected paint color and add it to
+  // clicked paint color
   currentPaint.classList.remove('selected');
   currentPaint = this;
   currentPaint.classList.add('selected');
@@ -161,7 +172,8 @@ function updatePaint() {
 function updateBrush() {
   // Remove previous cursor color
   document.getElementById('canvas').style.cursor = '';
-  // Turn cursor color circle SVG into string and append to cursor canvas using canvg
+  // Turn cursor color circle SVG into string and append to cursor canvas using
+  // canvg
   var brushCanvas = document.getElementById('brush');
   var brushCursor = document.getElementById('brush-cursor');
   brushCursor.setAttribute('fill', currentPaint.dataset.color);
@@ -177,13 +189,15 @@ function updateBrush() {
 
 //
 function startBrushStroke(event) {
-  // Do nothing if this is not the first touch on touchscreen (always true for mouse event)
+  // Do nothing if this is not the first touch on touchscreen (always true for
+  // mouse event)
   if (!event.primary) {
     return;
   }
   // Get the point the user clicked on the canvas
   startPoint = new createjs.Point(drawingCanvas.mouseX, drawingCanvas.mouseY);
-  // Clone start point to have as middle point when drawing curve in moveBrush function
+  // Clone start point to have as middle point when drawing curve in moveBrush
+  // function
   midPoint = startPoint.clone();
   // Draw a circle at the point the user clicked on the canvas
   drawing.graphics.clear().beginFill(currentPaint.dataset.color)
@@ -196,11 +210,13 @@ function startBrushStroke(event) {
 
 //
 function moveBrush(event) {
-  // Do nothing if this is not the first touch on touchscreen (always true for mouse event)
+  // Do nothing if this is not the first touch on touchscreen (always true for
+  // mouse event)
   if (!event.primary) {
     return;
   }
-  // Set the end point for the stroke (start point + point the user moves to on the canvas, shifted 1 bit)
+  // Set the end point for the stroke (start point + point the user moves to
+  // on the canvas, shifted 1 bit)
   var endPoint = new createjs.Point(startPoint.x + drawingCanvas
     .mouseX >> 1, startPoint.y + drawingCanvas.mouseY >> 1);
   // Draw curve from start point to end point, through mid point
@@ -219,7 +235,8 @@ function moveBrush(event) {
 
 // Remove mouse movement listener when user releases mouse on canvas
 function endBrushStroke(event) {
-  // Do nothing if this is not the first touch on touchscreen (always true for mouse event)
+  // Do nothing if this is not the first touch on touchscreen (always true for
+  // mouse event)
   if (!event.primary) {
     return;
   }
@@ -228,7 +245,8 @@ function endBrushStroke(event) {
 }
 
 
-// Save drawing source and title to localStorage when user draws on canvas and types in drawing title
+// Save drawing source and title to localStorage when user draws on canvas and
+// types in drawing title
 drawingTitle.onkeyup = saveData;
 
 function saveData() {
@@ -242,7 +260,8 @@ function saveData() {
 window.onclick = clearEmptyTitle;
 
 function clearEmptyTitle(e) {
-  // If user clicks anywhere on page that is not the drawing title, clear the drawing title if there are no non-space characters
+  // If user clicks anywhere on page that is not the drawing title, clear the
+  // drawing title if there are no non-space characters
   if (!drawingTitle.contains(e.target)) {
     if (!/\S/.test(drawingTitle.value)) {
       drawingTitle.value = '';
@@ -289,7 +308,8 @@ function postDrawing() {
     window.alert('Your drawing cannot be blank.');
     return;
   }
-  // While drawing title has no non-space characters, prompt user for title until they enter one or cancel
+  // While drawing title has no non-space characters, prompt user for title
+  // until they enter one or cancel
   while (!/\S/.test(drawingTitle.value)) {
     enteredTitle = prompt('Enter a title for your drawing. Tip: Click "[title]" to enter a title at any time.');
     if (!/\S/.test(enteredTitle)) {
@@ -298,28 +318,32 @@ function postDrawing() {
       return;
     } else {
       drawingTitle.value = enteredTitle;
-      // Save new drawing title to session/localStorage
+      // Save new drawing title to localStorage
       saveData();
     }
   }
-  // If user is not logged in, warn user that login is required to post to gallery
+  // If user is not logged in, warn user that login is required to post to
+  // gallery
   if (localStorage.getItem('token') == null) {
     window.alert('You must log in to post your drawing to the gallery.');
     return;
   }
   // Otherwise, send data URI of drawing to server
-  var data = JSON.stringify({'drawing': drawingCanvas.toDataURL()});
-  return fetch(server + '/canvashare/drawing/' + encodeURIComponent(localStorage
-    .getItem('username')) + '/' + encodeURIComponent(drawingTitle.value), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+  var data = JSON.stringify({'drawing': drawingCanvas
+  .toDataURL(), 'title': drawingTitle.value});
+  return fetch(server + '/canvashare/drawing', {
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
-  }).catch(function(error) {
-    // Display error message if server is down
+  })
+  // Display error message if server is down
+  .catch(function(error) {
     window.alert('Your drawing did not get posted. Please try again soon.');
     return;
   }).then(function(response) {
-    // If drawing was posted successfully, clear drawing from easel and storage items and redirect to gallery page
+    // If drawing was posted successfully, clear drawing from easel and storage
+    // items and redirect to gallery page
     response.text().then(function(text) {
       if (text == 'Success!') {
         clearDrawing();
@@ -337,7 +361,8 @@ function postDrawing() {
 document.getElementById('download').onclick = downloadDrawing;
 
 function downloadDrawing() {
-  // While drawing title has no non-space characters, prompt user for title until they enter one or cancel
+  // While drawing title has no non-space characters, prompt user for title
+  // until they enter one or cancel
   while (!/\S/.test(drawingTitle.value)) {
     enteredTitle = prompt('Enter a title for your drawing.');
     if (!/\S/.test(enteredTitle)) {
@@ -346,7 +371,7 @@ function downloadDrawing() {
       return;
     } else {
       drawingTitle.value = enteredTitle;
-      // Save new drawing title to session/localStorage
+      // Save new drawing title to localStorage
       saveData();
     }
   }

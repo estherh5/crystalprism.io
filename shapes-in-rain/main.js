@@ -36,13 +36,15 @@ for (var i = 0; i < shapeObjects.length; i++) {
 }
 
 
-// Create heart rain every 2.5 seconds, with hearts moving down screen every 15 ms
+// Create heart rain every 2.5 seconds, with hearts moving down screen every
+// 15 ms
 setInterval(multiplyHeart, 2500);
 setInterval(rain, 15);
 
 // Clone heart SVG and append it to game space
 function cloneHeart() {
-  var heart = document.getElementById('heart').contentDocument.getElementsByTagName('svg')[0];
+  var heart = document.getElementById('heart').contentDocument
+  .getElementsByTagName('svg')[0];
   var heartClone = heart.cloneNode(true);
   heartClone.classList.add('heart');
   heartClone.setAttribute('height', '6%');
@@ -79,26 +81,32 @@ function rain() {
 }
 
 
-// Create random shape at random x- and y-coordinates with minimal text overlap every 2 seconds
+// Create random shape at random x- and y-coordinates with minimal text overlap
+// every 2 seconds
 setInterval(createRandomShape, 2000);
 
 function createRandomShape() {
   // Generate random y-coordinate between 20 and 80
   var randomYCoordinate = Math.random() * 60 + 20;
-  // If random y-coordinate overlaps with text (between 30% and 60% of screen), generate x-coordinate to minimize overlap
+  // If random y-coordinate overlaps with text (between 30% and 60% of screen),
+  // generate x-coordinate to minimize overlap
   if (randomYCoordinate > 30 && randomYCoordinate < 60) {
-    // Generate number 1 or 2 randomly to determine if x-coordinate should be to right or left of text
+    // Generate number 1 or 2 randomly to determine if x-coordinate should be
+    // to right or left of text
     var rightOrLeft = Math.floor(Math.random() * 2) + 1;
-    // If number is 1, set x-coordinate as random number to left of text (between 5 and 10)
+    // If number is 1, set x-coordinate as random number to left of text
+    // (between 5 and 10)
     if (rightOrLeft == 1) {
       var randomXCoordinate = Math.random() * 5 + 5;
     }
-    // Otherwise, set x-coordinate as random number to right of text (between 90 and 95)
+    // Otherwise, set x-coordinate as random number to right of text (between
+    // 90 and 95)
     else {
       var randomXCoordinate = Math.random() * 5 + 90;
     }
   }
-  // If random y-coordinate does not overlap with text, generate random x-coordinate between 20 and 80
+  // If random y-coordinate does not overlap with text, generate random
+  // x-coordinate between 20 and 80
   else {
     var randomXCoordinate = Math.random() * 60 + 20;
   }
@@ -144,7 +152,8 @@ function createBlast() {
 window.onbeforeunload = sendScore;
 
 function sendScore() {
-  // If user is logged in, determine server based on window location and send score
+  // If user is logged in, determine server based on window location and send
+  // score
   if (localStorage.getItem('username') != null) {
     if (window.location.hostname == 'crystalprism.io') {
       var server = 'https://13.58.175.191/api';
@@ -154,7 +163,8 @@ function sendScore() {
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
     data = JSON.stringify(finalScore);
     return fetch(server + '/shapes-in-rain', {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+      headers: {'Authorization': 'Bearer ' + localStorage
+      .getItem('token'), 'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
     });

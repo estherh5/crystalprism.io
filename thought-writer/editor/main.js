@@ -32,7 +32,8 @@ window.onload = function() {
   displayDraft();
   // Auto-save post every second
   saveInterval = setInterval(savePost, 1000);
-  // If user has post stored in sessionStorage (by clicking post from My Accounts page), request post from server
+  // If user has post stored in sessionStorage (by clicking post from My
+  // Account page), request post from server
   if (sessionStorage.getItem('post-timestamp') != null) {
     openPost();
   }
@@ -100,7 +101,7 @@ function loadPosts() {
   }
   // Otherwise, load previously written posts to cabinet
   return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(localStorage
-    .getItem('username')) + '?start=' + requestStart + '&end=' + requestEnd, {
+  .getItem('username')) + '?start=' + requestStart + '&end=' + requestEnd, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   }).then(function(response) {
@@ -108,12 +109,14 @@ function loadPosts() {
       // Clear posts from cabinet to replace with served posts
       postsContainer.innerHTML = '';
       if (posts.length != 0) {
-        // Assess if there are more than requested posts - 1 (number of loaded posts) on server
+        // Assess if there are more than requested posts - 1 (number of loaded
+        // posts) on server
         if (posts.length > (requestEnd - requestStart - 1)) {
           morePostsOnServer = true;
           var loadNumber = requestEnd - requestStart - 1;
         }
-        // If there are not, load all posts sent from server to post area in cabinet
+        // If there are not, load all posts sent from server to post area in
+        // cabinet
         else {
           morePostsOnServer = false;
           var loadNumber = posts.length;
@@ -126,14 +129,17 @@ function loadPosts() {
           if (cabinetOpen) {
             previousPost.classList.add('display');
           }
-          // Set data-title and data-timestamp attribute to use if post is clicked from cabinet
+          // Set data-title and data-timestamp attribute to use if post is
+          // clicked from cabinet
           previousPost.dataset.title = posts[i].title;
           previousPost.dataset.timestamp = posts[i].timestamp;
-          // Set data-number attribute to track the post number for displaying more posts later
+          // Set data-number attribute to track the post number for displaying
+          // more posts later
           previousPost.dataset.number = requestStart + i;
           // Create Date object from UTC timestamp from server
           var dateTime = new Date(posts[i].timestamp);
-          // Display hover title for post as post title and local timestamp in 'MM/DD/YYYY, HH:MM AM/PM' format
+          // Display hover title for post as post title and local timestamp in
+          // 'MM/DD/YYYY, HH:MM AM/PM' format
           previousPost.title = previousPost.dataset.title + '  ' + dateTime
           .toLocaleString().replace(/:\d{2}\s/,' ');
           previousPost.dataset.public = posts[i].public;
@@ -148,7 +154,8 @@ function loadPosts() {
         }
         // If cabinet is open, display/hide right/left arrows
         if (cabinetOpen) {
-          // If first post displayed in cabinet is not post 0 (i.e., there are lower-numbered posts to display), display left navigation arrow
+          // If first post displayed in cabinet is not post 0 (i.e., there are
+          // lower-numbered posts to display), display left navigation arrow
           if (postsContainer.getElementsByClassName('previous-post')[0].dataset
           .number != 0) {
             document.getElementById('left-arrow').classList.add('display');
@@ -157,7 +164,8 @@ function loadPosts() {
           else {
             document.getElementById('left-arrow').classList.remove('display');
           }
-          // If there are more posts on the server, display right navigation arrow
+          // If there are more posts on the server, display right navigation
+          // arrow
           if (morePostsOnServer) {
             document.getElementById('right-arrow').classList.add('display');
           }
@@ -173,21 +181,25 @@ function loadPosts() {
 
 // Open previous post in editor
 function openPost() {
-  // If user has post stored in sessionStorage (by clicking post from My Accounts page), use timestamp to request post from server
+  // If user has post stored in sessionStorage (by clicking post from My
+  // Account page), use timestamp to request post from server
   if (sessionStorage.getItem('post-timestamp') != null) {
     var timestamp = sessionStorage.getItem('post-timestamp');
-    // Clear sessionStorage item to allow user to open another previous post (i.e., from cabinet)
+    // Clear sessionStorage item to allow user to open another previous post
+    // (i.e., from cabinet)
     sessionStorage.removeItem('post-timestamp');
   }
-  // Otherwise, set requested timestamp based on post/button user clicked to call function
+  // Otherwise, set requested timestamp based on post/button user clicked to
+  // call function
   else {
     var timestamp = this.dataset.timestamp;
   }
   return fetch(server + '/thought-writer/post?writer=' + encodeURIComponent(localStorage
     .getItem('username')) + '&timestamp=' + encodeURIComponent(timestamp), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-  }).catch(function(error) {
-    // Display error message if server is down
+  })
+  // Display error message if server is down
+  .catch(function(error) {
     window.alert('Your request did not go through. Please try again soon.');
     return;
   }).then(function(response) {
@@ -230,7 +242,8 @@ function savePost() {
 window.onclick = clearEmptyTitle;
 
 function clearEmptyTitle(e) {
-  // If user clicks anywhere on page that is not the post title, clear the post title if there are no non-space characters
+  // If user clicks anywhere on page that is not the post title, clear the post
+  // title if there are no non-space characters
   if (!postTitle.contains(e.target)) {
     if (!/\S/.test(postTitle.value)) {
       postTitle.value = '';
@@ -244,8 +257,10 @@ for (var i = 0; i < toolbarButtons.length; i++) {
   toolbarButtons[i].addEventListener('click', formatContent, false);
 }
 
-// Click hidden color picker input when font color icon is clicked (must focus first to open)
-document.getElementById('font-color-icon').addEventListener('click', function() {
+// Click hidden color picker input when font color icon is clicked (must focus
+// first to open)
+document.getElementById('font-color-icon')
+.addEventListener('click', function() {
   document.getElementById('font-color-picker').focus();
   document.getElementById('font-color-picker').click();
   return;
@@ -293,7 +308,8 @@ function togglePublic() {
 
 // Define post action button functions
 
-// Clear in-progress post when user clicks Clear button or when called from another function
+// Clear in-progress post when user clicks Clear button or when called from
+// another function
 document.getElementById('clear-post').onclick = clearPost;
 
 function clearPost() {
@@ -317,7 +333,8 @@ function submitPost() {
     window.alert('Your post cannot be blank.');
     return;
   }
-  // While post title has no non-space characters, prompt user for title until they enter one or cancel
+  // While post title has no non-space characters, prompt user for title until
+  // they enter one or cancel
   while (!/\S/.test(postTitle.value)) {
     var enteredTitle = prompt('Enter a title for your post. Tip: Click "[title]" to enter a title at any time.');
     if (!/\S/.test(enteredTitle.value)) {
@@ -334,13 +351,16 @@ function submitPost() {
     return;
   }
   // Otherwise, submit post to server
-  var data = JSON.stringify({'title': postTitle.value, 'content': post.innerHTML, 'public': publicInput.checked});
+  var data = JSON.stringify({'title': postTitle.value, 'content': post
+  .innerHTML, 'public': publicInput.checked});
   return fetch(server + '/thought-writer/post', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
-  }).catch(function(error) {
-    // Display error message if server is down
+  })
+  // Display error message if server is down
+  .catch(function(error) {
     window.alert('Your post did not go through. Please try again soon.');
     return;
   }).then(function(response) {
@@ -353,7 +373,8 @@ function submitPost() {
         }
         // Reload user's posts to cabinet to include newly submitted post
         loadPosts();
-        // Set data-timestamp attribute for Modify Last Post button in case user wants to modify last post
+        // Set data-timestamp attribute for Modify Last Post button in case
+        // user wants to modify last post
         document.getElementById('go-back').dataset.timestamp = text;
         // Clear post title and content
         clearPost();
@@ -395,11 +416,13 @@ function modifyPost() {
   data = JSON.stringify({'title': postTitle.value, 'timestamp': post.dataset
   .timestamp, 'content': post.innerHTML, 'public': publicInput.checked});
   return fetch(server + '/thought-writer/post', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage
+    .getItem('token'), 'Content-Type': 'application/json'},
     method: 'PUT',
     body: data,
-  }).catch(function(error) {
-    // Display error message if server is down
+  })
+  // Display error message if server is down
+  .catch(function(error) {
     window.alert('Your post did not go through. Please try again soon.');
     return;
   }).then(function(response) {
@@ -411,8 +434,10 @@ function modifyPost() {
       }
       // Reload user's posts to cabinet to include newly modified post
       loadPosts();
-      // Set data-timestamp attribute for Modify Last Post button in case user wants to modify last post
-      document.getElementById('go-back').dataset.timestamp = post.dataset.timestamp;
+      // Set data-timestamp attribute for Modify Last Post button in case user
+      // wants to modify last post
+      document.getElementById('go-back').dataset.timestamp = post.dataset
+      .timestamp;
       // Clear post title and content
       clearPost();
       // Set viewingPost to false
@@ -435,11 +460,13 @@ function deletePost() {
   var confirmDelete = confirm('Are you sure you want to delete this post?');
   if (confirmDelete == true) {
     return fetch(server + '/thought-writer/post?timestamp=' + encodeURIComponent(post
-      .dataset.timestamp), {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'), 'Content-Type': 'application/json'},
+    .dataset.timestamp), {
+      headers: {'Authorization': 'Bearer ' + localStorage
+      .getItem('token'), 'Content-Type': 'application/json'},
       method: 'DELETE',
-    }).catch(function(error) {
-      // Display error message if server is down
+    })
+    // Display error message if server is down
+    .catch(function(error) {
       window.alert('Your request did not go through. Please try again soon.');
       return;
     }).then(function(response) {
@@ -470,11 +497,13 @@ function deletePost() {
 
 // Define functions for after post is submitted
 
-// Flip board after post is submitted and/or when user clicks button on back of post board
+// Flip board after post is submitted and/or when user clicks button on back
+// of post board
 function flipBoard() {
   // If post board is not flipped already, flip to back of post board
   if (!boardFlipped) {
-    // If user has an in-progress post, display the Continue In-Progress Post button
+    // If user has an in-progress post, display the Continue In-Progress Post
+    // button
     if (localStorage.getItem('post-content') != '') {
       document.getElementById('continue-post').classList.add('finished');
       setTimeout(function() {
@@ -510,7 +539,8 @@ function flipBoard() {
     postTitle.disabled = true;
     postTitle.style.userSelect = 'none';
     postTitle.placeholder = 'Thank you for your post';
-    // Set boardFlipped to true and postDeleted to false to allow flipping board back to initial state
+    // Set boardFlipped to true and postDeleted to false to allow flipping
+    // board back to initial state
     boardFlipped = true;
     postDeleted = false;
     // Stop auto-save interval
@@ -543,16 +573,19 @@ function flipBoard() {
   return;
 }
 
-// Take user to public post board when user clicks Go to Public Post Board button
+// Take user to public post board when user clicks Go to Public Post Board
+// button
 document.getElementById('go-board').onclick = function() {
   window.location = '../index.html';
   return;
 }
 
-// Open last post when user clicks Modify Last Post button from back of post board
+// Open last post when user clicks Modify Last Post button from back of post
+// board
 document.getElementById('go-back').onclick = openPost;
 
-// Display in-progress draft when user clicks Continue In-Progress post button from back of post board
+// Display in-progress draft when user clicks Continue In-Progress post button
+// from back of post board
 document.getElementById('continue-post').onclick = function() {
   // Flip board to initial state and display in-progress post
   flipBoard();
@@ -575,7 +608,7 @@ document.getElementById('new-post').onclick = function() {
 
 // Define cabinet functions
 
-// Open/close cabinet when user clicks cabinet document.getElementById('handle')
+// Open/close cabinet when user clicks cabinet handle
 document.getElementById('handle').onclick = toggleCabinet;
 
 function toggleCabinet() {
@@ -606,9 +639,12 @@ function toggleCabinet() {
   if (morePostsOnServer) {
     document.getElementById('right-arrow').classList.add('display');
   }
-  // If there is at least one post in cabinet and the first post is not post 0 (i.e., there are lower-numbered posts to display), display left navigation arrow
+  // If there is at least one post in cabinet and the first post is not post 0
+  // (i.e., there are lower-numbered posts to display), display left navigation
+  // arrow
   if (postsContainer.children.length != 0) {
-    if (postsContainer.getElementsByClassName('previous-post')[0].dataset.number != 0) {
+    if (postsContainer.getElementsByClassName('previous-post')[0].dataset
+    .number != 0) {
       document.getElementById('left-arrow').classList.add('display');
     }
   }

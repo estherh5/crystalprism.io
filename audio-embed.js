@@ -22,9 +22,13 @@ function onYouTubeIframeAPIReady() {
     var image = playing ? 'on.svg' : 'off.svg';
     audioIcon.src = 'images/' + image;
   }
-  // Play or pause video when audio control is clicked and change icon accordingly
+  // Play or pause video when audio control is clicked and change icon
+  // accordingly
   audioContainer.onclick = function() {
-    audioiFrame.getPlayerState() === YT.PlayerState.PLAYING || audioiFrame.getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame.pauseVideo(), audioFunction(!1)) : (audioiFrame.playVideo(), audioFunction(!0));
+    audioiFrame.getPlayerState() === YT.PlayerState.PLAYING || audioiFrame
+    .getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame
+    .pauseVideo(), audioFunction(!1)) : (audioiFrame
+    .playVideo(), audioFunction(!0));
   }
   // Set attributes of embedded audio player
   var audioiFrame = new YT.Player('audio-player', {

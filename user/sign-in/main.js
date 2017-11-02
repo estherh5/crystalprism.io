@@ -9,7 +9,8 @@ window.onload = function() {
   createPageHeader();
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
-  // Display confirmation of account logout if user requested it from another page
+  // Display confirmation of account logout if user requested it from another
+  // page
   if (sessionStorage.getItem('account-request') == 'logout') {
     confirmLogout();
   }
@@ -22,7 +23,8 @@ function confirmLogout() {
   $(logout).modal('show');
   // Focus on Okay button to close modal
   document.getElementById('logout-okay').focus();
-  // Remove username and token from localStorage and logout request from sessionStorage
+  // Remove username and token from localStorage and logout request from
+  // sessionStorage
   localStorage.removeItem('username');
   localStorage.removeItem('token');
   sessionStorage.removeItem('account-request');
@@ -35,7 +37,8 @@ function confirmLogout() {
 // Determine if username input is not blank
 function assessUsername() {
   var username = usernameInput.value;
-  // Display warning that username cannot be blank if input has no non-space characters
+  // Display warning that username cannot be blank if input has no non-space
+  // characters
   if (!/\S/.test(username)) {
     document.getElementById('user-warning').style.display = 'block';
     return false;
@@ -96,12 +99,14 @@ function requestLogin() {
   return fetch(server + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)},
     method: 'GET',
-  }).catch(function(error) {
-    // Display warning if server is down
+  })
+  // Display warning if server is down
+  .catch(function(error) {
     window.alert('Your request did not go through. Please try again soon.');
     return;
   }).then(function(response) {
-    // If server responds with error, display warning that credentials are incorrect
+    // If server responds with error, display warning that credentials are
+    // incorrect
     if (response.status != 200) {
       $(incorrect).modal('show');
       // Focus on Okay button to close modal

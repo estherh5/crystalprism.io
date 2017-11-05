@@ -5,7 +5,7 @@ html, body {
 }
 
 body {
-  background-image: url('images/background.png');
+  background-image: url('https://www.walldevil.com/wallpapers/a33/cloud-sea-rain.jpg');
   background-size: cover;
   cursor: url('images/blast-outline.svg') 25 20, none;
   user-select: none;

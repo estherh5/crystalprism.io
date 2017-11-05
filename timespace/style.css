@@ -6,7 +6,7 @@ html, body {
 }
 
 body {
-  background-image: url('images/background.png');
+  background-image: url('https://i.ytimg.com/vi/JquobII5VjA/maxresdefault.jpg');
   background-size: cover;
   user-select: none;
 }
@@ -92,7 +92,7 @@ a:focus, button:focus {
   margin: auto;
   top: 0px;
   bottom: 0px;
-  background-image: url('images/stars.png');
+  background-image: url('http://www.pngmart.com/files/3/Star-Transparent-PNG.png');
   animation-name: rotate;
   animation-duration: 1000s;
   animation-iteration-count: infinite;

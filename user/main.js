@@ -249,7 +249,7 @@ function updateViews() {
   .split('/canvashare/drawing/')[1].split('.png')[0], {
     headers: {'Authorization': 'Bearer ' + localStorage
     .getItem('token'), 'Content-Type': 'application/json'},
-    method: 'POST',
+    method: 'PUT',
     body: data,
   })
   // Display error message if server is down
@@ -286,7 +286,7 @@ function updateLikes() {
     .dataset.drawing.split('.png')[0], {
       headers: {'Authorization': 'Bearer ' + localStorage
       .getItem('token'), 'Content-Type': 'application/json'},
-      method: 'POST',
+      method: 'PUT',
       body: data,
     })
     // Display error message if server is down
@@ -325,7 +325,7 @@ function updateLikes() {
   .drawing.split('.png')[0], {
     headers: {'Authorization': 'Bearer ' + localStorage
     .getItem('token'), 'Content-Type': 'application/json'},
-    method: 'POST',
+    method: 'PUT',
     body: data,
   })
   // Display error message if server is down

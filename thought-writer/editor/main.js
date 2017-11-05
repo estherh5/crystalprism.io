@@ -194,8 +194,8 @@ function openPost() {
   else {
     var timestamp = this.dataset.timestamp;
   }
-  return fetch(server + '/thought-writer/post?writer=' + encodeURIComponent(localStorage
-    .getItem('username')) + '&timestamp=' + encodeURIComponent(timestamp), {
+  return fetch(server + '/thought-writer/post/' + encodeURIComponent(localStorage
+  .getItem('username')) + '/' + encodeURIComponent(timestamp), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
   })
   // Display error message if server is down
@@ -413,7 +413,7 @@ function modifyPost() {
     return;
   }
   // Otherwise, submit modified post to server
-  data = JSON.stringify({'title': postTitle.value, 'timestamp': post.dataset
+  var data = JSON.stringify({'title': postTitle.value, 'timestamp': post.dataset
   .timestamp, 'content': post.innerHTML, 'public': publicInput.checked});
   return fetch(server + '/thought-writer/post', {
     headers: {'Authorization': 'Bearer ' + localStorage
@@ -458,12 +458,13 @@ document.getElementById('delete-post').onclick = deletePost;
 function deletePost() {
   // Prompt for confirmation to delete post
   var confirmDelete = confirm('Are you sure you want to delete this post?');
+  var data = JSON.stringify({'timestamp': post.dataset.timestamp});
   if (confirmDelete == true) {
-    return fetch(server + '/thought-writer/post?timestamp=' + encodeURIComponent(post
-    .dataset.timestamp), {
+    return fetch(server + '/thought-writer/post', {
       headers: {'Authorization': 'Bearer ' + localStorage
       .getItem('token'), 'Content-Type': 'application/json'},
       method: 'DELETE',
+      body: data,
     })
     // Display error message if server is down
     .catch(function(error) {

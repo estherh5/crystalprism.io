@@ -29,8 +29,8 @@ function loadPost() {
   var comments = document.getElementById('comments');
   var commentCount = document.getElementById('comment-count');
   // Request post based on items stored in sessionStorage
-  return fetch(server + '/thought-writer/post?writer=' + encodeURIComponent(sessionStorage
-  .getItem('writer')) + '&timestamp=' + encodeURIComponent(sessionStorage
+  return fetch(server + '/thought-writer/post/' + encodeURIComponent(sessionStorage
+  .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
   .getItem('timestamp')))
   // Display error message if server is down and error isn't already displayed
   // (i.e., prevent multiple errors if user submits comment and requests to
@@ -126,10 +126,9 @@ function submitComment() {
     return;
   }
   // Otherwise, send comment to server
-  data = JSON.stringify({'content': newComment.innerHTML});
-  return fetch(server + '/thought-writer/comment?writer=' + encodeURIComponent(postWriter
-  .innerHTML) + '&timestamp=' + encodeURIComponent(sessionStorage
-  .getItem('timestamp')), {
+  var data = JSON.stringify({'content': newComment.innerHTML});
+  return fetch(server + '/thought-writer/comment/' + encodeURIComponent(postWriter
+  .innerHTML) + '/' + encodeURIComponent(sessionStorage.getItem('timestamp')), {
     headers: {'Authorization': 'Bearer ' + localStorage
     .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',

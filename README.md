@@ -1,38 +1,52 @@
 # Crystal Prism
-I started programming in January 2017. I am learning HTML, CSS, JavaScript and Python. My website, [Crystal Prism](http://crystalprism.io), is a portfolio of each of my projects. I aim to incorporate responsive design, movement, color and shapes to explore functional aesthetics in my projects.
+I started programming in January 2017 and am learning HTML, CSS and JavaScript for front-end web development. My website, [Crystal Prism](https://crystalprism.io), is a portfolio of my projects, which range from a moving clock to an educational game to a communal drawing app. Users can create an account through my website to store their game scores, personal drawings, and public and private blog posts. My projects are listed from oldest to newest below.
 
 ## Timespace
+#### January 2017 - Present
 ![Timespace](images/timespace.png)
 
-[Timespace](http://crystalprism.io/timespace/index.html) is my first coding project. It takes numbers a step further to depict time, using them to generate movement and color to trace time's passage each second. I use JavaScript to select three digits of the current time string as the x coordinate of the circle and a different set of three digits as the y coordinate. Each circle color is a different set of six digits of the time string, converted to hexadecimal.
+[Timespace](https://crystalprism.io/timespace/index.html) is a clock that depicts the movement of time with circles that change color and location on the page based on the current time. The clock displays a quote from T. S. Eliot and plays the sound of Saturn's rings in the background, meant to elicit peaceful reflection on the conception and passage of time. This is the first web project I developed.
 
 ## Shapes in Rain
+#### January 2017 - Present
 ![Shapes in Rain](images/shapes-in-rain.png)
 
-[Shapes in Rain](http://crystalprism.io/shapes-in-rain/index.html) incorporates randomized SVG placement to generate a peaceful scene where the user can clear shapes as they clear their mind. I use JavaScript to generate a random shape from a set of SVGs and give that shape random coordinates. When the user clicks one of the shapes, the shape gets "blasted" out of the scene, clearing the space for the heart rain that continues to fall in the background, generated from SVG cloning. The rain and shapes will clear on their own after a certain time interval to minimize system performance.
+[Shapes in Rain](https://crystalprism.io/shapes-in-rain/index.html) is a game in which random shapes appear periodically on the page for a user to clear with a click. Hearts rain down the screen and light piano music plays in the background to create a peaceful scene for users to clear their minds as they clear the shapes from the page. The rain and shapes clear on their own after a certain time interval to optimize system performance. Users' scores are saved to a server when they close the page if they have a registered account.
 
 ## Rhythm of Life
+#### February 2017 - Present
 ![Rhythm of Life](images/rhythm-of-life.png)
 
-[Rhythm of Life](http://crystalprism.io/rhythm-of-life/index.html) is an educational take on the classic game *Snake*. The game allows you to move a heart across an SVG canvas to seek relievers and avoid stressors to maintain a low blood pressure. As you collide with stressors, your blood pressure increases, and the game speeds up. The game board displays information about blood pressure stressors and relievers, with links to more details on websites like WebMD and the American Heart Association. The game is designed in this way because stressors will constantly arise, but you must seek out relievers to maintain good health. Once you exceed the blood pressure range for stage 2 hypertension, the game ends, and you can record your name and lifespan in the leaderboard. I use [Snap](http://snapsvg.io) to ease canvas and object manipulation, as well as [Howler](https://howlerjs.com) to control the background heartbeat sound. I also use Python flask server code to store and retrieve each player's lifespan and display the top 5 leaders on the game board.
+[Rhythm of Life](http://crystalprism.io/rhythm-of-life/index.html) is an educational take on the classic game Snake. Users direct a moving heart across a game board to seek blood pressure relievers and avoid stressors that follow the heart to maintain a low blood pressure. As the heart collides with stressors, the blood pressure increases and the heart's and stressors' speed increases. The game ends when the blood pressure has reached hypertensive levels, and the user's lifespan is saved to a leaderboard on a server. The game board displays information about blood pressure stressors and relievers, with links to heart health sources like WebMD and the American Heart Association. I use [Snap.svg](http://snapsvg.io) to ease canvas and object manipulation, as well as [Howler](https://howlerjs.com) to control the background heartbeat sound.
 
 ## CanvaShare
+#### March 2017 - Present
 ![CanvaShare](images/canvashare.png)
 
-[CanvaShare](http://crystalprism.io/canvashare/index.html) is an interactive drawing program that lets you create drawings in a predefined square shape, using a series of palettes. After you create your drawing, you can give it a title and post it to the gallery and/or download a copy. The gallery displays everyone's images, and when you click one of the images, it becomes your starting canvas so you can add on to it and create a new drawing of your own. The gallery also displays the view count for each image based on the number of times it has been clicked. I use [Snap](http://snapsvg.io) for canvas and object manipulation, as well as [EaselJS](http://www.createjs.com/easeljs) for canvas drawing. CanvaShare is my first project that involves sending data to a backend using JavaScript's fetch method and Python flask server code.
+[CanvaShare](https://crystalprism.io/canvashare/index.html) is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use [Snap.svg](http://snapsvg.io) for canvas and object manipulation, as well as [EaselJS](http://www.createjs.com/easeljs) for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
 
 ## Thought Writer
+#### August 2017 - Present
 ![Thought Writer](images/thought-writer.png)
 
-[Thought Writer](http://crystalprism.io/thought-writer/index.html) is a What-You-See-Is-What-You-Get (WYSIWYG) text editor that allows you to save and retrieve your posts to and from a server. I created this text editor as a personal diary for my website's Ideas page, to document thoughts on programming, design, and life in general. The name derives from a combination of "thought book" (an old diary I used to keep) and "typewriter". The text editor allows you to add images and links to your posts, as well as a title and various formatting options via JavaScript's `execCommand` function and HTML data attributes. The editor also automatically saves your work during your browser session, in case you want to return to your post at a later time. I use Python flask server code to store and retrieve the posts, complete with their formatting, links and images.
+[Thought Writer](https://crystalprism.io/thought-writer/index.html) is a community post board for users to post short ideas for others to read and comment on. Posts are created through a What-You-See-Is-What-You-Get (WYSIWYG) text editor that allows users to save their posts to the public board and/or save their own private posts if they have a registered account. I originally created this text editor as a personal diary for the Ideas page, to document thoughts on programming, design, and life in general, then decided to make it communal as a public board for users to tack up ideas on. The name derives from a combination of "thought book" (an old diary of mine) and "typewriter."
 
 ## Vicarious
+#### August 2017 - Present
 ![Vicarious](images/vicarious.png)
 
-[Vicarious](http://crystalprism.io/vicarious/index.html) is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images posted on [Reddit's Travel subreddit](https://www.reddit.com/r/travel/). I used Bootstrap to design the layout of the project and make it responsive to different device sizes, as well as implement a modal and carousel. The project sends a fetch request to Reddit's API and stores all resulting images in an array, then displays up to 5 of those images that have titles containing the user's desired destination. When a user clicked on the title link for the project, 5 random images will display for inspiration.
+[Vicarious](https://crystalprism.io/vicarious/index.html) is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images of that place that are posted on [Reddit's Travel subreddit](https://www.reddit.com/r/travel/). I used Bootstrap to design the layout of the project and fetch to request post and image data from Reddit's API. I often daydream about traveling and like to look through pictures for inspiration for future trips (even if I don't end up taking those trips), so I created this project to facilitate my vicarious habits.
+
+## User Accounts
+#### September 2017 - Present
+![User Accounts](images/user.png)
+
+Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience ([Create Account page](https://crystalprism.io/user/create-account/index.html), [Sign In page](https://crystalprism.io/user/sign-in/index.html), [My Account page](https://crystalprism.io/user/my-account/index.html), and [Profile page](https://crystalprism.io/user/index.html?username=user)). I used the Google font *Sail* for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for their profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings).
 
 ## Thank You
-I am incredibly grateful to my teacher, [Ankur Saxena](https://github.com/as3445). His knowledge, creativity and patience has given me the confidence and inspiration to make these coding projects my own.
+I am incredibly grateful to my teacher, [Ankur Saxena](https://github.com/as3445). His knowledge, creativity and patience has given me the confidence and inspiration to learn programming and create these projects.
 
 [![BrowserStack](images/browserstack.svg)](https://www.browserstack.com)
-I would also like to thank [BrowserStack](https://www.browserstack.com) for letting me use their service free of charge to test my website across browsers and devices. BrowserStack allowed me to get an accurate handle on cross-browser and cross-device compatible code, teaching me many useful browser/device quirks along the way!
+I am also grateful to [BrowserStack](https://www.browserstack.com) for letting me use their service free of charge to test my website across browsers and devices. BrowserStack allowed me to get an accurate handle on cross-browser and cross-device compatible code, teaching me many useful browser/device considerations along the way.
+
+PNG and SVG icons/logos on my website were created by icon websites such as [Font Awesome](http://fontawesome.io/), [Icons8](https://icons8.com/), and [Wikimedia Commons](https://commons.wikimedia.org/wiki/Main_Page), or were found on company websites (e.g., [Apache](https://www.apache.org/foundation/press/kit/)).

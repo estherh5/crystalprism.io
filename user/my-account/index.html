@@ -63,27 +63,8 @@
             <input id="verify-password-input" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" autofocus>
           </div>
           <div class="modal-footer">
+            <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
             <button id="submit" type="button" data-dismiss="modal">Submit</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- Incorrect password modal -->
-    <div id="incorrect" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Incorrect password</h3>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>Please try again.</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" data-dismiss="modal">Okay</button>
           </div>
         </div>
       </div>
@@ -159,7 +140,9 @@
                 <div id="profile-icon-container" class="row my-row d-flex justify-content-center align-items-center">
                   <div id="profile-icon">
                     <input id="icon-color-picker" type="color" disabled>
-                    <object id="diamond" type="image/svg+xml" data="../images/diamond.svg"></object>
+                    <svg id="diamond" xmlns="http://www.w3.org/2000/svg" viewBox="5 15 90 70">
+                      <path d="m28 16c-0.1 0-0.1 0-0.2 0-0.5 0.1-1 0.3-1.3 0.7l-20 22c-0.7 0.7-0.6 2 0.1 2.8l42 42c0.7 0.7 2.1 0.7 2.8 0l42-42c0.7-0.7 0.7-2 0.1-2.7l-20-22C73.1 16.2 72.6 16 72 16zm0.9 4 10.4 0-8.6 18L12.5 38zm14.8 0 12.6 0 8.6 18-29.7 0zm17 0L71.1 20 87.5 38 69.3 38zm-47.9 22 17.8 0 13.4 31.2zm22.2 0 29.9 0L50 76.9zM69.3 42 87.2 42 55.9 73.2z"/>
+                    </svg>
                   </div>
                 </div>
                 <!-- About me blurb -->
@@ -174,9 +157,9 @@
                   <div class="col-5 user-data">
                     <input id="username-input" class="form-control" type="text" spellcheck="false" maxlength="50" disabled>
                     <!-- Warnings that display if username has errors -->
-                    <div id="user-warning-one" class="warning">Username cannot be blank</div>
-                    <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
-                    <div id="user-warning-three" class="warning">Username already exists</div>
+                    <div id="user-blank" class="warning">Username cannot be blank</div>
+                    <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
+                    <div id="user-exists" class="warning">Username already exists</div>
                   </div>
                   <div class="col-1 user-data"></div>
                 </div>
@@ -186,7 +169,7 @@
                   <div class="col-5 user-data">
                     <input id="password-input" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
                     <!-- Warning that displays when user submits password that is too short -->
-                    <div id="pass-warning-one" class="warning">Password must be at least 8 characters long</div>
+                    <div id="pass-short" class="warning">Password must be at least 8 characters long</div>
                   </div>
                   <div class="col-1 user-data"></div>
                 </div>
@@ -196,7 +179,7 @@
                   <div class="col-5 user-data">
                     <input id="confirm-password-input" class="form-control" type="password" spellcheck="false" placeholder="&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;&#8226;" disabled>
                     <!-- Warning that displays if confirm password does not match original password -->
-                    <div id="pass-warning-two" class="warning">Passwords do not match</div>
+                    <div id="pass-mismatch" class="warning">Passwords do not match</div>
                   </div>
                   <div class="col-1 user-data"></div>
                 </div>
@@ -224,7 +207,7 @@
                   <div class="col-5 user-data">
                     <input id="email-input" class="form-control" type="email" spellcheck="false" disabled>
                     <!-- Warning that displays if email address does not contain correct character -->
-                    <div id="email-warning" class="warning">Email address should include "@" symbol</div>
+                    <div id="email-chars" class="warning">Email address should include "@" symbol</div>
                   </div>
                   <!-- Checkbox for whether or not email address is public -->
                   <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
@@ -287,7 +270,7 @@
                 <!-- No scores to display banner -->
                 <div id="rhythm-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
-                    You don't have any scores! Play a game?
+                    You don't have any scores! Click here to play a game:
                     <br>
                     <a href="../../rhythm-of-life/index.html">Rhythm of Life</a>
                   </div>
@@ -320,7 +303,7 @@
                 <!-- No scores to display banner -->
                 <div id="shapes-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
-                    You don't have any scores! Play a game?
+                    You don't have any scores! Click here to play a game:
                     <br>
                     <a href="../../shapes-in-rain/index.html">Shapes in Rain</a>
                   </div>
@@ -349,10 +332,15 @@
                 <button id="mine" class="selected">Mine</button>
                 <button id="liked">Liked</button>
               </div>
-              <!-- Area where drawings are loaded -->
-              <div id="drawing-area"></div>
+              <div id="drawing-area">
+                <!-- Area where drawings are loaded -->
+                <div id="gallery"></div>
+                <!-- Left and right navigation arrows -->
+                <i id="drawings-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+                <i id="drawings-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+              </div>
               <!-- Error loading drawings banner -->
-              <div id="canvashare-link-container-one" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
+              <div id="canvashare-link-error" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
                   There was an error loading the drawings. Please refresh the page.
                   <br>
@@ -360,24 +348,21 @@
                 </div>
               </div>
               <!-- No created drawings to display banner -->
-              <div id="canvashare-link-container-two" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
+              <div id="canvashare-link-draw" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
-                  You don't have any drawings! Create one?
+                  You don't have any drawings! Click here to create one:
                   <br>
                   <a class="canvashare-link" href="../../canvashare/index.html">CanvaShare</a>
                 </div>
               </div>
               <!-- No liked drawings to display banner -->
-              <div id="canvashare-link-container-three" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
+              <div id="canvashare-link-like" class="canvashare-link-container row my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
-                  You haven't liked any drawings! Care to browse?
+                  You haven't liked any drawings! Click here to browse the gallery:
                   <br>
                   <a class="canvashare-link" href="../../canvashare/index.html">CanvaShare</a>
                 </div>
               </div>
-              <!-- Left and right navigation arrows -->
-              <i id="drawings-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-              <i id="drawings-right-arrow" class="material-icons right">keyboard_arrow_right</i>
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="drawings-menu">undo</i>
             </div>
@@ -389,10 +374,15 @@
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="posts-menu">Posts</div>
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-center">
-              <!-- Area where posts are loaded -->
-              <div id="post-area" class="h-100 w-100"></div>
+              <div id="post-area">
+                <!-- Area where posts are loaded -->
+                <div id="post-list" class="h-100 w-100"></div>
+                <!-- Left and right navigation arrows -->
+                <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+                <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+              </div>
               <!-- Error loading posts banner -->
-              <div id="thought-writer-link-container-one" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
+              <div id="thought-writer-link-error" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
                   There was an error loading the posts. Please refresh the page.
                   <br>
@@ -400,16 +390,13 @@
                 </div>
               </div>
               <!-- No posts to display banner -->
-              <div id="thought-writer-link-container-two" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
+              <div id="thought-writer-link-editor" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
-                  You don't have any posts! Create one?
+                  You don't have any posts! Click here to write one:
                   <br>
-                  <a class="thought-writer-link" href="../../thought-writer/index.html">Thought Writer</a>
+                  <a class="thought-writer-link" href="../../thought-writer/editor/index.html">Thought Writer</a>
                 </div>
               </div>
-              <!-- Left and right navigation arrows -->
-              <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-              <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="posts-menu">undo</i>
             </div>
@@ -477,6 +464,7 @@
 
     <!-- Bootstrap scripts -->
     <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js" integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.6/js/bootstrap.min.js" integrity="sha384-vBWWzlZJ8ea9aCX4pEW3rVHjgjt7zpkNpZk+02D9phzyeVkE+jo0ieGizqPLForn" crossorigin="anonymous"></script>
 

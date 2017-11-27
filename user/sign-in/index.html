@@ -26,24 +26,9 @@
     <title>Sign In</title>
   </head>
   <body class="d-flex flex-column align-items-center justify-content-center">
-    <!-- Successful account logout modal -->
-    <div id="logout" class="modal" data-keyboard="true" tabindex="-1">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Signed out</h3>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>You have been signed out.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="logout-okay" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
+    <!-- Successful logout banner -->
+    <div id="logout">
+      You have been signed out.
     </div>
 
     <!-- Incorrect username/password modal -->
@@ -90,7 +75,7 @@
         <div class="col-auto">
           <input id="username-input" type="text" spellcheck="false" maxlength="50" autofocus>
           <!-- Warning that username cannot be blank when user submits credentials -->
-          <div id="user-warning" class="warning">Username cannot be blank</div>
+          <div id="user-blank" class="warning">Username cannot be blank</div>
         </div>
       </div>
 
@@ -102,7 +87,7 @@
         <div class="col-auto">
           <input id="password-input" type="password" spellcheck="false">
           <!-- Warning that password cannot be blank when user submits credentials -->
-          <div id="pass-warning" class="warning">Password cannot be blank</div>
+          <div id="pass-blank" class="warning">Password cannot be blank</div>
         </div>
       </div>
 

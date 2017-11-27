@@ -70,9 +70,9 @@
         <div class="col-auto">
           <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
           <!-- Warnings that appear when user submits errored username -->
-          <div id="user-warning-one" class="warning">Username cannot be blank</div>
-          <div id="user-warning-two" class="warning">Use only letters, numbers, dashes and underscores</div>
-          <div id="user-warning-three" class="warning">Username already exists</div>
+          <div id="user-blank" class="warning">Username cannot be blank</div>
+          <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
+          <div id="user-exists" class="warning">Username already exists</div>
         </div>
       </div>
 
@@ -82,10 +82,10 @@
           <h2>Password: </h2>
         </div>
         <div class="col-auto">
-          <input id="password-input" type="password" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+          <input id="password-input" type="password" maxlength="70" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
           <!-- Warnings that appear when user submits errored password -->
-          <div id="pass-warning-one" class="warning">Password cannot be blank</div>
-          <div id="pass-warning-two" class="warning">Password too short</div>
+          <div id="pass-blank" class="warning">Password cannot be blank</div>
+          <div id="pass-short" class="warning">Password too short</div>
         </div>
       </div>
 
@@ -97,7 +97,7 @@
         <div class="col-auto">
           <input id="confirm-password-input" type="password" spellcheck="false">
           <!-- Warnings that appear when confirmation password does not match original password -->
-          <div id="pass-warning-three" class="warning">Passwords do not match</div>
+          <div id="pass-mismatch" class="warning">Passwords do not match</div>
         </div>
       </div>
 

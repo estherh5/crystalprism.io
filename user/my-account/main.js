@@ -11,7 +11,7 @@ var emailPublicInput = document.getElementById('email-public-input');
 var profileBackground = document.getElementById('profile-background');
 var backgroundColorPicker = document.getElementById('background-color-picker');
 var profileIcon = document.getElementById('profile-icon');
-var diamond;
+var diamond = document.getElementById('diamond');
 var iconColorPicker = document.getElementById('icon-color-picker');
 var aboutBlurb = aboutInput.value;
 var username = usernameInput.value;
@@ -34,6 +34,7 @@ var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('cancel');
 var verifyPassInput = document.getElementById('verify-password-input');
 var editingPersonal = false; // If user is editing information in Personal menu
+
 
 // Define global variables for Scores menu
 var rhythmScores = []; // Array of user's Rhythm of Life scores
@@ -59,153 +60,173 @@ var shapesScoreData = document.getElementById('shapes-score-data');
 var shapesUpArrow = document.getElementById('shapes-up-arrow');
 var shapesDownArrow = document.getElementById('shapes-down-arrow');
 
+
 // Define global variables for Drawings menu
 var drawingStart = 0; // Range start for number of drawings to request/display
 var drawingEnd = 7; // Range end for number of drawings to request/display
 var moreDrawingsToDisplay = false; // If there are more drawings to display in array
-var canvashareLinkOne = document.getElementById('canvashare-link-container-one');
-var canvashareLinkTwo = document.getElementById('canvashare-link-container-two');
-var canvashareLinkThree = document.getElementById('canvashare-link-container-three');
-var drawingArea = document.getElementById('drawing-area');
+var csErrorLink = document.getElementById('canvashare-link-error');
+var csDrawLink = document.getElementById('canvashare-link-draw');
+var csLikeLink = document.getElementById('canvashare-link-like');
+var gallery = document.getElementById('gallery');
 var drawingRightArrow = document.getElementById('drawings-right-arrow');
 var drawingLeftArrow = document.getElementById('drawings-left-arrow');
 var mine = document.getElementById('mine');
 var liked = document.getElementById('liked');
 
+
 // Define global variables for Posts menu
-var thoughtWriterLinkOne = document.getElementById('thought-writer-link-container-one');
-var thoughtWriterLinkTwo = document.getElementById('thought-writer-link-container-two');
+var twErrorLink = document.getElementById('thought-writer-link-error');
+var twEditorLink = document.getElementById('thought-writer-link-editor');
 var postStart = 0; // Range start for number of posts to request/display
 var postEnd = 7; // Range end for number of posts to request/display
 var morePostsExist = false; // If there are more posts to display in array
-var postArea = document.getElementById('post-area');
+var postList = document.getElementById('post-list');
 var postRightArrow = document.getElementById('posts-right-arrow');
 var postLeftArrow = document.getElementById('posts-left-arrow');
-
-// Determine server based on window location
-if (window.location.hostname == 'crystalprism.io') {
-  var server = 'http://13.58.175.191/api';
-} else {
-  var server = 'http://localhost:5000/api';
-}
 
 
 // Define load functions
 window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
+
   // If user is not logged in, redirect to Sign In page
   if (localStorage.getItem('token') == null || !checkIfLoggedIn()) {
     window.location = '../sign-in/index.html';
     return;
   }
-  // Display confirmation of account creation if user redirected from Create
-  // Account page
+
+  /* Display confirmation of account creation if user redirected from Create
+  Account page */
   if (sessionStorage.getItem('account-request') == 'create') {
     confirmCreation();
   }
-  // Get SVG from diamond object once it loads
-  diamond = document.getElementById('diamond').contentDocument
-  .getElementById('diamond-svg');
+
   // Load user's personal information from server
-  loadPersonal();
+  loadPersonalInfo();
+
   // Load user's drawings from server
   loadDrawings();
+
   // Load user's posts from server
   loadPosts();
+
   return;
 }
+
 
 // Display confirmation of account creation
 function confirmCreation() {
   // Display successful account creation modal with new username as title
   document.getElementById('success-title').innerHTML = localStorage
-  .getItem('username');
+    .getItem('username');
   $(success).modal('show');
+
   // Focus on Okay button to close modal
   document.getElementById('okay').focus();
+
   // Remove account creation request from sessionStorage
   sessionStorage.removeItem('account-request');
+
   return;
 }
 
+
 // Load user's personal information from server
-function loadPersonal() {
+function loadPersonalInfo() {
   return fetch(server + '/user', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   })
-  // If server is down, display error banners in Scores menu
-  .catch(function(error) {
-    rhythmLink.classList.add('hidden');
-    rhythmHeader.classList.add('hidden');
-    rhythmNoScores.classList.add('hidden');
-    rhythmError.classList.remove('hidden');
-    shapesLink.classList.add('hidden');
-    shapesHeader.classList.add('hidden');
-    shapesNoScores.classList.add('hidden');
-    shapesError.classList.remove('hidden');
-    return;
-  }).then(function(response) {
-    if (response.ok) {
-      response.json().then(function(info) {
-        // Fill in user's personal information to Personal menu and stats to
-        // Stats menu
-        aboutInput.value = info['about'];
-        usernameInput.value = info['username'];
-        firstNameInput.value = info['first_name'];
-        lastNameInput.value = info['last_name'];
-        namePublicInput.checked = info['name_public'];
-        emailInput.value = info['email'];
-        emailPublicInput.checked = info['email_public'];
-        backgroundColorPicker.value = info['background_color'];
-        profileBackground.style.backgroundColor = info['background_color'];
-        // Update field font colors based on background color
-        updateFontColors();
-        iconColorPicker.value = info['icon_color'];
-        diamond.style.fill = info['icon_color'];
-        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY'
-        // format
-        var dateTime = new Date(info['member_since']);
-        document.getElementById('member-stat').innerHTML = dateTime
-        .toLocaleDateString();
-        document.getElementById('rhythm-plays-stat')
-        .innerHTML = info['rhythm_plays'];
-        rhythmScores = info['rhythm_scores'];
-        // Load Rhythm of Life scores to Scores menu with array from server
-        displayScores('rhythm');
-        document.getElementById('shapes-plays-stat')
-        .innerHTML = info['shapes_plays'];
-        shapesScores = info['shapes_scores'];
-        // Load Shapes in Rain scores to Scores menu with array from server
-        displayScores('shapes');
-        likedDrawings = info['liked_drawings'];
-        document.getElementById('drawings-stat')
-        .innerHTML = info['drawing_number'];
-        document.getElementById('liked-stat').innerHTML = likedDrawings.length;
-        document.getElementById('posts-stat').innerHTML = info['post_number'];
-        document.getElementById('comments-stat')
-        .innerHTML = info['comment_number'];
-      });
+
+    // If server is down, display error banners in Scores menu
+    .catch(function(error) {
+      rhythmLink.classList.add('hidden');
+      rhythmHeader.classList.add('hidden');
+      rhythmNoScores.classList.add('hidden');
+      rhythmError.classList.remove('hidden');
+      shapesLink.classList.add('hidden');
+      shapesHeader.classList.add('hidden');
+      shapesNoScores.classList.add('hidden');
+      shapesError.classList.remove('hidden');
       return;
-    }
-    // If server responds with error, display error banners in Scores menu
-    rhythmLink.classList.add('hidden');
-    rhythmHeader.classList.add('hidden');
-    rhythmNoScores.classList.add('hidden');
-    rhythmError.classList.remove('hidden');
-    shapesLink.classList.add('hidden');
-    shapesHeader.classList.add('hidden');
-    shapesNoScores.classList.add('hidden');
-    shapesError.classList.remove('hidden');
-    return;
-  });
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(info) {
+          /* Fill in user's personal information to Personal menu and stats to
+          Stats menu */
+          aboutInput.value = info['about'];
+          usernameInput.value = info['username'];
+          firstNameInput.value = info['first_name'];
+          lastNameInput.value = info['last_name'];
+          namePublicInput.checked = info['name_public'];
+          emailInput.value = info['email'];
+          emailPublicInput.checked = info['email_public'];
+          backgroundColorPicker.value = info['background_color'];
+          profileBackground.style.backgroundColor = info['background_color'];
+
+          // Update field font colors based on background color
+          updateFontColors();
+          iconColorPicker.value = info['icon_color'];
+          diamond.style.fill = info['icon_color'];
+
+          // Update icon background color based on icon color
+          updateIconBackground();
+
+          /* Convert UTC timestamp from server to local timestamp in
+          'MM/DD/YYYY' format */
+          var memberDate = new Date(info['member_since']);
+          document.getElementById('member-stat').innerHTML = memberDate
+            .toLocaleDateString();
+          document.getElementById('rhythm-plays-stat')
+            .innerHTML = info['rhythm_plays'];
+          rhythmScores = info['rhythm_scores'];
+
+          // Load Rhythm of Life scores to Scores menu with array from server
+          displayScores('rhythm');
+          document.getElementById('shapes-plays-stat')
+            .innerHTML = info['shapes_plays'];
+          shapesScores = info['shapes_scores'];
+
+          // Load Shapes in Rain scores to Scores menu with array from server
+          displayScores('shapes');
+          likedDrawings = info['liked_drawings'];
+          document.getElementById('drawings-stat')
+            .innerHTML = info['drawing_number'];
+          document.getElementById('liked-stat').innerHTML = likedDrawings
+            .length;
+          document.getElementById('posts-stat').innerHTML = info['post_number'];
+          document.getElementById('comments-stat')
+            .innerHTML = info['comment_number'];
+        });
+
+        return;
+      }
+
+      // If server responds with error, display error banners in Scores menu
+      rhythmLink.classList.add('hidden');
+      rhythmHeader.classList.add('hidden');
+      rhythmNoScores.classList.add('hidden');
+      rhythmError.classList.remove('hidden');
+      shapesLink.classList.add('hidden');
+      shapesHeader.classList.add('hidden');
+      shapesNoScores.classList.add('hidden');
+      shapesError.classList.remove('hidden');
+
+      return;
+    });
 }
 
-// Display user's scores for passed game variable
+
+/* Display user's scores for passed game type (Rhythm of Life, Shapes in Rain)
+variable */
 function displayScores(game) {
   // If game variable is for Rhythm of Life, set score variables as appropriate
   if (game == 'rhythm') {
+
     // If there are no scores, display link to play Rhythm of Life game
     if (rhythmScores.length == 0) {
       rhythmLink.classList.add('hidden');
@@ -214,25 +235,30 @@ function displayScores(game) {
       rhythmNoScores.classList.remove('hidden');
       return;
     }
-    // Otherwise, set displayed scores as scores array sliced to requested
-    // number of scores
+
+    /* Otherwise, set displayed scores as scores array sliced to requested
+    number of scores */
     displayedScores = rhythmScores.slice(rhythmScoresStart, rhythmScoresEnd);
     var scoresStart = rhythmScoresStart;
     var scoresEnd = rhythmScoresEnd;
-    // Unhide Scores menu header for Rhythm of Life scores and hide error and
-    // no score banners
+
+    /* Unhide Scores menu header for Rhythm of Life scores and hide error and
+    no score banners */
     rhythmLink.classList.remove('hidden');
     rhythmHeader.classList.remove('hidden');
     rhythmError.classList.add('hidden');
     rhythmNoScores.classList.add('hidden');
+
     // Clear score area to replace with requested scores
     rhythmScoreData.innerHTML = '';
     var scoreData = rhythmScoreData;
     var upArrow = rhythmUpArrow;
     var downArrow = rhythmDownArrow;
   }
+
   // If game variable is for Shapes in Rain, set score variables as appropriate
   else if (game == 'shapes') {
+
     // If there are no scores, display link to play Shapes in Rain game
     if (shapesScores.length == 0) {
       shapesLink.classList.add('hidden');
@@ -241,35 +267,42 @@ function displayScores(game) {
       shapesNoScores.classList.remove('hidden');
       return;
     }
-    // Otherwise, set displayed scores as scores array sliced to requested
-    // number of scores
+
+    /* Otherwise, set displayed scores as scores array sliced to requested
+    number of scores */
     displayedScores = shapesScores.slice(shapesScoresStart, shapesScoresEnd);
     var scoresStart = shapesScoresStart;
     var scoresEnd = shapesScoresEnd;
-    // Unhide Scores menu header for Shapes in Rain scores and hide error and
-    // no score banners
+
+    /* Unhide Scores menu header for Shapes in Rain scores and hide error and
+    no score banners */
     shapesLink.classList.remove('hidden');
     shapesHeader.classList.remove('hidden');
     shapesError.classList.add('hidden');
     shapesNoScores.classList.add('hidden');
+
     // Clear score area to replace with requested scores
     shapesScoreData.innerHTML = '';
     var scoreData = shapesScoreData;
     var upArrow = shapesUpArrow;
     var downArrow = shapesDownArrow;
   }
-  // If there are scores to display in array, assess if there are more than
-  // sliced scores - 1 (number of displayed scores) in array
+
+  /* If there are scores to display in array, assess if there are more than
+  sliced scores - 1 (number of displayed scores) in array */
   if (displayedScores.length != 0) {
+
     if (displayedScores.length > (scoresEnd - scoresStart - 1)) {
       moreScoresToDisplay = true;
       var scoreLoadNumber = scoresEnd - scoresStart - 1;
     }
+
     // If there are not, load all scores in array
     else {
       moreScoresToDisplay = false;
       var scoreLoadNumber = displayedScores.length;
     }
+
     for (var i = 0; i < scoreLoadNumber; i++) {
       // Create row for score data
       var scoreRow = document.createElement('div');
@@ -278,470 +311,786 @@ function displayScores(game) {
       scoreRow.classList.add('w-100');
       scoreRow.classList.add('d-flex');
       scoreRow.classList.add('justify-content-center');
-      // Set data-number attribute to track the score number for displaying
-      // more scores later
+
+      /* Set data-number attribute to track the score number for displaying
+      more scores later */
       scoreRow.dataset.number = scoresStart + i;
-      // Create column for displaying star next to first score in total scores
-      // array (high score)
+
+      /* Create column for displaying star next to first score in total scores
+      array (high score) */
       var starCol = document.createElement('div');
       starCol.classList.add('col-1');
+
       if (scoreRow.dataset.number == 0) {
         var star = document.createElement('i');
         star.classList.add('fa');
         star.classList.add('fa-star');
-        starCol.append(star);
+        starCol.appendChild(star);
       }
+
       // Create column for score
       var scoreCol = document.createElement('div');
       scoreCol.classList.add('col-3');
+
       // If game is Rhythm of Life, display lifespan as score
       if (game == 'rhythm') {
         scoreCol.innerHTML = displayedScores[i].lifespan;
       }
+
       // Otherwise, display score
       else {
         scoreCol.innerHTML = displayedScores[i].score;
       }
+
       // Create column for score timestamp
       var scoreTimestampCol = document.createElement('div');
       scoreTimestampCol.classList.add('col-6');
-      // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
-      // HH:MM AM/PM' format
-      var dateTime = new Date(displayedScores[i].timestamp);
-      scoreTimestampCol.innerHTML = dateTime.toLocaleString()
-      .replace(/:\d{2}\s/,' ');
-      scoreData.append(scoreRow);
-      scoreRow.append(starCol);
-      scoreRow.append(scoreCol);
-      scoreRow.append(scoreTimestampCol);
+
+      /* Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+      HH:MM AM/PM' format */
+      var scoreDate = new Date(displayedScores[i].timestamp);
+      scoreTimestampCol.innerHTML = scoreDate.toLocaleString()
+        .replace(/:\d{2}\s/,' ');
+      scoreData.appendChild(scoreRow);
+      scoreRow.appendChild(starCol);
+      scoreRow.appendChild(scoreCol);
+      scoreRow.appendChild(scoreTimestampCol);
     }
-    // If first score displayed in score area is not score 0 (i.e., there are
-    // lower-numbered scores to display), display up navigation arrow
+
+    /* If first score displayed in score area is not score 0 (i.e., there are
+    lower-numbered scores to display), display up navigation arrow */
     if (scoreData.getElementsByClassName('row')[0].dataset.number != 0) {
       upArrow.classList.add('display');
     }
+
     // Otherwise, hide up arrow
     else {
       upArrow.classList.remove('display');
     }
+
     // If there are more scores in the array, display down navigation arrow
     if (moreScoresToDisplay) {
       downArrow.classList.add('display');
     }
+
     // Otherwise, hide down arrow
     else {
       downArrow.classList.remove('display');
     }
   }
+
   return;
 }
+
 
 // Load user's drawings from server
 function loadDrawings() {
   return fetch(server + '/canvashare/gallery/' + encodeURIComponent(localStorage
     .getItem('username')) + '?start=' + drawingStart + '&end=' + drawingEnd, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  })
-  // If server is down, clear drawing area and hide navigation arrows
-  .catch(function(error) {
-    drawingArea.innerHTML = '';
-    drawingLeftArrow.classList.remove('display');
-    drawingRightArrow.classList.remove('display');
-    // Display error banner with CanvaShare link
-    canvashareLinkOne.classList.remove('hidden');
-    canvashareLinkTwo.classList.add('hidden');
-    canvashareLinkThree.classList.add('hidden');
-    return;
-  }).then(function(response) {
-    if (response.ok) {
-      response.json().then(function(userDrawings) {
-        // Display user's drawings in drawing area
-        displayDrawings(userDrawings);
-      });
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    })
+
+    // If server is down, clear drawing area and hide navigation arrows
+    .catch(function(error) {
+      gallery.innerHTML = '';
+      drawingLeftArrow.classList.remove('display');
+      drawingRightArrow.classList.remove('display');
+
+      // Display error banner with CanvaShare link
+      csErrorLink.classList.remove('hidden');
+      csDrawLink.classList.add('hidden');
+      csLikeLink.classList.add('hidden');
       return;
-    }
-    // Otherwise, if server responds with error, clear drawing area and hide
-    // navigation arrows
-    drawingArea.innerHTML = '';
-    drawingLeftArrow.classList.remove('display');
-    drawingRightArrow.classList.remove('display');
-    // Display error banner with CanvaShare link
-    canvashareLinkOne.classList.remove('hidden');
-    canvashareLinkTwo.classList.add('hidden');
-    canvashareLinkThree.classList.add('hidden');
-    return;
-  });
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(userDrawings) {
+          // Display user's drawings in drawing area
+          displayDrawings(userDrawings);
+        });
+        return;
+      }
+
+      /* Otherwise, if server responds with error, clear drawing area and hide
+      navigation arrows */
+      gallery.innerHTML = '';
+      drawingLeftArrow.classList.remove('display');
+      drawingRightArrow.classList.remove('display');
+
+      // Display error banner with CanvaShare link
+      csErrorLink.classList.remove('hidden');
+      csDrawLink.classList.add('hidden');
+      csLikeLink.classList.add('hidden');
+
+      return;
+    });
 }
+
 
 // Display passed array of drawings in drawing area
 function displayDrawings(drawings) {
-  // If there are no drawings sent from server, clear drawing area and display
-  // CanvaShare link
+  /* If there are no drawings sent from server, clear drawing area and display
+  CanvaShare link */
   if (drawings.length == 0) {
-    drawingArea.innerHTML = '';
+    gallery.innerHTML = '';
+
     // Hide left and right navigation arrows
     drawingLeftArrow.classList.remove('display');
     drawingRightArrow.classList.remove('display');
-    // If user is on the "Mine" view in the Drawings menu, display link to
-    // create drawings
+
+    /* If user is on the "Mine" view in the Drawings menu, display link to
+    create drawings */
     if (mine.classList.contains('selected')) {
-      canvashareLinkOne.classList.add('hidden');
-      canvashareLinkTwo.classList.remove('hidden');
-      canvashareLinkThree.classList.add('hidden');
+      csErrorLink.classList.add('hidden');
+      csDrawLink.classList.remove('hidden');
+      csLikeLink.classList.add('hidden');
       return;
     }
+
     // Otherwise, display link to like drawings
-    canvashareLinkOne.classList.add('hidden');
-    canvashareLinkTwo.classList.add('hidden');
-    canvashareLinkThree.classList.remove('hidden');
+    csErrorLink.classList.add('hidden');
+    csDrawLink.classList.add('hidden');
+    csLikeLink.classList.remove('hidden');
+
     return;
   }
+
   // Otherwise, hide CanvaShare links
-  canvashareLinkOne.classList.add('hidden');
-  canvashareLinkTwo.classList.add('hidden');
-  canvashareLinkThree.classList.add('hidden');
+  csErrorLink.classList.add('hidden');
+  csDrawLink.classList.add('hidden');
+  csLikeLink.classList.add('hidden');
+
   // Clear drawing area to populate with passed array of drawings
-  drawingArea.innerHTML = '';
-  // Assess if there are more than requested drawings - 1 (number of loaded
-  // drawings) in array
+  gallery.innerHTML = '';
+
+  /* Assess if there are more than requested drawings - 1 (number of loaded
+  drawings) in array */
   if (drawings.length > (drawingEnd - drawingStart - 1)) {
     moreDrawingsToDisplay = true;
     var drawingsLoadNumber = 6;
   }
+
   // If there are not, load all drawings sent from server
   else {
     moreDrawingsToDisplay = false;
     var drawingsLoadNumber = drawings.length;
   }
+
   for (var i = 0; i < drawingsLoadNumber; i++) {
     // Create container for drawing and its components
     var drawingContainer = document.createElement('div');
     drawingContainer.classList.add('drawing-container');
-    // Set data-number attribute to track the drawing number for displaying
-    // more drawings later
+
+    /* Set data-number attribute to track the drawing number for displaying
+    more drawings later */
     drawingContainer.dataset.number = drawingStart + i;
+
     // Create container for drawing title
     var drawingTitle = document.createElement('div');
     drawingTitle.classList.add('drawing-title');
-    // Set data-drawing attribute as drawing file name for later identification,
-    // with URI-encoded characters
+
+    /* Set data-drawing attribute as drawing file name for later identification,
+    with URI-encoded characters */
     drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
+
     // Create drawing image
     var drawing = document.createElement('img');
     drawing.classList.add('drawing');
     drawing.src = server + '/canvashare/drawing/' + encodeURIComponent(drawings[i]);
     drawing.title = 'View drawing';
+
     // Create container for drawing artist and number of likes and views
     var drawingInfo = document.createElement('div');
     drawingInfo.classList.add('drawing-info');
+
     // Create container for number of drawing likes
     var drawingLikes = document.createElement('div');
     drawingLikes.classList.add('drawing-likes');
     drawingLikes.title = 'Likes';
-    // Set data-drawing attribute as drawing file name for later
-    // identification, with URI-encoded characters
+
+    /* Set data-drawing attribute as drawing file name for later
+    identification, with URI-encoded characters */
     drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
+
     // Create text to display number of likes
     var likeText = document.createElement('text');
-    // Set data-drawing attribute as drawing file name for later
-    // identification, with URI-encoded characters
+
+    /* Set data-drawing attribute as drawing file name for later
+    identification, with URI-encoded characters */
     likeText.dataset.drawing = encodeURIComponent(drawings[i]);
+
     // Create drawing views container
     var drawingViews = document.createElement('div');
     drawingViews.classList.add('drawing-views');
     drawingViews.title = 'Views';
+
     // Create eye icon to display with drawing views
     var viewsIcon = document.createElement('i');
     viewsIcon.classList.add('fa');
     viewsIcon.classList.add('fa-eye');
+
     // Create text to display number of views
     var viewText = document.createElement('text');
-    // Set data-drawing attribute as drawing file name for later
-    // identification, with URI-encoded characters
+
+    /* Set data-drawing attribute as drawing file name for later
+    identification, with URI-encoded characters */
     viewText.dataset.drawing = encodeURIComponent(drawings[i]);
-    drawingArea.append(drawingContainer);
-    drawingContainer.append(drawingTitle);
-    drawingContainer.append(drawing);
-    drawingContainer.append(drawingInfo);
-    drawingInfo.append(drawingLikes);
-    drawingLikes.append(likeText);
-    drawingInfo.append(drawingViews);
-    drawingViews.append(viewsIcon);
-    drawingViews.append(viewText);
-    // Redirect to easel page and display drawing when user clicks drawing
-    drawing.onclick = function() {
-      sessionStorage.setItem('drawing-source', this.src);
-      window.location = '../canvashare/easel/index.html';
+    gallery.appendChild(drawingContainer);
+    drawingContainer.appendChild(drawingTitle);
+    drawingContainer.appendChild(drawing);
+    drawingContainer.appendChild(drawingInfo);
+    drawingInfo.appendChild(drawingLikes);
+    drawingLikes.appendChild(likeText);
+    drawingInfo.appendChild(drawingViews);
+    drawingViews.appendChild(viewsIcon);
+    drawingViews.appendChild(viewText);
+
+    // If displaying liked drawings, display artist name
+    if (drawings.toString() == likedDrawings.slice(drawingStart, drawingEnd)
+      .toString()) {
+
+      // Create container for drawing artist
+      var drawingArtist = document.createElement('div');
+      drawingArtist.classList.add('drawing-artist');
+      drawingArtist.title = 'Artist';
+
+      // Create link to artist's profile
+      var artistLink = document.createElement('a');
+      artistLink.href = '../../user/index.html?username=' + drawings[i]
+        .substr(0, drawings[i].indexOf('/'));
+      artistLink.innerHTML = drawings[i].substr(0, drawings[i]
+        .indexOf('/'));
+        drawingInfo.appendChild(drawingArtist);
+        drawingArtist.appendChild(artistLink);
+    }
+
+    /* Redirect to easel page and display drawing when user clicks drawing title
+    or drawing title */
+    drawingTitle.onclick = function() {
+      updateViews(this.nextSibling.src);
       return;
     }
+
+    drawing.onclick = function() {
+      updateViews(drawing.src);
+      return;
+    }
+
     // Fill in drawing title, views, and likes
     getDrawingInfo(encodeURIComponent(drawings[i]));
   }
-  // If first drawing displayed in drawing area is not drawing 0 (i.e., there
-  // are lower-numbered drawings to display), display left navigation arrow
-  if (drawingArea.getElementsByClassName('drawing-container')[0].dataset
-  .number != 0) {
-    drawingLeftArrow.classList.add('display');
-  }
+
+  /* If first drawing displayed in drawing area is not drawing 0 (i.e., there
+  are lower-numbered drawings to display), display left navigation arrow */
+  if (gallery.getElementsByClassName('drawing-container')[0].dataset
+    .number != 0) {
+      drawingLeftArrow.classList.add('display');
+    }
+
   // Otherwise, hide left arrow
   else {
     drawingLeftArrow.classList.remove('display');
   }
+
   // If there are more drawings on the server, display right navigation arrow
   if (moreDrawingsToDisplay) {
     drawingRightArrow.classList.add('display');
   }
+
   // Otherwise, hide right arrow
   else {
     drawingRightArrow.classList.remove('display');
   }
+
   return;
 }
 
+
 // Get title and number of views and likes for passed drawing file
 function getDrawingInfo(drawingFile) {
-  return fetch(server + '/canvashare/drawing-info/' + drawingFile
-  .split('.png')[0]).then(function(response) {
-    response.json().then(function(drawingInfo) {
-      // Get elements that have data-drawing attribute set as file name
-      var fileElements = document
-      .querySelectorAll('[data-drawing="' + drawingFile + '"]');
-      // Set title and number of likes and views for drawing
-      fileElements[0].innerHTML = drawingInfo['title'];
-      fileElements[2].innerHTML = drawingInfo['likes'];
-      fileElements[3].innerHTML = drawingInfo['views'];
-      // Display a filled-in red heart in likes container
-      var likedHeart = document.createElement('i');
-      likedHeart.classList.add('heart');
-      likedHeart.classList.add('fa');
-      likedHeart.classList.add('fa-heart');
-      fileElements[1].insertBefore(likedHeart, fileElements[1].firstChild);
+  var filename = drawingFile.split('.png')[0];
+
+  return fetch(server + '/canvashare/drawing-info/' + filename)
+    .then(function(response) {
+      response.json().then(function(drawingInfo) {
+
+        // Get elements that have data-drawing attribute set as file name
+        var fileElements = document
+          .querySelectorAll('[data-drawing="' + drawingFile + '"]');
+
+        // Set title and number of likes and views for drawing
+        fileElements[0].innerHTML = drawingInfo['title'];
+        fileElements[2].innerHTML = drawingInfo['likes'];
+        fileElements[3].innerHTML = drawingInfo['views'];
+
+        /* If current user liked the drawing, display a filled-in red heart in
+        likes container */
+        if (drawingInfo['liked_users'].includes(localStorage
+          .getItem('username'))) {
+            var likedHeart = document.createElement('i');
+            likedHeart.classList.add('fa');
+            likedHeart.classList.add('fa-heart');
+            fileElements[1].insertBefore(likedHeart, fileElements[1]
+              .firstChild);
+
+            // Update like count when user clicks heart
+            likedHeart.onclick = updateLikes;
+
+            return;
+          }
+
+        // Otherwise, display an empty heart outline
+        var unlikedHeart = document.createElement('i');
+        unlikedHeart.classList.add('fa');
+        unlikedHeart.classList.add('fa-heart-o');
+        fileElements[1].insertBefore(unlikedHeart, fileElements[1].firstChild);
+
+        // Update like count when user clicks heart
+        unlikedHeart.onclick = updateLikes;
+
+        return;
+      });
     });
-  });
 }
+
+
+// Update passed drawing's view count
+function updateViews(drawingSource) {
+  /* Set sessionStorage items for drawing's source, used to populate easel on
+  redirected webpage */
+  sessionStorage.setItem('drawing-source', drawingSource);
+
+  // Send request to server to update view count
+  var data = JSON.stringify({'request': 'view'});
+  var filename = drawingSource.split('/canvashare/drawing/')[1].split('.png')[0];
+
+  return fetch(server + '/canvashare/drawing-info/' + filename, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
+    method: 'PATCH',
+    body: data,
+  })
+
+    // Display error message if server is down
+    .catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.')
+    })
+
+    /* If server responds without error, update view count and redirect to
+    easel page */
+    .then(function(response) {
+      if (response.ok) {
+        var viewText = document
+          .querySelectorAll('[data-drawing="' + drawingSource
+          .split('/canvashare/drawing/')[1] + '"]')[3];
+        viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
+        window.location = '../../canvashare/easel/index.html';
+        return;
+      }
+
+      // Otherwise, display error message
+      window.alert('Your request did not go through. Please try again soon.');
+
+      return;
+    });
+}
+
+
+// Update drawing's like count
+function updateLikes() {
+  var heart = this;
+
+  // Add click animation to create pop effect
+  heart.classList.add('clicked');
+
+  /* Remove clicked class from heart to allow animation to play when clicked
+  again */
+  heart.addEventListener('animationend', function() {
+    heart.classList.remove('clicked');
+    return;
+  }, false);
+
+  // Define filename for fetch request
+  var filename = heart.nextSibling.dataset.drawing.split('.png')[0];
+
+  // If heart is already filled in, decrease drawing like count
+  if (this.classList.contains('fa-heart')) {
+
+    // Send request to server to decrease like count
+    var data = JSON.stringify({'request': 'unlike'});
+
+    return fetch(server + '/canvashare/drawing-info/' + filename, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'},
+      method: 'PATCH',
+      body: data,
+    })
+
+      // Display error message if server is down
+      .catch(function(error) {
+        window.alert('Your like did not go through. Please try again soon.');
+        return;
+      })
+
+      /* If server responds without error, remove heart fill and decrease like
+      count user sees */
+      .then(function(response) {
+        if (response.ok) {
+          var likeText = heart.nextSibling;
+          var currentLikes = likeText.innerHTML;
+          heart.classList.remove('fa-heart');
+          heart.classList.add('fa-heart-o');
+          likeText.innerHTML = parseInt(currentLikes) - 1;
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('You must log in to like a drawing.');
+
+        return;
+      });
+  }
+
+  // Otherwise, send request to server to increase like count
+  var data = JSON.stringify({'request': 'like'});
+
+  return fetch(server + '/canvashare/drawing-info/' + filename, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
+    method: 'PATCH',
+    body: data,
+  })
+
+    // Display error message if server is down
+    .catch(function(error) {
+      window.alert('Your like did not go through. Please try again soon.');
+      return;
+    })
+
+    /* If server responds without error, fill in heart and increase like count
+    user sees */
+    .then(function(response) {
+      if (response.ok) {
+        var likeText = heart.nextSibling;
+        var currentLikes = likeText.innerHTML;
+        likeText.innerHTML = parseInt(currentLikes) + 1;
+        heart.classList.remove('fa-heart-o');
+        heart.classList.add('fa-heart');
+        return;
+      }
+
+      // Otherwise, display error message
+      window.alert('You must log in to like a drawing.');
+
+      return;
+    });
+}
+
 
 // Load user's posts from server
 function loadPosts() {
   return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(localStorage
     .getItem('username')) + '?start=' + postStart + '&end=' + postEnd, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  })
-  // If server is down, clear post area and hide navigation arrows
-  .catch(function(error) {
-    postArea.innerHTML = '';
-    postLeftArrow.classList.remove('display');
-    postRightArrow.classList.remove('display');
-    // Display error banner with Thought Writer link
-    thoughtWriterLinkOne.classList.remove('hidden');
-    thoughtWriterLinkTwo.classList.add('hidden');
-    return;
-  }).then(function(response) {
-    if (response.ok) {
-      response.json().then(function(posts) {
-        // If there are no posts sent from server, clear post area and hide
-        // navigation arrows
-        if (posts.length == 0) {
-          postArea.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
-          // Display Thought Writer link to create posts
-          thoughtWriterLinkOne.classList.add('hidden');
-          thoughtWriterLinkTwo.classList.remove('hidden');
-          return;
-        }
-        // Otherwise, clear post area to display new posts from server
-        postArea.innerHTML = '';
-        thoughtWriterLinkOne.classList.add('hidden');
-        thoughtWriterLinkTwo.classList.add('hidden');
-        // Assess if there are more than requested posts - 1 (number of loaded
-        // posts) on server
-        if (posts.length > (postEnd - postStart - 1)) {
-          morePostsExist = true;
-          postsLoadNumber = postEnd - postStart - 1;
-        }
-        // If there are not, load all posts sent from server
-        else {
-          morePostsExist = false;
-          postsLoadNumber = posts.length;
-        }
-        for (var i = 0; i < postsLoadNumber; i++) {
-          // Create container for post and its components
-          var postContainer = document.createElement('div');
-          postContainer.classList.add('post-container');
-          // Set data-number attribute to track the post number for displaying
-          // more posts later
-          postContainer.dataset.number = postStart + i;
-          // Create container for post title
-          var postTitle = document.createElement('div');
-          postTitle.classList.add('post-title');
-          postTitle.innerHTML = posts[i].title;
-          postTitle.title = 'Edit post';
-          // Set data-timestamp attribute to save in sessionStorage when clicked
-          postTitle.dataset.timestamp = posts[i].timestamp;
-          // Create container for post background
-          var postBoard = document.createElement('div');
-          postBoard.classList.add('post-board');
-          // Create container with post content
-          var postContent = document.createElement('div');
-          postContent.classList.add('post-content');
-          postContent.innerHTML = posts[i].content;
-          // Create container for post timestamp and comment number
-          var postInfo = document.createElement('div');
-          postInfo.classList.add('post-info');
-          // Create container for post timestamp
-          var postTimestamp = document.createElement('div');
-          postTimestamp.classList.add('post-time');
-          // Convert UTC timestamp from server to local timestamp in
-          // 'MM/DD/YYYY, HH:MM AM/PM' format
-          var dateTime = new Date(posts[i].timestamp);
-          postTimestamp.innerHTML = dateTime.toLocaleString()
-          .replace(/:\d{2}\s/,' ');
-          // Create container for number of post comments if post is public
-          if (posts[i].public) {
-            var postComments = document.createElement('div');
-            postComments.classList.add('post-comments');
-            postComments.title = 'View post comments';
-            if (posts[i].comments.length == 1) {
-              postComments.innerHTML = posts[i].comments.length + ' comment';
-            } else {
-              postComments.innerHTML = posts[i].comments.length + ' comments';
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    })
+
+    // If server is down, clear post area and hide navigation arrows
+    .catch(function(error) {
+      postList.innerHTML = '';
+      postLeftArrow.classList.remove('display');
+      postRightArrow.classList.remove('display');
+
+      // Display error banner with Thought Writer link
+      twErrorLink.classList.remove('hidden');
+      twEditorLink.classList.add('hidden');
+      return;
+    })
+
+    .then(function(response) {
+      /* If there are no posts sent from server, clear post area and hide
+      navigation arrows */
+      if (response.status == 404) {
+        postList.innerHTML = '';
+        postLeftArrow.classList.remove('display');
+        postRightArrow.classList.remove('display');
+
+        // Display Thought Writer link to create posts
+        twErrorLink.classList.add('hidden');
+        twEditorLink.classList.remove('hidden');
+
+        return;
+      }
+
+      // Otherwise, if server sends posts, display them
+      if (response.status == 200) {
+        response.json().then(function(posts) {
+
+          // Clear post area to display new posts from server
+          postList.innerHTML = '';
+          twErrorLink.classList.add('hidden');
+          twEditorLink.classList.add('hidden');
+
+          /* Assess if there are more than requested posts - 1 (number of loaded
+          posts) on server */
+          if (posts.length > (postEnd - postStart - 1)) {
+            morePostsExist = true;
+            postsLoadNumber = postEnd - postStart - 1;
+          }
+
+          // If there are not, load all posts sent from server
+          else {
+            morePostsExist = false;
+            postsLoadNumber = posts.length;
+          }
+
+          for (var i = 0; i < postsLoadNumber; i++) {
+            // Create container for post and its components
+            var postContainer = document.createElement('div');
+            postContainer.classList.add('post-container');
+
+            /* Set data-number attribute to track the post number for displaying
+            more posts later */
+            postContainer.dataset.number = postStart + i;
+
+            // Create container for post title
+            var postTitle = document.createElement('div');
+            postTitle.classList.add('post-title');
+            postTitle.innerHTML = posts[i].title;
+            postTitle.title = 'Edit post';
+
+            /* Set data-timestamp attribute to save in sessionStorage when
+            clicked */
+            postTitle.dataset.timestamp = posts[i].timestamp;
+
+            // Create container for post background
+            var postBoard = document.createElement('div');
+            postBoard.classList.add('post-board');
+
+            // Create container with post content
+            var postContent = document.createElement('div');
+            postContent.classList.add('post-content');
+            postContent.innerHTML = posts[i].content;
+
+            // Create container for post timestamp and comment number
+            var postInfo = document.createElement('div');
+            postInfo.classList.add('post-info');
+
+            // Create container for post timestamp
+            var postTimestamp = document.createElement('div');
+            postTimestamp.classList.add('post-time');
+
+            /* Convert UTC timestamp from server to local timestamp in
+            'MM/DD/YYYY, HH:MM AM/PM' format */
+            var postDate = new Date(posts[i].timestamp);
+            postTimestamp.innerHTML = postDate.toLocaleString()
+              .replace(/:\d{2}\s/,' ');
+
+            // Create container for number of post comments if post is public
+            if (posts[i].public) {
+              var postComments = document.createElement('div');
+              postComments.classList.add('post-comments');
+              postComments.title = 'View post comments';
+
+              if (posts[i].comments.length == 1) {
+                postComments.innerHTML = posts[i].comments.length + ' comment';
+              } else {
+                postComments.innerHTML = posts[i].comments.length + ' comments';
+              }
+
+              /* Set data-writer and data-timestamp attributes to save in
+              sessionStorage when clicked */
+              postComments.dataset.writer = localStorage.getItem('username');
+              postComments.dataset.timestamp = posts[i].timestamp;
+
+              /* Set sessionStorage items when post comment number is clicked
+              and go to post page's comments */
+              postComments.onclick = function() {
+                sessionStorage.setItem('writer', this.dataset.writer);
+                sessionStorage.setItem('post-timestamp', this.dataset
+                  .timestamp);
+                window.location = '../../thought-writer/post/index.html#comments';
+                return;
+              }
             }
-            // Set data-writer and data-timestamp attributes to save in
-            // sessionStorage when clicked
-            postComments.dataset.writer = localStorage.getItem('username');
-            postComments.dataset.timestamp = posts[i].timestamp;
-            // Set sessionStorage items when post comment number is clicked and
-            // go to post page's comments
-            postComments.onclick = function() {
-              sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('timestamp', this.dataset.timestamp);
-              window.location = '../../thought-writer/post/index.html#comments';
+
+            // Otherwise, display post as private
+            else {
+              var postComments = document.createElement('div');
+              postComments.innerHTML = 'Private post';
+            }
+
+            postList.appendChild(postContainer);
+            postContainer.appendChild(postTitle);
+            postContainer.appendChild(postBoard);
+            postBoard.appendChild(postContent);
+            postContainer.appendChild(postInfo);
+            postInfo.appendChild(postTimestamp);
+            postInfo.appendChild(postComments);
+
+            /* Set sessionStorage timestamp item when post title is clicked and
+            go to editor page */
+            postTitle.onclick = function() {
+              sessionStorage.setItem('post-timestamp', this.dataset.timestamp);
+              window.location = '../../thought-writer/editor/index.html';
               return;
             }
           }
-          // Otherwise, display post as private
+
+          /* If first post displayed in post area is not post 0 (i.e., there are
+          lower-numbered posts to display), display left navigation arrow */
+          if (postList.getElementsByClassName('post-container')[0].dataset
+            .number != 0) {
+              postLeftArrow.classList.add('display');
+            }
+
+          // Otherwise, hide left arrow
           else {
-            var postComments = document.createElement('div');
-            postComments.innerHTML = 'Private post';
+            postLeftArrow.classList.remove('display');
           }
-          postArea.append(postContainer);
-          postContainer.append(postTitle);
-          postContainer.append(postBoard);
-          postBoard.append(postContent);
-          postContainer.append(postInfo);
-          postInfo.append(postTimestamp);
-          postInfo.append(postComments);
-          // Set sessionStorage timestamp item when post title is clicked and
-          // go to editor page
-          postTitle.onclick = function() {
-            sessionStorage.setItem('timestamp', this.dataset.timestamp);
-            window.location = '../../thought-writer/editor/index.html';
-            return;
+
+          /* If there are more posts on the server, display right navigation
+          arrow */
+          if (morePostsExist) {
+            postRightArrow.classList.add('display');
           }
-        }
-        // If first post displayed in post area is not post 0 (i.e., there are
-        // lower-numbered posts to display), display left navigation arrow
-        if (postArea.getElementsByClassName('post-container')[0].dataset
-        .number != 0) {
-          postLeftArrow.classList.add('display');
-        }
-        // Otherwise, hide left arrow
-        else {
-          postLeftArrow.classList.remove('display');
-        }
-        // If there are more posts on the server, display right navigation arrow
-        if (morePostsExist) {
-          postRightArrow.classList.add('display');
-        }
-        // Otherwise, hide right arrow
-        else {
-          postRightArrow.classList.remove('display');
-        }
-      });
+
+          // Otherwise, hide right arrow
+          else {
+            postRightArrow.classList.remove('display');
+          }
+        });
+
+        return;
+      }
+
+      /* Otherwise, if server responds with other error, clear post area and
+      hide navigation arrows */
+      postList.innerHTML = '';
+      postLeftArrow.classList.remove('display');
+      postRightArrow.classList.remove('display');
+
+      // Display error banner with Thought Writer link
+      twErrorLink.classList.remove('hidden');
+      twEditorLink.classList.add('hidden');
+
       return;
-    }
-    // Otherwise, if server responds with error, clear post area and hide
-    // navigation arrows
-    postArea.innerHTML = '';
-    postLeftArrow.classList.remove('display');
-    postRightArrow.classList.remove('display');
-    // Display error banner with Thought Writer link
-    thoughtWriterLinkOne.classList.remove('hidden');
-    thoughtWriterLinkTwo.classList.add('hidden');
-    return;
-  });
+    });
 }
 
 
 // Define menu navigation functions
 
-// Flip menu from front to back view and vice versa when front menus and back
-// buttons are clicked respectively
+// Scroll smoothly to menu section when navbar link is clicked
+$("#navbar li a[href^='#']").on('click', function(e) {
+  e.preventDefault();
+  var menuHash = this.hash;
+
+  // Set scroll position in menu scrolling area to top of specified menu
+  $('#menu-scroll-area').animate({
+    scrollTop: $(this.hash).offset().top + $('#menu-scroll-area')
+      .scrollTop() - $('#menu-scroll-area').offset().top
+  }, 600,
+
+  // Set window's URL hash to specified menu
+  function() {
+    return window.location.hash = menuHash;
+  });
+
+  return;
+});
+
+
+/* Flip menu from front to back view and vice versa when front menus and back
+buttons are clicked respectively */
 for (var i = 0; i < document.getElementsByClassName('front-menu').length; i++) {
-  document.getElementsByClassName('front-menu')[i]
-  .addEventListener('click', flipMenu, false);
+  document.getElementsByClassName('front-menu')[i].addEventListener('click',
+    flipMenu, false);
 }
 
-for (var i = 0; i < document.getElementsByClassName('back-button').length; i++) {
-  document.getElementsByClassName('back-button')[i]
-  .addEventListener('click', flipMenu, false);
-}
+
+for (var i = 0; i < document.getElementsByClassName('back-button')
+  .length; i++) {
+    document.getElementsByClassName('back-button')[i].addEventListener('click',
+      flipMenu, false);
+  }
+
 
 function flipMenu() {
   // If menu is not already flipped, flip it to back view
-  if (document.getElementById(this.dataset.section).dataset.flipped == 'false') {
-    document.getElementById(this.dataset.section).classList.add('flip');
-    document.getElementById(this.dataset.section).dataset.flipped = 'true';
-    return;
-  }
+  if (document.getElementById(this.dataset.section).dataset
+    .flipped == 'false') {
+      document.getElementById(this.dataset.section).classList.add('flip');
+      document.getElementById(this.dataset.section).dataset.flipped = 'true';
+      return;
+    }
+
   // Otherwise, flip menu to front view
   document.getElementById(this.dataset.section).classList.remove('flip');
   document.getElementById(this.dataset.section).dataset.flipped = 'false';
+
   return;
 }
 
-// ?
+
+/* Request lower-numbered scores for Rhythm of Life if up arrow is clicked in
+Scores menu */
 rhythmUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
     rhythmScoresStart = rhythmScoresStart - 10;
     rhythmScoresEnd = rhythmScoresEnd - 10;
     displayScores('rhythm');
   }
+
   return;
 }
 
+
+/* Request higher-numbered scores for Rhythm of Life if down arrow is clicked
+in Scores menu */
 rhythmDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
     rhythmScoresStart = rhythmScoresStart + 10;
     rhythmScoresEnd = rhythmScoresEnd + 10;
     displayScores('rhythm');
   }
+
   return;
 }
 
+
+/* Request lower-numbered scores for Shapes in Rain if up arrow is clicked in
+Scores menu */
 shapesUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
     shapesScoresStart = shapesScoresStart - 10;
     shapesScoresEnd = shapesScoresEnd - 10;
     displayScores('shapes');
   }
+
   return;
 }
 
+
+/* Request higher-numbered scores for Shapes in Rain if down arrow is clicked
+in Scores menu */
 shapesDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
     shapesScoresStart = shapesScoresStart + 10;
     shapesScoresEnd = shapesScoresEnd + 10;
     displayScores('shapes');
   }
+
   return;
 }
+
 
 // Request lower-numbered drawings if left arrow is clicked in Drawings menu
 drawingLeftArrow.onclick = function() {
   if (this.classList.contains('display')) {
+
     // If user is on Mine view in Drawings menu, request lower-numbered
     // drawings from server
     if (mine.classList.contains('selected')) {
@@ -750,17 +1099,21 @@ drawingLeftArrow.onclick = function() {
       loadDrawings();
       return;
     }
+
     // Otherwise, display lower-numbered drawings in likedDrawings array
     drawingStart = drawingStart - 6;
     drawingEnd = drawingEnd - 6;
     displayDrawings(likedDrawings.slice(drawingStart, drawingEnd));
   }
+
   return;
 }
+
 
 // Request higher-numbered drawings if right arrow is clicked in Drawings menu
 drawingRightArrow.onclick = function() {
   if (this.classList.contains('display')) {
+
     // If user is on Mine view in Drawings menu, request higher-numbered
     // drawings from server
     if (mine.classList.contains('selected')) {
@@ -769,13 +1122,16 @@ drawingRightArrow.onclick = function() {
       loadDrawings();
       return;
     }
+
     // Otherwise, display higher-numbered drawings in likedDrawings array
     drawingStart = drawingStart + 6;
     drawingEnd = drawingEnd + 6;
     displayDrawings(likedDrawings.slice(drawingStart, drawingEnd));
   }
+
   return;
 }
+
 
 // Request lower-numbered posts from server if left arrow is clicked in Posts
 // menu
@@ -785,8 +1141,10 @@ postLeftArrow.onclick = function() {
     postEnd = postEnd - 6;
     loadPosts();
   }
+
   return;
 }
+
 
 // Request higher-numbered posts from server if right arrow is clicked in Posts
 // menu
@@ -796,8 +1154,10 @@ postRightArrow.onclick = function() {
     postEnd = postEnd + 6;
     loadPosts();
   }
+
   return;
 }
+
 
 // Toggle Mine/Liked views of Drawings menu when Mine/Liked buttons are clicked
 mine.onclick = toggleDrawings;
@@ -807,18 +1167,21 @@ function toggleDrawings() {
   // Set drawing request numbers to starting numbers
   drawingStart = 0;
   drawingEnd = 7;
-  // If the Liked button is clicked, set the button as selected and display
-  // requested drawings
+
+  /* If the Liked button is clicked, set the button as selected and display
+  requested drawings */
   if (this == liked) {
     liked.classList.add('selected');
     mine.classList.remove('selected');
     displayDrawings(likedDrawings.slice(drawingStart, drawingEnd));
     return;
   }
+
   // Otherwise, set the Mine button as selected and request drawings from server
   mine.classList.add('selected');
   liked.classList.remove('selected');
   loadDrawings();
+
   return;
 }
 
@@ -830,62 +1193,72 @@ document.getElementById('confirm').onclick = deleteAccount;
 
 function deleteAccount() {
   return fetch(server + '/user', {
-    headers: {'Authorization': 'Bearer ' + localStorage
-    .getItem('token'), 'Content-Type': 'application/json'},
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
     method: 'DELETE',
   })
-  // Display warning if server is down
-  .catch(function(error) {
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  }).then(function(response) {
-    // Take user to Create Account page with request to delete account if
-    // server responds without error
-    if (response.ok) {
-      sessionStorage.setItem('account-request', 'delete');
-      window.location.href = '../create-account/index.html';
+
+    // Display warning if server is down
+    .catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
       return;
-    }
-    // Otherwise, display warning if server responds with error
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  });
+    })
+
+    .then(function(response) {
+      /* Take user to Create Account page with request to delete account if
+      server responds without error */
+      if (response.ok) {
+        sessionStorage.setItem('account-request', 'delete');
+        window.location.href = '../create-account/index.html';
+        return;
+      }
+
+      // Otherwise, display warning if server responds with error
+      window.alert('Your request did not go through. Please try again soon.');
+
+      return;
+    });
 }
 
-// Click hidden color picker input when profile background is clicked (must
-// focus first to open)
+
+/* Click hidden color picker input when profile background is clicked (must
+focus first to open) */
 profileBackground.onclick = function(e) {
   if (e.target == this) {
     backgroundColorPicker.focus();
     backgroundColorPicker.click();
   }
+
   return;
 }
 
-// Click hidden color picker input when profile rows are clicked (must focus
-// first to open)
-for (var i = 0; i < profileBackground.getElementsByClassName('row')
-.length; i++) {
-  profileBackground.getElementsByClassName('row')[i]
-  .addEventListener('click', function(e) {
-    if (e.target == this) {
-      backgroundColorPicker.focus();
-      backgroundColorPicker.click();
-    }
-    return;
-  }, false);
-}
 
-// Assess darkness of user's profile background color and adjust font color of
-// menu items to light/dark in response
+/* Click hidden color picker input when profile rows are clicked (must focus
+first to open) */
+for (var i = 0; i < profileBackground.getElementsByClassName('row')
+  .length; i++) {
+    profileBackground.getElementsByClassName('row')[i].addEventListener('click',
+      function(e) {
+        if (e.target == this) {
+          backgroundColorPicker.focus();
+          backgroundColorPicker.click();
+        }
+        return;
+      }, false);
+  }
+
+
+/* Assess darkness of user's profile background color and adjust font color of
+menu items to light/dark in response */
 function updateFontColors() {
   var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
-  .exec(backgroundColorPicker.value);
+    .exec(backgroundColorPicker.value);
   var r = parseInt(rgb[1], 16);
   var g = parseInt(rgb[2], 16);
   var b = parseInt(rgb[3], 16);
-  // If user is editing information in Personal menu, only change color of
-  // title elements for inputs and Delete Account button
+
+  /* If user is editing information in Personal menu, only change color of
+  title elements for inputs and Delete Account button */
   if (editingPersonal) {
     if (r + g + b > 382) {
       profileBackground.classList.remove('light');
@@ -898,164 +1271,199 @@ function updateFontColors() {
       profileBackground.classList.add('light');
       deleteButton.classList.add('light');
     }
+
     return;
   }
+
   // Otherwise, change color of all elements in Personal menu
   if (r + g + b > 382) {
     profileBackground.classList.remove('light');
     deleteButton.classList.remove('light');
-    aboutInput.classList.remove('light');
-    usernameInput.classList.remove('light');
-    passwordInput.classList.remove('light');
-    confirmPassInput.classList.remove('light');
-    firstNameInput.classList.remove('light');
-    lastNameInput.classList.remove('light');
-    emailInput.classList.remove('light');
     profileBackground.classList.add('dark');
     deleteButton.classList.add('dark');
-    aboutInput.classList.add('dark');
-    usernameInput.classList.add('dark');
-    passwordInput.classList.add('dark');
-    confirmPassInput.classList.add('dark');
-    firstNameInput.classList.add('dark');
-    lastNameInput.classList.add('dark');
-    emailInput.classList.add('dark');
-  } else {
+
+    for (var i = 0; i < document.getElementsByClassName('form-control')
+      .length; i++) {
+      document.getElementsByClassName('form-control')[i].classList
+        .remove('light');
+        document.getElementsByClassName('form-control')[i].classList
+          .add('dark');
+      }
+
+  }
+
+  else {
     profileBackground.classList.remove('dark');
     deleteButton.classList.remove('dark');
-    aboutInput.classList.remove('dark');
-    usernameInput.classList.remove('dark');
-    passwordInput.classList.remove('dark');
-    confirmPassInput.classList.remove('dark');
-    firstNameInput.classList.remove('dark');
-    lastNameInput.classList.remove('dark');
-    emailInput.classList.remove('dark');
     profileBackground.classList.add('light');
     deleteButton.classList.add('light');
-    usernameInput.classList.add('light');
-    aboutInput.classList.add('light');
-    passwordInput.classList.add('light');
-    confirmPassInput.classList.add('light');
-    firstNameInput.classList.add('light');
-    lastNameInput.classList.add('light');
-    emailInput.classList.add('light');
+
+    for (var i = 0; i < document.getElementsByClassName('form-control')
+      .length; i++) {
+      document.getElementsByClassName('form-control')[i].classList
+        .remove('dark');
+        document.getElementsByClassName('form-control')[i].classList
+          .add('light');
+      }
   }
+
   return;
 }
 
-// Click hidden color picker input when profile icon is clicked (must focus
-// first to open)
-diamond.onclick = function() {
-  iconColorPicker.focus();
-  iconColorPicker.click();
-  return;
-}
 
-// Click hidden color picker input when profile icon container is clicked (must
-// focus first to open)
+/* Click hidden color picker input when profile icon container is clicked (must
+focus first to open) */
 profileIcon.onclick = function() {
   iconColorPicker.focus();
   iconColorPicker.click();
   return;
 }
 
-// Change color of profile background when user selects color from background
-// color picker
+
+/* Change color of profile background when user selects color from background
+color picker */
 backgroundColorPicker.oninput = function() {
   profileBackground.style.backgroundColor = this.value;
+
   // Update field font colors based on background color
   updateFontColors();
+
   return;
 }
 
-// Change diamond profile icon color when user selects color from icon color
-// picker
+
+/* Change diamond profile icon color when user selects color from icon color
+picker */
 iconColorPicker.oninput = function() {
   diamond.style.fill = this.value;
+
+  // Update icon background color based on icon color
+  updateIconBackground();
+
+  // Refresh profile icon rendering to eliminate SVG artifacts in Safari
+  document.getElementById('profile-icon').style.webkitTransform = 'scale(1)';
+
   return;
 }
 
-// Determine if username input has errors when user focuses out of field
-usernameInput.onfocusout = assessUsername;
 
-function assessUsername() {
+/* Assess darkness of user's profile icon color and adjust icon background
+color to black/white in response */
+function updateIconBackground() {
+  var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(iconColorPicker
+    .value);
+  var r = parseInt(rgb[1], 16);
+  var g = parseInt(rgb[2], 16);
+  var b = parseInt(rgb[3], 16);
+
+  if (r + g + b > 670) {
+    profileIcon.style.backgroundColor = '#000000';
+  } else {
+    profileIcon.style.backgroundColor = '#ffffff';
+  }
+
+  return;
+}
+
+
+// Determine if username input has errors when user focuses out of field
+usernameInput.onfocusout = validateUsername;
+
+function validateUsername() {
   var username = usernameInput.value;
-  // Display warning that username cannot be blank if input has no non-space
-  // characters
+
+  /* Display warning that username cannot be blank if input has no non-space
+  characters */
   if (!/\S/.test(username)) {
-    document.getElementById('user-warning-two').style.display = 'none';
-    document.getElementById('user-warning-three').style.display = 'none';
-    document.getElementById('user-warning-one').style.display = 'block';
+    document.getElementById('user-chars').style.display = 'none';
+    document.getElementById('user-exists').style.display = 'none';
+    document.getElementById('user-blank').style.display = 'block';
     return false;
   }
-  // Display warning that username has unacceptable characters if there are
-  // non-alphanumeric, underscore, or dash characters
+
+  /* Display warning that username has unacceptable characters if there are
+  non-alphanumeric, underscore, or dash characters */
   if (!username.match(/^[a-zA-Z0-9_-]+$/)) {
-    document.getElementById('user-warning-one').style.display = 'none';
-    document.getElementById('user-warning-three').style.display = 'none';
-    document.getElementById('user-warning-two').style.display = 'block';
+    document.getElementById('user-blank').style.display = 'none';
+    document.getElementById('user-exists').style.display = 'none';
+    document.getElementById('user-chars').style.display = 'block';
     return false;
   }
+
   // Otherwise, hide warnings
-  document.getElementById('user-warning-one').style.display = 'none';
-  document.getElementById('user-warning-three').style.display = 'none';
-  document.getElementById('user-warning-two').style.display = 'none';
+  document.getElementById('user-blank').style.display = 'none';
+  document.getElementById('user-exists').style.display = 'none';
+  document.getElementById('user-chars').style.display = 'none';
+
   return true;
 }
+
 
 // Determine if password input has errors when user focuses out of field
-passwordInput.onfocusout = assessPassword;
+passwordInput.onfocusout = validatePassword;
 
-function assessPassword() {
+function validatePassword() {
   var password = passwordInput.value;
-  // Display warning that password is too short if input is less than 8
-  // characters
+
+  /* Display warning that password is too short if input is less than 8
+  characters */
   if (password.length > 0 && password.length < 8) {
-    document.getElementById('pass-warning-one').style.display = 'block';
+    document.getElementById('pass-short').style.display = 'block';
     return false;
   }
+
   // Otherwise, hide warning
-  document.getElementById('pass-warning-one').style.display = 'none';
+  document.getElementById('pass-short').style.display = 'none';
+
   return true;
 }
 
-// Determine if confirmation password matches original password when user
-// focuses out of field
-confirmPassInput.onfocusout = assessPasswordMatch;
 
-function assessPasswordMatch() {
+/* Determine if confirmation password matches original password when user
+focuses out of field */
+confirmPassInput.onfocusout = validatePasswordMatch;
+
+function validatePasswordMatch() {
   var password = passwordInput.value;
   var confirmPassword = confirmPassInput.value;
+
   // If passwords do not match, display warning
   if (password != confirmPassword) {
-    document.getElementById('pass-warning-two').style.display = 'block';
+    document.getElementById('pass-mismatch').style.display = 'block';
     return false;
   }
+
   // Otherwise, hide warning
-  document.getElementById('pass-warning-two').style.display = 'none';
+  document.getElementById('pass-mismatch').style.display = 'none';
+
   return true;
 }
 
-// Determine if email address has errors when user focuses out of field or
-// public checkbox
-emailInput.onfocusout = assessEmail;
-emailPublicInput.onfocusout = assessEmail;
 
-function assessEmail() {
+/* Determine if email address has errors when user focuses out of field or
+public checkbox */
+emailInput.onfocusout = validateEmail;
+emailPublicInput.onfocusout = validateEmail;
+
+function validateEmail() {
   var email = emailInput.value;
-  // If email address is marked as public or is not blank and is missing an "@"
-  // symbol, display warning
+
+  /* If email address is marked as public or is not blank and is missing an "@"
+  symbol, display warning */
   if ((email.length > 0 || emailPublicInput.checked) && !email.match('@')) {
-    document.getElementById('email-warning').style.display = 'block';
+    document.getElementById('email-chars').style.display = 'block';
     return false;
   }
+
   // Otherwise, hide warning
-  document.getElementById('email-warning').style.display = 'none';
+  document.getElementById('email-chars').style.display = 'none';
+
   return true;
 }
 
-// Enter edit mode when Edit button is clicked or save edits when in edit mode
-// in Personal menu
+
+/* Enter edit mode when Edit button is clicked or save edits when in edit mode
+in Personal menu */
 editButton.onclick = editPersonal;
 
 function editPersonal() {
@@ -1070,104 +1478,128 @@ function editPersonal() {
   emailPublic = emailPublicInput.checked;
   backgroundColor = backgroundColorPicker.value;
   iconColor = iconColorPicker.value;
+
   // Add editing style to fields and enable inputs that were previously disabled
   profileBackground.classList.add('editing');
   profileIcon.classList.add('editing');
   diamond.classList.add('editing');
   aboutInput.classList.add('editing');
   aboutInput.disabled = false;
+
   for (var i = 0; i < fields.length; i++) {
     fields[i].classList.add('editing');
     fields[i].disabled = false;
   }
+
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxContainers[i].classList.add('editing');
     checkboxes[i].classList.add('editing');
   }
+
   // Set editingPersonal variable to true
   editingPersonal = true;
+
   // Display Cancel button to allow user to cancel edits
   cancelButton.style.display = 'block';
+
   // Display Save button to allow user to submit edits
   saveButton.style.display = 'block';
+
   // Hide Edit button
   editButton.style.display = 'none';
+
   return;
 }
 
-// If user is in edit mode, check that username, password, confirm password,
-// and email address fields have no errors when user clicks Save button
+
+/* If user is in edit mode, check that username, password, confirm password,
+and email address fields have no errors when user clicks Save button */
 saveButton.onclick = function() {
   if (editingPersonal) {
+
     // Do nothing if errors are present
-    if (!assessUsername() || !assessPassword() || !assessPasswordMatch() || !assessEmail()) {
-      return;
-    }
-    // If user requests to change username or password, prompt user to enter
-    // password to verify changes in modal
-    if (usernameInput.value != localStorage.getItem('username') || passwordInput
-    .value != '') {
-      $(verify).modal('show');
-      // Focus on verify password input in modal
-      verifyPassInput.focus();
-      return;
-    }
+    if (!validateUsername() || !validatePassword() || !validatePasswordMatch()
+      || !validateEmail()) {
+        return;
+      }
+
+    /* If user requests to change username or password, prompt user to enter
+    password to verify changes in modal */
+    if (usernameInput.value != localStorage.getItem('username')
+      || passwordInput.value != '') {
+        $(verify).modal('show');
+        // Focus on verify password input in modal
+        verifyPassInput.focus();
+        return;
+      }
+
     // Otherwise, submit edits to server
     submitEdits();
+
     return;
   }
   return;
 }
 
-// Click Submit button when enter key is clicked in verify password input when
-// submitting edits to personal information
+
+/* Click Submit button when enter key is clicked in verify password input when
+submitting edits to personal information */
 verifyPassInput.addEventListener('keyup', function(e) {
   if (e.keyCode == 13) {
     e.preventDefault();
     document.getElementById('submit').click();
   }
+
   return;
 }, false);
 
-// Check that password is correct in verify password input when submitting
-// edits to personal information
+
+/* Check that password is correct in verify password input when submitting
+edits to personal information */
 document.getElementById('submit').onclick = checkPassword;
 
 function checkPassword() {
   verifyPassword = verifyPassInput.value;
+
   // Clear verify password input in case user needs to verify edits again
   verifyPassInput.value = '';
+
   return fetch(server + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(localStorage
-    .getItem('username') + ':' + verifyPassword)},
+      .getItem('username') + ':' + verifyPassword)},
     method: 'GET',
   })
-  // Display warning if server is down
-  .catch(function(error) {
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  }).then(function(response) {
-    // If user's password was incorrect, display modal with verify password
-    // field to try again
-    if (response.status == 400) {
-      response.text().then(function(text) {
-        if (text == 'Incorrect password') {
-          $(verify).modal('show');
-          verifyPassInput.focus();
-          return;
-        }
-      });
-    }
-    // If server responds successfully, submit edits to server
-    if (response.status == 200) {
-      submitEdits();
+
+    // Display warning if server is down
+    .catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
       return;
-    }
-    // Otherwise, display warning if server responds with error
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  });
+    })
+
+    .then(function(response) {
+      /* If user's password was incorrect, display modal with verify password
+      field to try again */
+      if (response.status == 401) {
+        document.getElementById('verify-title')
+          .innerHTML = 'Password incorrect. Please try again:';
+        $(verify).modal('show');
+        verifyPassInput.focus();
+        return;
+      }
+
+      // If server responds successfully, submit edits to server
+      if (response.status == 200) {
+        submitEdits();
+        return;
+      }
+
+      // Otherwise, display warning if server responds with other error
+      window.alert('Your request did not go through. Please try again soon.');
+
+      return;
+    });
 }
+
 
 // Submit requested edits to user's personal information to server
 function submitEdits() {
@@ -1183,79 +1615,108 @@ function submitEdits() {
     'icon_color': iconColorPicker.value,
     'about': aboutInput.value
   });
+
   return fetch(server + '/user', {
-    headers: {'Content-Type': 'application/json', 'Authorization': 'Bearer ' + localStorage
-    .getItem('token')},
-    method: 'PUT',
+    headers: {'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    method: 'PATCH',
     body: data,
   })
-  // Display error if server is down
-  .catch(function(error) {
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  }).then(function(response) {
-    if (response.ok) {
+
+    // Display error if server is down
+    .catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
+      return;
+    })
+
+    .then(function(response) {
       // If server responds that username already exists, display warning
-      response.text().then(function(text) {
-        if (text == 'Username already exists') {
-          document.getElementById('user-warning-three').style.display = 'block';
-          return;
-        }
-        // Otherwise, if username is now different, update localStorage
-        // username and token and profile link
+      if (response.status == 409) {
+        document.getElementById('user-exists').style.display = 'block';
+        return;
+      }
+
+      if (response.status == 200) {
+
+        /* If response was successful and username is now different, update
+        localStorage username and token and profile link */
         if (usernameInput.value != localStorage.getItem('username')) {
-          localStorage.removeItem('username');
-          localStorage.setItem('username', usernameInput.value);
-          localStorage.removeItem('token');
-          localStorage.setItem('token', text);
-          document.getElementById('profile-link').innerHTML = localStorage
-          .getItem('username');
-          document.getElementById('profile-link')
-          .href = '../index.html?username=' + localStorage.getItem('username');
+          response.text().then(function(text) {
+            localStorage.removeItem('username');
+            localStorage.setItem('username', usernameInput.value);
+            localStorage.removeItem('token');
+            localStorage.setItem('token', text);
+            document.getElementById('profile-link').innerHTML = localStorage
+              .getItem('username');
+            document.getElementById('profile-link')
+              .href = '../index.html?username=' + localStorage
+              .getItem('username');
+          });
         }
+
         // Return Personal menu fields to view-only mode and disable inputs
         profileBackground.classList.remove('editing');
         profileIcon.classList.remove('editing');
         diamond.classList.remove('editing');
         aboutInput.classList.remove('editing');
         aboutInput.disabled = true;
+
         for (var i = 0; i < fields.length; i++) {
           fields[i].classList.remove('editing');
           fields[i].disabled = true;
         }
+
         for (var i = 0; i < checkboxes.length; i++) {
           checkboxContainers[i].classList.remove('editing');
           checkboxes[i].classList.remove('editing');
         }
+
         // Clear password and confirm password fields
         passwordInput.value = '';
         confirmPassInput.value = '';
+
         // Set editingPersonal variable to false
         editingPersonal = false;
+
         // Display Edit button
         editButton.style.display = 'block';
+
         // Hide Cancel and Save buttons
         cancelButton.style.display = 'none';
         saveButton.style.display = 'none';
+
         // Update field font colors based on background color
         updateFontColors();
-      });
+        return;
+      }
+
+      // Otherwise, display warning if server responds with other error
+      window.alert('Your request did not go through. Please try again soon.');
+
       return;
-    }
-    // Otherwise, display warning if server responds with error
-    window.alert('Your request did not go through. Please try again soon.');
-    return;
-  });
+    });
 }
+
+
+// Set verify password modal title to original instructions when modal closes
+$(verify).on('hidden.bs.modal', function () {
+  document.getElementById('verify-title')
+    .innerHTML = 'Please enter your password to verify changes:';
+  return;
+});
+
 
 // Cancel edits when user clicks Cancel button
 cancelButton.onclick = cancelEdits;
 
 function cancelEdits() {
-  // Return Personal menu fields to initial values set when user clicked Edit
-  // button
+  /* Return Personal menu fields to initial values set when user clicked Edit
+  button */
   iconColorPicker.value = iconColor;
   diamond.style.fill = iconColor;
+
+  // Update icon background color based on icon color
+  updateIconBackground();
   aboutInput.value = aboutBlurb;
   usernameInput.value = username;
   passwordInput.value = password;
@@ -1267,35 +1728,44 @@ function cancelEdits() {
   emailPublicInput.checked = emailPublic;
   backgroundColorPicker.value = backgroundColor;
   profileBackground.style.backgroundColor = backgroundColor;
+
   // Update field font colors based on background color
   updateFontColors();
+
   // Hide all username, password, and email input error warnings
-  document.getElementById('user-warning-one').style.display = 'none';
-  document.getElementById('user-warning-two').style.display = 'none';
-  document.getElementById('user-warning-three').style.display = 'none';
-  document.getElementById('pass-warning-one').style.display = 'none';
-  document.getElementById('pass-warning-two').style.display = 'none';
-  document.getElementById('email-warning').style.display = 'none';
+  document.getElementById('user-blank').style.display = 'none';
+  document.getElementById('user-chars').style.display = 'none';
+  document.getElementById('user-exists').style.display = 'none';
+  document.getElementById('pass-short').style.display = 'none';
+  document.getElementById('pass-mismatch').style.display = 'none';
+  document.getElementById('email-chars').style.display = 'none';
+
   // Return Personal menu fields to view-only mode and disable inputs
   profileBackground.classList.remove('editing');
   profileIcon.classList.remove('editing');
   diamond.classList.remove('editing');
   aboutInput.classList.remove('editing');
   aboutInput.disabled = true;
+
   for (var i = 0; i < fields.length; i++) {
     fields[i].classList.remove('editing');
     fields[i].disabled = true;
   }
+
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxContainers[i].classList.remove('editing');
     checkboxes[i].classList.remove('editing');
   }
+
   // Set editingPersonal variable to false
   editingPersonal = false;
+
   // Display Edit button
   editButton.style.display = 'block';
+
   // Hide Cancel and Save buttons
   cancelButton.style.display = 'none';
   saveButton.style.display = 'none';
+
   return;
 }

@@ -32,7 +32,7 @@ a:active {
   text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover {
+a:hover, .drawing-title:hover, .post-title:hover, .post-comments:hover {
   color: #808080;
   text-decoration: none;
 }
@@ -46,7 +46,7 @@ a:focus {
 #profile-icon-row {
   position: fixed;
   min-height: fit-content;
-  margin-top: 22px;
+  margin-top: 28px;
   align-self: center;
   z-index: 2;
 }
@@ -74,18 +74,18 @@ a:focus {
 #user-link-row {
   position: fixed;
   min-height: fit-content;
-  margin-top: 90px;
+  margin-top: 97px;
   align-self: center;
-  font-family: 'Sail', cursive;
 }
 
 #profile-title {
   margin-top: 6px;
   font-size: 24px;
+  font-weight: bold;
 }
 
 #profile-info {
-  margin-top: 120px;
+  margin-top: 128px;
 }
 
 #name {
@@ -168,6 +168,7 @@ a:focus {
   margin-right: 10px;
   background-color: #ffffff;
   transition: all 0.4s;
+  cursor: pointer;
 }
 
 .drawing-info {
@@ -180,9 +181,19 @@ a:focus {
   padding: 1px;
   font-size: 15px;
   text-align: left;
+  text-overflow: ellipsis;
   line-height: 0.5;
   opacity: 0.6;
   cursor: default;
+}
+
+.drawing-artist {
+  width: 38%;
+  padding: 3px;
+  text-align: right;
+  text-overflow: ellipsis;
+  line-height: 0.5;
+  opacity: 0.6;
 }
 
 .fa-heart {
@@ -288,6 +299,10 @@ a:focus {
   text-align: left;
 }
 
+.post-comments {
+  cursor: pointer;
+}
+
 :focus {
   outline: none !important;
 }
@@ -331,6 +346,15 @@ button:focus {
 .title {
   font-family: 'Sail', cursive;
   font-size: 42px;
+}
+
+#logout {
+  position: absolute;
+  top: 45px;
+  display: none;
+  font-size: 15px;
+  font-style: italic;
+  color: #ff0000;
 }
 
 .container {
@@ -394,7 +418,7 @@ input:focus, button:focus {
   top: 0px;
   left: 0px;
   right: 0px;
-  margin-top: 20px;
+  margin-top: 28px;
   font-family: 'Sail', cursive;
   font-size: 42px !important;
   text-align: center;
@@ -861,6 +885,10 @@ label.editing {
   overflow: scroll;
 }
 
+#drawing-area #gallery {
+  height: 100%;
+}
+
 #drawing-area text {
   padding: 3px;
   font-size: 25px;
@@ -1009,7 +1037,7 @@ label.editing {
     right: unset;
   }
 
-  #drawing-area {
+  #drawing-area, #drawing-area #gallery {
     overflow: unset;
   }
 
@@ -1035,6 +1063,7 @@ label.editing {
   }
 
   #profile-title {
+    margin-top: 10px;
     font-size: 30px;
   }
 
@@ -1073,6 +1102,10 @@ label.editing {
     width: 20%;
   }
 
+  .drawing-artist {
+    width: 60%;
+  }
+
   .post-title {
     width: 181px;
     font-size: 18px;
@@ -1095,12 +1128,16 @@ label.editing {
   }
 
   .title {
-    max-width: 25vw;
+    max-width: 35vw;
     font-size: 90px;
   }
 
   #title {
     font-size: 54px !important;
+  }
+
+  #logout {
+    font-size: 19px;
   }
 
   #navbar {

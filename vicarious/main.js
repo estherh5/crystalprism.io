@@ -27,14 +27,19 @@ var carouselNext = document.getElementById('carousel-next');
 window.onload = function() {
   // Stop carousel from cycling (starts cycling by default)
   $('.carousel').carousel('pause');
+
   // Create page header (from common.js script)
   createPageHeader();
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
+
   // Store images from Reddit's API in an array
   storeImages();
+
   // Set random location as location search input placeholder
   setLocationPlaceholder();
+
   return;
 }
 
@@ -43,64 +48,78 @@ window.onload = function() {
 function storeImages() {
   // Retrieve 100 images from Reddit's Travel subreddit
   return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after)
-  // Display error modal if server is down
-  .catch(function(error) {
-    $(error).modal('show');
-    // Focus on okay button after modal displays
-    setTimeout(function() {
-      document.getElementById('error-okay').focus();
-      return;
-    }, 200);
-    return;
-  }).then(function(response) {
-    if (response.ok) {
-      response.json().then(function(info) {
-        // Get "after" value, which Reddit's API uses to retrieve next set of
-        // images
-        after = info['data']['after'];
-        for (var i = 0; i < info['data']['children'].length; i++) {
-          // When 5 images have been found, get their data (URL, title, etc.)
-          // and display them on page
-          if (allImages.length == 5) {
-            findImages('');
-          }
-          // If the URL item in the Reddit data contains an image file
-          // extension, store the URL in the allImages array
-          if (info['data']['children'][i]['data']['url']
-          .match(/(.jpg|.jpeg|.png|.tif)/)) {
-            allImages.push(info['data']['children'][i]['data']);
-          }
-          if (i == info['data']['children'].length - 1) {
-            // If this is the last object from the Reddit data and the "after"
-            // value is null, return
-            if (after == null) {
-              return;
-            }
-            // Otherwise, run the function again using a fetch request with the
-            // new "after" value
-            storeImages();
-          }
-        }
+
+    // Display error modal if server is down
+    .catch(function(error) {
+      $(error).modal('show');
+
+      // Focus on okay button after modal displays
+      $(error).on('shown.bs.modal', function () {
+        document.getElementById('error-okay').focus();
+        return;
       });
       return;
-    }
-    // Display error modal if server throws error
-    $(error).modal('show');
-    setTimeout(function() {
-      document.getElementById('error-okay').focus();
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(info) {
+          /* Get "after" value, which Reddit's API uses to retrieve next set of
+          images */
+          after = info['data']['after'];
+
+          for (var i = 0; i < info['data']['children'].length; i++) {
+
+            /* When 5 images have been found, get their data (URL, title, etc.)
+            and display them on page */
+            if (allImages.length == 5) {
+              findImages('');
+            }
+
+            /* If the URL item in the Reddit data contains an image file
+            extension, store the URL in the allImages array */
+            if (info['data']['children'][i]['data']['url']
+              .match(/(.jpg|.jpeg|.png|.tif)/)) {
+                allImages.push(info['data']['children'][i]['data']);
+            }
+
+            if (i == info['data']['children'].length - 1) {
+              /* If this is the last object from the Reddit data and the "after"
+              value is null, return */
+              if (after == null) {
+                return;
+              }
+
+              /* Otherwise, run the function again using a fetch request with the
+              new "after" value */
+              storeImages();
+            }
+          }
+        });
+
+        return;
+      }
+
+      // Display error modal if server throws error
+      $(error).modal('show');
+      $(error).on('shown.bs.modal', function () {
+        document.getElementById('error-okay').focus();
+        return;
+      });
+
       return;
-    }, 200);
-    return;
-  });
+    });
 }
 
-// Display random API images when no images match user's search term and user
-// exits modal
+
+/* Display random API images when no images match user's search term and user
+exits modal */
 noResultsModal.onclick = function(e) {
   // Only call function if user clicks on area outside of modal body
   if (e.target == this) {
     findImages('random');
   }
+
   return;
 }
 
@@ -114,42 +133,49 @@ noResultsCloseButton.onclick = function() {
   return;
 }
 
-// Close modal and display random images when modal is open and escape key is
-// clicked
+
+/* Close modal and display random images when modal is open and escape key is
+clicked */
 window.addEventListener('keyup', function(e) {
   if (noResultsModal.classList.contains('show') && e.keyCode == 27) {
     e.preventDefault();
     noResultsCloseButton.click();
   }
+
   return;
 }, false);
 
 
-// Find API images that match input term (input is blank on load to match on
-// first 5 images)
+/* Find API images that match input term (input is blank on load to match on
+first 5 images) */
 function findImages(input) {
   // Display loading style and animation while images load
   document.getElementById('dimmer').style.display = 'block';
   loadingImage.style.animationPlayState = 'running';
-  // If input is 'random', generate a random list of 5 images from the API
-  // results
+
+  /* If input is 'random', generate a random list of 5 images from the API
+  results */
   if (input == 'random') {
     randomNumber = Math.floor(Math.random() * (allImages.length - 6));
     searchList = allImages.slice(randomNumber, randomNumber + 5);
+
     // Clear location input for user to search for something new
     locationInput.value = '';
     setLocationPlaceholder();
     locationInput.focus();
+
     // Set input term to blank to return match on any image title
     input = '';
   }
+
   // If input is anything else, search through full list of API images
   else {
     searchList = allImages;
   }
+
   for (var i = 0; i < searchList.length; i++) {
-    // Remove loading style and animation, populate carousel, and display
-    // images on page when 5 images are found
+    /* Remove loading style and animation, populate carousel, and display
+    images on page when 5 images are found */
     if (imageURLs.length == 5) {
       rightPanel.classList.remove('cleared');
       loadingImage.classList.remove('loading');
@@ -158,32 +184,37 @@ function findImages(input) {
       displayImages();
       return;
     }
-    // Search through images to find match with input search term and image
-    // title, ignoring images already in search results list
+
+    /* Search through images to find match with input search term and image
+    title, ignoring images already in search results list */
     if (searchList[i]['title'].toLowerCase().indexOf(input.toLowerCase()) != -1
-    && imageURLs.includes(searchList[i]['url']) == false) {
-      imageURLs.push(searchList[i]['url']);
-      imageTitleLinks.push('https://reddit.com' + searchList[i]['permalink']);
-      imageTitleTexts.push(searchList[i]['title']);
-    }
+      && imageURLs.includes(searchList[i]['url']) == false) {
+        imageURLs.push(searchList[i]['url']);
+        imageTitleLinks.push('https://reddit.com' + searchList[i]['permalink']);
+        imageTitleTexts.push(searchList[i]['title']);
+      }
+
     if (i == searchList.length - 1) {
-      // If search has reached end of images list and found no matching images,
-      // display no results modal and clear carousel
+      /* If search has reached end of images list and found no matching images,
+      display no results modal and clear carousel */
       if (imageURLs.length == 0) {
         loadingImage.style.animationPlayState = 'paused';
         noResultsTitle.innerHTML = 'No images found for "' + input + '"';
         $(noResultsModal).modal('show');
+
         // Focus on okay button after modal displays
-        setTimeout(function() {
+        $(noResultsModal).on('shown.bs.modal', function () {
           noResultsOkayButton.focus();
           return;
-        }, 200);
+        });
+
         populateCarousel();
         return;
       }
-      // If search has reached end of API images list and found at least 1
-      // matching image, populate carousel, display images, and remove loading
-      // style and animation
+
+      /* If search has reached end of API images list and found at least 1
+      matching image, populate carousel, display images, and remove loading
+      style and animation */
       populateCarousel();
       displayImages();
       rightPanel.classList.remove('cleared');
@@ -191,8 +222,10 @@ function findImages(input) {
       document.getElementById('dimmer').style.display = 'none';
     }
   }
+
   return;
 }
+
 
 // Display images found in findImages function
 function displayImages() {
@@ -200,10 +233,12 @@ function displayImages() {
     displayedImages[i].src = imageURLs[i];
     displayedImages[i].dataset.number = i;
     displayedImages[i].classList.remove('cleared');
+
     // Open carousel to specified image when clicked
     displayedImages[i].addEventListener('click', function() {
       openCarousel(this.dataset.number);
     }, false);
+
     // Display link to image's Reddit post as title for image
     displayedImageTitles[i].href = imageTitleLinks[i];
     displayedImageTitles[i].innerHTML = imageTitleTexts[i];
@@ -211,14 +246,15 @@ function displayImages() {
   return;
 }
 
-// Clear images from page if user clicks page title, submit button, or enter
-// key in search input field to search for image
+
+/* Clear images from page if user clicks page title, submit button, or enter
+key in search input field to search for image */
 titleLink.onclick = clearImages;
 submitButton.onclick = clearImages;
 
 locationInput.addEventListener('keyup', function(e) {
-  // Clear images when enter key is clicked and no results modal is not
-  // displayed
+  /* Clear images when enter key is clicked and no results modal is not
+  displayed */
   if (!noResultsModal.classList.contains('show') && e.keyCode == 13) {
     e.preventDefault();
     clearImages();
@@ -235,22 +271,27 @@ function clearImages() {
     displayedImageTitles[j].removeAttribute('href');
     displayedImageTitles[j].innerHTML = '';
   }
+
   // Display loading image in place of empty image containers
   loadingImage.classList.add('loading');
   rightPanel.classList.add('cleared');
+
   // Clear list of images and titles found in findImages function
   imageURLs = [];
   imageTitleLinks = [];
   imageTitleTexts = [];
   after = '';
-  // If user clicked page title or search input field is blank, display random
-  // images
+
+  /* If user clicked page title or search input field is blank, display random
+  images */
   if (this == titleLink || locationInput.value == '') {
     findImages('random');
     return;
   }
+
   // Otherwise, display images that match location that user searched for
   findImages(locationInput.value);
+
   return;
 }
 
@@ -259,9 +300,10 @@ function clearImages() {
 function populateCarousel() {
   // Clear current carousel images
   document.getElementById('carousel-inner').innerHTML = '';
+
   for (var i = 0; i < imageURLs.length; i++) {
-    // Hide carousel navigation buttons if there is only a single image (or no
-    // images) to cycle through
+    /* Hide carousel navigation buttons if there is only a single image (or no
+    images) to cycle through */
     if (imageURLs.length < 2) {
       carouselPrev.style.display = 'none';
       carouselNext.style.display = 'none';
@@ -269,6 +311,7 @@ function populateCarousel() {
       carouselPrev.style.display = 'flex';
       carouselNext.style.display = 'flex';
     }
+
     // Create carousel image for each image found in findImages function
     var carouselItem = document.createElement('div');
     carouselItem.classList.add('carousel-item');
@@ -276,14 +319,16 @@ function populateCarousel() {
     carouselImage.classList.add('carousel-image');
     carouselImage.classList.add('img-fluid');
     carouselImage.src = imageURLs[i];
-    carouselItem.append(carouselImage);
-    document.getElementById('carousel-inner').append(carouselItem);
+    carouselItem.appendChild(carouselImage);
+    document.getElementById('carousel-inner').appendChild(carouselItem);
   }
+
   return;
 }
 
-// Open carousel to specified image number in cycle (start from beginning when
-// View All button is clicked)
+
+/* Open carousel to specified image number in cycle (start from beginning when
+View All button is clicked) */
 viewButton.addEventListener('click', function() {
   openCarousel(0);
   return;
@@ -291,24 +336,26 @@ viewButton.addEventListener('click', function() {
 
 function openCarousel(number) {
   var carouselItems = document.getElementsByClassName('carousel-item');
+
   // Start carousel cycle on specified image number
   carouselItems[number].classList.add('active');
+
   // Make account menu links white font for visibility
   document.getElementById('profile-link').style.color = '#ffffff';
   document.getElementById('account-link').style.color = '#ffffff';
   document.getElementById('sign-in-link').style.color = '#ffffff';
   carousel.style.display = 'flex';
   $('.carousel').carousel('cycle');
-  // Focus on next button control after carousel opens
-  setTimeout(function() {
-    carouselNext.focus();
-    return;
-  }, 200);
+
+  // Focus on next button control to allow keyboard shortcuts
+  carouselNext.focus();
+
   return;
 }
 
-// Close carousel when close button is clicked or when area outside carousel
-// image is clicked
+
+/* Close carousel when close button is clicked or when area outside carousel
+image is clicked */
 carouselCloseButton.onclick = closeCarousel;
 
 carousel.onclick = function(e) {
@@ -320,20 +367,25 @@ carousel.onclick = function(e) {
 
 function closeCarousel() {
   var carouselItems = document.getElementsByClassName('carousel-item');
+
   // Pause carousel cycle
   $('.carousel').carousel('pause');
-  // Remove active class from all carousel items to clear previous cycle of
-  // images
+
+  /* Remove active class from all carousel items to clear previous cycle of
+  images */
   for (var i = 0; i < carouselItems.length; i++) {
     carouselItems[i].classList.remove('active');
   }
+
   // Return account menu links to original font color
   document.getElementById('profile-link').style.color = '#000000';
   document.getElementById('account-link').style.color = '#000000';
   document.getElementById('sign-in-link').style.color = '#000000';
   carousel.style.display = 'none';
+
   return;
 }
+
 
 // Define carousel keyboard shortcuts
 window.addEventListener('keyup', function(e) {
@@ -342,11 +394,13 @@ window.addEventListener('keyup', function(e) {
     e.preventDefault();
     carouselCloseButton.click();
   }
+
   // Advance to next carousel item when space key is clicked
   else if (carousel.style.display != 'none' && e.keyCode == 32) {
     e.preventDefault();
     carouselNext.click();
   }
+
   return;
 }, false);
 
@@ -354,7 +408,7 @@ window.addEventListener('keyup', function(e) {
 // Set random country placeholder in search input field
 function setLocationPlaceholder() {
   var locationPlaceholders = ['Spain', 'Switzerland', 'India', 'Thailand',
-  'Italy', 'Canada', 'Norway'];
+    'Italy', 'Canada', 'Norway'];
   var randomNumber = Math.floor(Math.random() * locationPlaceholders.length);
   locationInput.placeholder = locationPlaceholders[randomNumber];
   return;

@@ -451,6 +451,22 @@ h1 {
   transition: filter 0.3s;
 }
 
+#projects-page-button.selected, #projects-page-button:hover {
+  color: #1ebfe8 !important;
+}
+
+#photos-page-button.selected, #photos-page-button:hover {
+  color: #8551ff !important;
+}
+
+#ideas-page-button.selected, #ideas-page-button:hover {
+  color: #d24cff !important;
+}
+
+#about-page-button.selected, #about-page-button:hover {
+  color: #7fd13b !important;
+}
+
 #pages {
   position: relative;
   display: flex;

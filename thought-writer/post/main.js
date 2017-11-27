@@ -1,22 +1,19 @@
 // Define global variables
 var errorMessage = null;
 var postWriter = document.getElementById('post-writer');
-// Determine server based on window location
-if (window.location.hostname == 'crystalprism.io') {
-  var server = 'http://13.58.175.191/api';
-} else {
-  var server = 'http://localhost:5000/api';
-}
 
 
 // Define load functions
 window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
+
   // Load post to post board from server
   loadPost();
+
   return;
 }
 
@@ -28,89 +25,111 @@ function loadPost() {
   var postTimestamp = document.getElementById('post-timestamp');
   var comments = document.getElementById('comments');
   var commentCount = document.getElementById('comment-count');
+
   // Request post based on items stored in sessionStorage
-  return fetch(server + '/thought-writer/post/' + encodeURIComponent(sessionStorage
-  .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
-  .getItem('timestamp')))
-  // Display error message if server is down and error isn't already displayed
-  // (i.e., prevent multiple errors if user submits comment and requests to
-  // reload post)
-  .catch(function(error) {
-    if (errorMessage == null) {
-      errorMessage = document.createElement('text');
-      errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
-      // Clear post and append error message
-      document.getElementById('post-background').innerHTML = '';
-      document.getElementById('post-background').append(errorMessage);
-      return;
-    }
-  }).then(function(response) {
-    if (response.ok) {
-      response.json().then(function(post) {
-        // Set page title and post title container to title of post
-        document.title = post.title;
-        postTitle.innerHTML = post.title;
-        // Add post content to post content container
-        postContent.innerHTML = post.content;
-        // Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
-        // HH:MM AM/PM' format
-        var dateTime = new Date(post.timestamp);
-        postTimestamp.innerHTML = dateTime.toLocaleString()
-        .replace(/:\d{2}\s/,' ');
-        // Add link to writer's profile
-        postWriter.href = '../../user/index.html?username=' + post.writer;
-        postWriter.innerHTML = post.writer;
-        // Clear comments list (for function call when user submits new comment)
-        comments.innerHTML = '';
-        // Display comment count
-        if (post.comments.length == 1) {
-          commentCount.innerHTML = post.comments.length + ' comment';
-        } else {
-          commentCount.innerHTML = post.comments.length + ' comments';
-        }
-        // Append post comments to comments list
-        for (var i = 0; i < post.comments.length; i++) {
-          // Create container for comment
-          var commentContainer = document.createElement('div');
-          commentContainer.classList.add('comment-container');
-          // Create container for comment content
-          var commentContent = document.createElement('div');
-          commentContent.classList.add('comment-content');
-          commentContent.innerHTML = post.comments[i].content;
-          // Create link to commenter's profile
-          var commenter = document.createElement('a');
-          commenter.classList.add('commenter');
-          commenter.href = '../../user/index.html?username=' + post.comments[i]
-          .commenter;
-          commenter.innerHTML = post.comments[i].commenter;
-          // Create container for comment timestamp
-          var commentTimestamp = document.createElement('div');
-          commentTimestamp.classList.add('comment-timestamp');
-          // Convert UTC timestamp from server to local timestamp in
-          // 'MM/DD/YYYY, HH:MM AM/PM' format
-          var dateTime = new Date(post.comments[i].timestamp);
-          commentTimestamp.innerHTML = dateTime.toLocaleString()
-          .replace(/:\d{2}\s/,' ');
-          comments.append(commentContainer);
-          commentContainer.append(commentContent);
-          commentContainer.append(commenter);
-          commentContainer.append(commentTimestamp);
-        }
-      });
-      return;
-    }
-    // Display error message if server responds with error
-    if (errorMessage == null) {
-      errorMessage = document.createElement('text');
-      errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
-      // Clear page container and append error message
-      document.getElementById('container').innerHTML = '';
-      document.getElementById('container').append(errorMessage);
-      return;
-    }
-  });
+  var postPath = encodeURIComponent(sessionStorage
+    .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
+    .getItem('timestamp'));
+
+  return fetch(server + '/thought-writer/post/' + postPath)
+
+    /* Display error message if server is down and error isn't already displayed
+    (i.e., prevent multiple errors if user submits comment and requests to
+    reload post) */
+    .catch(function(error) {
+      if (errorMessage == null) {
+        errorMessage = document.createElement('text');
+        errorMessage.id = 'error-message';
+        errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
+        // Clear post and append error message
+        document.getElementById('post-background').innerHTML = '';
+        document.getElementById('post-background').appendChild(errorMessage);
+        return;
+      }
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(post) {
+
+          // Set page title and post title container to title of post
+          document.title = post.title;
+          postTitle.innerHTML = post.title;
+
+          // Add post content to post content container
+          postContent.innerHTML = post.content;
+
+          /* Convert UTC timestamp from server to local timestamp in
+          'MM/DD/YYYY, HH:MM AM/PM' format */
+          var postDate = new Date(post.timestamp);
+          postTimestamp.innerHTML = postDate.toLocaleString()
+            .replace(/:\d{2}\s/,' ');
+
+          // Add link to writer's profile
+          postWriter.href = '../../user/index.html?username=' + post.writer;
+          postWriter.innerHTML = post.writer;
+
+          /* Clear comments list (for function call when user submits new
+          comment) */
+          comments.innerHTML = '';
+
+          // Display comment count
+          if (post.comments.length == 1) {
+            commentCount.innerHTML = post.comments.length + ' comment';
+          } else {
+            commentCount.innerHTML = post.comments.length + ' comments';
+          }
+
+          // Append post comments to comments list
+          for (var i = 0; i < post.comments.length; i++) {
+            // Create container for comment
+            var commentContainer = document.createElement('div');
+            commentContainer.classList.add('comment-container');
+
+            // Create container for comment content
+            var commentContent = document.createElement('div');
+            commentContent.classList.add('comment-content');
+            commentContent.innerHTML = post.comments[i].content;
+
+            // Create link to commenter's profile
+            var commenter = document.createElement('a');
+            commenter.classList.add('commenter');
+            commenter.href = '../../user/index.html?username=' + post
+              .comments[i].commenter;
+            commenter.innerHTML = post.comments[i].commenter;
+
+            // Create container for comment timestamp
+            var commentTimestamp = document.createElement('div');
+            commentTimestamp.classList.add('comment-timestamp');
+
+            /* Convert UTC timestamp from server to local timestamp in
+            'MM/DD/YYYY, HH:MM AM/PM' format */
+            var commentDate = new Date(post.comments[i].timestamp);
+            commentTimestamp.innerHTML = commentDate.toLocaleString()
+              .replace(/:\d{2}\s/,' ');
+            comments.appendChild(commentContainer);
+            commentContainer.appendChild(commentContent);
+            commentContainer.appendChild(commenter);
+            commentContainer.appendChild(commentTimestamp);
+          }
+        });
+
+        return;
+      }
+
+      // Display error message if server responds with error
+      if (errorMessage == null) {
+        errorMessage = document.createElement('text');
+        errorMessage.id = 'error-message';
+        errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
+
+        // Clear page container and append error message
+        document.getElementById('container').innerHTML = '';
+        document.getElementById('container').appendChild(errorMessage);
+
+        return;
+      }
+    });
 }
 
 
@@ -119,34 +138,45 @@ document.getElementById('submit-comment').onclick = submitComment;
 
 function submitComment() {
   var newComment = document.getElementById('new-comment-box');
-  // If comment does not contain any non-space characters, display warning to
-  // user
+
+  /* If comment does not contain any non-space characters, display warning to
+  user */
   if (!/\S/.test(newComment.innerHTML)) {
     window.alert('Your comment cannot be blank.');
     return;
   }
+
   // Otherwise, send comment to server
   var data = JSON.stringify({'content': newComment.innerHTML});
-  return fetch(server + '/thought-writer/comment/' + encodeURIComponent(postWriter
-  .innerHTML) + '/' + encodeURIComponent(sessionStorage.getItem('timestamp')), {
-    headers: {'Authorization': 'Bearer ' + localStorage
-    .getItem('token'), 'Content-Type': 'application/json'},
+  var postPath = encodeURIComponent(postWriter
+    .innerHTML) + '/' + encodeURIComponent(sessionStorage.getItem('timestamp'));
+
+  return fetch(server + '/thought-writer/comment/' + postPath, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
-  // Display error if server is down
-  .catch(function(error) {
-    window.alert('Your comment did not go through. Please try again soon.');
-  }).then(function(response) {
-    if (response.ok) {
-      // Clear new comment box
-      newComment.innerHTML = '';
-      // Reload post to get updated comments list
-      loadPost();
+
+    // Display error if server is down
+    .catch(function(error) {
+      window.alert('Your comment did not go through. Please try again soon.');
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        // Clear new comment box
+        newComment.innerHTML = '';
+
+        // Reload post to get updated comments list
+        loadPost();
+
+        return;
+      }
+
+      // Display alert if server responded with error
+      window.alert('You must log in to leave a comment.');
+
       return;
-    }
-    // Display alert if server responded with error
-    window.alert('You must log in to leave a comment.');
-    return;
-  });
+    });
 }

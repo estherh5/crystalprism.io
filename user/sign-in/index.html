@@ -52,50 +52,55 @@
     </div>
 
     <!-- Main page container -->
-    <div class="container">
+    <div id="main-container" class="d-flex flex-column align-items-center justify-content-center">
 
-      <!-- Sign in title row -->
-      <div class="row my-3 no-gutters">
-        <div class="col-8">
-          <h1 class="title">Sign in</h1>
-        </div>
-        <!-- Link to Create Account page -->
-        <div class="col-4">
-          <a href="../create-account/index.html">
-            <h4>Need an account?</h4>
-          </a>
-        </div>
-      </div>
+      <!-- Sign in container -->
+      <div class="container">
 
-      <!-- Username input -->
-      <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-3">
-          <h2>Username: </h2>
+        <!-- Sign in title row -->
+        <div class="row my-3 no-gutters">
+          <div class="col-8">
+            <h1 class="title">Sign in</h1>
+          </div>
+          <!-- Link to Create Account page -->
+          <div class="col-4">
+            <a href="../create-account/index.html">
+              <h4>Need an account?</h4>
+            </a>
+          </div>
         </div>
-        <div class="col-auto">
-          <input id="username-input" type="text" spellcheck="false" maxlength="50" autofocus>
-          <!-- Warning that username cannot be blank when user submits credentials -->
-          <div id="user-blank" class="warning">Username cannot be blank</div>
-        </div>
-      </div>
 
-      <!-- Password input -->
-      <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-3">
-          <h2>Password: </h2>
+        <!-- Username input -->
+        <div class="row my-2 d-flex align-items-center justify-content-center">
+          <div class="col-3">
+            <h2>Username: </h2>
+          </div>
+          <div class="col-auto">
+            <input id="username-input" type="text" spellcheck="false" maxlength="50" autofocus>
+            <!-- Warning that username cannot be blank when user submits credentials -->
+            <div id="user-blank" class="warning">Username cannot be blank</div>
+          </div>
         </div>
-        <div class="col-auto">
-          <input id="password-input" type="password" spellcheck="false">
-          <!-- Warning that password cannot be blank when user submits credentials -->
-          <div id="pass-blank" class="warning">Password cannot be blank</div>
-        </div>
-      </div>
 
-      <!-- Submit button -->
-      <div class="row my-3">
-        <div class="col d-flex align-items-center justify-content-center">
-          <button id="submit" type="submit">Submit</button>
+        <!-- Password input -->
+        <div class="row my-2 d-flex align-items-center justify-content-center">
+          <div class="col-3">
+            <h2>Password: </h2>
+          </div>
+          <div class="col-auto">
+            <input id="password-input" type="password" spellcheck="false">
+            <!-- Warning that password cannot be blank when user submits credentials -->
+            <div id="pass-blank" class="warning">Password cannot be blank</div>
+          </div>
         </div>
+
+        <!-- Submit button -->
+        <div class="row my-3">
+          <div class="col d-flex align-items-center justify-content-center">
+            <button id="submit" type="submit">Submit</button>
+          </div>
+        </div>
+
       </div>
 
     </div>

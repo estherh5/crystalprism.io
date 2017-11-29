@@ -54,6 +54,29 @@ function createPageHeader() {
 }
 
 
+// Create page footer
+function createPageFooter() {
+  // Create copyright display
+  var copyright = document.createElement('div');
+  copyright.innerHTML = '&copy; 2017 Crystal Prism';
+
+  // Create contact information display
+  var contact = document.createElement('div');
+  contact.innerHTML = 'Find any bugs? Email <a href="administrator@crystalprism.io">administrator@crystalprism.io</a> with details.';
+
+  // Create footer to contain copyright and contact information
+  var footer = document.createElement('div');
+  footer.id = 'footer';
+  footer.appendChild(copyright);
+  footer.appendChild(contact);
+
+  // Insert footer at end of body element
+  document.body.insertAdjacentElement('beforeend', footer);
+
+  return;
+}
+
+
 // Check if user is logged in
 function checkIfLoggedIn() {
   // If user does not have a token stored locally, set account menu to default

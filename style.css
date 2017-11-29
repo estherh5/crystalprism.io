@@ -407,11 +407,13 @@ video {
 
 #front-page-link {
   position: relative;
-  height: 50px;
   width: fit-content;
-  margin-top: 5px;
+  margin-top: 20px;
   margin-bottom: 10px;
-  display: flex;
+  display: block;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
   align-self: center;
   justify-content: center;
@@ -467,15 +469,23 @@ h1 {
   color: #7fd13b !important;
 }
 
+#pages-container {
+  flex: 1;
+}
+
 #pages {
   position: relative;
+  height: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .page {
-  position: absolute;
+  position: relative;
   max-width: 1090px;
   margin: auto;
   margin-top: 0px;
@@ -483,14 +493,25 @@ h1 {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
   font-family: 'Rajdhani', sans-serif;
+  transition: opacity 0.3s;
 }
 
 #splash-page {
-  height: 74vh;
+  height: 100%;
   width: 100%;
   margin: auto;
   margin-top: 0px;
@@ -985,7 +1006,6 @@ h1 {
   }
 
   #front-page-link {
-    height: 100px;
     margin-top: 15px;
   }
 

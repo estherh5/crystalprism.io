@@ -8,6 +8,9 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 

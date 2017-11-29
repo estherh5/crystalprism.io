@@ -91,6 +91,9 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   // If user is not logged in, redirect to Sign In page
   if (localStorage.getItem('token') == null || !checkIfLoggedIn()) {
     window.location = '../sign-in/index.html';

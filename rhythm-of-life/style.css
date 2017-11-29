@@ -2,9 +2,6 @@ html, body {
   height: 100%;
   width: 100%;
   margin: 0px;
-}
-
-body {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -59,10 +56,17 @@ body {
     display: none;
   }
 
+  #page-container {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
   .control-buttons {
     position: relative;
     width: 300px;
-    margin-top: -3%;
     top: 0px;
     left: 0px;
     display: flex;
@@ -130,7 +134,7 @@ body {
     cursor: default;
   }
 
-  .container {
+  #game-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -409,7 +413,6 @@ body {
 /* iPad landscape and larger */
 @media only screen and (min-width: 1024px) and (min-height: 768px) and (orientation: landscape) {
   .control-buttons {
-    margin-top: -2%;
     font-size: 20px;
   }
 
@@ -426,7 +429,6 @@ body {
 @media only screen and (min-width: 1024px) and (min-height: 1366px) and (orientation: portrait) {
   .control-buttons {
     width: 390px;
-    margin-top: -3%;
   }
 
   #blood-pressure, #lifespan {

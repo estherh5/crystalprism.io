@@ -25,6 +25,9 @@ var sectionDetails = document.getElementsByClassName('subsection-details');
 
 // Define load functions
 window.onload = function() {
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 

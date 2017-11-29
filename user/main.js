@@ -13,6 +13,9 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   // Apply additional style to header
   document.getElementById('header').classList.add('divider');
 

@@ -8,6 +8,9 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   /* Display confirmation of account logout if user requested it from another
   page and populate page header based on logged out status (from common.js) */
   if (sessionStorage.getItem('account-request') == 'logout') {

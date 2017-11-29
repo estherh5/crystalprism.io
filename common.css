@@ -54,6 +54,15 @@
   margin-right: 7px;
 }
 
+#footer {
+  margin-top: 5px;
+  margin-bottom: 5px;
+  font-family: 'Rajdhani', sans-serif;
+  text-align: center;
+  line-height: 1.3;
+  z-index: 100;
+}
+
 @media only screen and (min-width: 768px) {
   #account-menu {
     font-size: 14px;

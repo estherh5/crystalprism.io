@@ -32,324 +32,330 @@
     <div id="warning">Please switch to a larger window.</div>
     <div id="warning-mobile">Please switch to landscape mode.</div>
 
-    <!-- Game button controls -->
-    <div class="control-buttons left">
-      <button id="pause">Pause</button>
-      <button id="restart">Start Over</button>
-      <button id="learn-more-desktop">Learn More</button>
-      <button id="sound"></button>
-    </div>
+    <!-- Main page container -->
+    <div id="page-container">
 
-    <!-- Additional game button controls for mobile only -->
-    <div class="control-buttons right">
-      <button id="learn-more-mobile">Learn More</button>
-      <button id="display-leaders">Leaders</button>
-    </div>
-
-    <!-- Blood pressure and lifespan score -->
-    <h1 id="blood-pressure">BP: <text id="systolic">100</text>/<text id="diastolic">70</text></h1>
-    <h1 id="lifespan">Lifespan: 00:00:00</h1>
-
-    <!-- Main game container -->
-    <div class="container">
-
-      <!-- Left side panel for desktop -->
-      <div id="left-panel">
-        <!-- List of SVG stressors to avoid in game -->
-        <div id="stressboard" class="side-board">
-          <table class="side-table">
-            <thead>
-              <caption class="side-table-title">Stressors</caption>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <object class="stressor" type="image/svg+xml" data="images/alcohol.svg"></object>
-                </td>
-              </tr>
-                <td>
-                  <object class="stressor" type="image/svg+xml" data="images/salt.svg"></object>
-                </td>
-              <tr>
-                <td>
-                  <object class="stressor" type="image/svg+xml" data="images/cigarette.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <object class="stressor" type="image/svg+xml" data="images/stress.svg"></object>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- List of SVG relievers to seek out in game -->
-        <div id="reliefboard" class="side-board">
-          <table class="side-table">
-            <thead>
-              <caption class="side-table-title">Relievers</caption>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <object class="reliever" type="image/svg+xml" data="images/bicycle.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <object class="reliever" type="image/svg+xml" data="images/yoga.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <object class="reliever" type="image/svg+xml" data="images/fruit.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <object class="reliever" type="image/svg+xml" data="images/pill.svg"></object>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <!-- Game button controls -->
+      <div class="control-buttons left">
+        <button id="pause">Pause</button>
+        <button id="restart">Start Over</button>
+        <button id="learn-more-desktop">Learn More</button>
+        <button id="sound"></button>
       </div>
 
-      <!-- Central game area for desktop and mobile -->
-      <div id="game-board">
+      <!-- Additional game button controls for mobile only -->
+      <div class="control-buttons right">
+        <button id="learn-more-mobile">Learn More</button>
+        <button id="display-leaders">Leaders</button>
+      </div>
 
-        <!-- SVG canvas where SVGs are added and game is played -->
-        <svg id="svg-game"></svg>
+      <!-- Blood pressure and lifespan score -->
+      <h1 id="blood-pressure">BP: <text id="systolic">100</text>/<text id="diastolic">70</text></h1>
+      <h1 id="lifespan">Lifespan: 00:00:00</h1>
 
-        <!-- Starting screen for desktop, with game instructions -->
-        <div id="start-screen-desktop" class="screen">
-          <text id="start-title">Rhythm of Life</text>
-          Use the arrow keys to move your heart.
-          <br>
-          Avoid stressors and seek relievers to keep your blood pressure low.
-          <br>
-          Press Learn More for more information.
-          <br>
-          Press an arrow key to start.
-        </div>
+      <!-- Main game container -->
+      <div id="game-container">
 
-        <!-- Starting screen for mobile, with game instructions -->
-        <div id="start-screen-mobile" class="screen">
-          <text id="start-title">Rhythm of Life</text>
-          Swipe left, right, up or down to move your heart.
-          <br>
-          Avoid stressors and seek relievers to keep your blood pressure low.
-          <br>
-          Press Learn More for more information.
-          <br>
-          Swipe in any direction to start.
-        </div>
-
-        <!-- Game Over screen -->
-        <div id="game-over-screen" class="screen">
-          <text id="game-over-title">Game Over</text>
-          <br>
-          <div>
-            <text>Play again?</text>
-            <button id="retry">Restart</button>
+        <!-- Left side panel for desktop -->
+        <div id="left-panel">
+          <!-- List of SVG stressors to avoid in game -->
+          <div id="stressboard" class="side-board">
+            <table class="side-table">
+              <thead>
+                <caption class="side-table-title">Stressors</caption>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <object class="stressor" type="image/svg+xml" data="images/alcohol.svg"></object>
+                  </td>
+                </tr>
+                  <td>
+                    <object class="stressor" type="image/svg+xml" data="images/salt.svg"></object>
+                  </td>
+                <tr>
+                  <td>
+                    <object class="stressor" type="image/svg+xml" data="images/cigarette.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <object class="stressor" type="image/svg+xml" data="images/stress.svg"></object>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- List of SVG relievers to seek out in game -->
+          <div id="reliefboard" class="side-board">
+            <table class="side-table">
+              <thead>
+                <caption class="side-table-title">Relievers</caption>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <object class="reliever" type="image/svg+xml" data="images/bicycle.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <object class="reliever" type="image/svg+xml" data="images/yoga.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <object class="reliever" type="image/svg+xml" data="images/fruit.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <object class="reliever" type="image/svg+xml" data="images/pill.svg"></object>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
-        <!-- Pause screen for desktop -->
-        <div id="pause-screen-desktop" class="screen">
-          <text id="pause-title">Paused</text>
-          <br>
-          Press Resume or an arrow to continue.
+        <!-- Central game area for desktop and mobile -->
+        <div id="game-board">
+
+          <!-- SVG canvas where SVGs are added and game is played -->
+          <svg id="svg-game"></svg>
+
+          <!-- Starting screen for desktop, with game instructions -->
+          <div id="start-screen-desktop" class="screen">
+            <text id="start-title">Rhythm of Life</text>
+            Use the arrow keys to move your heart.
+            <br>
+            Avoid stressors and seek relievers to keep your blood pressure low.
+            <br>
+            Press Learn More for more information.
+            <br>
+            Press an arrow key to start.
+          </div>
+
+          <!-- Starting screen for mobile, with game instructions -->
+          <div id="start-screen-mobile" class="screen">
+            <text id="start-title">Rhythm of Life</text>
+            Swipe left, right, up or down to move your heart.
+            <br>
+            Avoid stressors and seek relievers to keep your blood pressure low.
+            <br>
+            Press Learn More for more information.
+            <br>
+            Swipe in any direction to start.
+          </div>
+
+          <!-- Game Over screen -->
+          <div id="game-over-screen" class="screen">
+            <text id="game-over-title">Game Over</text>
+            <br>
+            <div>
+              <text>Play again?</text>
+              <button id="retry">Restart</button>
+            </div>
+          </div>
+
+          <!-- Pause screen for desktop -->
+          <div id="pause-screen-desktop" class="screen">
+            <text id="pause-title">Paused</text>
+            <br>
+            Press Resume or an arrow to continue.
+          </div>
+
+          <!-- Pause screen for mobile -->
+          <div id="pause-screen-mobile" class="screen">
+            <text id="pause-title">Paused</text>
+            <br>
+            Press Resume or swipe to continue.
+          </div>
+
+          <!-- Learn More screen -->
+          <div id="learn-more-screen" class="screen">
+            <!-- List of stressors and their effects on blood pressure, with sources -->
+            <table id="stress-description">
+              <thead>
+                <caption class="description-title">Stressors</caption>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Drinking too much alcohol can <a href="http://www.mayoclinic.org/diseases-conditions/high-blood-pressure/expert-answers/blood-pressure/faq-20058254" rel="noopener noreferrer" target="_blank">raise blood pressure</a> to unhealthy levels.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/alcohol.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Salt makes your body hold on to more water, <a href="http://www.bloodpressureuk.org/microsites/salt/Home/Whysaltisbad/Saltseffects" rel="noopener noreferrer" target="_blank">raising your blood pressure</a>.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/salt.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Nicotine <a href="http://www.webmd.com/hypertension-high-blood-pressure/guide/smoking-kicking-habit#1" rel="noopener noreferrer" target="_blank">raises your blood pressure</a> and sets you up for a heart attack or stroke.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/cigarette.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Stress increases heart disease risks, including <a href="http://www.heart.org/HEARTORG/HealthyLiving/StressManagement/HowDoesStressAffectYou/Stress-and-Heart-Health_UCM_437370_Article.jsp" rel="noopener noreferrer" target="_blank">raising blood pressure</a>.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/stress.svg"></object>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <!-- List of relievers and their effects on blood pressure, with sources -->
+            <table id="relief-description">
+              <thead>
+                <caption class="description-title">Relievers</caption>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Regular exercise strengthens your heart, <a href="http://www.mayoclinic.org/diseases-conditions/high-blood-pressure/in-depth/high-blood-pressure/art-20045206" rel="noopener noreferrer" target="_blank">lowering your blood pressure</a>.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/bicycle.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Yoga <a href="https://yogainternational.com/article/view/5-poses-to-reduce-hypertension" rel="noopener noreferrer" target="_blank">reduces stress-induced hypertension</a> and its underlying causes.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/yoga.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      The DASH diet <a href="http://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/dash-diet/art-20048456" rel="noopener noreferrer" target="_blank">prevents high blood pressure<a> by increasing K, Ca and Mg.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/fruit.svg"></object>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="description">
+                      Beta-blockers reduce the heart's work, <a href="http://www.webmd.com/hypertension-high-blood-pressure/guide/hypertension-treatment-beta-blockers#1" rel="noopener noreferrer" target="_blank">lowering blood pressure</a>.
+                    </div>
+                  </td>
+                  <td>
+                    <object class="description-image" type="image/svg+xml" data="images/pill.svg"></object>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+            <button id="learn-more-close" class="close">X</button>
+          </div>
+
+          <!-- Leaders screen for mobile -->
+          <div id="leader-screen" class="screen">
+            <table>
+              <thead>
+                <caption id="leader-title">Leaderboard</caption>
+                <tr>
+                  <th>Score</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <!-- List of top 5 game leaders and their scores -->
+              <tbody>
+                <tr id="first-mobile" class="leaders-mobile"></tr>
+                <tr id="second-mobile" class="leaders-mobile"></tr>
+                <tr id="third-mobile" class="leaders-mobile"></tr>
+                <tr id="fourth-mobile" class="leaders-mobile"></tr>
+                <tr id="fifth-mobile" class="leaders-mobile"></tr>
+              </tbody>
+            </table>
+            <button id="leader-close" class="close">X</button>
+          </div>
+
         </div>
 
-        <!-- Pause screen for mobile -->
-        <div id="pause-screen-mobile" class="screen">
-          <text id="pause-title">Paused</text>
-          <br>
-          Press Resume or swipe to continue.
-        </div>
-
-        <!-- Learn More screen -->
-        <div id="learn-more-screen" class="screen">
-          <!-- List of stressors and their effects on blood pressure, with sources -->
-          <table id="stress-description">
-            <thead>
-              <caption class="description-title">Stressors</caption>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="description">
-                    Drinking too much alcohol can <a href="http://www.mayoclinic.org/diseases-conditions/high-blood-pressure/expert-answers/blood-pressure/faq-20058254" rel="noopener noreferrer" target="_blank">raise blood pressure</a> to unhealthy levels.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/alcohol.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    Salt makes your body hold on to more water, <a href="http://www.bloodpressureuk.org/microsites/salt/Home/Whysaltisbad/Saltseffects" rel="noopener noreferrer" target="_blank">raising your blood pressure</a>.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/salt.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    Nicotine <a href="http://www.webmd.com/hypertension-high-blood-pressure/guide/smoking-kicking-habit#1" rel="noopener noreferrer" target="_blank">raises your blood pressure</a> and sets you up for a heart attack or stroke.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/cigarette.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    Stress increases heart disease risks, including <a href="http://www.heart.org/HEARTORG/HealthyLiving/StressManagement/HowDoesStressAffectYou/Stress-and-Heart-Health_UCM_437370_Article.jsp" rel="noopener noreferrer" target="_blank">raising blood pressure</a>.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/stress.svg"></object>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <!-- List of relievers and their effects on blood pressure, with sources -->
-          <table id="relief-description">
-            <thead>
-              <caption class="description-title">Relievers</caption>
-            </thead>
-            <tbody>
-              <tr>
-                <td>
-                  <div class="description">
-                    Regular exercise strengthens your heart, <a href="http://www.mayoclinic.org/diseases-conditions/high-blood-pressure/in-depth/high-blood-pressure/art-20045206" rel="noopener noreferrer" target="_blank">lowering your blood pressure</a>.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/bicycle.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    Yoga <a href="https://yogainternational.com/article/view/5-poses-to-reduce-hypertension" rel="noopener noreferrer" target="_blank">reduces stress-induced hypertension</a> and its underlying causes.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/yoga.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    The DASH diet <a href="http://www.mayoclinic.org/healthy-lifestyle/nutrition-and-healthy-eating/in-depth/dash-diet/art-20048456" rel="noopener noreferrer" target="_blank">prevents high blood pressure<a> by increasing K, Ca and Mg.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/fruit.svg"></object>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="description">
-                    Beta-blockers reduce the heart's work, <a href="http://www.webmd.com/hypertension-high-blood-pressure/guide/hypertension-treatment-beta-blockers#1" rel="noopener noreferrer" target="_blank">lowering blood pressure</a>.
-                  </div>
-                </td>
-                <td>
-                  <object class="description-image" type="image/svg+xml" data="images/pill.svg"></object>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-          <button id="learn-more-close" class="close">X</button>
-        </div>
-
-        <!-- Leaders screen for mobile -->
-        <div id="leader-screen" class="screen">
-          <table>
-            <thead>
-              <caption id="leader-title">Leaderboard</caption>
-              <tr>
-                <th>Score</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <!-- List of top 5 game leaders and their scores -->
-            <tbody>
-              <tr id="first-mobile" class="leaders-mobile"></tr>
-              <tr id="second-mobile" class="leaders-mobile"></tr>
-              <tr id="third-mobile" class="leaders-mobile"></tr>
-              <tr id="fourth-mobile" class="leaders-mobile"></tr>
-              <tr id="fifth-mobile" class="leaders-mobile"></tr>
-            </tbody>
-          </table>
-          <button id="leader-close" class="close">X</button>
+        <!-- Right side panel for desktop -->
+        <div id="right-panel">
+          <!-- List of blood pressure ranges colored based on severity -->
+          <div id="ranges" class="side-board">
+            <table class="side-table">
+              <thead>
+                <caption class="side-table-title">Blood Pressure Ranges</caption>
+                <tr>
+                  <th>Systolic</th>
+                  <th>Diastolic</th>
+                </tr>
+              </thead>
+              <tbody>
+                <!-- Normal range -->
+                <tr id="green">
+                  <td>&#60;120</td>
+                  <td>&#60;80</td>
+                </tr>
+                <!-- Prehypertension range -->
+                <tr id="yellow">
+                  <td>120-139</td>
+                  <td>80-89</td>
+                </tr>
+                <!-- Hypertension Stage 1 range -->
+                <tr id="orange">
+                  <td>140-159</td>
+                  <td>90-99</td>
+                </tr>
+                <!-- Hypertension Stage 2 range -->
+                <tr id="red">
+                  <td>160+</td>
+                  <td>100+</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- List of top 5 game leaders and their scores -->
+          <div id="leaderboard" class="side-board">
+            <table class="side-table">
+              <thead>
+                <caption class="side-table-title">Leaderboard</caption>
+                <tr>
+                  <th>Score</th>
+                  <th>Name</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr id="first" class="leaders"></tr>
+                <tr id="second" class="leaders"></tr>
+                <tr id="third" class="leaders"></tr>
+                <tr id="fourth" class="leaders"></tr>
+                <tr id="fifth" class="leaders"></tr>
+              </tbody>
+            </table>
+          </div>
         </div>
 
       </div>
 
-      <!-- Right side panel for desktop -->
-      <div id="right-panel">
-        <!-- List of blood pressure ranges colored based on severity -->
-        <div id="ranges" class="side-board">
-          <table class="side-table">
-            <thead>
-              <caption class="side-table-title">Blood Pressure Ranges</caption>
-              <tr>
-                <th>Systolic</th>
-                <th>Diastolic</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Normal range -->
-              <tr id="green">
-                <td>&#60;120</td>
-                <td>&#60;80</td>
-              </tr>
-              <!-- Prehypertension range -->
-              <tr id="yellow">
-                <td>120-139</td>
-                <td>80-89</td>
-              </tr>
-              <!-- Hypertension Stage 1 range -->
-              <tr id="orange">
-                <td>140-159</td>
-                <td>90-99</td>
-              </tr>
-              <!-- Hypertension Stage 2 range -->
-              <tr id="red">
-                <td>160+</td>
-                <td>100+</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <!-- List of top 5 game leaders and their scores -->
-        <div id="leaderboard" class="side-board">
-          <table class="side-table">
-            <thead>
-              <caption class="side-table-title">Leaderboard</caption>
-              <tr>
-                <th>Score</th>
-                <th>Name</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr id="first" class="leaders"></tr>
-              <tr id="second" class="leaders"></tr>
-              <tr id="third" class="leaders"></tr>
-              <tr id="fourth" class="leaders"></tr>
-              <tr id="fifth" class="leaders"></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
     </div>
 
     <!-- Fetch polyfill script -->

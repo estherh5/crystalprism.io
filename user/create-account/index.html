@@ -47,65 +47,70 @@
     </div>
 
     <!-- Main page container -->
-    <div class="container">
+    <div id="main-container" class="d-flex flex-column align-items-center justify-content-center">
 
-      <!-- Create Account title row -->
-      <div class="row my-3 no-gutters">
-        <div class="col-8">
-          <h1 class="title">Create Account</h1>
-        </div>
-        <!-- Link to Sign in page -->
-        <div class="col-4">
-          <a href="../sign-in/index.html">
-            <h4>Already have an account?</h4>
-          </a>
-        </div>
-      </div>
+      <!-- Create account container -->
+      <div class="container">
 
-      <!-- Username input -->
-      <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-4">
-          <h2>Username: </h2>
+        <!-- Create Account title row -->
+        <div class="row my-3 no-gutters">
+          <div class="col-8">
+            <h1 class="title">Create Account</h1>
+          </div>
+          <!-- Link to Sign in page -->
+          <div class="col-4">
+            <a href="../sign-in/index.html">
+              <h4>Already have an account?</h4>
+            </a>
+          </div>
         </div>
-        <div class="col-auto">
-          <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
-          <!-- Warnings that appear when user submits errored username -->
-          <div id="user-blank" class="warning">Username cannot be blank</div>
-          <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
-          <div id="user-exists" class="warning">Username already exists</div>
-        </div>
-      </div>
 
-      <!-- Password input -->
-      <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-4">
-          <h2>Password: </h2>
+        <!-- Username input -->
+        <div class="row my-2 d-flex align-items-center justify-content-center">
+          <div class="col-4">
+            <h2>Username: </h2>
+          </div>
+          <div class="col-auto">
+            <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
+            <!-- Warnings that appear when user submits errored username -->
+            <div id="user-blank" class="warning">Username cannot be blank</div>
+            <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
+            <div id="user-exists" class="warning">Username already exists</div>
+          </div>
         </div>
-        <div class="col-auto">
-          <input id="password-input" type="password" maxlength="70" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
-          <!-- Warnings that appear when user submits errored password -->
-          <div id="pass-blank" class="warning">Password cannot be blank</div>
-          <div id="pass-short" class="warning">Password too short</div>
-        </div>
-      </div>
 
-      <!-- Confirm password input -->
-      <div class="row my-2 d-flex align-items-center justify-content-center">
-        <div class="col-4">
-          <h2>Confirm Password: </h2>
+        <!-- Password input -->
+        <div class="row my-2 d-flex align-items-center justify-content-center">
+          <div class="col-4">
+            <h2>Password: </h2>
+          </div>
+          <div class="col-auto">
+            <input id="password-input" type="password" maxlength="70" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+            <!-- Warnings that appear when user submits errored password -->
+            <div id="pass-blank" class="warning">Password cannot be blank</div>
+            <div id="pass-short" class="warning">Password too short</div>
+          </div>
         </div>
-        <div class="col-auto">
-          <input id="confirm-password-input" type="password" spellcheck="false">
-          <!-- Warnings that appear when confirmation password does not match original password -->
-          <div id="pass-mismatch" class="warning">Passwords do not match</div>
-        </div>
-      </div>
 
-      <!-- Submit button -->
-      <div class="row my-3">
-        <div class="col d-flex align-items-center justify-content-center">
-          <button id="submit" type="submit">Create</button>
+        <!-- Confirm password input -->
+        <div class="row my-2 d-flex align-items-center justify-content-center">
+          <div class="col-4">
+            <h2>Confirm Password: </h2>
+          </div>
+          <div class="col-auto">
+            <input id="confirm-password-input" type="password" spellcheck="false">
+            <!-- Warnings that appear when confirmation password does not match original password -->
+            <div id="pass-mismatch" class="warning">Passwords do not match</div>
+          </div>
         </div>
+
+        <!-- Submit button -->
+        <div class="row my-3">
+          <div class="col d-flex align-items-center justify-content-center">
+            <button id="submit" type="submit">Create</button>
+          </div>
+        </div>
+
       </div>
 
     </div>

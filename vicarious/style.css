@@ -139,6 +139,10 @@ h1 {
   line-height: 1.5;
 }
 
+.container-fluid {
+  flex: 1;
+}
+
 #left-panel {
   background-color: #40e0d0;
 }
@@ -211,8 +215,8 @@ input::placeholder {
 }
 
 #loading-image {
-  height: 100px;
-  width: 100px;
+  height: 50px;
+  width: 50px;
   position: absolute;
   display: none;
 }
@@ -269,6 +273,13 @@ ul {
   font-size: 10px;
   user-select: text;
   -webkit-user-select: text;
+}
+
+@media only screen and (min-width: 576px) {
+  #loading-image {
+    height: 100px;
+    width: 100px;
+  }
 }
 
 @media only screen and (min-width: 768px) {

@@ -43,44 +43,48 @@
       <i class="fa fa-undo" aria-hidden="true"></i>
     </a>
 
-    <!-- Drawing title input -->
-    <div id="title-input">
-      <input id="drawing-title" placeholder="[title]" maxlength="25">
-    </div>
+    <!-- Easel container -->
+    <div id="easel-container">
+      <!-- Drawing title input -->
+      <div id="title-input">
+        <input id="drawing-title" placeholder="[title]" maxlength="25">
+      </div>
 
-    <!-- Drawing canvas -->
-    <div>
-      <canvas id="canvas" width="400" height="400"></canvas>
-    </div>
+      <!-- Drawing canvas -->
+      <div>
+        <canvas id="canvas" width="400" height="400"></canvas>
+      </div>
 
-    <!-- Current drawing palette -->
-    <div>
-      <svg id="current-palette" width="400" height="40"></svg>
-    </div>
+      <!-- Current drawing palette -->
+      <div>
+        <svg id="current-palette" width="400" height="40"></svg>
+      </div>
 
-    <!-- Palette option buttons -->
-    <div id="palette-options">
-      <button class="palette" data-palette="basic">Basic</button>
-      <button class="palette" data-palette="pastel">Pastel</button>
-      <button class="palette" data-palette="seashore">Seashore</button>
-      <button class="palette" data-palette="bold">Bold</button>
-      <button class="palette" data-palette="oblique">Oblique</button>
-      <button class="palette" data-palette="contrast">Contrast</button>
-      <button class="palette" data-palette="calico">Calico</button>
-      <button class="palette" data-palette="mauve">Mauve</button>
-      <button class="palette" data-palette="grayscale">Grayscale</button>
-    </div>
+      <!-- Palette option buttons -->
+      <div id="palette-options">
+        <button class="palette" data-palette="basic">Basic</button>
+        <button class="palette" data-palette="pastel">Pastel</button>
+        <button class="palette" data-palette="seashore">Seashore</button>
+        <button class="palette" data-palette="bold">Bold</button>
+        <button class="palette" data-palette="oblique">Oblique</button>
+        <button class="palette" data-palette="contrast">Contrast</button>
+        <button class="palette" data-palette="calico">Calico</button>
+        <button class="palette" data-palette="mauve">Mauve</button>
+        <button class="palette" data-palette="grayscale">Grayscale</button>
+      </div>
 
-    <!-- Drawing option buttons -->
-    <div>
-      <!-- Clear drawing -->
-      <button id="clear" class="action">Clear</button>
-      <!-- Post drawing to gallery -->
-      <button id="post" class="action">Post</button>
-      <!-- Download drawing -->
-      <a id="download-link">
-        <button id="download" class="action">Download</button>
-      </a>
+      <!-- Drawing option buttons -->
+      <div>
+        <!-- Clear drawing -->
+        <button id="clear" class="action">Clear</button>
+        <!-- Post drawing to gallery -->
+        <button id="post" class="action">Post</button>
+        <!-- Download drawing -->
+        <a id="download-link">
+          <button id="download" class="action">Download</button>
+        </a>
+      </div>
+
     </div>
 
     <!-- Fetch polyfill script -->

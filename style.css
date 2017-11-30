@@ -5,10 +5,14 @@ html, body {
   margin: 0px;
   top: 0px;
   left: 0px;
-}
-
-body {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
   font-family: 'Amatic SC', cursive;
   text-align: center;
@@ -26,8 +30,17 @@ body {
   position: fixed;
   height: 100%;
   width: 100%;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   transition: all 1s;
   z-index: 1;
@@ -52,6 +65,9 @@ body {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
   background-color: rgba(0, 0, 0, 0.85);
   color: #ffffff;
@@ -97,6 +113,7 @@ button.selected {
 
 #close {
   position: fixed;
+  padding: 0px;
   top: 10%;
   right: 10%;
   font-size: 80px;
@@ -117,9 +134,22 @@ button.selected {
   margin-left: 33px;
   margin-right: 33px;
   left: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   font-family: 'Rajdhani', sans-serif;
   font-size: 12px;
@@ -143,20 +173,37 @@ a:hover, button:hover {
   font-weight: bold;
   color: #1ebfe8;
   transform: scale(1);
+  -webkit-transform: scale(1);
   transition: all 0.4s;
 }
 
 .project-overview a:hover {
   color: #808080;
   transform: scale(1.1);
+  -webkit-transform: scale(1.1);
 }
 
 .modal-project-title {
+  height: 70px;
   width: 100%;
   margin-top: 10px;
+  margin-bottom: 15px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   font-family: 'Poiret One', cursive;
   opacity: 0.7;
@@ -170,7 +217,6 @@ a:hover, button:hover {
 .project-icon-large {
   max-height: 70px;
   width: auto;
-  margin-bottom: 15px;
   opacity: 0.7;
 }
 
@@ -184,6 +230,8 @@ a:hover, button:hover {
 
 .modal-project-title h2 {
   position: absolute;
+  margin: auto;
+  margin-top: 35px;
   top: 0px;
   bottom: 0px;
   left: 0px;
@@ -217,17 +265,42 @@ a:hover, button:hover {
   font-size: 9px;
   margin-bottom: 10px;
   margin-right: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
-  flex-flow: row wrap;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
   align-items: flex-start;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
 .skill {
   margin-right: 4px;
   margin-left: 4px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
@@ -288,9 +361,22 @@ a:hover, button:hover {
 .video-container {
   position: relative;
   margin-bottom: 15px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   cursor: pointer;
 }
@@ -322,8 +408,17 @@ video {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  display: -webkit-box !important;
+  display: -webkit-flex !important;
+  display: -ms-flexbox !important;
   display: flex !important;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   font-size: 40px !important;
   color: #ffffff;
@@ -347,6 +442,7 @@ video {
 
 .control {
   position: fixed;
+  padding: 0px;
   top: 45%;
   font-size: 80px;
   color: #ffffff;
@@ -372,9 +468,22 @@ video {
   top: 0px;
   left: 0px;
   margin-top: 3px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: start;
+  -webkit-justify-content: flex-start;
+  -ms-flex-pack: start;
   justify-content: flex-start;
   z-index: 10;
 }
@@ -415,7 +524,13 @@ video {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
   align-self: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
   transition: filter 0.3s;
 }
@@ -480,12 +595,20 @@ h1 {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
 }
 
 .page {
   position: relative;
+  width: 100%;
   max-width: 1090px;
   margin: auto;
   margin-top: 0px;
@@ -519,7 +642,14 @@ h1 {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
   flex-direction: row;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
@@ -528,7 +658,13 @@ h1 {
   height: 292px;
   width: 300px;
   margin-top: -24px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
   transition: all 1s;
 }
@@ -623,9 +759,22 @@ h1 {
 #projects-list {
   margin: 0px;
   padding: 0px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
   align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
   justify-content: center;
 }
 
@@ -714,9 +863,13 @@ h1 {
 }
 
 #about-me {
+  position: relative;
   margin-bottom: 10px;
   margin-left: 10px;
   margin-right: 10px;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
   align-self: center;
   font-family: 'Rajdhani', sans-serif;
   font-size: 11px;
@@ -785,11 +938,14 @@ h1 {
   text-shadow: none;
 }
 
-.contact > a:hover > i > .text-small, .education > a:hover > .subsection-location {
+.contact > a:hover > .text-small, .education > a:hover > .subsection-location {
   color: #808080;
 }
 
 .skill-group {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
   display: flex;
 }
 
@@ -803,6 +959,9 @@ h1 {
 
 .chevron-text {
   display: inline-flex;
+  -webkit-box-align: baseline;
+  -webkit-align-items: baseline;
+  -ms-flex-align: baseline;
   align-items: baseline;
 }
 
@@ -873,10 +1032,6 @@ h1 {
   padding: 7px;
 }
 
-.post-header {
-  background-color: #f0f0f0;
-}
-
 .night-view .post-header {
   background-color: #636363;
 }
@@ -884,6 +1039,7 @@ h1 {
 .post-title {
   width: 75%;
   border-top-left-radius: 10px;
+  background-color: #f0f0f0;
   font-family: 'Shrikhand', cursive;
   font-size: 20px;
   color: #eb84e2;
@@ -894,6 +1050,7 @@ h1 {
 .post-timestamp {
   width: 25%;
   border-top-right-radius: 10px;
+  background-color: #f0f0f0;
   vertical-align: bottom;
   font-family: 'Scope One', serif;
   font-size: 15px;
@@ -940,6 +1097,10 @@ h1 {
     max-height: 90px;
   }
 
+  .modal-project-title {
+    height: 90px;
+  }
+
   .modal-project-title h2 {
     font-size: 40px;
   }
@@ -980,7 +1141,7 @@ h1 {
   }
 
   .small-icon {
-    height: initial;
+    height: 15px;
   }
 
   .text-small {
@@ -1023,6 +1184,9 @@ h1 {
   }
 
   #splash-page {
+    -webkit-box-align: baseline;
+    -webkit-align-items: baseline;
+    -ms-flex-align: baseline;
     align-items: baseline;
   }
 
@@ -1038,7 +1202,14 @@ h1 {
   }
 
   #projects-list {
-    flex-flow: row wrap;
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: row;
+    -ms-flex-direction: row;
+    flex-direction: row;
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
   }
 
   #projects-list li {

@@ -308,11 +308,11 @@ function populateCarousel() {
     /* Hide carousel navigation buttons if there is only a single image (or no
     images) to cycle through */
     if (imageURLs.length < 2) {
-      carouselPrev.style.display = 'none';
-      carouselNext.style.display = 'none';
+      carouselPrev.classList.remove('d-flex');
+      carouselNext.classList.remove('d-flex');
     } else {
-      carouselPrev.style.display = 'flex';
-      carouselNext.style.display = 'flex';
+      carouselPrev.classList.add('d-flex');
+      carouselNext.classList.add('d-flex');
     }
 
     // Create carousel image for each image found in findImages function
@@ -347,7 +347,7 @@ function openCarousel(number) {
   document.getElementById('profile-link').style.color = '#ffffff';
   document.getElementById('account-link').style.color = '#ffffff';
   document.getElementById('sign-in-link').style.color = '#ffffff';
-  carousel.style.display = 'flex';
+  carousel.classList.add('d-flex');
   $('.carousel').carousel('cycle');
 
   // Focus on next button control to allow keyboard shortcuts
@@ -384,7 +384,7 @@ function closeCarousel() {
   document.getElementById('profile-link').style.color = '#000000';
   document.getElementById('account-link').style.color = '#000000';
   document.getElementById('sign-in-link').style.color = '#000000';
-  carousel.style.display = 'none';
+  carousel.classList.remove('d-flex');
 
   return;
 }

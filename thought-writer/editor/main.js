@@ -648,7 +648,7 @@ function flipBoard() {
 
     // Delay element display changes to create post board flipping effect
     setTimeout(function() {
-      postBoard.style.justifyContent = 'center';
+      postBoard.classList.remove('justify-content-start');
       toolbar.style.display = 'none';
       post.style.display = 'none';
       document.getElementById('action-buttons').style.display = 'none';
@@ -675,7 +675,7 @@ function flipBoard() {
 
   // Otherwise, flip to front of post board (initial state)
   postBoard.classList.remove('finished');
-  postBoard.style.justifyContent = 'flex-start';
+  postBoard.classList.add('justify-content-start');
   toolbar.style.display = 'flex';
   post.style.display = 'block';
   document.getElementById('action-buttons').style.display = 'flex';

@@ -181,9 +181,8 @@ function loadPersonalInfo() {
 
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY' format */
-          var memberDate = new Date(info['member_since']);
-          document.getElementById('member-stat').innerHTML = memberDate
-            .toLocaleDateString();
+          document.getElementById('member-stat')
+            .innerHTML = moment(info['member_since']).format('MM/DD/YYYY');
           document.getElementById('rhythm-plays-stat')
             .innerHTML = info['rhythm_plays'];
           rhythmScores = info['rhythm_scores'];
@@ -351,9 +350,8 @@ function displayScores(game) {
 
       /* Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
       HH:MM AM/PM' format */
-      var scoreDate = new Date(displayedScores[i].timestamp);
-      scoreTimestampCol.innerHTML = scoreDate.toLocaleString()
-        .replace(/:\d{2}\s/,' ');
+      scoreTimestampCol.innerHTML = moment(displayedScores[i].timestamp)
+        .format('MM/DD/YYYY, LT');
       scoreData.appendChild(scoreRow);
       scoreRow.appendChild(starCol);
       scoreRow.appendChild(scoreCol);
@@ -887,9 +885,8 @@ function loadPosts() {
 
             /* Convert UTC timestamp from server to local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
-            var postDate = new Date(posts[i].timestamp);
-            postTimestamp.innerHTML = postDate.toLocaleString()
-              .replace(/:\d{2}\s/,' ');
+            postTimestamp.innerHTML = moment(posts[i].timestamp)
+              .format('MM/DD/YYYY, LT');
 
             // Create container for number of post comments if post is public
             if (posts[i].public) {

@@ -457,9 +457,8 @@ function loadPosts() {
 
               /* Convert UTC timestamp from server to local timestamp in
               'MM/DD/YYYY, HH:MM AM/PM' format */
-              var postDate = new Date(posts[i].timestamp);
-              postTimestamp.innerHTML = postDate.toLocaleString()
-                .replace(/:\d{2}\s/,' ');
+              postTimestamp.innerHTML = moment(posts[i].timestamp)
+                .format('MM/DD/YYYY, LT');
 
               // Create body row with post content in cell
               var postBody = document.createElement('tr');

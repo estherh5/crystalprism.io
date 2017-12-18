@@ -64,9 +64,8 @@ function loadPost() {
 
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY, HH:MM AM/PM' format */
-          var postDate = new Date(post.timestamp);
-          postTimestamp.innerHTML = postDate.toLocaleString()
-            .replace(/:\d{2}\s/,' ');
+          postTimestamp.innerHTML = moment(post.timestamp)
+            .format('MM/DD/YYYY, LT');
 
           // Add link to writer's profile
           postWriter.href = '../../user/index.html?username=' + post.writer;
@@ -108,8 +107,8 @@ function loadPost() {
             /* Convert UTC timestamp from server to local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
             var commentDate = new Date(post.comments[i].timestamp);
-            commentTimestamp.innerHTML = commentDate.toLocaleString()
-              .replace(/:\d{2}\s/,' ');
+            commentTimestamp.innerHTML = moment(post.comments[i].timestamp)
+              .format('MM/DD/YYYY, LT');
             comments.appendChild(commentContainer);
             commentContainer.appendChild(commentContent);
             commentContainer.appendChild(commenter);

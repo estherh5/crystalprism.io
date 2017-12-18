@@ -165,13 +165,10 @@ function loadPosts() {
             more posts later */
             previousPost.dataset.number = requestStart + i;
 
-            // Create Date object from UTC timestamp from server
-            var postDate = new Date(posts[i].timestamp);
-
             /* Display hover title for post as post title and local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
-            previousPost.title = previousPost.dataset.title + '  ' + postDate
-              .toLocaleString().replace(/:\d{2}\s/,' ');
+            previousPost.title = previousPost.dataset.title + '  ' +
+              moment(posts[i].timestamp).format('MM/DD/YYYY, LT');
             previousPost.dataset.public = posts[i].public;
 
             // Create container with post content

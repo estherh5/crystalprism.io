@@ -118,8 +118,9 @@ function loadPosts() {
   }
 
   // Otherwise, load previously written posts to cabinet
-  return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(localStorage
-    .getItem('username')) + '?start=' + requestStart + '&end=' + requestEnd, {
+  return fetch(api + '/thought-writer/post-board/' +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' +
+    requestStart + '&end=' + requestEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -208,7 +209,8 @@ function loadPosts() {
 
             // Otherwise, hide right arrow
             else {
-              document.getElementById('right-arrow').classList.remove('display');
+              document.getElementById('right-arrow').classList
+                .remove('display');
             }
           }
         }
@@ -222,7 +224,7 @@ function openPost(timestamp) {
   var postPath = encodeURIComponent(localStorage
     .getItem('username')) + '/' + encodeURIComponent(timestamp);
 
-  return fetch(server + '/thought-writer/post/' + postPath, {
+  return fetch(api + '/thought-writer/post/' + postPath, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     })
 
@@ -383,19 +385,22 @@ function clearPost() {
 document.getElementById('submit-post').onclick = submitPost;
 
 function submitPost() {
-  // If post is blank, warn user that blank post cannot be submitted
-  if (!/\S/.test(post.innerHTML)) {
-    window.alert('Your post cannot be blank.');
+  /* If post is blank, warn user that blank post cannot be submitted (excludes
+  empty elements) */
+  if (!/\S/.test(post.textContent)) {
+    window.alert('Your post must contain text.');
     return;
   }
 
   /* While post title has no non-space characters, prompt user for title until
   they enter one or cancel */
   while (!/\S/.test(postTitle.value)) {
-    var enteredTitle = prompt('Enter a title for your post. Tip: Click "[title]" to enter a title at any time.');
+    var enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
+      '"[title]" to enter a title at any time.');
 
     if (!/\S/.test(enteredTitle.value)) {
-      enteredTitle = prompt('Enter a title for your post. Tip: Click "[title]" to enter a title at any time.');
+      enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
+        '"[title]" to enter a title at any time.');
     }
 
     else if (enteredTitle == null) {
@@ -417,7 +422,7 @@ function submitPost() {
   var data = JSON.stringify({'title': postTitle.value, 'content': post
     .innerHTML, 'public': publicInput.checked});
 
-  return fetch(server + '/thought-writer/post', {
+  return fetch(api + '/thought-writer/post', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'POST',
@@ -501,7 +506,7 @@ function modifyPost() {
   var data = JSON.stringify({'title': postTitle.value, 'timestamp': post.dataset
     .timestamp, 'content': post.innerHTML, 'public': publicInput.checked});
 
-  return fetch(server + '/thought-writer/post', {
+  return fetch(api + '/thought-writer/post', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -561,7 +566,7 @@ function deletePost() {
 
   if (confirmDelete == true) {
 
-    return fetch(server + '/thought-writer/post', {
+    return fetch(api + '/thought-writer/post', {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'DELETE',
@@ -703,7 +708,7 @@ function flipBoard() {
 /* Take user to public post board when user clicks Go to Public Post Board
 button */
 document.getElementById('go-board').onclick = function() {
-  window.location = '../index.html';
+  window.location = '../';
   return;
 }
 

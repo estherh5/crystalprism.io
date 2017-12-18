@@ -26,7 +26,8 @@ window.onload = function() {
 
 // Load posts to post board from server
 function loadPosts() {
-  return fetch(server + '/thought-writer/post-board' + '?start=' + requestStart + '&end=' + requestEnd)
+  return fetch(api + '/thought-writer/post-board' + '?start=' + requestStart +
+    '&end=' + requestEnd)
 
     /* Display error message if server is down and error isn't already displayed
     (i.e., prevent multiple errors when scrolling to load more posts) */
@@ -34,7 +35,8 @@ function loadPosts() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post board. Please refresh the page.';
+        errorMessage.innerHTML = 'There was an error loading the post board. ' +
+          'Please refresh the page.';
         postBoard.appendChild(errorMessage);
         return;
       }
@@ -129,8 +131,8 @@ function loadPosts() {
                 return;
               }
 
-              /* Set sessionStorage items when post comment number is clicked and
-              go to post page's comments */
+              /* Set sessionStorage items when post comment number is clicked
+              and go to post page's comments */
               postComments.onclick = function() {
                 sessionStorage.setItem('writer', this.dataset.writer);
                 sessionStorage.setItem('timestamp', this.dataset.timestamp);
@@ -153,7 +155,8 @@ function loadPosts() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There are no posts on the post board. Click the yellow paper icon to create one.';
+        errorMessage.innerHTML = 'There are no posts on the post board. ' +
+          'Click the yellow paper icon to create one.';
         postBoard.appendChild(errorMessage);
         return;
       }

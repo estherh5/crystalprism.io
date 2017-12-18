@@ -1,9 +1,9 @@
 // Define global variables
 var username = window.location.search.split('username=')[1];
-var drawingStart = 0; // Range start for number of drawings to request from server
-var drawingEnd = 4; // Range end for number of drawings to request from server
-var postStart = 0; // Range start for number of posts to request from server
-var postEnd = 4; // Range end for number of posts to request from server
+var drawingStart = 0; // Range start for number of drawings to request from api
+var drawingEnd = 4; // Range end for number of drawings to request from api
+var postStart = 0; // Range start for number of posts to request from api
+var postEnd = 4; // Range end for number of posts to request from api
 var gallery = document.getElementById('gallery');
 var postList = document.getElementById('post-list');
 
@@ -37,7 +37,7 @@ window.onload = function() {
 
 // Load profile user's personal information to profile from server
 function loadPersonalInfo() {
-  return fetch(server + '/user/' + encodeURIComponent(username))
+  return fetch(api + '/user/' + encodeURIComponent(username))
 
     // Display error if server is down
     .catch(function(error) {
@@ -127,7 +127,8 @@ function updateIconBackground(iconColor) {
 
 // Load profile user's drawings to profile gallery from server
 function loadDrawings() {
-  return fetch(server + '/canvashare/gallery/' + encodeURIComponent(username) + '?start=' + drawingStart + '&end=' + drawingEnd)
+  return fetch(api + '/canvashare/gallery/' + encodeURIComponent(username) +
+    '?start=' + drawingStart + '&end=' + drawingEnd)
 
     .then(function(response) {
       if (response.ok) {
@@ -177,7 +178,8 @@ function loadDrawings() {
             // Create drawing image
             var drawing = document.createElement('img');
             drawing.classList.add('drawing');
-            drawing.src = server + '/canvashare/drawing/' + encodeURIComponent(drawings[i]);
+            drawing.src = api + '/canvashare/drawing/' +
+              encodeURIComponent(drawings[i]);
             drawing.title = 'View drawing';
 
             // Create container for drawing artist and number of likes and views
@@ -285,7 +287,7 @@ function loadDrawings() {
 function getDrawingInfo(drawingFile) {
   var filename = drawingFile.split('.png')[0];
 
-  return fetch(server + '/canvashare/drawing-info/' + filename)
+  return fetch(api + '/canvashare/drawing-info/' + filename)
     .then(function(response) {
       response.json().then(function(drawingInfo) {
 
@@ -335,9 +337,10 @@ function updateViews(drawingSource) {
 
   // Send request to server to update view count
   var data = JSON.stringify({'request': 'view'});
-  var filename = drawingSource.split('/canvashare/drawing/')[1].split('.png')[0];
+  var filename = drawingSource.split('/canvashare/drawing/')[1]
+    .split('.png')[0];
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -357,7 +360,7 @@ function updateViews(drawingSource) {
           .querySelectorAll('[data-drawing="' + drawingSource
           .split('/canvashare/drawing/')[1] + '"]')[3];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = '../canvashare/easel/index.html';
+        window.location = '../canvashare/easel/';
         return;
       }
 
@@ -391,7 +394,7 @@ function updateLikes() {
     // Send request to server to decrease like count
     var data = JSON.stringify({'request': 'unlike'});
 
-    return fetch(server + '/canvashare/drawing-info/' + filename, {
+    return fetch(api + '/canvashare/drawing-info/' + filename, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'PATCH',
@@ -426,7 +429,7 @@ function updateLikes() {
   // Otherwise, send request to server to increase like count
   var data = JSON.stringify({'request': 'like'});
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -461,7 +464,8 @@ function updateLikes() {
 
 // Load user's posts to profile post area from server
 function loadPosts() {
-  return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(username) + '?start=' + postStart + '&end=' + postEnd)
+  return fetch(api + '/thought-writer/post-board/' +
+    encodeURIComponent(username) + '?start=' + postStart + '&end=' + postEnd)
 
     .then(function(response) {
       if (response.ok) {
@@ -478,8 +482,8 @@ function loadPosts() {
           // Otherwise, clear post area to display new posts from server
           postList.innerHTML = '';
 
-          /* Assess if there are more than requested posts - 1 (number of loaded
-          posts) on server */
+          /* Assess if there are more than requested posts - 1 (number of
+          loaded posts) on server */
           if (posts.length > (postEnd - postStart - 1)) {
             var morePostsOnServer = true;
             var postLoadNumber = postEnd - postStart - 1;
@@ -560,8 +564,9 @@ function loadPosts() {
             post page */
             postTitle.onclick = function() {
               sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('timestamp', this.dataset.timestamp);
-              window.location = '../thought-writer/post/index.html';
+              sessionStorage.setItem('post-timestamp-public', this.dataset
+                .timestamp);
+              window.location = '../thought-writer/post/';
               return;
             }
 
@@ -569,8 +574,9 @@ function loadPosts() {
             go to post page's comments */
             postComments.onclick = function() {
               sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('timestamp', this.dataset.timestamp);
-              window.location = '../thought-writer/post/index.html#comments';
+              sessionStorage.setItem('post-timestamp-public', this.dataset
+                .timestamp);
+              window.location = '../thought-writer/post/#comments';
               return;
             }
           }

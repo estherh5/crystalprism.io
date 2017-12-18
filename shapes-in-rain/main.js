@@ -179,7 +179,7 @@ function sendScore() {
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
     data = JSON.stringify(finalScore);
 
-    return fetch(server + '/shapes-in-rain', {
+    return fetch(api + '/shapes-in-rain', {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'POST',

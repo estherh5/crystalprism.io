@@ -765,7 +765,7 @@ function storeScore() {
       .slice(-2) + ':' + ('0' + seconds).slice(-2),
   });
 
-  return fetch(server + '/rhythm-of-life', {
+  return fetch(api + '/rhythm-of-life', {
     headers: {'Authorization': 'Bearer ' + localStorage
     .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
@@ -784,7 +784,7 @@ function storeScore() {
 // Display top 5 game leaders
 function displayLeaders() {
   // Request top 5 game leaders from server
-  return fetch(server + '/rhythm-of-life').then(function(response) {
+  return fetch(api + '/rhythm-of-life').then(function(response) {
     response.json().then(function(leadersList) {
 
       for (var i = 0; i < leadersList.length; i++) {

@@ -19,7 +19,7 @@ window.onload = function() {
 
   // If user is logged in, redirect to My Account page
   if (checkIfLoggedIn()) {
-    window.location = '../my-account/index.html';
+    window.location = '../my-account/';
   }
 
   return;
@@ -114,7 +114,7 @@ function requestLogin() {
     return;
   }
 
-  return fetch(server + '/login', {
+  return fetch(api + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)},
     method: 'GET',
   })
@@ -125,7 +125,7 @@ function requestLogin() {
       return;
     })
 
-    /*If server responds with error, display warning that credentials are
+    /* If server responds with error, display warning that credentials are
     incorrect */
     .then(function(response) {
 
@@ -157,7 +157,7 @@ function requestLogin() {
         }
 
         // Otherwise, take user to My Account page
-        window.location = '../my-account/index.html';
+        window.location = '../my-account/';
 
         return;
       });

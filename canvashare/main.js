@@ -51,15 +51,23 @@ window.onload = function() {
 // Set quote that appears when hovering over gallery title
 function setHoverTitle() {
   // Define array of quotes about canvases
-  var hoverTitles = ['"The world is but a canvas to our imagination." -Henry David Thoreau',
-  '"Life is a great big canvas; throw all the paint you can at it." -Danny Kaye',
-  '"A great artist can paint a great picture on a small canvas." -Charles Dudley Warner',
+  var hoverTitles = ['"The world is but a canvas to our imagination." -Henry ' +
+    'David Thoreau',
+  '"Life is a great big canvas; throw all the paint you can at it." -Danny ' +
+    'Kaye',
+  '"A great artist can paint a great picture on a small canvas." -Charles ' +
+    'Dudley Warner',
   '"I put on the canvas whatever comes into my mind." -Frida Kahlo',
-  '"An empty canvas is a living wonder... far lovelier than certain pictures." -Wassily Kandinsky',
-  '"I never know what I\'m going to put on the canvas. The canvas paints itself. I\'m just the middleman." -Peter Max',
-  '"Cover the canvas at the first go, then work at it until you see nothing more to add." -Camille Pissarro',
-  '"All I try to do is put as many colors as I can on the canvas every night." -Leslie Odom, Jr.',
-  '"I was blown away by being able to color. Then I started to draw... bringing a blank white canvas to life was fascinating." James De La Vega'];
+  '"An empty canvas is a living wonder... far lovelier than certain ' +
+    'pictures." -Wassily Kandinsky',
+  '"I never know what I\'m going to put on the canvas. The canvas paints ' +
+    'itself. I\'m just the middleman." -Peter Max',
+  '"Cover the canvas at the first go, then work at it until you see nothing ' +
+    'more to add." -Camille Pissarro',
+  '"All I try to do is put as many colors as I can on the canvas every ' +
+    'night." -Leslie Odom, Jr.',
+  '"I was blown away by being able to color. Then I started to draw... ' +
+    'bringing a blank white canvas to life was fascinating." James De La Vega'];
 
   // Select a random quote to display as hover title
   var randomNumber = Math.floor(Math.random() * hoverTitles.length);
@@ -71,7 +79,8 @@ function setHoverTitle() {
 
 // Load drawings to gallery from server
 function loadDrawings() {
-  return fetch(server + '/canvashare/gallery?start=' + requestStart + '&end=' + requestEnd)
+  return fetch(api + '/canvashare/gallery?start=' + requestStart + '&end=' +
+    requestEnd)
 
     /* Display error message if server is down and error isn't already
     displayed (i.e., prevent multiple errors when scrolling to load more
@@ -80,7 +89,8 @@ function loadDrawings() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the gallery. Please refresh the page.';
+        errorMessage.innerHTML = 'There was an error loading the gallery. ' +
+          'Please refresh the page.';
         gallery.appendChild(errorMessage);
         return;
       }
@@ -122,9 +132,11 @@ function loadDrawings() {
               // Create drawing image
               var drawing = document.createElement('img');
               drawing.classList.add('drawing');
-              drawing.src = server + '/canvashare/drawing/' + encodeURIComponent(drawings[i]);
+              drawing.src = api + '/canvashare/drawing/' +
+                encodeURIComponent(drawings[i]);
 
-              // Create container for drawing artist and number of likes and views
+              /* Create container for drawing artist and number of likes and
+              views */
               var drawingInfo = document.createElement('div');
               drawingInfo.classList.add('drawing-info');
 
@@ -204,7 +216,8 @@ function loadDrawings() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the gallery. Please refresh the page.';
+        errorMessage.innerHTML = 'There was an error loading the gallery. ' +
+          'Please refresh the page.';
         gallery.appendChild(errorMessage);
         return;
       }
@@ -215,7 +228,7 @@ function loadDrawings() {
 // Get title and number of views and likes for passed drawing file
 function getDrawingInfo(drawingFile) {
   var filename = drawingFile.split('.png')[0];
-  return fetch(server + '/canvashare/drawing-info/' + filename)
+  return fetch(api + '/canvashare/drawing-info/' + filename)
     .then(function(response) {
       response.json().then(function(drawingInfo) {
         // Get elements that have data-drawing attribute set as file name
@@ -234,7 +247,8 @@ function getDrawingInfo(drawingFile) {
             var likedHeart = document.createElement('i');
             likedHeart.classList.add('fa');
             likedHeart.classList.add('fa-heart');
-            fileElements[1].insertBefore(likedHeart, fileElements[1].firstChild);
+            fileElements[1].insertBefore(likedHeart, fileElements[1]
+              .firstChild);
             // Update like count when user clicks heart
             likedHeart.onclick = updateLikes;
             return;
@@ -268,7 +282,7 @@ function updateViews() {
   var filename = clickedDrawing.src.split('/canvashare/drawing/')[1]
     .split('.png')[0];
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -285,10 +299,10 @@ function updateViews() {
       /* If server responds without error, update view count and redirect to
       easel page */
       if (response.ok) {
-        var viewText = document.querySelectorAll('[data-drawing="' + clickedDrawing
-          .src.split('/canvashare/drawing/')[1] + '"]')[3];
+        var viewText = document.querySelectorAll('[data-drawing="' +
+          clickedDrawing.src.split('/canvashare/drawing/')[1] + '"]')[3];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = 'easel/index.html';
+        window.location = 'easel/';
         return;
       }
 
@@ -323,7 +337,7 @@ function updateLikes() {
     // Send request to server to decrease like count
     var data = JSON.stringify({'request': 'unlike'});
 
-    return fetch(server + '/canvashare/drawing-info/' + filename, {
+    return fetch(api + '/canvashare/drawing-info/' + filename, {
         headers: {'Authorization': 'Bearer ' + localStorage
         .getItem('token'), 'Content-Type': 'application/json'},
         method: 'PATCH',
@@ -358,7 +372,7 @@ function updateLikes() {
   // Otherwise, send request to server to increase like count
   var data = JSON.stringify({'request': 'like'});
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
       headers: {'Authorization': 'Bearer ' + localStorage
       .getItem('token'), 'Content-Type': 'application/json'},
       method: 'PATCH',
@@ -528,7 +542,7 @@ function setDrawingSource() {
   }
 
   // Go to easel page
-  window.location = 'easel/index.html';
+  window.location = 'easel/';
 
   return;
 }

@@ -2,15 +2,18 @@
 var profileLink;
 var accountLink;
 var signInLink;
+var currentPath = window.location.href.split('/').slice(-2)[0];
 
-// Determine server and root URL based on window location
+// Determine API endpoint, domain and root URL based on window location
 if (window.location.hostname == 'crystalprism.io') {
-  var server = 'https://13.58.175.191/api';
-  var root = 'https://crystalprism.io';
+  var api = 'https://13.58.175.191/api';
+  var domain = 'crystalprism.io';
+  var root = 'https://' + domain;
 } else {
-  var server = 'http://localhost:5000/api';
+  var api = 'http://localhost:5000/api';
+  var domain = 'estherh5.github.io';
   var root = window.location.href
-    .split('estherh5.github.io')[0] + 'estherh5.github.io';
+    .split('estherh5.github.io')[0] + domain;
 }
 
 
@@ -86,9 +89,8 @@ function checkIfLoggedIn() {
 
     /* Store current window for user to return to after logging in, if current
     window is not homepage, Create Account, or Sign In pages */
-    if (window.location.href != root + '/index.html'
-      && window.location.href != root + '/user/create-account/index.html'
-      && window.location.href != root + '/user/sign-in/index.html') {
+    if (currentPath != domain && currentPath != 'create-account'
+      && currentPath != 'sign-in') {
         signInLink.onclick = function() {
           sessionStorage.setItem('previous-window', window.location.href);
           return;
@@ -100,7 +102,7 @@ function checkIfLoggedIn() {
 
   /* Otherwise, check if the user is logged in by sending their token to the
   server */
-  return fetch(server + '/user/verify', {
+  return fetch(api + '/user/verify', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   })
@@ -111,9 +113,8 @@ function checkIfLoggedIn() {
       signInLink.innerHTML = 'Sign In';
       /* Store current window for user to return to after logging in, if
       current window is not homepage, Create Account, or Sign In pages */
-      if (window.location.href != root + '/index.html'
-        && window.location.href != root + '/user/create-account/index.html'
-        && window.location.href != root + '/user/sign-in/index.html') {
+      if (currentPath != domain && currentPath != 'create-account'
+        && currentPath != 'sign-in') {
           signInLink.onclick = function() {
             sessionStorage.setItem('previous-window', window.location.href);
             return;
@@ -152,9 +153,8 @@ function checkIfLoggedIn() {
 
       /* Store current window for user to return to after logging in, if
       current window is not homepage, Create Account, or Sign In pages */
-      if (window.location.href != root + '/index.html'
-        && window.location.href != root + '/user/create-account/index.html'
-        && window.location.href != root + '/user/sign-in/index.html') {
+      if (currentPath != domain && currentPath != 'create-account'
+        && currentPath != 'sign-in') {
           signInLink.onclick = function() {
             sessionStorage.setItem('previous-window', window.location.href);
             return;

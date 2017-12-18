@@ -96,7 +96,7 @@ window.onload = function() {
 
   // If user is not logged in, redirect to Sign In page
   if (localStorage.getItem('token') == null || !checkIfLoggedIn()) {
-    window.location = '../sign-in/index.html';
+    window.location = '../sign-in/';
     return;
   }
 
@@ -138,7 +138,7 @@ function confirmCreation() {
 
 // Load user's personal information from server
 function loadPersonalInfo() {
-  return fetch(server + '/user', {
+  return fetch(api + '/user', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   })
@@ -386,7 +386,7 @@ function displayScores(game) {
 
 // Load user's drawings from server
 function loadDrawings() {
-  return fetch(server + '/canvashare/gallery/' + encodeURIComponent(localStorage
+  return fetch(api + '/canvashare/gallery/' + encodeURIComponent(localStorage
     .getItem('username')) + '?start=' + drawingStart + '&end=' + drawingEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
@@ -499,7 +499,8 @@ function displayDrawings(drawings) {
     // Create drawing image
     var drawing = document.createElement('img');
     drawing.classList.add('drawing');
-    drawing.src = server + '/canvashare/drawing/' + encodeURIComponent(drawings[i]);
+    drawing.src = api + '/canvashare/drawing/' +
+      encodeURIComponent(drawings[i]);
     drawing.title = 'View drawing';
 
     // Create container for drawing artist and number of likes and views
@@ -613,7 +614,7 @@ function displayDrawings(drawings) {
 function getDrawingInfo(drawingFile) {
   var filename = drawingFile.split('.png')[0];
 
-  return fetch(server + '/canvashare/drawing-info/' + filename)
+  return fetch(api + '/canvashare/drawing-info/' + filename)
     .then(function(response) {
       response.json().then(function(drawingInfo) {
 
@@ -665,9 +666,10 @@ function updateViews(drawingSource) {
 
   // Send request to server to update view count
   var data = JSON.stringify({'request': 'view'});
-  var filename = drawingSource.split('/canvashare/drawing/')[1].split('.png')[0];
+  var filename = drawingSource.split('/canvashare/drawing/')[1]
+    .split('.png')[0];
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -687,7 +689,7 @@ function updateViews(drawingSource) {
           .querySelectorAll('[data-drawing="' + drawingSource
           .split('/canvashare/drawing/')[1] + '"]')[3];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = '../../canvashare/easel/index.html';
+        window.location = '../../canvashare/easel/';
         return;
       }
 
@@ -722,7 +724,7 @@ function updateLikes() {
     // Send request to server to decrease like count
     var data = JSON.stringify({'request': 'unlike'});
 
-    return fetch(server + '/canvashare/drawing-info/' + filename, {
+    return fetch(api + '/canvashare/drawing-info/' + filename, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'PATCH',
@@ -757,7 +759,7 @@ function updateLikes() {
   // Otherwise, send request to server to increase like count
   var data = JSON.stringify({'request': 'like'});
 
-  return fetch(server + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-info/' + filename, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -792,8 +794,9 @@ function updateLikes() {
 
 // Load user's posts from server
 function loadPosts() {
-  return fetch(server + '/thought-writer/post-board/' + encodeURIComponent(localStorage
-    .getItem('username')) + '?start=' + postStart + '&end=' + postEnd, {
+  return fetch(api + '/thought-writer/post-board/' +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' +
+    postStart + '&end=' + postEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -1192,7 +1195,7 @@ function toggleDrawings() {
 document.getElementById('confirm').onclick = deleteAccount;
 
 function deleteAccount() {
-  return fetch(server + '/user', {
+  return fetch(api + '/user', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'DELETE',
@@ -1564,7 +1567,7 @@ function checkPassword() {
   // Clear verify password input in case user needs to verify edits again
   verifyPassInput.value = '';
 
-  return fetch(server + '/login', {
+  return fetch(api + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(localStorage
       .getItem('username') + ':' + verifyPassword)},
     method: 'GET',
@@ -1616,7 +1619,7 @@ function submitEdits() {
     'about': aboutInput.value
   });
 
-  return fetch(server + '/user', {
+  return fetch(api + '/user', {
     headers: {'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',

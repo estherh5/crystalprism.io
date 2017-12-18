@@ -158,7 +158,7 @@ function createAccount() {
 
   var data = JSON.stringify({'username': username, 'password': password});
 
-  return fetch(server + '/user', {
+  return fetch(api + '/user', {
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
@@ -180,8 +180,8 @@ function createAccount() {
       }
 
       // If account is created successfully, send request to log into account
-      if (response.status == 200) {
-        return fetch(server + '/login', {
+      if (response.status == 201) {
+        return fetch(api + '/login', {
           headers: {
             'Authorization': 'Basic ' + btoa(username + ':' + password)
           },
@@ -209,7 +209,7 @@ function createAccount() {
                 confirmPassInput.value = '';
 
                 // Take user to My Account page
-                window.location = '../my-account/index.html';
+                window.location = '../my-account/';
               });
             }
           });

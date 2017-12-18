@@ -34,7 +34,7 @@ function loadPost() {
     .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
     .getItem('timestamp'));
 
-  return fetch(server + '/thought-writer/post/' + postPath)
+  return fetch(api + '/thought-writer/post/' + postPath)
 
     /* Display error message if server is down and error isn't already displayed
     (i.e., prevent multiple errors if user submits comment and requests to
@@ -43,7 +43,8 @@ function loadPost() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
+        errorMessage.innerHTML = 'There was an error loading the post. ' +
+          'Please refresh the page.';
         // Clear post and append error message
         document.getElementById('post-background').innerHTML = '';
         document.getElementById('post-background').appendChild(errorMessage);
@@ -123,7 +124,8 @@ function loadPost() {
       if (errorMessage == null) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post. Please refresh the page.';
+        errorMessage.innerHTML = 'There was an error loading the post. ' +
+          'Please refresh the page.';
 
         // Clear page container and append error message
         document.getElementById('container').innerHTML = '';
@@ -153,7 +155,7 @@ function submitComment() {
   var postPath = encodeURIComponent(postWriter
     .innerHTML) + '/' + encodeURIComponent(sessionStorage.getItem('timestamp'));
 
-  return fetch(server + '/thought-writer/comment/' + postPath, {
+  return fetch(api + '/thought-writer/comment/' + postPath, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'POST',

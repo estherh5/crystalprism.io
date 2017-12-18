@@ -424,13 +424,14 @@ window.addEventListener('keydown', function(e) {
 
 // Load Thought Writer posts written by Esther to Ideas page
 function loadPosts() {
-  return fetch(server + '/thought-writer/post-board/esther')
+  return fetch(api + '/thought-writer/post-board/esther')
 
     // Display error if server is down
     .catch(function(error) {
       var errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the page. Please refresh.';
+      errorMessage.innerHTML = 'There was an error loading the page. ' +
+        'Please refresh.';
       document.getElementById('ideas-page').appendChild(errorMessage);
       return;
 
@@ -511,7 +512,8 @@ function loadPosts() {
       // Display error message if server returned error
       var errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There are no posts right now. Please check later.';
+      errorMessage.innerHTML = 'There are no posts right now. ' +
+        'Please check later.';
       document.getElementById('ideas-page').appendChild(errorMessage);
       return;
     });
@@ -615,30 +617,30 @@ function toggleSection() {
       logic, change the parent section to expanded state */
       if (this.dataset.expanded == 'true' && this.classList
         .contains('expand-child') && areAllExpanded(siblingSections)) {
-        parentSections[this.dataset.parent].getElementsByTagName('span')[0]
-          .classList.remove('fa-chevron-right');
-        parentSections[this.dataset.parent].getElementsByTagName('span')[0]
-          .classList.add('fa-chevron-down');
-        parentSections[this.dataset.parent].dataset.expanded = 'true';
-        parentSections[this.dataset.parent].getElementsByTagName('text')[0]
-          .innerHTML = 'Collapse All';
-        return;
-      }
+          parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+            .classList.remove('fa-chevron-right');
+          parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+            .classList.add('fa-chevron-down');
+          parentSections[this.dataset.parent].dataset.expanded = 'true';
+          parentSections[this.dataset.parent].getElementsByTagName('text')[0]
+            .innerHTML = 'Collapse All';
+          return;
+        }
 
-      /* If child subsection is now collapsed from above logic, change the parent
-      section to collapsed state if it's not already in that state */
+      /* If child subsection is now collapsed from above logic, change the
+      parent section to collapsed state if it's not already in that state */
       if (this.dataset.expanded == 'false' && this.classList
-        .contains('expand-child') && parentSections[this.dataset.parent].dataset
-        .expanded == 'true') {
-        parentSections[this.dataset.parent].getElementsByTagName('span')[0]
-          .classList.remove('fa-chevron-down');
-        parentSections[this.dataset.parent].getElementsByTagName('span')[0]
-          .classList.add('fa-chevron-right');
-        parentSections[this.dataset.parent].dataset.expanded = 'false';
-        parentSections[this.dataset.parent].getElementsByTagName('text')[0]
-          .innerHTML = 'Expand All';
-        return;
-      }
+        .contains('expand-child') && parentSections[this.dataset.parent]
+        .dataset.expanded == 'true') {
+          parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+            .classList.remove('fa-chevron-down');
+          parentSections[this.dataset.parent].getElementsByTagName('span')[0]
+            .classList.add('fa-chevron-right');
+          parentSections[this.dataset.parent].dataset.expanded = 'false';
+          parentSections[this.dataset.parent].getElementsByTagName('text')[0]
+            .innerHTML = 'Expand All';
+          return;
+        }
 
       return;
     }

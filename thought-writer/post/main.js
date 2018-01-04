@@ -39,7 +39,7 @@ function loadPost() {
   // Request post based on items stored in sessionStorage
   var postPath = encodeURIComponent(sessionStorage
     .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
-    .getItem('timestamp'));
+    .getItem('post-timestamp-public'));
 
   return fetch(api + '/thought-writer/post/' + postPath)
 
@@ -76,7 +76,7 @@ function loadPost() {
             .format('MM/DD/YYYY, LT');
 
           // Add link to writer's profile
-          postWriter.href = '../../user/index.html?username=' + post.writer;
+          postWriter.href = '../../user/?username=' + post.writer;
           postWriter.innerHTML = post.writer;
 
           /* Clear comments list (for function call when user submits new
@@ -104,7 +104,7 @@ function loadPost() {
             // Create link to commenter's profile
             var commenter = document.createElement('a');
             commenter.classList.add('commenter');
-            commenter.href = '../../user/index.html?username=' + post
+            commenter.href = '../../user/?username=' + post
               .comments[i].commenter;
             commenter.innerHTML = post.comments[i].commenter;
 
@@ -150,9 +150,9 @@ document.getElementById('submit-comment').onclick = submitComment;
 function submitComment() {
   var newComment = document.getElementById('new-comment-box');
 
-  /* If comment does not contain any non-space characters, display warning to
-  user */
-  if (!/\S/.test(newComment.innerHTML)) {
+  /* If comment does not contain any non-space characters (excluding empty
+  elements), display warning to user */
+  if (!/\S/.test(newComment.textContent)) {
     window.alert('Your comment cannot be blank.');
     return;
   }
@@ -160,7 +160,8 @@ function submitComment() {
   // Otherwise, send comment to server
   var data = JSON.stringify({'content': newComment.innerHTML});
   var postPath = encodeURIComponent(postWriter
-    .innerHTML) + '/' + encodeURIComponent(sessionStorage.getItem('timestamp'));
+    .innerHTML) + '/' + encodeURIComponent(sessionStorage
+    .getItem('post-timestamp-public'));
 
   return fetch(api + '/thought-writer/comment/' + postPath, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),

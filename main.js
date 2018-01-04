@@ -2,7 +2,8 @@
 var profileLink = document.getElementById('profile-link');
 var accountLink = document.getElementById('account-link');
 var signInLink = document.getElementById('sign-in-link');
-var themeButton = document.getElementById('theme-button');
+var themeContainer = document.getElementById('theme-container');
+var themeText = document.getElementById('theme-text');
 var skyIcon = document.getElementById('sky-icon');
 var navCircles = document.getElementsByClassName('nav-circle');
 var navButtons = document.getElementsByClassName('nav-button');
@@ -25,6 +26,9 @@ var sectionDetails = document.getElementsByClassName('subsection-details');
 
 // Define load functions
 window.onload = function() {
+  // Create page header (from common.js script)
+  createPageHeader();
+
   // Create page footer (from common.js script)
   createPageFooter();
 
@@ -62,11 +66,11 @@ window.onload = function() {
 
 /* Set page theme to night view or Day View when page is loaded or theme button
 is clicked */
-themeButton.onclick = setTheme;
+themeContainer.onclick = setTheme;
 
 function setTheme() {
   // Change view to opposite of current view if theme button is clicked
-  if (this == themeButton) {
+  if (this == themeContainer) {
     if (sessionStorage.getItem('theme') == 'night') {
       removeNightView();
       return;
@@ -114,7 +118,7 @@ function addNightView() {
   // Set sky icon to a sun shape for day view setting
   skyIcon.classList.remove('ion-ios-moon-outline');
   skyIcon.classList.add('ion-ios-sunny');
-  themeButton.innerHTML = 'Day View';
+  themeText.innerHTML = 'Day View';
   sessionStorage.setItem('theme', 'night');
 
   return;
@@ -135,7 +139,7 @@ function removeNightView() {
   // Set sky icon to a moon shape for night view setting
   skyIcon.classList.remove('ion-ios-sunny');
   skyIcon.classList.add('ion-ios-moon-outline');
-  themeButton.innerHTML = 'Night View';
+  themeText.innerHTML = 'Night View';
   sessionStorage.setItem('theme', 'day');
 
   return;
@@ -437,8 +441,8 @@ function loadPosts() {
     .catch(function(error) {
       var errorMessage = document.createElement('text');
       errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the page. ' +
-        'Please refresh.';
+      errorMessage.innerHTML = 'There was an error loading the Ideas posts. ' +
+        'Please refresh the page.';
       document.getElementById('ideas-page').appendChild(errorMessage);
       return;
 

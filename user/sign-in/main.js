@@ -141,11 +141,11 @@ function requestLogin() {
       }
 
       // Otherwise, save username and returned token from server to localStorage
-      response.json().then(function(jsonToken) {
+      response.text().then(function(token) {
         localStorage.removeItem('username');
         localStorage.setItem('username', username);
         localStorage.removeItem('token');
-        localStorage.setItem('token', jsonToken['token']);
+        localStorage.setItem('token', token);
 
         // Take user to previous page if stored in sessionStorage
         if (sessionStorage.getItem('previous-window') != null) {

@@ -118,7 +118,7 @@ function loadPosts() {
 
               // Create container for post writer with link to profile
               var postWriter = document.createElement('a');
-              postWriter.href = '../user/index.html?username=' + posts[i]
+              postWriter.href = '../user/?username=' + posts[i]
                 .writer;
               postWriter.innerHTML = posts[i].writer;
               postBoard.appendChild(postContainer);
@@ -133,8 +133,9 @@ function loadPosts() {
               post page */
               postTitle.onclick = function() {
                 sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('timestamp', this.dataset.timestamp);
-                window.location = 'post/index.html';
+                sessionStorage.setItem('post-timestamp-public', this.dataset
+                  .timestamp);
+                window.location = 'post/';
                 return;
               }
 
@@ -142,8 +143,9 @@ function loadPosts() {
               and go to post page's comments */
               postComments.onclick = function() {
                 sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('timestamp', this.dataset.timestamp);
-                window.location = 'post/index.html#comments';
+                sessionStorage.setItem('post-timestamp-public', this.dataset
+                  .timestamp);
+                window.location = 'post/#comments';
                 return;
               }
             }

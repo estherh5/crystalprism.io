@@ -14,24 +14,35 @@ if (window.location.hostname == 'crystalprism.io') {
 } else {
   var api = 'http://localhost:5000/api';
   var domain = 'estherh5.github.io';
-  var root = window.location.href
-    .split('estherh5.github.io')[0] + domain;
+  var root = window.location.href.split('estherh5.github.io')[0] + domain;
 }
 
 
-// Create page header
+// Create header to contain homepage link and account menu
 function createPageHeader() {
-  // Create header to contain homepage link and account menu
   var header = document.createElement('div');
   header.id = 'header';
+  var headerContainer = document.createElement('div');
+  headerContainer.id = 'header-container';
+  header.appendChild(headerContainer);
 
-  // Create link to homepage that has diamond icon
-  var homepageLink = document.createElement('a');
-  homepageLink.href = root + '/index.html';
-  homepageLink.id = 'homepage-link';
-  var homepageIcon = document.createElement('img');
-  homepageIcon.id = 'homepage-icon';
-  homepageIcon.src = root + '/images/homepage.png';
+  /* Create link to homepage that has diamond icon if current page is not
+  homepage */
+  if (currentPath != domain) {
+    var homepageLink = document.createElement('a');
+    homepageLink.href = root;
+    homepageLink.id = 'homepage-link';
+    var homepageIcon = document.createElement('img');
+    homepageIcon.id = 'homepage-icon';
+    homepageIcon.src = root + '/images/homepage.png';
+    headerContainer.appendChild(homepageLink);
+    homepageLink.appendChild(homepageIcon);
+  }
+
+  // Otherwise, add theme container to header on homepage
+  else {
+    headerContainer.appendChild(document.getElementById('theme-container'));
+  }
 
   /* Create account menu with links to profile, create account page, and sign
   in page */
@@ -41,13 +52,11 @@ function createPageHeader() {
   profileLink.id = 'profile-link';
   accountLink = document.createElement('a');
   accountLink.id = 'account-link';
-  accountLink.href = root + '/user/create-account/index.html';
+  accountLink.href = root + '/user/create-account/';
   signInLink = document.createElement('a');
   signInLink.id = 'sign-in-link';
-  signInLink.href = root + '/user/sign-in/index.html';
-  header.appendChild(homepageLink);
-  homepageLink.appendChild(homepageIcon);
-  header.appendChild(accountMenu);
+  signInLink.href = root + '/user/sign-in/';
+  headerContainer.appendChild(accountMenu);
   accountMenu.appendChild(profileLink);
   accountMenu.appendChild(accountLink);
   accountMenu.appendChild(signInLink);
@@ -59,15 +68,16 @@ function createPageHeader() {
 }
 
 
-// Create page footer
+// Create page footer with copyright and contact information
 function createPageFooter() {
   // Create copyright display
   var copyright = document.createElement('div');
-  copyright.innerHTML = '&copy; 2017 Crystal Prism';
+  copyright.innerHTML = '&copy; 2018 Crystal Prism';
 
   // Create contact information display
   var contact = document.createElement('div');
-  contact.innerHTML = 'Find any bugs? Email <a href="administrator@crystalprism.io">administrator@crystalprism.io</a> with details.';
+  contact.innerHTML = 'Find any bugs? Email <a href="admin@crystalprism.io">' +
+    'admin@crystalprism.io</a> with details.';
 
   // Create footer to contain copyright and contact information
   var footer = document.createElement('div');
@@ -177,10 +187,11 @@ function checkIfLoggedIn() {
     method: 'GET',
   })
 
-  // Set account menu to default if server is down
+    // Set account menu to default if server is down
     .catch(function(error) {
       accountLink.innerHTML = 'Create Account';
       signInLink.innerHTML = 'Sign In';
+
       /* Store current window for user to return to after logging in, if
       current window is not homepage, Create Account, or Sign In pages */
       if (currentPath != domain && currentPath != 'create-account'
@@ -190,6 +201,7 @@ function checkIfLoggedIn() {
             return;
           }
         }
+
       return false;
     })
 
@@ -198,10 +210,10 @@ function checkIfLoggedIn() {
       Account page, and Sign In page (with "Sign Out" title) */
       if (response.ok) {
         profileLink.innerHTML = localStorage.getItem('username');
-        profileLink.href = root + '/user/index.html?username=' + localStorage
+        profileLink.href = root + '/user/?username=' + localStorage
           .getItem('username');
         accountLink.innerHTML = 'My Account';
-        accountLink.href = root + '/user/my-account/index.html';
+        accountLink.href = root + '/user/my-account/';
         signInLink.innerHTML = 'Sign Out';
 
         /* Send request to log user out when Sign In page link ("Sign Out"

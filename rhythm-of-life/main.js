@@ -172,8 +172,9 @@ function reset() {
   // Set Pause button text to starting state of Pause
   document.getElementById('pause').innerHTML = 'Pause';
 
-  // Stop heartbeat sound
+  // Stop heartbeat sound and reset heartbeat rate
   heartbeat.stop();
+  heartbeat.rate(1.0);
 
   return;
 }

@@ -1,9 +1,9 @@
 // Define global variables
 var username = window.location.search.split('username=')[1];
-var drawingStart = 0; // Range start for number of drawings to request from api
-var drawingEnd = 4; // Range end for number of drawings to request from api
-var postStart = 0; // Range start for number of posts to request from api
-var postEnd = 4; // Range end for number of posts to request from api
+var drawingStart = 0; // Range start for number of drawings to request from API
+var drawingEnd = 4; // Range end for number of drawings to request from API
+var postStart = 0; // Range start for number of posts to request from API
+var postEnd = 4; // Range end for number of posts to request from API
 var gallery = document.getElementById('gallery');
 var postList = document.getElementById('post-list');
 
@@ -60,7 +60,7 @@ function loadPersonalInfo() {
         response.json().then(function(info) {
           // Set profile username display and page title to requested username
           document.getElementById('user-link')
-            .href = 'index.html?username=' + info['username'];
+            .href = '?username=' + info['username'];
           document.getElementById('profile-title').innerHTML = info['username'];
           document.title = info['username'];
 

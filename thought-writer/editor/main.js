@@ -42,11 +42,11 @@ window.onload = function() {
 
   /* If user has post stored in sessionStorage (by clicking post from My
   Account page), request post from server */
-  if (sessionStorage.getItem('post-timestamp') != null) {
-    openPost(sessionStorage.getItem('post-timestamp'));
+  if (sessionStorage.getItem('post-timestamp-private') != null) {
+    openPost(sessionStorage.getItem('post-timestamp-private'));
     /* Clear sessionStorage item to allow user to open another previous post
     (i.e., from cabinet) */
-    sessionStorage.removeItem('post-timestamp');
+    sessionStorage.removeItem('post-timestamp-private');
   }
 
   // Load user's previous posts to cabinet
@@ -445,7 +445,7 @@ function submitPost() {
     .then(function(response) {
       // If post was submitted successfully, clear post and flip board
       if (response.ok) {
-        response.text().then(function(text) {
+        response.text().then(function(postTimestamp) {
 
           // If cabinet is open, close it to refresh posts
           if (cabinetOpen) {
@@ -457,7 +457,7 @@ function submitPost() {
 
           /* Set data-timestamp attribute for Modify Last Post button in case
           user wants to modify last post */
-          document.getElementById('go-back').dataset.timestamp = text;
+          document.getElementById('go-back').dataset.timestamp = postTimestamp;
 
           // Clear post title and content
           clearPost();

@@ -106,6 +106,15 @@ window.onload = function() {
     confirmCreation();
   }
 
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(function() {
+    checkIfLoggedIn();
+    loadPersonalInfo();
+    loadDrawings();
+    loadPosts();
+    return;
+  });
+
   // Load user's personal information from server
   loadPersonalInfo();
 
@@ -197,12 +206,12 @@ function loadPersonalInfo() {
           displayScores('shapes');
           likedDrawings = info['liked_drawings'];
           document.getElementById('drawings-stat')
-            .innerHTML = info['drawing_number'];
+            .innerHTML = info['drawing_count'];
           document.getElementById('liked-stat').innerHTML = likedDrawings
             .length;
-          document.getElementById('posts-stat').innerHTML = info['post_number'];
+          document.getElementById('posts-stat').innerHTML = info['post_count'];
           document.getElementById('comments-stat')
-            .innerHTML = info['comment_number'];
+            .innerHTML = info['comment_count'];
         });
 
         return;
@@ -560,7 +569,7 @@ function displayDrawings(drawings) {
 
       // Create link to artist's profile
       var artistLink = document.createElement('a');
-      artistLink.href = '../../user/index.html?username=' + drawings[i]
+      artistLink.href = '../../user/?username=' + drawings[i]
         .substr(0, drawings[i].indexOf('/'));
       artistLink.innerHTML = drawings[i].substr(0, drawings[i]
         .indexOf('/'));
@@ -568,15 +577,14 @@ function displayDrawings(drawings) {
         drawingArtist.appendChild(artistLink);
     }
 
-    /* Redirect to easel page and display drawing when user clicks drawing title
-    or drawing title */
+    // Update number of views when user clicks drawing title or drawing
     drawingTitle.onclick = function() {
       updateViews(this.nextSibling.src);
       return;
     }
 
     drawing.onclick = function() {
-      updateViews(drawing.src);
+      updateViews(this.src);
       return;
     }
 
@@ -750,7 +758,7 @@ function updateLikes() {
         }
 
         // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
+        window.alert('Your like did not go through. Please try again soon.');
 
         return;
       });
@@ -785,7 +793,7 @@ function updateLikes() {
       }
 
       // Otherwise, display error message
-      window.alert('You must log in to like a drawing.');
+      window.alert('Your like did not go through. Please try again soon.');
 
       return;
     });
@@ -912,9 +920,9 @@ function loadPosts() {
               and go to post page's comments */
               postComments.onclick = function() {
                 sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('post-timestamp', this.dataset
+                sessionStorage.setItem('post-timestamp-public', this.dataset
                   .timestamp);
-                window.location = '../../thought-writer/post/index.html#comments';
+                window.location = '../../thought-writer/post/#comments';
                 return;
               }
             }
@@ -936,8 +944,9 @@ function loadPosts() {
             /* Set sessionStorage timestamp item when post title is clicked and
             go to editor page */
             postTitle.onclick = function() {
-              sessionStorage.setItem('post-timestamp', this.dataset.timestamp);
-              window.location = '../../thought-writer/editor/index.html';
+              sessionStorage.setItem('post-timestamp-private', this.dataset
+                .timestamp);
+              window.location = '../../thought-writer/editor/';
               return;
             }
           }
@@ -987,7 +996,7 @@ function loadPosts() {
 // Define menu navigation functions
 
 // Scroll smoothly to menu section when navbar link is clicked
-$("#navbar li a[href^='#']").on('click', function(e) {
+$('#navbar li a[href^="#"]').on('click', function(e) {
   e.preventDefault();
   var menuHash = this.hash;
 
@@ -1212,7 +1221,7 @@ function deleteAccount() {
       server responds without error */
       if (response.ok) {
         sessionStorage.setItem('account-request', 'delete');
-        window.location.href = '../create-account/index.html';
+        window.location.href = '../create-account/';
         return;
       }
 

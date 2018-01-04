@@ -16,7 +16,6 @@ var imageTitleTexts = []; // Array to store titles of Reddit posts for imageURLs
 var imagesContainer = document.getElementById('images-container')
 var displayedImages = imagesContainer.getElementsByClassName('image');
 var displayedImageTitles = imagesContainer.getElementsByClassName('image-title');
-var viewButton = document.getElementById('view-all');
 var carousel = document.getElementById('carousel');
 var carouselCloseButton = document.getElementById('carousel-close');
 var carouselPrev = document.getElementById('carousel-prev');
@@ -96,8 +95,8 @@ function storeImages() {
                 return;
               }
 
-              /* Otherwise, run the function again using a fetch request with the
-              new "after" value */
+              /* Otherwise, run the function again using a fetch request with
+              the new "after" value */
               storeImages();
             }
           }
@@ -333,13 +332,7 @@ function populateCarousel() {
 }
 
 
-/* Open carousel to specified image number in cycle (start from beginning when
-View All button is clicked) */
-viewButton.addEventListener('click', function() {
-  openCarousel(0);
-  return;
-}, false);
-
+// Open carousel to specified image number in cycle
 function openCarousel(number) {
   var carouselItems = document.getElementsByClassName('carousel-item');
 

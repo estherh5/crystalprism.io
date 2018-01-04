@@ -196,11 +196,11 @@ function createAccount() {
           .then(function(response) {
 
             if (response.status == 200) {
-              response.json().then(function(jsonToken) {
+              response.text().then(function(token) {
                 localStorage.removeItem('username');
                 localStorage.setItem('username', username);
                 localStorage.removeItem('token');
-                localStorage.setItem('token', jsonToken['token']);
+                localStorage.setItem('token', token);
 
                 // Save request to create account to sessionStorage to display
                 // success modal on next page (My Account page)

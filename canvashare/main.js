@@ -187,7 +187,7 @@ function loadDrawings() {
 
               // Create link to artist's profile
               var artistLink = document.createElement('a');
-              artistLink.href = '../user/index.html?username=' + drawings[i]
+              artistLink.href = '../user/?username=' + drawings[i]
                 .substr(0, drawings[i].indexOf('/'));
               artistLink.innerHTML = drawings[i].substr(0, drawings[i]
                 .indexOf('/'));

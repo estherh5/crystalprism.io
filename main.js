@@ -89,13 +89,14 @@ function setTheme() {
   }
 
   // Set theme based on current time if no sessionStorage items
-  var now = new Date().getHours();
+  var currentHour = new Date().getHours();
 
-  // Add night view if it is between 8 PM and 6 AM
-  if (now >= 20 && now <= 23 || now >= 0 && now <= 6) {
-    addNightView();
-    return;
-  }
+  // Add night view if current time is between 8 PM and 7 AM
+  if (currentHour >= 20 && currentHour <= 23 || currentHour >= 0
+    && currentHour <= 6) {
+      addNightView();
+      return;
+    }
 
   // Remove night view otherwise
   removeNightView();

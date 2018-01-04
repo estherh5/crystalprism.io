@@ -462,12 +462,11 @@ video {
 }
 
 #theme-container {
-  position: fixed;
   height: 50px;
   width: 70px;
   top: 0px;
   left: 0px;
-  margin-top: 3px;
+  margin-top: 5px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -481,17 +480,25 @@ video {
   -webkit-align-items: center;
   -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: start;
-  -webkit-justify-content: flex-start;
-  -ms-flex-pack: start;
-  justify-content: flex-start;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
+  align-self: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  cursor: pointer;
   z-index: 10;
 }
 
+#theme-container:hover {
+  color: #808080 !important;
+}
+
 #sky-icon {
-  position: absolute;
+  height: 20px;
   margin: auto;
-  margin-top: -5px;
   top: 0px;
   bottom: 0px;
   left: 0px;
@@ -500,8 +507,7 @@ video {
   opacity: 0.3;
 }
 
-#theme-button {
-  position: absolute;
+#theme-text {
   width: 100%;
   padding: 0px;
   margin: auto;
@@ -517,8 +523,8 @@ video {
 #front-page-link {
   position: relative;
   width: fit-content;
-  margin-top: 20px;
-  margin-bottom: 10px;
+  margin-top: 25px;
+  margin-bottom: 20px;
   display: block;
   -webkit-box-align: center;
   -webkit-align-items: center;
@@ -552,15 +558,12 @@ video {
 }
 
 h1 {
+  position: sticky;
+  position: -webkit-sticky;
   margin: 0px;
   margin-top: 7px;
   font-size: 26px;
   z-index: 1;
-}
-
-#account-menu {
-  position: fixed;
-  height: 43px;
 }
 
 #nav-buttons {
@@ -653,6 +656,11 @@ h1 {
   justify-content: center;
 }
 
+.fade {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
 #menu {
   position: relative;
   height: 292px;
@@ -687,12 +695,14 @@ h1 {
   left: 0px;
   right: 0px;
   transform: translateZ(-1000px);
+  -webkit-transform: translateZ(-1000px);
   transition: all 1s;
   z-index: 1;
 }
 
-#menu:hover #diamond-large {
+#menu:hover #diamond-large, #menu.hover #diamond-large {
   transform: rotateY(180deg) translateZ(1000px);
+  -webkit-transform: rotateY(180deg) translateZ(1000px);
   transition: all 1s;
   z-index: 1;
 }
@@ -709,38 +719,42 @@ h1 {
   z-index: 2;
 }
 
-#purple:hover, #green:hover, #pink:hover, #teal:hover {
+#circles svg:hover, #circles svg.hover {
   opacity: 0.9;
   z-index: 2;
 }
 
-#purple g, #green g, #pink g, #teal g {
+#circles g {
   transition: all 1s;
 }
 
-#menu:hover #purple g {
+#menu:hover #purple g, #menu.hover #purple g {
   transform: scale(0.89) translateX(242px) translateY(-59px);
+  -webkit-transform: scale(0.89) translateX(242px) translateY(-59px);
   transition: all 1s;
 }
 
-#menu:hover #green g {
+#menu:hover #green g, #menu.hover #green g {
   transform: scale(1.11) translateX(6px) translateY(-163px);
+  -webkit-transform: scale(1.11) translateX(6px) translateY(-163px);
   transition: all 1s;
 }
 
-#menu:hover #pink g {
+#menu:hover #pink g, #menu.hover #pink g {
   transform: scale(0.55) translateX(81px) translateY(187px);
+  -webkit-transform: scale(0.55) translateX(81px) translateY(187px);
   transition: all 1s;
 }
 
-#menu:hover #teal g {
+#menu:hover #teal g, #menu.hover #teal g {
   transform: scale(1.7) translateX(-8.5px) translateY(-123px);
+  -webkit-transform: scale(1.7) translateX(-8.5px) translateY(-123px);
   transition: all 1s;
 }
 
 #projects-page {
   display: block;
-  transition: filter 0.3s;
+  transition: filter 0.3s opacity 0.3s;
 }
 
 .nav-circle {
@@ -751,7 +765,7 @@ h1 {
   text-anchor: middle;
 }
 
-#menu:hover .nav-circle {
+#menu:hover .nav-circle, #menu.hover .nav-circle {
   visibility: visible;
   cursor: pointer;
 }
@@ -802,11 +816,13 @@ h1 {
   width: 100%;
   display: block;
   transform: scale(1.05);
+  -webkit-transform: scale(1.05);
   transition: all 0.5s;
 }
 
 #projects-list li:hover .project-image {
   transform: scale(1);
+  -webkit-transform: scale(1);
 }
 
 .project-overlay {
@@ -836,11 +852,13 @@ h1 {
   top: 17%;
   left: 40%;
   transform: translateY(-20px);
+  -webkit-transform: translateY(-20px);
   transition: all 0.3s;
 }
 
 #projects-list li:hover .project-icon {
   transform: translateY(0px);
+  -webkit-transform: translateY(0px);
 }
 
 .project-title {
@@ -854,12 +872,14 @@ h1 {
   color: #000000;
   opacity: 0;
   transform: translateY(-20px);
+  -webkit-transform: translateY(-20px);
   transition: all 0.3s;
 }
 
 #projects-list li:hover .project-title {
   opacity: 1;
   transform: translateY(0px);
+  -webkit-transform: translateY(0px);
 }
 
 #about-me {
@@ -931,11 +951,12 @@ h1 {
   -webkit-user-select: text;
 }
 
-.contact > a > i > .text-small, .contact > .text-small, .education > a > .subsection-location {
+.contact > a > .text-small, .contact > .text-small, .education > a > .subsection-location {
   margin-left: 0px;
   color: #7fd13b;
   font-weight: bold;
   text-shadow: none;
+  cursor: pointer;
 }
 
 .contact > a:hover > .text-small, .education > a:hover > .subsection-location {
@@ -1037,7 +1058,7 @@ h1 {
 }
 
 .post-title {
-  width: 75%;
+  width: 45%;
   border-top-left-radius: 10px;
   background-color: #f0f0f0;
   font-family: 'Shrikhand', cursive;
@@ -1056,6 +1077,7 @@ h1 {
   font-size: 15px;
   font-weight: bold;
   text-align: right;
+  color: #000000 !important;
 }
 
 .post-container {
@@ -1113,7 +1135,7 @@ h1 {
     font-size: 12px;
   }
 
-  .project-skills .svg-icon-object {
+  .small-icon, .project-skills .svg-icon-object {
     height: 12px;
   }
 
@@ -1158,16 +1180,17 @@ h1 {
   }
 
   #sky-icon {
-    margin-top: -9px;
+    height: 30px;
     font-size: 32px;
   }
 
-  #theme-button {
+  #theme-text {
     font-size: 14px;
   }
 
   #front-page-link {
     margin-top: 15px;
+    margin-bottom: 10px;
   }
 
   #front-page-icon {

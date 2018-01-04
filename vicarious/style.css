@@ -42,7 +42,7 @@ body {
   justify-content: center;
   background-color: rgba(0, 0, 0, 0.74);
   cursor: pointer;
-  z-index: 1;
+  z-index: 10;
 }
 
 .carousel-inner {
@@ -111,20 +111,24 @@ a:focus, button:focus {
 #title-link {
   width: fit-content;
   align-self: center;
+  cursor: pointer;
   z-index: 1;
+}
+
+#title-link:hover {
+  color: #2d8e84;
 }
 
 .fa-plane {
   position: absolute;
   margin-left: -24px;
   margin-right: 24px;
-  top: 22px;
+  margin-top: -6px;
   font-size: 15px !important;
 }
 
 .fa-globe {
   position: absolute;
-  top: 0px;
   font-size: 61px !important;
   opacity: 0.2;
 }
@@ -301,7 +305,7 @@ ul {
   .fa-plane {
     margin-left: -32px;
     margin-right: 32px;
-    top: 27px;
+    margin-top: -8px;
     font-size: 21px !important;
   }
 

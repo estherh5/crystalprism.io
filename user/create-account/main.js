@@ -21,6 +21,9 @@ window.onload = function() {
     confirmDeletion();
   }
 
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip();
 

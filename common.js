@@ -3,6 +3,8 @@ var profileLink;
 var accountLink;
 var signInLink;
 var currentPath = window.location.href.split('/').slice(-2)[0];
+var refreshed = false // If Refresh button was clicked for pingServer function
+
 
 // Determine API endpoint, domain and root URL based on window location
 if (window.location.hostname == 'crystalprism.io') {
@@ -80,7 +82,75 @@ function createPageFooter() {
 }
 
 
-// Check if user is logged in
+/* Check if API is online and run optional action function if so (and if
+Refresh button was clicked) */
+function pingServer(action) {
+  // Remove server down banner if it is already displayed
+  if (header.contains(document.getElementById('banner'))) {
+    document.getElementById('header').removeChild(document
+      .getElementById('banner'));
+  }
+
+  /* Remove audio container margin (added if banner is added when server is
+  down) */
+  if (document.body.contains(document.getElementById('audio-container'))) {
+    document.getElementById('audio-container').style.marginTop = '';
+  }
+
+  /* Remove Vicarious title link margin (added if banner is added when server
+  is down) */
+  if (currentPath == 'vicarious') {
+    document.getElementById('title-link').style.marginTop = '';
+  }
+
+  return fetch(api + '/ping')
+
+    // Display error banner if server is down
+    .catch(function(error) {
+      var banner = document.createElement('div');
+      banner.id = 'banner';
+      var bannerText = document.createElement('div');
+      bannerText.id = 'banner-text';
+      bannerText.innerHTML = 'Server is offline. Some features and content ' +
+        'may be unavailable. ';
+      banner.appendChild(bannerText);
+
+      // Display Refresh button to allow user to re-ping the server
+      var refresh = document.createElement('text');
+      refresh.id = 'refresh';
+      refresh.innerHTML = 'Refresh.';
+      refresh.onclick = function() {
+        refreshed = true;
+        pingServer(action);
+        return;
+      }
+      bannerText.appendChild(refresh);
+
+      // Add audio container margin to allow space for banner
+      if (document.body.contains(document.getElementById('audio-container'))) {
+        document.getElementById('audio-container').style.marginTop = '20px';
+      }
+
+      // Add Vicarious title link margin to allow space for banner
+      if (currentPath == 'vicarious') {
+        document.getElementById('title-link').style.marginTop = '11px';
+      }
+
+      document.getElementById('header')
+        .insertAdjacentElement('afterbegin', banner);
+    })
+
+    // Run action function if server is online and Refresh button was clicked
+    .then(function(response) {
+      if (response.ok && refreshed) {
+        action();
+        refreshed = false;
+      }
+    });
+}
+
+
+// Check if user is logged in by assessing JWT token's validity
 function checkIfLoggedIn() {
   // If user does not have a token stored locally, set account menu to default
   if (localStorage.getItem('token') == null) {

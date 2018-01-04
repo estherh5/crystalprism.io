@@ -41,6 +41,9 @@ window.onload = function() {
   // Create page footer (from common.js script)
   createPageFooter();
 
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 

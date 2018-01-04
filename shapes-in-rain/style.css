@@ -65,15 +65,16 @@ a:focus, button:focus {
 }
 
 #audio-container {
-  height: 0px;
-  width: 0px;
+  height: 30px;
+  width: 30px;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
+  align-self: center;
   z-index: 1;
 }
 
 #audio-icon {
-  position: fixed;
-  height: 30px;
-  width: 30px;
   opacity: 0.5;
   cursor: pointer;
 }

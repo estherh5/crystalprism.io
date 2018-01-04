@@ -35,10 +35,9 @@ a:focus, button:focus {
 }
 
 #gallery-link {
-  position: absolute;
-  width: fit-content;
   margin: auto;
   margin-top: 35px;
+  margin-bottom: 5px;
   left: 0px;
   right: 0px;
   display: -webkit-box;
@@ -101,7 +100,6 @@ a:focus, button:focus {
 #container {
   position: relative;
   width: 100%;
-  margin-top: 100px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -291,7 +289,7 @@ a:focus, button:focus {
   color: #00cb96;
   cursor: pointer;
   transition: all 0.4s;
-  z-index: 1;
+  z-index: 201;
 }
 
 #plus-icon:hover {
@@ -329,7 +327,7 @@ a:focus, button:focus {
   opacity: 0;
   transform: translateY(65px);
   transition: all 0.7s;
-  z-index: 2;
+  z-index: 200;
 }
 
 .hidden {
@@ -434,10 +432,6 @@ a:focus, button:focus {
   flex-direction: column;
 }
 
-#title-input {
-  margin-top: 80px;
-}
-
 #drawing-title {
   border: none;
   outline: none;
@@ -521,6 +515,7 @@ button.selected, button:active {
 @media only screen and (min-width: 768px) {
   #gallery-link {
     margin-top: 20px;
+    margin-bottom: 10px;
   }
 
   #gallery-title {
@@ -546,10 +541,6 @@ button.selected, button:active {
     height: 10px;
     width: 10px;
     visibility: visible !important;
-  }
-
-  #container {
-    margin-top: 120px;
   }
 
   #gallery {

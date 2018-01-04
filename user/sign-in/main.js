@@ -17,10 +17,8 @@ window.onload = function() {
     confirmLogout();
   }
 
-  // If user is logged in, redirect to My Account page
-  if (checkIfLoggedIn()) {
-    window.location = '../my-account/';
-  }
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
 
   return;
 }

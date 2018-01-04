@@ -19,6 +19,15 @@ window.onload = function() {
   // Apply additional style to header
   document.getElementById('header').classList.add('divider');
 
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(function() {
+    checkIfLoggedIn();
+    loadPersonalInfo();
+    loadDrawings();
+    loadPosts();
+    return;
+  });
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 

@@ -230,7 +230,7 @@ a:focus, button:focus {
   cursor: pointer;
   transform: scale(1);
   transition: all 0.3s;
-  z-index: 2;
+  z-index: 201;
 }
 
 #new-post-link:hover, #new-post-link:hover + #paper-icon {
@@ -269,7 +269,7 @@ a:focus, button:focus {
   cursor: pointer;
   transform: scale(1);
   transition: all 0.3s;
-  z-index: 1;
+  z-index: 200;
 }
 
 #paper-background {
@@ -282,6 +282,9 @@ a:focus, button:focus {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
+  -webkit-flex-wrap: nowrap;
+  -ms-flex-wrap: nowrap;
+  flex-wrap: nowrap;
   -webkit-box-align: center;
   -webkit-align-items: center;
   -ms-flex-align: center;
@@ -311,12 +314,13 @@ a:focus, button:focus {
   justify-content: center;
   font-size: 15px;
   line-height: 2;
+  user-select: text;
+  -webkit-user-select: text;
 }
 
 #post-background {
   height: 71vw;
   max-height: 381.5px;
-  width: 71vw;
   max-width: 381.5px;
   padding: 5px;
   margin-bottom: 3px;
@@ -797,6 +801,10 @@ input {
   #post-board {
     max-width: 380px;
   }
+
+  #post-background {
+    width: 71vw;
+  }
 }
 
 @media only screen and (min-width: 576px) {
@@ -861,7 +869,7 @@ input {
 
 @media only screen and (min-width: 768px) {
   #title {
-    top: 0px;
+    top: 10px;
     font-size: 70px;
   }
 

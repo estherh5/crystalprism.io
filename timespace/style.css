@@ -59,16 +59,16 @@ a:focus, button:focus {
 }
 
 #audio-container {
-  height: 0px;
-  width: 0px;
+  height: 30px;
+  width: 30px;
+  -webkit-align-self: center;
+  -ms-flex-item-align: center;
+  -ms-grid-row-align: center;
+  align-self: center;
   z-index: 1;
 }
 
 #audio-icon {
-  position: fixed;
-  height: 30px;
-  width: 30px;
-  top: 0px;
   opacity: 0.5;
   cursor: pointer;
 }
@@ -86,6 +86,7 @@ a:focus, button:focus {
 
 #clock-container {
   width: 300px;
+  margin-top: 30px;
 }
 
 #time {
@@ -99,7 +100,7 @@ a:focus, button:focus {
 #quote {
   margin-top: 10px;
   font-family: 'Cutive Mono', monospace;
-  font-size: 12px;
+  font-size: 10px;
   font-weight: bold;
   color: white;
   opacity: 0.8;
@@ -130,7 +131,7 @@ a:focus, button:focus {
   }
 }
 
-@media only screen and (min-width: 600px) {
+@media only screen and (min-width: 600px) and (min-height: 300px) {
   .circle {
     height: 70px;
     width: 70px;
@@ -138,6 +139,7 @@ a:focus, button:focus {
 
   #clock-container {
     width: 550px;
+    margin-top: unset;
   }
 
   #time {

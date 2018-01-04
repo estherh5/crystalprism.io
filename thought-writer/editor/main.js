@@ -503,6 +503,33 @@ document.getElementById('close-post').onclick = function() {
 document.getElementById('modify-post').onclick = modifyPost;
 
 function modifyPost() {
+  /* If post is blank, warn user that blank post cannot be submitted (excludes
+  empty elements) */
+  if (!/\S/.test(post.textContent)) {
+    window.alert('Your post must contain text.');
+    return;
+  }
+
+  /* While post title has no non-space characters, prompt user for title until
+  they enter one or cancel */
+  while (!/\S/.test(postTitle.value)) {
+    var enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
+      '"[title]" to enter a title at any time.');
+
+    if (!/\S/.test(enteredTitle.value)) {
+      enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
+        '"[title]" to enter a title at any time.');
+    }
+
+    else if (enteredTitle == null) {
+      return;
+    }
+
+    else {
+      postTitle.value = enteredTitle;
+    }
+  }
+
   // If user is not logged in, warn user that login is required to modify post
   if (localStorage.getItem('token') == null) {
     window.alert('You must log in to edit a post.');

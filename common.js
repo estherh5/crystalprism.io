@@ -242,6 +242,10 @@ function checkIfLoggedIn() {
             return;
           }
         }
+
+      // Redirect to Sign In page if user is on My Account page
+      if (currentPath == 'my-account') {
+        window.location = '../sign-in/';
       }
 
       return false;

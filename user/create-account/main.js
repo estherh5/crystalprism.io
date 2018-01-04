@@ -12,9 +12,6 @@ window.onload = function() {
   // Create page footer (from common.js script)
   createPageFooter();
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
   /* Display confirmation of account deletion if user requested it from My
   Account page */
   if (sessionStorage.getItem('account-request') == 'delete') {
@@ -23,6 +20,11 @@ window.onload = function() {
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(checkIfLoggedIn);
+
+  // If user is logged in, redirect to My Account page
+  if (checkIfLoggedIn()) {
+    window.location = '../my-account/';
+  }
 
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip();

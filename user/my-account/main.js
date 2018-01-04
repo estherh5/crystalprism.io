@@ -754,6 +754,10 @@ function updateLikes() {
           heart.classList.remove('fa-heart');
           heart.classList.add('fa-heart-o');
           likeText.innerHTML = parseInt(currentLikes) - 1;
+
+          // Update personal info to reflect new likes
+          loadPersonalInfo();
+
           return;
         }
 
@@ -789,6 +793,10 @@ function updateLikes() {
         likeText.innerHTML = parseInt(currentLikes) + 1;
         heart.classList.remove('fa-heart-o');
         heart.classList.add('fa-heart');
+
+        // Update personal info to reflect new likes
+        loadPersonalInfo();
+
         return;
       }
 
@@ -1649,56 +1657,54 @@ function submitEdits() {
       }
 
       if (response.status == 200) {
+        /* If response is successful, update localStorage username and token and
+        profile link (in case user updated username) */
+        response.text().then(function(token) {
+          localStorage.removeItem('username');
+          localStorage.setItem('username', usernameInput.value);
+          localStorage.removeItem('token');
+          localStorage.setItem('token', token);
+          document.getElementById('profile-link').innerHTML = localStorage
+            .getItem('username');
+          document.getElementById('profile-link')
+            .href = '../?username=' + localStorage
+            .getItem('username');
 
-        /* If response was successful and username is now different, update
-        localStorage username and token and profile link */
-        if (usernameInput.value != localStorage.getItem('username')) {
-          response.text().then(function(text) {
-            localStorage.removeItem('username');
-            localStorage.setItem('username', usernameInput.value);
-            localStorage.removeItem('token');
-            localStorage.setItem('token', text);
-            document.getElementById('profile-link').innerHTML = localStorage
-              .getItem('username');
-            document.getElementById('profile-link')
-              .href = '../index.html?username=' + localStorage
-              .getItem('username');
-          });
-        }
+          // Return Personal menu fields to view-only mode and disable inputs
+          profileBackground.classList.remove('editing');
+          profileIcon.classList.remove('editing');
+          diamond.classList.remove('editing');
+          aboutInput.classList.remove('editing');
+          aboutInput.disabled = true;
 
-        // Return Personal menu fields to view-only mode and disable inputs
-        profileBackground.classList.remove('editing');
-        profileIcon.classList.remove('editing');
-        diamond.classList.remove('editing');
-        aboutInput.classList.remove('editing');
-        aboutInput.disabled = true;
+          for (var i = 0; i < fields.length; i++) {
+            fields[i].classList.remove('editing');
+            fields[i].disabled = true;
+          }
 
-        for (var i = 0; i < fields.length; i++) {
-          fields[i].classList.remove('editing');
-          fields[i].disabled = true;
-        }
+          for (var i = 0; i < checkboxes.length; i++) {
+            checkboxContainers[i].classList.remove('editing');
+            checkboxes[i].classList.remove('editing');
+          }
 
-        for (var i = 0; i < checkboxes.length; i++) {
-          checkboxContainers[i].classList.remove('editing');
-          checkboxes[i].classList.remove('editing');
-        }
+          // Clear password and confirm password fields
+          passwordInput.value = '';
+          confirmPassInput.value = '';
 
-        // Clear password and confirm password fields
-        passwordInput.value = '';
-        confirmPassInput.value = '';
+          // Set editingPersonal variable to false
+          editingPersonal = false;
 
-        // Set editingPersonal variable to false
-        editingPersonal = false;
+          // Display Edit button
+          editButton.style.display = 'block';
 
-        // Display Edit button
-        editButton.style.display = 'block';
+          // Hide Cancel and Save buttons
+          cancelButton.style.display = 'none';
+          saveButton.style.display = 'none';
 
-        // Hide Cancel and Save buttons
-        cancelButton.style.display = 'none';
-        saveButton.style.display = 'none';
+          // Update field font colors based on background color
+          updateFontColors();
 
-        // Update field font colors based on background color
-        updateFontColors();
+        });
         return;
       }
 

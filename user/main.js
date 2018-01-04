@@ -73,6 +73,9 @@ function loadPersonalInfo() {
           document.body.style.backgroundColor = info['background_color'];
           document.getElementById('diamond').style.fill = info['icon_color'];
 
+          // Update profile content font color based on background color
+          updateFontColors(info['background_color']);
+
           // Update icon background color based on icon color
           updateIconBackground(info['icon_color']);
 
@@ -130,6 +133,26 @@ function updateIconBackground(iconColor) {
     document.getElementById('profile-icon').style.backgroundColor = '#ffffff';
   }
 
+  return;
+}
+
+
+/* Assess darkness of passed color variable and adjust font color of profile
+content to white/black in response */
+function updateFontColors(color) {
+  var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+    .exec(color);
+  var r = parseInt(rgb[1], 16);
+  var g = parseInt(rgb[2], 16);
+  var b = parseInt(rgb[3], 16);
+
+  // Change page and footer font color to white if background color is dark
+  if (r + g + b < 382) {
+    document.getElementById('profile-container').style.color = '#ffffff';
+    document.getElementById('footer').style.color = '#ffffff';
+  }
+
+  // Otherwise, leave font color as default (black)
   return;
 }
 

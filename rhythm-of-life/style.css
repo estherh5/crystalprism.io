@@ -111,6 +111,7 @@ html, body {
     -webkit-justify-content: center;
     -ms-flex-pack: center;
     justify-content: center;
+    z-index: 1;
   }
 
   button {
@@ -435,6 +436,13 @@ html, body {
 
   #leaderboard td {
     line-height: 36px;
+    text-overflow: ellipsis;
+  }
+
+  #error-cell {
+    font-style: italic;
+    color: #ff8600;
+    line-height: normal !important;
   }
 }
 

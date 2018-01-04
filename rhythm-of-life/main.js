@@ -780,50 +780,87 @@ function storeScore() {
     body: data,
   })
 
-  .then(function(response) {
+    // Display warning if server is down
+    .catch(function(error) {
+      window.alert('Your score could not be saved. Please play again later.');
+    })
+
     // Display updated top 5 game leaders if server receives score successfully
-    if (response.ok) {
-      displayLeaders();
-    }
-  });
+    .then(function(response) {
+      if (response.ok) {
+        displayLeaders();
+      }
+    });
 }
 
 
 // Display top 5 game leaders
 function displayLeaders() {
   // Request top 5 game leaders from server
-  return fetch(api + '/rhythm-of-life').then(function(response) {
-    response.json().then(function(leadersList) {
+  return fetch(api + '/rhythm-of-life')
 
-      for (var i = 0; i < leadersList.length; i++) {
-        // Create cells for lifespan and player name in leaders list from server
-        var lifespanCell = document.createElement('td');
-        var playerCell = document.createElement('td');
-
-        /* Clear current leader display on game board and replace with new
-        player and score cells for mobile/desktop */
-        if (mobile) {
+    // Display error message if server is down
+    .catch(function(error) {
+      if (mobile) {
+        // Clear leaders list
+        for (var i = 0; i < leadersMobile.length; i++) {
           leadersMobile[i].innerHTML = '';
-          leadersMobile[i].appendChild(lifespanCell);
-          leadersMobile[i].appendChild(playerCell);
-        } else {
-          leaders[i].innerHTML = '';
-          leaders[i].appendChild(lifespanCell);
-          leaders[i].appendChild(playerCell);
         }
 
-        // Display lifespan in lifespan cell
-        lifespanCell.appendChild(document.createTextNode(leadersList[i]
-          .lifespan));
+        // Display error
+        var errorCell = document.createElement('td');
+        errorCell.id = 'error-cell';
+        errorCell.colSpan = "2";
+        errorCell.innerHTML = 'The leaders list could not be loaded.';
+        leadersMobile[0].appendChild(errorCell);
+      } else {
+        // Clear leaders list
+        for (var i = 0; i < leaders.length; i++) {
+          leaders[i].innerHTML = '';
+        }
 
-        // Display link to player's user profile in player cell
-        var userLink = document.createElement('a');
-        userLink.href = '../user/index.html?username=' + leadersList[i].player;
-        userLink.appendChild(document.createTextNode(leadersList[i].player));
-        playerCell.appendChild(userLink);
+        // Display error
+        var errorCell = document.createElement('td');
+        errorCell.id = 'error-cell';
+        errorCell.colSpan = "2";
+        errorCell.innerHTML = 'The leaderboard could not be loaded.';
+        leaders[0].appendChild(errorCell);
       }
+    })
+
+    .then(function(response) {
+      response.json().then(function(leadersList) {
+
+        for (var i = 0; i < leadersList.length; i++) {
+          /* Create cells for lifespan and player name in leaders list from
+          server */
+          var lifespanCell = document.createElement('td');
+          var playerCell = document.createElement('td');
+
+          /* Clear current leader display on game board and replace with new
+          player and score cells for mobile/desktop */
+          if (mobile) {
+            leadersMobile[i].innerHTML = '';
+            leadersMobile[i].appendChild(lifespanCell);
+            leadersMobile[i].appendChild(playerCell);
+          } else {
+            leaders[i].innerHTML = '';
+            leaders[i].appendChild(lifespanCell);
+            leaders[i].appendChild(playerCell);
+          }
+
+          // Display lifespan in lifespan cell
+          lifespanCell.appendChild(document.createTextNode(leadersList[i]
+            .lifespan));
+
+          // Display link to player's user profile in player cell
+          var userLink = document.createElement('a');
+          userLink.href = '../user/?username=' + leadersList[i].player;
+          userLink.appendChild(document.createTextNode(leadersList[i].player));
+          playerCell.appendChild(userLink);
+        }
+      });
     });
-  });
 }
 
 

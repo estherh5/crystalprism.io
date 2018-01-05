@@ -8,7 +8,7 @@ var refreshed = false // If Refresh button was clicked for pingServer function
 
 // Determine API endpoint, domain and root URL based on window location
 if (window.location.hostname == 'crystalprism.io') {
-  var api = 'https://13.58.175.191/api';
+  var api = 'https://api.crystalprism.io/api';
   var domain = 'crystalprism.io';
   var root = 'https://' + domain;
 } else {

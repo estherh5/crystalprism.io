@@ -273,6 +273,17 @@ function toggleProject() {
       var currentProjectNumber = i;
       projects[i].dataset.displayed = 'false';
       projectOverviews[i].classList.remove('open');
+
+      // Pause video of currently displayed project
+      var video = document.getElementById(projects[i].dataset
+          .project + '-video');
+      var control = document.getElementById(projects[i].dataset
+          .project + '-control');
+      control.classList.add('fa-play');
+      control.classList.remove('fa-pause');
+      control.classList.remove('playing');
+      video.classList.remove('playing');
+      video.pause();
     }
   }
 

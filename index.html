@@ -34,6 +34,47 @@
       <div id="modal-body">
         <button id="close" class="hidden">&times;</button>
 
+        <!-- NoBugs! overview -->
+        <div id="nobugs-overview" class="project-overview">
+          <a class="modal-project-title" href="https://nobugsphilly.com">
+            <img class="project-icon-large" src="images/nobugs-icon.png">
+            <h2>NoBugs!</h2>
+          </a>
+          <!-- NoBugs! repo -->
+          <a class="github-repo" href="https://github.com/estherh5/nobugs/tree/master" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fa fa-github fa-lg" aria-hidden="true"></i>
+            <text>GitHub Repository: Aug 2017 - Present</text>
+          </a>
+          <!-- NoBugs! skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fa fa-html5" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fa fa-css3" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <object class="modal-object svg-icon-object" type="image/svg+xml" data="images/javascript.svg"></object>
+              <text class="text-small">&nbsp;JavaScript</text>
+            </div>
+            <div class="skill">
+              <object class="modal-object svg-icon-object" type="image/svg+xml" data="images/bootstrap.svg"></object>
+              <text class="text-small">&nbsp;Bootstrap</text>
+            </div>
+          </div>
+          <!-- NoBugs! video -->
+          <div class="video-container" data-project="nobugs">
+            <video id="nobugs-video" src="videos/nobugs.mp4" type="video/mp4" data-project="nobugs"></video>
+            <i id="nobugs-control" class="fa fa-play" aria-hidden="true"></i>
+          </div>
+          <!-- NoBugs! description -->
+          <text>
+            <a href="https://nobugsphilly.com">NoBugs!</a> is a small, family-owned pest control supply company in Philadelphia, PA. The owners have largely kept their business off of the internet, advertising through paper and word of mouth, so they requested a professional, minimally designed website to help them advertise online and generate more business from a wider audience. The website tells the story of NoBugs!'s history and shares relevant product, seminar and contact information with viewers, with family photos for a personal touch.
+          </text>
+        </div>
+
         <!-- Vicarious overview -->
         <div id="vicarious-overview" class="project-overview">
           <a class="modal-project-title" href="vicarious/">
@@ -421,6 +462,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- NoBugs! image and icon -->
+            <li>
+              <div class="project-listing" data-project="nobugs" data-displayed="false">
+                <img class="project-image" src="images/nobugs.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img class="project-icon" src="images/nobugs-icon.png">
+                  </div>
+                </span>
+                <span class="project-title">NoBugs!</span>
+              </div>
+            </li>
             <!-- Vicarious image and icon -->
             <li>
               <div class="project-listing" data-project="vicarious" data-displayed="false">

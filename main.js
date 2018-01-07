@@ -536,20 +536,22 @@ function loadPosts() {
 previews */
 function toggleFullText() {
   // Display full text if plus icon is displayed
-  if (this.getElementsByTagName('i')[0].classList.contains('fa-plus-square-o')) {
-    this.getElementsByTagName('i')[0].classList.remove('fa-plus-square-o');
-    this.getElementsByTagName('i')[0].classList.add('fa-minus-square-o');
-    var postToDisplay = document.getElementById(this.dataset.post);
-    postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
-    postToDisplay.appendChild(this);
-    return;
+  if (this.getElementsByTagName('i')[0].classList
+    .contains('fa-plus-square-o')) {
+      this.getElementsByTagName('i')[0].classList.remove('fa-plus-square-o');
+      this.getElementsByTagName('i')[0].classList.add('fa-minus-square-o');
+      var postToDisplay = document.getElementById(this.dataset.post);
+      postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
+      postToDisplay.appendChild(this);
+      return;
   }
 
   // Otherwise, hide full text and display preview if minus icon is displayed
   this.getElementsByTagName('i')[0].classList.remove('fa-minus-square-o');
   this.getElementsByTagName('i')[0].classList.add('fa-plus-square-o');
   var postToDisplay = document.getElementById(this.dataset.post);
-  postToDisplay.innerHTML = postToDisplay.dataset.fulltext.slice(0, 200) + '...';
+  postToDisplay.innerHTML = postToDisplay.dataset.fulltext
+    .slice(0, 200) + '...';
   postToDisplay.appendChild(this);
   return;
 }
@@ -571,7 +573,8 @@ function toggleSection() {
       // If section/subsection is already expanded, collapse it
       if (this.dataset.expanded == 'true') {
         // Change span icon to expand chevron
-        this.getElementsByTagName('span')[0].classList.remove('fa-chevron-down');
+        this.getElementsByTagName('span')[0].classList
+          .remove('fa-chevron-down');
         this.getElementsByTagName('span')[0].classList.add('fa-chevron-right');
 
         /* Collapse specified section/subsection (specified by data-start and

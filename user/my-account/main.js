@@ -395,8 +395,8 @@ function displayScores(game) {
 
 // Load user's drawings from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/gallery/' + encodeURIComponent(localStorage
-    .getItem('username')) + '?start=' + drawingStart + '&end=' + drawingEnd, {
+  return fetch(api + '/canvashare/gallery/' + localStorage.getItem('username') +
+    '?start=' + drawingStart + '&end=' + drawingEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -501,15 +501,13 @@ function displayDrawings(drawings) {
     var drawingTitle = document.createElement('div');
     drawingTitle.classList.add('drawing-title');
 
-    /* Set data-drawing attribute as drawing file name for later identification,
-    with URI-encoded characters */
-    drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
+    // Set data-drawing attribute as drawing file name for later identification
+    drawingTitle.dataset.drawing = drawings[i];
 
     // Create drawing image
     var drawing = document.createElement('img');
     drawing.classList.add('drawing');
-    drawing.src = api + '/canvashare/drawing/' +
-      encodeURIComponent(drawings[i]);
+    drawing.src = api + '/canvashare/drawing/' + drawings[i];
     drawing.title = 'View drawing';
 
     // Create container for drawing artist and number of likes and views
@@ -522,15 +520,15 @@ function displayDrawings(drawings) {
     drawingLikes.title = 'Likes';
 
     /* Set data-drawing attribute as drawing file name for later
-    identification, with URI-encoded characters */
-    drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
+    identification */
+    drawingLikes.dataset.drawing = drawings[i];
 
     // Create text to display number of likes
     var likeText = document.createElement('text');
 
     /* Set data-drawing attribute as drawing file name for later
-    identification, with URI-encoded characters */
-    likeText.dataset.drawing = encodeURIComponent(drawings[i]);
+    identification */
+    likeText.dataset.drawing = drawings[i];
 
     // Create drawing views container
     var drawingViews = document.createElement('div');
@@ -546,8 +544,8 @@ function displayDrawings(drawings) {
     var viewText = document.createElement('text');
 
     /* Set data-drawing attribute as drawing file name for later
-    identification, with URI-encoded characters */
-    viewText.dataset.drawing = encodeURIComponent(drawings[i]);
+    identification */
+    viewText.dataset.drawing = drawings[i];
     gallery.appendChild(drawingContainer);
     drawingContainer.appendChild(drawingTitle);
     drawingContainer.appendChild(drawing);
@@ -589,7 +587,7 @@ function displayDrawings(drawings) {
     }
 
     // Fill in drawing title, views, and likes
-    getDrawingInfo(encodeURIComponent(drawings[i]));
+    getDrawingInfo(drawings[i]);
   }
 
   /* If first drawing displayed in drawing area is not drawing 0 (i.e., there
@@ -811,7 +809,7 @@ function updateLikes() {
 // Load user's posts from server
 function loadPosts() {
   return fetch(api + '/thought-writer/post-board/' +
-    encodeURIComponent(localStorage.getItem('username')) + '?start=' +
+    localStorage.getItem('username') + '?start=' +
     postStart + '&end=' + postEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',

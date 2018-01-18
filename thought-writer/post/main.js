@@ -37,9 +37,8 @@ function loadPost() {
   var commentCount = document.getElementById('comment-count');
 
   // Request post based on items stored in sessionStorage
-  var postPath = encodeURIComponent(sessionStorage
-    .getItem('writer')) + '/' + encodeURIComponent(sessionStorage
-    .getItem('post-timestamp-public'));
+  var postPath = sessionStorage.getItem('writer') + '/' +
+    encodeURIComponent(sessionStorage.getItem('post-timestamp-public'));
 
   return fetch(api + '/thought-writer/post/' + postPath)
 
@@ -159,8 +158,7 @@ function submitComment() {
 
   // Otherwise, send comment to server
   var data = JSON.stringify({'content': newComment.innerHTML});
-  var postPath = encodeURIComponent(postWriter
-    .innerHTML) + '/' + encodeURIComponent(sessionStorage
+  var postPath = postWriter.innerHTML + '/' + encodeURIComponent(sessionStorage
     .getItem('post-timestamp-public'));
 
   return fetch(api + '/thought-writer/comment/' + postPath, {

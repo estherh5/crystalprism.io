@@ -126,8 +126,8 @@ function loadPosts() {
 
   // Otherwise, load previously written posts to cabinet
   return fetch(api + '/thought-writer/post-board/' +
-    encodeURIComponent(localStorage.getItem('username')) + '?start=' +
-    requestStart + '&end=' + requestEnd, {
+    localStorage.getItem('username') + '?start=' + requestStart + '&end=' +
+    requestEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -228,8 +228,8 @@ function loadPosts() {
 
 // Open post that has passed timestamp in editor
 function openPost(timestamp) {
-  var postPath = encodeURIComponent(localStorage
-    .getItem('username')) + '/' + encodeURIComponent(timestamp);
+  var postPath = localStorage.getItem('username') + '/' +
+    encodeURIComponent(timestamp);
 
   return fetch(api + '/thought-writer/post/' + postPath, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},

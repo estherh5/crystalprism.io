@@ -46,11 +46,12 @@ window.onload = function() {
 
 // Load profile user's personal information to profile from server
 function loadPersonalInfo() {
-  return fetch(api + '/user/' + encodeURIComponent(username))
+  return fetch(api + '/user/' + username)
 
     // Display error if server is down
     .catch(function(error) {
-      document.getElementById('profile-title').innerHTML = 'Could not load page';
+      document.getElementById('profile-title')
+        .innerHTML = 'Could not load page';
       document.title = 'Not found';
       return;
     })
@@ -159,8 +160,8 @@ function updateFontColors(color) {
 
 // Load profile user's drawings to profile gallery from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/gallery/' + encodeURIComponent(username) +
-    '?start=' + drawingStart + '&end=' + drawingEnd)
+  return fetch(api + '/canvashare/gallery/' + username + '?start=' +
+    drawingStart + '&end=' + drawingEnd)
 
     .then(function(response) {
       if (response.ok) {
@@ -204,14 +205,13 @@ function loadDrawings() {
             drawingTitle.classList.add('drawing-title');
 
             /* Set data-drawing attribute as drawing file name for later
-            identification, with URI-encoded characters */
-            drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
+            identification */
+            drawingTitle.dataset.drawing = drawings[i];
 
             // Create drawing image
             var drawing = document.createElement('img');
             drawing.classList.add('drawing');
-            drawing.src = api + '/canvashare/drawing/' +
-              encodeURIComponent(drawings[i]);
+            drawing.src = api + '/canvashare/drawing/' + drawings[i];
             drawing.title = 'View drawing';
 
             // Create container for drawing artist and number of likes and views
@@ -224,15 +224,15 @@ function loadDrawings() {
             drawingLikes.title = 'Likes';
 
             /* Set data-drawing attribute as drawing file name for later
-            identification, with URI-encoded characters */
-            drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
+            identification */
+            drawingLikes.dataset.drawing = drawings[i];
 
             // Create text to display number of likes
             var likeText = document.createElement('text');
 
             /* Set data-drawing attribute as drawing file name for later
-            identification, with URI-encoded characters */
-            likeText.dataset.drawing = encodeURIComponent(drawings[i]);
+            identification */
+            likeText.dataset.drawing = drawings[i];
 
             // Create drawing views container
             var drawingViews = document.createElement('div');
@@ -248,8 +248,8 @@ function loadDrawings() {
             var viewText = document.createElement('text');
 
             /* Set data-drawing attribute as drawing file name for later
-            identification, with URI-encoded characters */
-            viewText.dataset.drawing = encodeURIComponent(drawings[i]);
+            identification */
+            viewText.dataset.drawing = drawings[i];
             gallery.appendChild(drawingContainer);
             drawingContainer.appendChild(drawingTitle);
             drawingContainer.appendChild(drawing);
@@ -272,7 +272,7 @@ function loadDrawings() {
             }
 
             // Fill in drawing title, views, and likes
-            getDrawingInfo(encodeURIComponent(drawings[i]));
+            getDrawingInfo(drawings[i]);
           }
 
           /* If first drawing displayed in gallery is not drawing 0 (i.e., there
@@ -496,8 +496,8 @@ function updateLikes() {
 
 // Load user's posts to profile post area from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/post-board/' +
-    encodeURIComponent(username) + '?start=' + postStart + '&end=' + postEnd)
+  return fetch(api + '/thought-writer/post-board/' + username + '?start=' +
+    postStart + '&end=' + postEnd)
 
     .then(function(response) {
       if (response.ok) {

@@ -133,14 +133,13 @@ function loadDrawings() {
               drawingTitle.classList.add('drawing-title');
 
               /* Set data-drawing attribute as drawing file name for later
-              identification, with URI-encoded characters */
-              drawingTitle.dataset.drawing = encodeURIComponent(drawings[i]);
+              identification */
+              drawingTitle.dataset.drawing = drawings[i];
 
               // Create drawing image
               var drawing = document.createElement('img');
               drawing.classList.add('drawing');
-              drawing.src = api + '/canvashare/drawing/' +
-                encodeURIComponent(drawings[i]);
+              drawing.src = api + '/canvashare/drawing/' + drawings[i];
 
               /* Create container for drawing artist and number of likes and
               views */
@@ -153,15 +152,15 @@ function loadDrawings() {
               drawingLikes.title = 'Likes';
 
               /* Set data-drawing attribute as drawing file name for later
-              identification, with URI-encoded characters */
-              drawingLikes.dataset.drawing = encodeURIComponent(drawings[i]);
+              identification */
+              drawingLikes.dataset.drawing = drawings[i];
 
               // Create text to display number of likes
               var likeText = document.createElement('text');
 
               /* Set data-drawing attribute as drawing file name for later
-              identification, with URI-encoded characters */
-              likeText.dataset.drawing = encodeURIComponent(drawings[i]);
+              identification */
+              likeText.dataset.drawing = drawings[i];
 
               // Create drawing views container
               var drawingViews = document.createElement('div');
@@ -177,8 +176,8 @@ function loadDrawings() {
               var viewText = document.createElement('text');
 
               /* Set data-drawing attribute as drawing file name for later
-              identification, with URI-encoded characters */
-              viewText.dataset.drawing = encodeURIComponent(drawings[i]);
+              identification */
+              viewText.dataset.drawing = drawings[i];
 
               // Create container for drawing artist
               var drawingArtist = document.createElement('div');
@@ -207,7 +206,7 @@ function loadDrawings() {
               drawing.onclick = updateViews;
 
               // Fill in drawing title, views, and likes
-              getDrawingInfo(encodeURIComponent(drawings[i]));
+              getDrawingInfo(drawings[i]);
             }
           }
 

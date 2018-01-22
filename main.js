@@ -53,13 +53,6 @@ window.onload = function() {
   // Load posts to Ideas page
   loadPosts();
 
-  // Add inverse color class to SVG icons in Projects page modal
-  for (var i = 0; i < document.getElementsByClassName('modal-object')
-    .length; i++) {
-    document.getElementsByClassName('modal-object')[i].contentDocument
-      .getElementsByTagName('svg')[0].classList.add('inverse');
-  }
-
   return;
 }
 
@@ -109,13 +102,6 @@ function setTheme() {
 function addNightView() {
   document.body.classList.add('night-view');
 
-  // Add night view class to SVG icons loaded in objects
-  for (var i = 0; i < document.getElementsByClassName('svg-icon-object')
-    .length; i++) {
-    document.getElementsByClassName('svg-icon-object')[i].contentDocument
-      .getElementsByTagName('svg')[0].classList.add('night-view');
-    }
-
   // Set sky icon to a sun shape for day view setting
   skyIcon.classList.remove('ion-ios-moon-outline');
   skyIcon.classList.add('ion-ios-sunny');
@@ -129,13 +115,6 @@ function addNightView() {
 // Remove night view as page theme
 function removeNightView() {
   document.body.classList.remove('night-view');
-
-  // Remove night view class to SVG icons loaded in objects
-  for (var i = 0; i < document.getElementsByClassName('svg-icon-object')
-    .length; i++) {
-    document.getElementsByClassName('svg-icon-object')[i].contentDocument
-      .getElementsByTagName('svg')[0].classList.remove('night-view');
-    }
 
   // Set sky icon to a moon shape for night view setting
   skyIcon.classList.remove('ion-ios-sunny');

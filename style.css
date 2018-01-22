@@ -1,3 +1,15 @@
+/* Fontello-generated icon font for company logos */
+@font-face {
+  font-family: 'logos';
+  src: url('./fontello-logo-font/logos.eot?88409861');
+  src: url('./fontello-logo-font/logos.eot?88409861#iefix') format('embedded-opentype'),
+       url('./fontello-logo-font/logos.woff?88409861') format('woff'),
+       url('./fontello-logo-font/logos.ttf?88409861') format('truetype'),
+       url('./fontello-logo-font/logos.svg?88409861#logos') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
 html, body {
   height: 100vh;
   width: 100vw;
@@ -257,6 +269,14 @@ a:hover, button:hover {
   height: 8px;
 }
 
+.fontello-icon {
+  font-family: 'logos';
+  font-style: normal;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .night-view text {
   fill: #ffffff;
 }
@@ -315,47 +335,6 @@ a:hover, button:hover {
 .project-skills .text-small {
   font-size: 9px;
   margin-right: 0px;
-}
-
-.modal-object {
-  height: 9px;
-}
-
-.svg-icon-object {
-  height: 8px;
-}
-
-.svg-icon {
-  fill: #000000;
-}
-
-.svg-icon.night-view {
-  fill: #ffffff;
-}
-
-.inverse {
-  fill: #ffffff !important;
-}
-
-.night-view .inverse, .inverse.night-view {
-  background-color: rgba(0, 0, 0, 0) !important;
-  fill: #000000 !important;
-}
-
-.svg-icon stop {
-  stop-color: #000000;
-}
-
-.svg-icon.night-view stop {
-  stop-color: #ffffff;
-}
-
-.inverse stop {
-  stop-color: #ffffff !important;
-}
-
-.night-view .inverse stop, .inverse.night-view stop {
-  stop-color: #000000 !important;
 }
 
 .video-container {
@@ -1135,7 +1114,7 @@ h1 {
     font-size: 12px;
   }
 
-  .small-icon, .project-skills .svg-icon-object {
+  .small-icon {
     height: 12px;
   }
 
@@ -1169,10 +1148,6 @@ h1 {
   .text-small {
     margin-right: 15px;
     font-size: 15px;
-  }
-
-  .svg-icon-object {
-    height: 15px;
   }
 
   #theme-container {
@@ -1405,14 +1380,6 @@ h1 {
 
   .text-small, .section-content, .skill-type, .subsection-dates, .subsection-location {
     font-size: 11.3px;
-  }
-
-  .svg-icon {
-    fill: #000000 !important;
-  }
-
-  .svg-icon stop {
-    stop-color: #000000 !important;
   }
 
   #front-page-link {

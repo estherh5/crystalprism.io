@@ -23,7 +23,7 @@ I started programming in January 2017 and am learning HTML, CSS and JavaScript f
 #### March 2017 - Present
 ![CanvaShare](images/canvashare.png)
 
-[CanvaShare](https://crystalprism.io/canvashare/) is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use [Snap.svg](http://snapsvg.io) for canvas and object manipulation, as well as [EaselJS](http://www.createjs.com/easeljs) for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
+[CanvaShare](https://crystalprism.io/canvashare/) is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use [Snap.svg](http://snapsvg.io) for canvas and object manipulation, as well as [EaselJS](https://www.createjs.com/easeljs) for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
 
 ## Thought Writer
 #### August 2017 - Present
@@ -49,4 +49,4 @@ I am incredibly grateful to my teacher, [Ankur Saxena](https://github.com/as3445
 [![BrowserStack](images/browserstack.svg)](https://www.browserstack.com)
 I am also grateful to [BrowserStack](https://www.browserstack.com) for letting me use their service free of charge to test my website across browsers and devices. BrowserStack allowed me to get an accurate handle on cross-browser and cross-device compatible code, teaching me many useful browser/device considerations along the way.
 
-PNG and SVG icons/logos on my website were created by icon websites such as [Font Awesome](http://fontawesome.io/), [Icons8](https://icons8.com/), and [Wikimedia Commons](https://commons.wikimedia.org/wiki/Main_Page), or were found on company websites (e.g., [Apache](https://www.apache.org/foundation/press/kit/)).
+PNG and SVG icons/logos on my website were created by icon websites such as [Font Awesome](http://fontawesome.io/), [Icons8](https://icons8.com/), [Fontello](http://fontello.com/) and [Wikimedia Commons](https://commons.wikimedia.org/wiki/Main_Page), or were found on company websites (e.g., [Apache](https://www.apache.org/foundation/press/kit/)).

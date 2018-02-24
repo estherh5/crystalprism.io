@@ -38,7 +38,7 @@ html, body {
   color: #ffffff;
 }
 
-#modal-background {
+.modal-background {
   position: fixed;
   height: 100%;
   width: 100%;
@@ -58,16 +58,16 @@ html, body {
   z-index: 1;
 }
 
-#modal-background.open {
+.modal-background.open {
   background-color: rgba(0, 0, 0, 0.15);
   transition: all 1s;
 }
 
-.night-view #modal-background.open {
+.night-view .modal-background.open {
   background-color: rgba(255, 255, 255, 0.24);
 }
 
-#modal-body {
+.modal-body {
   position: absolute;
   height: 80%;
   width: 80%;
@@ -88,12 +88,12 @@ html, body {
   transition: all 1s;
 }
 
-.night-view #modal-body {
+.night-view .modal-body {
   background-color: rgba(255, 255, 255, 0.93);
   color: #000000;
 }
 
-#modal-body.open, .project-overview.open {
+.modal-body.open, .project-overview.open {
   opacity: 1;
   z-index: 2;
   transition: all 1s;
@@ -123,7 +123,7 @@ button.selected {
   color: #ffffff;
 }
 
-#close {
+.close {
   position: fixed;
   padding: 0px;
   top: 10%;
@@ -133,7 +133,7 @@ button.selected {
   line-height: 0.3;
 }
 
-.night-view #close {
+.night-view .close {
   color: #000000;
 }
 
@@ -432,12 +432,27 @@ video {
   color: #000000;
 }
 
-#previous {
+.previous {
   left: 10%;
 }
 
-#next {
+.next {
   right: 10%;
+}
+
+#photo-modal-body {
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+}
+
+#larger-photo {
+  height: 80%;
 }
 
 #theme-container {
@@ -731,7 +746,7 @@ h1 {
   transition: all 1s;
 }
 
-#projects-page {
+#projects-page, #photos-page {
   display: block;
   transition: filter 0.3s opacity 0.3s;
 }
@@ -749,7 +764,7 @@ h1 {
   cursor: pointer;
 }
 
-#projects-list {
+#projects-list, #photos-list {
   margin: 0px;
   padding: 0px;
   display: -webkit-box;
@@ -771,27 +786,27 @@ h1 {
   justify-content: center;
 }
 
-#projects-list li {
+#projects-list li, #photos-list li {
   width: 75%;
   max-width: 300px;
   margin-bottom: 10px;
   display: inline-block;
 }
 
-.night-view #projects-list li {
+.night-view #projects-list li, .night-view #photos-list li {
   border-color: #ffffff;
   border-style: dotted;
   border-width: 4px;
 }
 
-.project-listing {
+.project-listing, .photo-listing {
   position: relative;
   display: block;
   overflow: hidden;
   cursor: pointer;
 }
 
-.project-image {
+.project-image, .photo {
   width: 100%;
   display: block;
   transform: scale(1.05);
@@ -799,7 +814,7 @@ h1 {
   transition: all 0.5s;
 }
 
-#projects-list li:hover .project-image {
+#projects-list li:hover .project-image, #photos-list li:hover .photo {
   transform: scale(1);
   -webkit-transform: scale(1);
 }
@@ -859,6 +874,86 @@ h1 {
   opacity: 1;
   transform: translateY(0px);
   -webkit-transform: translateY(0px);
+}
+
+#photos-error {
+  font-size: 12px;
+  color: #8551ff;
+}
+
+#ideas-error {
+  font-size: 12px;
+  color: #d24cff;
+}
+
+.post {
+  width: 75%;
+  max-width: 900px;
+  border-spacing: 0px;
+  margin-bottom: 30px;
+  margin-left: 10px;
+  margin-right: 10px;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+#ideas-page tr, #ideas-page td {
+  padding: 7px;
+}
+
+.night-view .post-header {
+  background-color: #636363;
+}
+
+.post-title {
+  width: 45%;
+  border-top-left-radius: 10px;
+  background-color: #f0f0f0;
+  font-family: 'Shrikhand', cursive;
+  font-size: 20px;
+  color: #eb84e2;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+.post-timestamp {
+  width: 25%;
+  border-top-right-radius: 10px;
+  background-color: #f0f0f0;
+  vertical-align: bottom;
+  font-family: 'Scope One', serif;
+  font-size: 15px;
+  font-weight: bold;
+  text-align: right;
+  color: #000000 !important;
+}
+
+.post-container {
+  border-bottom-left-radius: 10px;
+  border-bottom-right-radius: 10px;
+  background-color: #f9f9f9;
+}
+
+.night-view .post-container {
+  background-color: #aeaeae;
+}
+
+.post-content {
+  font-family: 'Scope One', serif;
+  font-size: 15px;
+  text-align: justify;
+  color: #000000 !important;
+}
+
+.post-content img {
+  max-width: 100%;
+  max-height: 100%;
+}
+
+.toggle-full-text {
+  margin-left: 3px;
+  font-size: 18px;
+  line-height: 0;
 }
 
 #about-me {
@@ -1007,86 +1102,6 @@ h1 {
   margin-left: 0px;
 }
 
-#photos-page {
-  font-size: 12px;
-  color: #8551ff;
-}
-
-#error-message {
-  font-size: 12px;
-  color: #d24cff;
-}
-
-.post {
-  width: 75%;
-  max-width: 900px;
-  border-spacing: 0px;
-  margin-bottom: 30px;
-  margin-left: 10px;
-  margin-right: 10px;
-  user-select: text;
-  -webkit-user-select: text;
-}
-
-#ideas-page tr, #ideas-page td {
-  padding: 7px;
-}
-
-.night-view .post-header {
-  background-color: #636363;
-}
-
-.post-title {
-  width: 45%;
-  border-top-left-radius: 10px;
-  background-color: #f0f0f0;
-  font-family: 'Shrikhand', cursive;
-  font-size: 20px;
-  color: #eb84e2;
-  text-align: left;
-  vertical-align: bottom;
-}
-
-.post-timestamp {
-  width: 25%;
-  border-top-right-radius: 10px;
-  background-color: #f0f0f0;
-  vertical-align: bottom;
-  font-family: 'Scope One', serif;
-  font-size: 15px;
-  font-weight: bold;
-  text-align: right;
-  color: #000000 !important;
-}
-
-.post-container {
-  border-bottom-left-radius: 10px;
-  border-bottom-right-radius: 10px;
-  background-color: #f9f9f9;
-}
-
-.night-view .post-container {
-  background-color: #aeaeae;
-}
-
-.post-content {
-  font-family: 'Scope One', serif;
-  font-size: 15px;
-  text-align: justify;
-  color: #000000 !important;
-}
-
-.post-content img {
-  max-width: 100%;
-  max-height: 100%;
-}
-
-.toggle-full-text {
-  margin-left: 3px;
-  font-size: 18px;
-  line-height: 0;
-}
-
 @media only screen and (min-width: 576px) {
   .project-overview {
     margin-left: 50px;
@@ -1199,7 +1214,7 @@ h1 {
     width: 745px;
   }
 
-  #projects-list {
+  #projects-list, #photos-list {
     -webkit-box-orient: horizontal;
     -webkit-box-direction: normal;
     -webkit-flex-direction: row;
@@ -1210,13 +1225,39 @@ h1 {
     flex-wrap: wrap;
   }
 
-  #projects-list li {
+  #projects-list li, #photos-list li {
     width: 32%;
     margin: 5px;
   }
 
-  .night-view #projects-list li {
+  .night-view #projects-list li, .night-view #photos-list li {
     margin: 3px;
+  }
+
+  .post {
+    margin-bottom: 40px;
+  }
+
+  .post-title {
+    width: 70%;
+    font-size: 25px;
+  }
+
+  .post-timestamp {
+    width: 30%;
+    font-size: 20px;
+  }
+
+  .post-content-container {
+    opacity: 0.7;
+  }
+
+  .post:hover .post-content-container {
+    opacity: 1;
+  }
+
+  .post-content {
+    font-size: 20px;
   }
 
   #about-me {
@@ -1309,47 +1350,21 @@ h1 {
   .education > a {
     margin-left: 21px;
   }
-
-  .post {
-    margin-bottom: 40px;
-  }
-
-  .post-title {
-    width: 70%;
-    font-size: 25px;
-  }
-
-  .post-timestamp {
-    width: 30%;
-    font-size: 20px;
-  }
-
-  .post-content-container {
-    opacity: 0.7;
-  }
-
-  .post:hover .post-content-container {
-    opacity: 1;
-  }
-
-  .post-content {
-    font-size: 20px;
-  }
 }
 
 @media only screen and (min-width: 1190px) {
-  #close {
+  .close {
     position: absolute;
     top: 0px;
     right: 0px;
   }
 
-  #previous {
+  .previous {
     position: absolute;
     left: 0px;
   }
 
-  #next {
+  .next {
     position: absolute;
     right: 0px;
   }

@@ -30,9 +30,9 @@
   </head>
   <body>
     <!-- Modal that displays project overviews from Projects page -->
-    <div id="modal-background" class="hidden">
-      <div id="modal-body">
-        <button id="close" class="hidden">&times;</button>
+    <div id="project-modal-background" class="modal-background hidden">
+      <div id="project-modal-body" class="modal-body">
+        <button id="project-close" class="close hidden">&times;</button>
 
         <!-- NoBugs! overview -->
         <div id="nobugs-overview" class="project-overview">
@@ -382,10 +382,29 @@
         </div>
 
         <!-- Modal controls -->
-        <button id="previous" class="control hidden">
+        <button id="project-previous" class="control previous hidden">
           <span aria-hidden="true">&#60;</span>
         </button>
-        <button id="next" class="control hidden">
+        <button id="project-next" class="control next hidden">
+          <span aria-hidden="true">&#62;</span>
+        </button>
+
+      </div>
+    </div>
+
+    <!-- Modal that displays photos from Photos page -->
+    <div id="photo-modal-background" class="modal-background hidden">
+      <div id="photo-modal-body" class="modal-body">
+        <button id="photo-close" class="close hidden">&times;</button>
+
+        <!-- Image tag for larger photo to display -->
+        <img id="larger-photo">
+
+        <!-- Modal controls -->
+        <button id="photo-previous" class="control previous hidden">
+          <span aria-hidden="true">&#60;</span>
+        </button>
+        <button id="photo-next" class="control next hidden">
           <span aria-hidden="true">&#62;</span>
         </button>
 
@@ -550,7 +569,7 @@
         </div>
 
         <!-- Photos page -->
-        <div id="photos-page" class="page hidden fade">Coming soon!</div>
+        <div id="photos-page" class="page hidden fade"></div>
 
         <!-- Ideas page -->
         <div id="ideas-page" class="page hidden fade"></div>
@@ -629,6 +648,10 @@
                     <text class="text-small">Flask</text>
                     <i class="small-icon fontello-icon icon-aws">&#xe807;</i>
                     <text class="text-small">AWS/EC2</text>
+                    <i class="small-icon fontello-icon icon-aws">&#xe807;</i>
+                    <text class="text-small">AWS/S3</text>
+                    <i class="small-icon fontello-icon icon-aws">&#xe807;</i>
+                    <text class="text-small">Boto3</text>
                     <i class="small-icon fa fa-linux" aria-hidden="true"></i>
                     <text class="text-small">Linux</text>
                     <i class="small-icon fontello-icon icon-apache">&#xe800;</i>

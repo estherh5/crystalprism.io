@@ -1,7 +1,4 @@
 // Define global variables
-var profileLink = document.getElementById('profile-link');
-var accountLink = document.getElementById('account-link');
-var signInLink = document.getElementById('sign-in-link');
 var themeContainer = document.getElementById('theme-container');
 var themeText = document.getElementById('theme-text');
 var skyIcon = document.getElementById('sky-icon');
@@ -11,12 +8,7 @@ var selectedButton = navButtons[0]; // Button associated with current SPA page
 var previousPage = document.getElementById('splash-page'); // Last page selected
 var selectedPage = document.getElementById('splash-page'); // Current SPA page
 var projects = document.getElementsByClassName('project-listing');
-var modalBackground = document.getElementById('modal-background');
-var modalBody = document.getElementById('modal-body');
 var projectOverviews = document.getElementsByClassName('project-overview');
-var closeButton = document.getElementById('close');
-var nextButton = document.getElementById('next');
-var previousButton = document.getElementById('previous');
 var videoContainers = document.getElementsByClassName('video-container');
 var videos = document.getElementsByTagName('video');
 var parentSections = document.getElementsByClassName('expand-parent');
@@ -195,6 +187,11 @@ function togglePage() {
     selectedPage.classList.remove('hidden');
     selectedPage.classList.remove('fade');
 
+    // Load photos to Photos page if user toggles to this page
+    if (selectedPage.id == 'photos-page') {
+      loadPhotos();
+    }
+
     // Remove bold/color style of button for the previous page
     selectedButton.classList.remove('selected');
 
@@ -215,35 +212,54 @@ function togglePage() {
 
 // Open project modal when project is clicked from Projects page
 for (var i = 0; i < projects.length; i++) {
-  projects[i].addEventListener('click', openModal, false);
+  projects[i].addEventListener('click', function() {
+    openModal(this, 'project');
+    return;
+  }, false);
 }
 
-function openModal() {
+/* Open modal of passed type (e.g., 'project', 'photo') based on item (e.g.,
+project on Projects page) clicked */
+function openModal(item, type) {
   // Add grayscale style to elements behind modal
   document.getElementById('front-page-link').classList.add('grayscale');
   document.getElementById('nav-buttons').classList.add('grayscale');
-  document.getElementById('projects-page').classList.add('grayscale');
+  document.getElementById(type + 's-page').classList.add('grayscale');
 
   // Unhide modal and its control buttons
-  modalBackground.classList.remove('hidden');
-  closeButton.classList.remove('hidden');
-  previousButton.classList.remove('hidden');
-  nextButton.classList.remove('hidden');
-  modalBackground.classList.add('open');
-  modalBody.classList.add('open');
+  document.getElementById(type + '-modal-background').classList
+    .remove('hidden');
+  document.getElementById(type + '-close').classList.remove('hidden');
+  document.getElementById(type + '-previous').classList.remove('hidden');
+  document.getElementById(type + '-next').classList.remove('hidden');
+  document.getElementById(type + '-modal-background').classList.add('open');
+  document.getElementById(type + '-modal-body').classList.add('open');
 
   // Display project overview for the project the user clicked to open modal
-  document.getElementById(this.dataset.project + '-overview').classList
-    .add('open');
-  this.dataset.displayed = 'true';
+  if (type == 'project') {
+    document.getElementById(item.dataset.project + '-overview').classList
+      .add('open');
+    item.dataset.displayed = 'true';
+  }
+
+  /* Display larger version of photo for the photo the user clicked to open
+  modal */
+  if (type == 'photo') {
+    document.getElementById('larger-photo').classList.add('open');
+    document.getElementById('larger-photo').src = '#';
+    document.getElementById('larger-photo').src = item
+      .getElementsByTagName('img')[0].src.replace('-thumb.png', '.png');
+    item.dataset.displayed = 'true';
+  }
 
   return;
 }
 
 
-// Display next/previous project in modal when next/previous buttons are clicked
-nextButton.onclick = toggleProject;
-previousButton.onclick = toggleProject;
+/* Display next/previous project in project modal when next/previous buttons
+are clicked */
+document.getElementById('project-next').onclick = toggleProject;
+document.getElementById('project-previous').onclick = toggleProject;
 
 function toggleProject() {
   // Get index of and hide project currently being displayed
@@ -266,7 +282,7 @@ function toggleProject() {
     }
   }
 
-  if (this == nextButton) {
+  if (this.id == 'project-next') {
     /* If current project displayed is the last project in the list of projects,
     display first project when next button is clicked */
     if (currentProjectNumber == projects.length - 1) {
@@ -342,42 +358,128 @@ function resetVideoControl() {
 }
 
 
-// Close modal when modal background is clicked or when close button is clicked
-modalBackground.onclick = function(e) {
-  if (e.target == this) {
-    closeModal();
+/* Display next/previous photo in photo modal when next/previous buttons
+are clicked */
+document.getElementById('photo-next').onclick = togglePhoto;
+document.getElementById('photo-previous').onclick = togglePhoto;
+
+function togglePhoto() {
+  var photos = document.getElementsByClassName('photo-listing');
+
+  // Get index of and hide photo currently being displayed
+  for (var i = 0; i < photos.length; i++) {
+    if (photos[i] == document.querySelector('[data-displayed="true"]')) {
+      var currentPhotoNumber = i;
+      photos[i].dataset.displayed = 'false';
+      document.getElementById('larger-photo').classList.remove('open');
+      document.getElementById('larger-photo').src = '#';
+    }
   }
+
+  if (this.id == 'photo-next') {
+    /* If current photo displayed is the last photo in the list of photos,
+    display first photo when next button is clicked */
+    if (currentPhotoNumber == photos.length - 1) {
+      photos[0].dataset.displayed = 'true';
+      document.getElementById('larger-photo').src = photos[0]
+        .getElementsByTagName('img')[0].src.replace('-thumb.png', '.png');
+      document.getElementById('larger-photo').classList.add('open');
+      return;
+    }
+
+    // Display next photo (current index + 1) otherwise
+    photos[currentPhotoNumber + 1].dataset.displayed = 'true';
+    document.getElementById('larger-photo')
+      .src = photos[currentPhotoNumber + 1].getElementsByTagName('img')[0].src
+      .replace('-thumb.png', '.png');
+    document.getElementById('larger-photo').classList.add('open');
+    return;
+  }
+
+  /* If current photo displayed is the first photo in the list of photos,
+  display last photo when previous button is clicked */
+  if (currentPhotoNumber == 0) {
+    photos[photos.length - 1].dataset.displayed = 'true';
+    document.getElementById('larger-photo').src = photos[photos.length - 1]
+      .getElementsByTagName('img')[0].src.replace('-thumb.png', '.png');
+    document.getElementById('larger-photo').classList.add('open');
+    return;
+  }
+
+  // Display previous photo (current index - 1) otherwise
+  photos[currentPhotoNumber - 1].dataset.displayed = 'true';
+  document.getElementById('larger-photo').src = photos[currentPhotoNumber - 1]
+    .getElementsByTagName('img')[0].src.replace('-thumb.png', '.png');
+  document.getElementById('larger-photo').classList.add('open');
+
   return;
 }
 
-closeButton.onclick = closeModal;
 
-function closeModal() {
+// Close modal when modal background is clicked or when close button is clicked
+for (var i = 0; i < document.getElementsByClassName('modal-background').length;
+  i++) {
+    document.getElementsByClassName('modal-background')[i].addEventListener(
+      'click', function(e) {
+        if (e.target == this) {
+          closeModal(this.id.split('-')[0]);
+        }
+        return;
+      }, false);
+  }
+
+for (var i = 0; i < document.getElementsByClassName('close').length; i++) {
+  document.getElementsByClassName('close')[i].addEventListener('click',
+    function() {
+      closeModal(this.id.split('-')[0]);
+      return;
+    }, false);
+}
+
+function closeModal(type) {
   // Hide project being displayed in modal
-  for (var i = 0; i < projects.length; i++) {
-    if (projects[i].dataset.displayed == 'true') {
-      projects[i].dataset.displayed = 'false';
-      projectOverviews[i].classList.remove('open');
+  if (type == 'project') {
+    for (var i = 0; i < projects.length; i++) {
+      if (projects[i].dataset.displayed == 'true') {
+        projects[i].dataset.displayed = 'false';
+        projectOverviews[i].classList.remove('open');
+      }
+    }
+  }
+
+  // Hide photo being displayed in modal
+  if (type == 'photo') {
+    var photos = document.getElementsByClassName('photo-listing');
+
+    for (var i = 0; i < photos.length; i++) {
+      if (photos[i].dataset.displayed == 'true') {
+        photos[i].dataset.displayed = 'false';
+      }
+      document.getElementById('larger-photo').classList.remove('open');
+      document.getElementById('larger-photo').src = '#';
     }
   }
 
   // Remove grayscale style for elements behind modal
   document.getElementById('front-page-link').classList.remove('grayscale');
   document.getElementById('nav-buttons').classList.remove('grayscale');
-  document.getElementById('projects-page').classList.remove('grayscale');
+  document.getElementById(type + 's-page').classList.remove('grayscale');
 
   // Remove open class so modal fades out
-  modalBody.classList.remove('open');
-  modalBackground.classList.remove('open');
+  document.getElementById(type + '-modal-body').classList.remove('open');
+  document.getElementById(type + '-modal-background').classList.remove('open');
 
   // Hide modal from screen after fade out
-  modalBackground.addEventListener('transitionend', function hideModal() {
-    modalBackground.classList.add('hidden');
-    closeButton.classList.add('hidden');
-    previousButton.classList.add('hidden');
-    nextButton.classList.add('hidden');
-    modalBackground.removeEventListener('transitionend', hideModal, false);
-  }, false);
+  document.getElementById(type + '-modal-background')
+    .addEventListener('transitionend', function hideModal() {
+      document.getElementById(type + '-modal-background').classList
+        .add('hidden');
+      document.getElementById(type + '-close').classList.add('hidden');
+      document.getElementById(type + '-previous').classList.add('hidden');
+      document.getElementById(type + '-next').classList.add('hidden');
+      document.getElementById(type + '-modal-background')
+        .removeEventListener('transitionend', hideModal, false);
+    }, false);
 
   return;
 }
@@ -385,43 +487,131 @@ function closeModal() {
 
 // Define keyboard shortcuts for modal controls
 window.addEventListener('keydown', function(e) {
-  // Click next button when modal is open and right arrow is clicked
-  if (modalBackground.classList.contains('open') && e.key == 'ArrowRight') {
-    e.preventDefault();
-    nextButton.click();
-    return;
-  }
+  for (var i = 0; i < document.getElementsByClassName('modal-background')
+    .length; i++) {
+      // Click next button when modal is open and right arrow is clicked
+      if (document.getElementsByClassName('modal-background')[i].classList
+        .contains('open') && e.key == 'ArrowRight') {
+          e.preventDefault();
+          document.getElementById(document
+            .getElementsByClassName('modal-background')[i].id.split('-')[0] +
+            '-next').click();
+          return;
+        }
 
-  // Click previous button when modal is open and left arrow is clicked
-  else if (modalBackground.classList.contains('open')
-    && e.key == 'ArrowLeft') {
-    e.preventDefault();
-    previousButton.click();
-    return;
-  }
+      // Click previous button when modal is open and left arrow is clicked
+      else if (document.getElementsByClassName('modal-background')[i].classList
+        .contains('open') && e.key == 'ArrowLeft') {
+          e.preventDefault();
+          document.getElementById(document
+            .getElementsByClassName('modal-background')[i].id.split('-')[0] +
+            '-previous').click();
+          return;
+        }
 
-  /* Click displayed video to toggle video play state when modal is open and
-  space key is clicked */
-  else if (modalBackground.classList.contains('open') && e.keyCode == 32) {
-    e.preventDefault();
-    for (var i = 0; i < projectOverviews.length; i++) {
-      if (projectOverviews[i].classList.contains('open')) {
-        projectOverviews[i].getElementsByClassName('video-container')[0]
-          .click();
-      }
+      // Close modal when modal is open and escape key is clicked
+      else if (document.getElementsByClassName('modal-background')[i].classList
+        .contains('open') && e.keyCode == 27) {
+          e.preventDefault();
+          closeModal(document.getElementsByClassName('modal-background')[i].id
+            .split('-')[0]);
+          return;
+        }
+
+      else if (document.getElementsByClassName('modal-background')[i].classList
+        .contains('open') && e.keyCode == 32) {
+          e.preventDefault();
+
+          // Click next button when photo modal is open and space key is clicked
+          if (document.getElementsByClassName('modal-background')[i]
+            .id == 'photo-modal-background') {
+              document.getElementById(document
+                .getElementsByClassName('modal-background')[i].id
+                .split('-')[0] + '-next').click();
+              return;
+            }
+
+          /* Click displayed video to toggle video play state when project modal
+          is open and space key is clicked */
+          for (var j = 0; j < projectOverviews.length; j++) {
+            if (projectOverviews[j].classList.contains('open')) {
+              projectOverviews[j].getElementsByClassName('video-container')[0]
+                .click();
+            }
+          }
+          return;
+        }
     }
-    return;
-  }
-
-  // Close modal when modal is open and escape key is clicked
-  else if (modalBackground.classList.contains('open') && e.keyCode == 27) {
-    e.preventDefault();
-    closeModal();
-    return;
-  }
 
   return;
 }, false);
+
+
+// Load photos from Amazon S3 bucket to Photos page
+function loadPhotos() {
+  document.getElementById('photos-page').innerHTML = '';
+
+  return fetch(api + '/homepage/photos?start=0&end=20')
+
+    // Display error if server is down
+    .catch(function(error) {
+      var photosError = document.createElement('text');
+      photosError.id = 'photos-error';
+      photosError.innerHTML = 'There was an error loading the photos. ' +
+        'Please refresh the page.';
+      document.getElementById('photos-page').appendChild(photosError);
+      return;
+
+    }).then(function(response) {
+      if (response.ok) {
+        response.json().then(function(s3Photos) {
+          /* Add photo(s) to Photos page if there is at least one photo sent
+          from server */
+          if (s3Photos.length != 0) {
+            // Create container for photos list
+            var photosList = document.createElement('ul');
+            photosList.id = 'photos-list';
+            document.getElementById('photos-page').appendChild(photosList);
+
+            for (var i = 0; i < s3Photos.length; i++) {
+              if (s3Photos[i].includes('thumb')) {
+                // Create containers for photo
+                var photoContainer = document.createElement('li');
+                var photoListing = document.createElement('div');
+                photoListing.classList.add('photo-listing');
+                photoListing.dataset.displayed = 'false';
+
+                // Add photo to Photos page
+                var photo = document.createElement('img');
+                photo.classList.add('photo');
+                photo.src = s3Photos[i];
+                photoContainer.appendChild(photoListing);
+                photoListing.appendChild(photo);
+                photosList.appendChild(photoContainer);
+
+                // Open photo modal when photo is clicked from Photos page
+                photoListing.addEventListener('click', function() {
+                  openModal(this, 'photo');
+                  return;
+                }, false);
+
+              }
+            }
+          }
+        });
+
+        return;
+      }
+
+      // Display error message if server returned error
+      var photosError = document.createElement('text');
+      photosError.id = 'photos-error';
+      photosError.innerHTML = 'There are no photos right now. ' +
+        'Please check later.';
+      document.getElementById('photos-page').appendChild(photosError);
+      return;
+    });
+}
 
 
 // Load Thought Writer posts written by Esther to Ideas page
@@ -430,11 +620,11 @@ function loadPosts() {
 
     // Display error if server is down
     .catch(function(error) {
-      var errorMessage = document.createElement('text');
-      errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There was an error loading the Ideas posts. ' +
+      var ideasError = document.createElement('text');
+      ideasError.id = 'ideas-error';
+      ideasError.innerHTML = 'There was an error loading the Ideas posts. ' +
         'Please refresh the page.';
-      document.getElementById('ideas-page').appendChild(errorMessage);
+      document.getElementById('ideas-page').appendChild(ideasError);
       return;
 
     }).then(function(response) {
@@ -512,11 +702,11 @@ function loadPosts() {
       }
 
       // Display error message if server returned error
-      var errorMessage = document.createElement('text');
-      errorMessage.id = 'error-message';
-      errorMessage.innerHTML = 'There are no posts right now. ' +
+      var ideasError = document.createElement('text');
+      ideasError.id = 'ideas-error';
+      ideasError.innerHTML = 'There are no posts right now. ' +
         'Please check later.';
-      document.getElementById('ideas-page').appendChild(errorMessage);
+      document.getElementById('ideas-page').appendChild(ideasError);
       return;
     });
 }

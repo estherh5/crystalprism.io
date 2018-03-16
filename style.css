@@ -266,8 +266,15 @@ a:hover, button:hover {
 }
 
 .small-icon {
-  height: 8px;
-  color: #000000 !important;
+  height: 9px;
+}
+
+.fontello-icon {
+  font-family: 'logos';
+  font-style: normal;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .night-view text {
@@ -329,19 +336,11 @@ a:hover, button:hover {
   color: #000000 !important;
 }
 
-.fontello-icon {
-  font-family: 'logos';
-  font-style: normal;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .text-small {
   margin-right: 8px;
   font-family: 'Rajdhani', sans-serif;
   font-size: 10px;
-  line-height: 2;
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
 }
 

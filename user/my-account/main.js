@@ -110,6 +110,8 @@ window.onload = function() {
     loadPersonalInfo();
     loadDrawings();
     loadPosts();
+    loadScores('rhythm-of-life');
+    loadScores('shapes-in-rain');
     return;
   });
 
@@ -121,6 +123,10 @@ window.onload = function() {
 
   // Load user's posts from server
   loadPosts();
+
+  // Load user's game scores from server
+  loadScores('rhythm-of-life');
+  loadScores('shapes-in-rain');
 
   return;
 }
@@ -149,19 +155,6 @@ function loadPersonalInfo() {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   })
-
-    // If server is down, display error banners in Scores menu
-    .catch(function(error) {
-      rhythmLink.classList.add('hidden');
-      rhythmHeader.classList.add('hidden');
-      rhythmNoScores.classList.add('hidden');
-      rhythmError.classList.remove('hidden');
-      shapesLink.classList.add('hidden');
-      shapesHeader.classList.add('hidden');
-      shapesNoScores.classList.add('hidden');
-      shapesError.classList.remove('hidden');
-      return;
-    })
 
     .then(function(response) {
       if (response.ok) {
@@ -211,6 +204,49 @@ function loadPersonalInfo() {
 
         return;
       }
+    });
+}
+
+
+/* Load user's scores from server, specifying game ('rhythm-of-life' or
+'shapes-in-rain') */
+function loadScores(game) {
+  if (game == 'rhythm-of-life') {
+    scoresStart = rhythmScoresStart;
+    scoresEnd = rhythmScoresEnd;
+  } else {
+    scoresStart = shapesScoresStart;
+    scoresEnd = shapesScoresEnd;
+  }
+
+  return fetch(api + '/' + game + '/scores/' +
+    localStorage.getItem('username') + '?start=' + scoresStart + '&end=' +
+    scoresEnd, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
+    })
+
+    // If server is down, display error banners in Scores menu
+    .catch(function(error) {
+      rhythmLink.classList.add('hidden');
+      rhythmHeader.classList.add('hidden');
+      rhythmNoScores.classList.add('hidden');
+      rhythmError.classList.remove('hidden');
+      shapesLink.classList.add('hidden');
+      shapesHeader.classList.add('hidden');
+      shapesNoScores.classList.add('hidden');
+      shapesError.classList.remove('hidden');
+      return;
+    })
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(scores) {
+          // Display scores in scores area
+          displayScores(scores, game);
+        });
+        return;
+      }
 
       // If server responds with error, display error banners in Scores menu
       rhythmLink.classList.add('hidden');
@@ -227,14 +263,13 @@ function loadPersonalInfo() {
 }
 
 
-/* Display user's scores for passed game type (Rhythm of Life, Shapes in Rain)
-variable */
-function displayScores(game) {
-  // If game variable is for Rhythm of Life, set score variables as appropriate
-  if (game == 'rhythm') {
+// Display user's scores for passed game ('rhythm-of-life' or 'shapes-in-rain')
+function displayScores(scores, game) {
+  // If game is Rhythm of Life, set score variables as appropriate
+  if (game == 'rhythm-of-life') {
 
     // If there are no scores, display link to play Rhythm of Life game
-    if (rhythmScores.length == 0) {
+    if (scores.length == 0) {
       rhythmLink.classList.add('hidden');
       rhythmHeader.classList.add('hidden');
       rhythmError.classList.add('hidden');
@@ -244,7 +279,7 @@ function displayScores(game) {
 
     /* Otherwise, set displayed scores as scores array sliced to requested
     number of scores */
-    displayedScores = rhythmScores.slice(rhythmScoresStart, rhythmScoresEnd);
+    displayedScores = scores.slice(rhythmScoresStart, rhythmScoresEnd);
     var scoresStart = rhythmScoresStart;
     var scoresEnd = rhythmScoresEnd;
 
@@ -263,10 +298,10 @@ function displayScores(game) {
   }
 
   // If game variable is for Shapes in Rain, set score variables as appropriate
-  else if (game == 'shapes') {
+  else if (game == 'shapes-in-rain') {
 
     // If there are no scores, display link to play Shapes in Rain game
-    if (shapesScores.length == 0) {
+    if (scores.length == 0) {
       shapesLink.classList.add('hidden');
       shapesHeader.classList.add('hidden');
       shapesError.classList.add('hidden');
@@ -276,7 +311,7 @@ function displayScores(game) {
 
     /* Otherwise, set displayed scores as scores array sliced to requested
     number of scores */
-    displayedScores = shapesScores.slice(shapesScoresStart, shapesScoresEnd);
+    displayedScores = scores.slice(shapesScoresStart, shapesScoresEnd);
     var scoresStart = shapesScoresStart;
     var scoresEnd = shapesScoresEnd;
 
@@ -339,8 +374,17 @@ function displayScores(game) {
       scoreCol.classList.add('col-3');
 
       // If game is Rhythm of Life, display lifespan as score
-      if (game == 'rhythm') {
-        scoreCol.innerHTML = displayedScores[i].lifespan;
+      if (game == 'rhythm-of-life') {
+        var sec_num = displayedScores[i].score;
+        var score_hours = Math.floor(sec_num / 3600);
+        var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
+        var score_seconds = sec_num - (score_hours * 3600) -
+          (score_minutes * 60);
+        var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
+          ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
+          .slice(-2);
+
+        scoreCol.innerHTML = lifespan_value;
       }
 
       // Otherwise, display score
@@ -354,7 +398,7 @@ function displayScores(game) {
 
       /* Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
       HH:MM AM/PM' format */
-      scoreTimestampCol.innerHTML = moment(displayedScores[i].timestamp)
+      scoreTimestampCol.innerHTML = moment(displayedScores[i].created)
         .format('MM/DD/YYYY, LT');
       scoreData.appendChild(scoreRow);
       scoreRow.appendChild(starCol);
@@ -1054,7 +1098,7 @@ rhythmUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
     rhythmScoresStart = rhythmScoresStart - 10;
     rhythmScoresEnd = rhythmScoresEnd - 10;
-    displayScores('rhythm');
+    loadScores('rhythm-of-life');
   }
 
   return;
@@ -1067,7 +1111,7 @@ rhythmDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
     rhythmScoresStart = rhythmScoresStart + 10;
     rhythmScoresEnd = rhythmScoresEnd + 10;
-    displayScores('rhythm');
+    loadScores('rhythm-of-life');
   }
 
   return;
@@ -1080,7 +1124,7 @@ shapesUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
     shapesScoresStart = shapesScoresStart - 10;
     shapesScoresEnd = shapesScoresEnd - 10;
-    displayScores('shapes');
+    loadScores('shapes-in-rain');
   }
 
   return;
@@ -1093,7 +1137,7 @@ shapesDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
     shapesScoresStart = shapesScoresStart + 10;
     shapesScoresEnd = shapesScoresEnd + 10;
-    displayScores('shapes');
+    loadScores('shapes-in-rain');
   }
 
   return;

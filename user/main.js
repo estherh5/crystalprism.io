@@ -95,10 +95,19 @@ function loadPersonalInfo() {
             moment(info['created']).format('MM/DD/YYYY');
 
           // Display high scores for Rhythm of Life and Shapes in Rain
-          document.getElementById('rhythm-stat')
-            .innerHTML = info['rhythm_high_lifespan'];
           document.getElementById('shapes-stat')
             .innerHTML = info['shapes_high_score'];
+
+          // Display Rhythm lifespan from score
+          var sec_num = info['rhythm_high_score'];
+          var score_hours = Math.floor(sec_num / 3600);
+          var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
+          var score_seconds = sec_num - (score_hours * 3600) -
+            (score_minutes * 60);
+          var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
+            ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
+            .slice(-2);
+          document.getElementById('rhythm-stat').innerHTML = lifespan_value;
 
           // Hide any personal information fields that are blank
           for (var i = 0; i < document.getElementsByClassName('user-data')

@@ -267,6 +267,19 @@ a:hover, button:hover {
 
 .small-icon {
   height: 8px;
+  color: #000000 !important;
+}
+
+.skill > .small-icon {
+  color: #ffffff !important;
+}
+
+.night-view .small-icon {
+  color: #ffffff !important;
+}
+
+.night-view .skill > .small-icon {
+  color: #000000 !important;
 }
 
 .fontello-icon {

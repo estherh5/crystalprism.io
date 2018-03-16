@@ -501,7 +501,7 @@ function updateLikes() {
 
 // Load user's posts to profile post area from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/post-board/' + username + '?start=' +
+  return fetch(api + '/thought-writer/posts/' + username + '?start=' +
     postStart + '&end=' + postEnd)
 
     .then(function(response) {
@@ -537,20 +537,16 @@ function loadPosts() {
             var postContainer = document.createElement('div');
             postContainer.classList.add('post-container');
 
-            /* Set data-number attribute to track the post number for displaying
-            more posts later */
+            /* Set data-number attribute to track the post number for
+            displaying more posts later */
             postContainer.dataset.number = postStart + i;
 
             // Create container for post title
-            var postTitle = document.createElement('div');
+            var postTitle = document.createElement('a');
             postTitle.classList.add('post-title');
+            postTitle.href = '../thought-writer/post/?post=' + posts[i].post_id;
             postTitle.innerHTML = posts[i].title;
             postTitle.title = 'View post page';
-
-            /* Set data-writer and data-timestamp attributes to save in
-            sessionStorage when clicked */
-            postTitle.dataset.writer = username;
-            postTitle.dataset.timestamp = posts[i].timestamp;
 
             // Create container for post background
             var postBoard = document.createElement('div');
@@ -571,24 +567,22 @@ function loadPosts() {
 
             /* Convert UTC timestamp from server to local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
-            postTimestamp.innerHTML = moment(posts[i].timestamp)
+            postTimestamp.innerHTML = moment(posts[i].created)
               .format('MM/DD/YYYY, LT');
 
             // Create container for number of post comments
-            var postComments = document.createElement('div');
+            var postComments = document.createElement('a');
             postComments.classList.add('post-comments');
             postComments.title = 'View post comments';
+            postComments.href = '../thought-writer/post/?post=' +
+              posts[i].post_id + '#comments';
 
-            if (posts[i].comments.length == 1) {
-              postComments.innerHTML = posts[i].comments.length + ' comment';
+            if (posts[i].comment_count == 1) {
+              postComments.innerHTML = posts[i].comment_count + ' comment';
             } else {
-              postComments.innerHTML = posts[i].comments.length + ' comments';
+              postComments.innerHTML = posts[i].comment_count + ' comments';
             }
 
-            /* Set data-writer and data-timestamp attributes to save in
-            sessionStorage when clicked */
-            postComments.dataset.writer = username;
-            postComments.dataset.timestamp = posts[i].timestamp;
             postList.appendChild(postContainer);
             postContainer.appendChild(postTitle);
             postContainer.appendChild(postBoard);
@@ -596,26 +590,6 @@ function loadPosts() {
             postContainer.appendChild(postInfo);
             postInfo.appendChild(postTimestamp);
             postInfo.appendChild(postComments);
-
-            /* Set sessionStorage items when post title is clicked and go to
-            post page */
-            postTitle.onclick = function() {
-              sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('post-timestamp-public', this.dataset
-                .timestamp);
-              window.location = '../thought-writer/post/';
-              return;
-            }
-
-            /* Set sessionStorage items when post comment number is clicked and
-            go to post page's comments */
-            postComments.onclick = function() {
-              sessionStorage.setItem('writer', this.dataset.writer);
-              sessionStorage.setItem('post-timestamp-public', this.dataset
-                .timestamp);
-              window.location = '../thought-writer/post/#comments';
-              return;
-            }
           }
 
           /* If first post displayed in post area is not post 0 (i.e., there are

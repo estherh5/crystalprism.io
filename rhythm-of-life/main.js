@@ -768,14 +768,12 @@ function setHeartAttr() {
 function storeScore() {
   // Save score as time-based integer and lifespan in HH:MM:SS format
   var data = JSON.stringify({
-    'score': parseInt(hours * 3600 + minutes * 60 + seconds),
-    'lifespan': ('0' + hours).slice(-2) + ':' + ('0' + minutes)
-      .slice(-2) + ':' + ('0' + seconds).slice(-2),
+    'score': parseInt(hours * 3600 + minutes * 60 + seconds)
   });
 
-  return fetch(api + '/rhythm-of-life', {
+  return fetch(api + '/rhythm-of-life/score', {
     headers: {'Authorization': 'Bearer ' + localStorage
-    .getItem('token'), 'Content-Type': 'application/json'},
+      .getItem('token'), 'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
@@ -797,7 +795,7 @@ function storeScore() {
 // Display top 5 game leaders
 function displayLeaders() {
   // Request top 5 game leaders from server
-  return fetch(api + '/rhythm-of-life')
+  return fetch(api + '/rhythm-of-life/scores')
 
     // Display error message if server is down
     .catch(function(error) {
@@ -850,13 +848,22 @@ function displayLeaders() {
           }
 
           // Display lifespan in lifespan cell
-          lifespanCell.appendChild(document.createTextNode(leadersList[i]
-            .lifespan));
+          var sec_num = leadersList[i].score;
+          var score_hours = Math.floor(sec_num / 3600);
+          var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
+          var score_seconds = sec_num - (score_hours * 3600) -
+            (score_minutes * 60);
+          var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
+            ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
+            .slice(-2);
+
+          lifespanCell.appendChild(document.createTextNode(lifespan_value));
 
           // Display link to player's user profile in player cell
           var userLink = document.createElement('a');
-          userLink.href = '../user/?username=' + leadersList[i].player;
-          userLink.appendChild(document.createTextNode(leadersList[i].player));
+          userLink.href = '../user/?username=' + leadersList[i].username;
+          userLink.appendChild(
+            document.createTextNode(leadersList[i].username));
           playerCell.appendChild(userLink);
         }
       });

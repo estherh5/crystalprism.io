@@ -181,7 +181,7 @@ function checkIfLoggedIn() {
         }
       }
 
-    return;
+    return false;
   }
 
   /* Otherwise, check if the user is logged in by sending their token to the

@@ -814,6 +814,11 @@ label.editing {
   background-color: #b2e389;
 }
 
+#scores-menu .col-1 {
+  padding: 0px !important;
+  text-align: right;
+}
+
 .arrow-container {
   width: min-content;
   width: -moz-min-content;
@@ -840,9 +845,19 @@ label.editing {
   text-align: center;
 }
 
+.score-area .row {
+  position: relative;
+  margin-top: 5px;
+  margin-bottom: 5px;
+}
+
 #rhythm-link, #rhythm-error a, #rhythm-no-scores a {
   font-family: 'Tangerine', cursive;
   font-size: 24px;
+}
+
+#rhythm-link, #shapes-link {
+  height: 35px;
 }
 
 .header {
@@ -851,11 +866,6 @@ label.editing {
 
 #rhythm-error, #rhythm-no-scores, #shapes-error, #shapes-no-scores {
   font-size: 24px;
-}
-
-.score-area .row {
-  margin-top: 5px;
-  margin-bottom: 5px;
 }
 
 #shapes-link, #shapes-error a, #shapes-no-scores a {
@@ -1051,13 +1061,17 @@ label.editing {
     font-size: 18px;
   }
 
+  .score-area .row {
+    margin-top: 0px;
+    margin-bottom: 0px;
+  }
+
   #rhythm-link, #rhythm-error a, #rhythm-no-scores a {
     font-size: 31px;
   }
 
-  .score-area .row {
-    margin-top: 0px;
-    margin-bottom: 0px;
+  #rhythm-link, #shapes-link {
+    height: 47px;
   }
 
   #shapes-link, #shapes-error a, #shapes-no-scores a {

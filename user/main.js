@@ -174,7 +174,7 @@ function updateFontColors(color) {
 
 // Load profile user's drawings to profile gallery from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/gallery/' + username + '?start=' +
+  return fetch(api + '/canvashare/drawings/' + username + '?start=' +
     drawingStart + '&end=' + drawingEnd)
 
     .then(function(response) {
@@ -217,18 +217,20 @@ function loadDrawings() {
             // Create container for drawing title
             var drawingTitle = document.createElement('div');
             drawingTitle.classList.add('drawing-title');
-
-            /* Set data-drawing attribute as drawing file name for later
-            identification */
-            drawingTitle.dataset.drawing = drawings[i];
+            drawingTitle.innerHTML = drawings[i]['title'];
 
             // Create drawing image
             var drawing = document.createElement('img');
             drawing.classList.add('drawing');
-            drawing.src = api + '/canvashare/drawing/' + drawings[i];
+            drawing.src = drawings[i]['url'];
             drawing.title = 'View drawing';
 
-            // Create container for drawing artist and number of likes and views
+            /* Set data-drawing attribute as drawing id for later
+            identification */
+            drawing.dataset.drawing = drawings[i]['drawing_id'];
+
+            /* Create container for drawing artist and number of likes and
+            views */
             var drawingInfo = document.createElement('div');
             drawingInfo.classList.add('drawing-info');
 
@@ -237,16 +239,16 @@ function loadDrawings() {
             drawingLikes.classList.add('drawing-likes');
             drawingLikes.title = 'Likes';
 
-            /* Set data-drawing attribute as drawing file name for later
-            identification */
-            drawingLikes.dataset.drawing = drawings[i];
-
             // Create text to display number of likes
             var likeText = document.createElement('text');
+            likeText.innerHTML = drawings[i]['like_count'];
 
-            /* Set data-drawing attribute as drawing file name for later
+            /* Set data-drawing attribute as drawing id for later
             identification */
-            likeText.dataset.drawing = drawings[i];
+            likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
+
+            // Set likers to list of users who liked drawing
+            var likers = drawings[i]['likers'];
 
             // Create drawing views container
             var drawingViews = document.createElement('div');
@@ -260,10 +262,12 @@ function loadDrawings() {
 
             // Create text to display number of views
             var viewText = document.createElement('text');
+            viewText.innerHTML = drawings[i]['views'];
 
-            /* Set data-drawing attribute as drawing file name for later
+            /* Set data-drawing attribute as drawing id for later
             identification */
-            viewText.dataset.drawing = drawings[i];
+            viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
+
             gallery.appendChild(drawingContainer);
             drawingContainer.appendChild(drawingTitle);
             drawingContainer.appendChild(drawing);
@@ -276,22 +280,22 @@ function loadDrawings() {
 
             // Update number of views when user clicks drawing title or drawing
             drawingTitle.onclick = function() {
-              updateViews(this.nextSibling.src);
+              updateViews(this.nextSibling);
               return;
             }
 
             drawing.onclick = function() {
-              updateViews(this.src);
+              updateViews(this);
               return;
             }
 
-            // Fill in drawing title, views, and likes
-            getDrawingInfo(drawings[i]);
+            // Display drawing like hearts
+            displayDrawingLikes(drawings[i]['drawing_id'], likers);
           }
 
-          /* If first drawing displayed in gallery is not drawing 0 (i.e., there
-          are lower-numbered drawings to display), display left navigation
-          arrow */
+          /* If first drawing displayed in gallery is not drawing 0 (i.e.,
+          there are lower-numbered drawings to display), display left
+          navigation arrow */
           if (gallery.getElementsByClassName('drawing-container')[0].dataset
             .number != 0) {
               document.getElementById('drawing-left-arrow').classList
@@ -329,68 +333,54 @@ function loadDrawings() {
 }
 
 
-// Get title and number of views and likes for passed drawing file
-function getDrawingInfo(drawingFile) {
-  var filename = drawingFile.split('.png')[0];
+// Display drawing like hearts for passed drawing
+function displayDrawingLikes(drawingId, likers) {
+  // Get likes text that has data-drawing attribute set as drawing id
+  var likeText = document
+    .querySelectorAll('[data-drawing="likes' + drawingId + '"]')[0];
 
-  return fetch(api + '/canvashare/drawing-info/' + filename)
-    .then(function(response) {
-      response.json().then(function(drawingInfo) {
+  // Check if user liked drawing if user is logged in
+  if (checkIfLoggedIn()) {
+    /* If current user liked the drawing, display a filled-in red heart in
+    likes container */
+    for (var i = 0; i < likers.length; i++) {
 
-        // Get elements that have data-drawing attribute set as file name
-        var fileElements = document
-          .querySelectorAll('[data-drawing="' + drawingFile + '"]');
-
-        // Set title and number of likes and views for drawing
-        fileElements[0].innerHTML = drawingInfo['title'];
-        fileElements[2].innerHTML = drawingInfo['likes'];
-        fileElements[3].innerHTML = drawingInfo['views'];
-
-        /* If current user liked the drawing, display a filled-in red heart in
-        likes container */
-        if (drawingInfo['liked_users'].includes(localStorage
-          .getItem('username'))) {
-            var likedHeart = document.createElement('i');
-            likedHeart.classList.add('fa');
-            likedHeart.classList.add('fa-heart');
-            fileElements[1].insertBefore(likedHeart, fileElements[1]
-              .firstChild);
-            // Update like count when user clicks heart
-            likedHeart.onclick = updateLikes;
-            return;
-          }
-
-        // Otherwise, display an empty heart outline
-        var unlikedHeart = document.createElement('i');
-        unlikedHeart.classList.add('fa');
-        unlikedHeart.classList.add('fa-heart-o');
-        fileElements[1].insertBefore(unlikedHeart, fileElements[1].firstChild);
+      if (likers[i]['username'] == localStorage.getItem('username')) {
+        var likedHeart = document.createElement('i');
+        likedHeart.classList.add('fa');
+        likedHeart.classList.add('fa-heart');
+        likedHeart.dataset.drawinglike = likers[i]['drawing_like_id'];
+        likedHeart.dataset.drawing = drawingId;
+        likeText.parentNode.insertBefore(likedHeart, likeText);
 
         // Update like count when user clicks heart
-        unlikedHeart.onclick = updateLikes;
+        likedHeart.onclick = updateLikes;
 
         return;
-      });
-    });
+      }
+
+    }
+  }
+
+  // Otherwise, display an empty heart outline
+  var unlikedHeart = document.createElement('i');
+  unlikedHeart.classList.add('fa');
+  unlikedHeart.classList.add('fa-heart-o');
+  likeText.parentNode.insertBefore(unlikedHeart, likeText);
+  unlikedHeart.dataset.drawing = drawingId;
+
+  // Update like count when user clicks heart
+  unlikedHeart.onclick = updateLikes;
+
+  return;
 }
 
 
 // Update passed drawing's view count
-function updateViews(drawingSource) {
-  /* Set sessionStorage items for drawing's source, used to populate easel on
-  redirected webpage */
-  sessionStorage.setItem('drawing-source', drawingSource);
-
-  // Send request to server to update view count
-  var data = JSON.stringify({'request': 'view'});
-  var filename = drawingSource.split('/canvashare/drawing/')[1]
-    .split('.png')[0];
-
-  return fetch(api + '/canvashare/drawing-info/' + filename, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+function updateViews(drawing) {
+  return fetch(api + '/canvashare/drawing/' + drawing.dataset.drawing, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',
-    body: data,
   })
 
     // Display error message if server is down
@@ -403,10 +393,11 @@ function updateViews(drawingSource) {
     .then(function(response) {
       if (response.ok) {
         var viewText = document
-          .querySelectorAll('[data-drawing="' + drawingSource
-          .split('/canvashare/drawing/')[1] + '"]')[3];
+          .querySelectorAll('[data-drawing="views' + drawing.dataset.drawing +
+          '"]')[0];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = '../canvashare/easel/';
+        window.location = '../canvashare/easel/?drawing=' + drawing.dataset
+          .drawing;
         return;
       }
 
@@ -416,6 +407,7 @@ function updateViews(drawingSource) {
       return;
     });
 }
+
 
 // Update drawing's like count
 function updateLikes() {
@@ -431,54 +423,50 @@ function updateLikes() {
     return;
   }, false);
 
-  // Define filename for fetch request
-  var filename = heart.nextSibling.dataset.drawing.split('.png')[0];
-
-  // If heart is already filled in, decrease drawing like count
+  /* If heart is already filled in, delete drawing like and decrease drawing
+  like count */
   if (this.classList.contains('fa-heart')) {
 
-    // Send request to server to decrease like count
-    var data = JSON.stringify({'request': 'unlike'});
-
-    return fetch(api + '/canvashare/drawing-info/' + filename, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
-      method: 'PATCH',
-      body: data,
-    })
-
-      // Display error message if server is down
-      .catch(function(error) {
-        window.alert('Your like did not go through. Please try again soon.');
-        return;
+    return fetch(api + '/canvashare/drawing-like/' + this.dataset
+      .drawinglike, {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json'},
+        method: 'DELETE'
       })
 
-      /* If server responds without error, remove heart fill and decrease like
-      count user sees */
-      .then(function(response) {
-        if (response.ok) {
-          var likeText = heart.nextSibling;
-          var currentLikes = likeText.innerHTML;
-          heart.classList.remove('fa-heart');
-          heart.classList.add('fa-heart-o');
-          likeText.innerHTML = parseInt(currentLikes) - 1;
+        // Display error message if server is down
+        .catch(function(error) {
+          window.alert('Your like did not go through. Please try again soon.');
           return;
-        }
+        })
 
-        // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
+        /* If server responds without error, remove heart fill and decrease like
+        count user sees */
+        .then(function(response) {
+          if (response.ok) {
+            var likeText = heart.nextSibling;
+            var currentLikes = likeText.innerHTML;
+            heart.classList.remove('fa-heart');
+            heart.classList.add('fa-heart-o');
+            delete heart.dataset.drawinglike;
+            likeText.innerHTML = parseInt(currentLikes) - 1;
+            return;
+          }
 
-        return;
-      });
+          // Otherwise, display error message
+          window.alert('You must log in to like a drawing.');
+
+          return;
+        });
   }
 
   // Otherwise, send request to server to increase like count
-  var data = JSON.stringify({'request': 'like'});
+  var data = JSON.stringify({'drawing_id': this.dataset.drawing});
 
-  return fetch(api + '/canvashare/drawing-info/' + filename, {
+  return fetch(api + '/canvashare/drawing-like', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
-    method: 'PATCH',
+    method: 'POST',
     body: data,
   })
 
@@ -492,11 +480,14 @@ function updateLikes() {
     user sees */
     .then(function(response) {
       if (response.ok) {
-        var likeText = heart.nextSibling;
-        var currentLikes = likeText.innerHTML;
-        likeText.innerHTML = parseInt(currentLikes) + 1;
-        heart.classList.remove('fa-heart-o');
-        heart.classList.add('fa-heart');
+        response.text().then(function(drawingLikeId) {
+          var likeText = heart.nextSibling;
+          var currentLikes = likeText.innerHTML;
+          likeText.innerHTML = parseInt(currentLikes) + 1;
+          heart.classList.remove('fa-heart-o');
+          heart.classList.add('fa-heart');
+          heart.dataset.drawinglike = drawingLikeId;
+        });
         return;
       }
 

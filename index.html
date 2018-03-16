@@ -33,6 +33,67 @@
       <div id="project-modal-body" class="modal-body">
         <button id="project-close" class="close hidden">&times;</button>
 
+        <!-- User accounts overview -->
+        <div id="user-overview" class="project-overview">
+          <a class="modal-project-title" href="user/create-account/">
+            <img class="project-icon-large" src="images/homepage.png">
+            <h2>User Accounts</h2>
+          </a>
+          <!-- User accounts repo -->
+          <a class="github-repo" href="https://github.com/estherh5/estherh5.github.io/tree/master/user" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fab fa-github" aria-hidden="true"></i>
+            <text>GitHub Repository: Sept 2017 - Present</text>
+          </a>
+          <!-- User accounts skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fab fa-html5" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-css3" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-javascript-plain"></i>
+              <text class="text-small">&nbsp;JavaScript</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;Python</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fontello-icon icon-flask">&#xe803;</i>
+              <text class="text-small">&nbsp;Flask</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-amazonwebservices-original"></i>
+              <text class="text-small">&nbsp;AWS/EC2</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-linux" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;Linux</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fontello-icon icon-apache">&#xe800;</i>
+              <text class="text-small">&nbsp;Apache</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-postgresql-plain colored"></i>
+              <text class="text-small">&nbsp;PostgreSQL</text>
+            </div>
+          </div>
+          <!-- User accounts video -->
+          <div class="video-container" data-project="user">
+            <video id="user-video" src="videos/user.mp4" type="video/mp4" preload="metadata" data-project="user"></video>
+            <i id="user-control" class="fas fa-play" aria-hidden="true"></i>
+          </div>
+          <!-- User accounts description -->
+          <text>
+            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for their profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings).
+          </text>
+        </div>
+
         <!-- NoBugs! overview -->
         <div id="nobugs-overview" class="project-overview">
           <a class="modal-project-title" href="https://nobugsphilly.com">
@@ -512,6 +573,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- User accounts image and icon -->
+            <li>
+              <div class="project-listing" data-project="user" data-displayed="false">
+                <img class="project-image" src="images/user.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img class="project-icon" src="images/homepage.png">
+                  </div>
+                </span>
+                <span class="project-title">User Accounts</span>
+              </div>
+            </li>
             <!-- NoBugs! image and icon -->
             <li>
               <div class="project-listing" data-project="nobugs" data-displayed="false">

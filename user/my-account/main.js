@@ -820,194 +820,180 @@ function updateLikes() {
 
 // Load user's posts from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/post-board/' +
+  return fetch(api + '/thought-writer/posts/' +
     localStorage.getItem('username') + '?start=' +
     postStart + '&end=' + postEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
 
-    // If server is down, clear post area and hide navigation arrows
-    .catch(function(error) {
-      postList.innerHTML = '';
-      postLeftArrow.classList.remove('display');
-      postRightArrow.classList.remove('display');
-
-      // Display error banner with Thought Writer link
-      twErrorLink.classList.remove('hidden');
-      twEditorLink.classList.add('hidden');
-      return;
-    })
-
-    .then(function(response) {
-      /* If there are no posts sent from server, clear post area and hide
-      navigation arrows */
-      if (response.status == 404) {
+      // If server is down, clear post area and hide navigation arrows
+      .catch(function(error) {
         postList.innerHTML = '';
         postLeftArrow.classList.remove('display');
         postRightArrow.classList.remove('display');
 
-        // Display Thought Writer link to create posts
-        twErrorLink.classList.add('hidden');
-        twEditorLink.classList.remove('hidden');
-
+        // Display error banner with Thought Writer link
+        twErrorLink.classList.remove('hidden');
+        twEditorLink.classList.add('hidden');
         return;
-      }
+      })
 
-      // Otherwise, if server sends posts, display them
-      if (response.status == 200) {
-        response.json().then(function(posts) {
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(posts) {
 
-          // Clear post area to display new posts from server
-          postList.innerHTML = '';
-          twErrorLink.classList.add('hidden');
-          twEditorLink.classList.add('hidden');
+            /* If there are no posts sent from server, clear post area and hide
+            navigation arrows */
+            if (posts.length == 0) {
+              postList.innerHTML = '';
+              postLeftArrow.classList.remove('display');
+              postRightArrow.classList.remove('display');
 
-          /* Assess if there are more than requested posts - 1 (number of loaded
-          posts) on server */
-          if (posts.length > (postEnd - postStart - 1)) {
-            morePostsExist = true;
-            postsLoadNumber = postEnd - postStart - 1;
-          }
+              // Display Thought Writer link to create posts
+              twErrorLink.classList.add('hidden');
+              twEditorLink.classList.remove('hidden');
 
-          // If there are not, load all posts sent from server
-          else {
-            morePostsExist = false;
-            postsLoadNumber = posts.length;
-          }
-
-          for (var i = 0; i < postsLoadNumber; i++) {
-            // Create container for post and its components
-            var postContainer = document.createElement('div');
-            postContainer.classList.add('post-container');
-
-            /* Set data-number attribute to track the post number for displaying
-            more posts later */
-            postContainer.dataset.number = postStart + i;
-
-            // Create container for post title
-            var postTitle = document.createElement('div');
-            postTitle.classList.add('post-title');
-            postTitle.innerHTML = posts[i].title;
-            postTitle.title = 'Edit post';
-
-            /* Set data-timestamp attribute to save in sessionStorage when
-            clicked */
-            postTitle.dataset.timestamp = posts[i].timestamp;
-
-            // Create container for post background
-            var postBoard = document.createElement('div');
-            postBoard.classList.add('post-board');
-
-            // Create container with post content
-            var postContent = document.createElement('div');
-            postContent.classList.add('post-content');
-            postContent.innerHTML = posts[i].content;
-
-            // Create container for post timestamp and comment number
-            var postInfo = document.createElement('div');
-            postInfo.classList.add('post-info');
-
-            // Create container for post timestamp
-            var postTimestamp = document.createElement('div');
-            postTimestamp.classList.add('post-time');
-
-            /* Convert UTC timestamp from server to local timestamp in
-            'MM/DD/YYYY, HH:MM AM/PM' format */
-            postTimestamp.innerHTML = moment(posts[i].timestamp)
-              .format('MM/DD/YYYY, LT');
-
-            // Create container for number of post comments if post is public
-            if (posts[i].public) {
-              var postComments = document.createElement('div');
-              postComments.classList.add('post-comments');
-              postComments.title = 'View post comments';
-
-              if (posts[i].comments.length == 1) {
-                postComments.innerHTML = posts[i].comments.length + ' comment';
-              } else {
-                postComments.innerHTML = posts[i].comments.length + ' comments';
-              }
-
-              /* Set data-writer and data-timestamp attributes to save in
-              sessionStorage when clicked */
-              postComments.dataset.writer = localStorage.getItem('username');
-              postComments.dataset.timestamp = posts[i].timestamp;
-
-              /* Set sessionStorage items when post comment number is clicked
-              and go to post page's comments */
-              postComments.onclick = function() {
-                sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('post-timestamp-public', this.dataset
-                  .timestamp);
-                window.location = '../../thought-writer/post/#comments';
-                return;
-              }
-            }
-
-            // Otherwise, display post as private
-            else {
-              var postComments = document.createElement('div');
-              postComments.innerHTML = 'Private post';
-            }
-
-            postList.appendChild(postContainer);
-            postContainer.appendChild(postTitle);
-            postContainer.appendChild(postBoard);
-            postBoard.appendChild(postContent);
-            postContainer.appendChild(postInfo);
-            postInfo.appendChild(postTimestamp);
-            postInfo.appendChild(postComments);
-
-            /* Set sessionStorage timestamp item when post title is clicked and
-            go to editor page */
-            postTitle.onclick = function() {
-              sessionStorage.setItem('post-timestamp-private', this.dataset
-                .timestamp);
-              window.location = '../../thought-writer/editor/';
               return;
             }
-          }
 
-          /* If first post displayed in post area is not post 0 (i.e., there are
-          lower-numbered posts to display), display left navigation arrow */
-          if (postList.getElementsByClassName('post-container')[0].dataset
-            .number != 0) {
-              postLeftArrow.classList.add('display');
+            // Otherwise, clear post area to display new posts from server
+            postList.innerHTML = '';
+            twErrorLink.classList.add('hidden');
+            twEditorLink.classList.add('hidden');
+
+            /* Assess if there are more than requested posts - 1 (number of
+            loaded posts) on server */
+            if (posts.length > (postEnd - postStart - 1)) {
+              morePostsExist = true;
+              postsLoadNumber = postEnd - postStart - 1;
             }
 
-          // Otherwise, hide left arrow
-          else {
-            postLeftArrow.classList.remove('display');
-          }
+            // If there are not, load all posts sent from server
+            else {
+              morePostsExist = false;
+              postsLoadNumber = posts.length;
+            }
 
-          /* If there are more posts on the server, display right navigation
-          arrow */
-          if (morePostsExist) {
-            postRightArrow.classList.add('display');
-          }
+            for (var i = 0; i < postsLoadNumber; i++) {
+              // Create container for post and its components
+              var postContainer = document.createElement('div');
+              postContainer.classList.add('post-container');
 
-          // Otherwise, hide right arrow
-          else {
-            postRightArrow.classList.remove('display');
-          }
-        });
+              /* Set data-number attribute to track the post number for
+              displaying more posts later */
+              postContainer.dataset.number = postStart + i;
+
+              // Create container for post title
+              var postTitle = document.createElement('div');
+              postTitle.classList.add('post-title');
+              postTitle.innerHTML = posts[i].title;
+              postTitle.title = 'Edit post';
+
+              /* Set data-postid attribute to save in sessionStorage when
+              clicked */
+              postTitle.dataset.postid = posts[i].post_id;
+
+              /* Set sessionStorage post-id item when post title is clicked and
+              go to editor page */
+              postTitle.onclick = function() {
+                sessionStorage.setItem('post-id', this.dataset.postid);
+                window.location = '../../thought-writer/editor/';
+                return;
+              }
+
+              // Create container for post background
+              var postBoard = document.createElement('div');
+              postBoard.classList.add('post-board');
+
+              // Create container with post content
+              var postContent = document.createElement('div');
+              postContent.classList.add('post-content');
+              postContent.innerHTML = posts[i].content;
+
+              // Create container for post timestamp and comment number
+              var postInfo = document.createElement('div');
+              postInfo.classList.add('post-info');
+
+              // Create container for post timestamp
+              var postTimestamp = document.createElement('div');
+              postTimestamp.classList.add('post-time');
+
+              /* Convert UTC timestamp from server to local timestamp in
+              'MM/DD/YYYY, HH:MM AM/PM' format */
+              postTimestamp.innerHTML = moment(posts[i].created)
+                .format('MM/DD/YYYY, LT');
+
+              // Create container for number of post comments if post is public
+              if (posts[i].public) {
+                var postComments = document.createElement('a');
+                postComments.classList.add('post-comments');
+                postComments.title = 'View post comments';
+                postComments.href = '../../thought-writer/post/?post=' +
+                  posts[i].post_id + '#comments';
+
+                if (posts[i].comment_count == 1) {
+                  postComments.innerHTML = posts[i].comment_count + ' comment';
+                } else {
+                  postComments.innerHTML = posts[i].comment_count + ' comments';
+                }
+              }
+
+              // Otherwise, display post as private
+              else {
+                var postComments = document.createElement('div');
+                postComments.innerHTML = 'Private post';
+              }
+
+              postList.appendChild(postContainer);
+              postContainer.appendChild(postTitle);
+              postContainer.appendChild(postBoard);
+              postBoard.appendChild(postContent);
+              postContainer.appendChild(postInfo);
+              postInfo.appendChild(postTimestamp);
+              postInfo.appendChild(postComments);
+            }
+
+            /* If first post displayed in post area is not post 0 (i.e., there
+            are lower-numbered posts to display), display left navigation
+            arrow */
+            if (postList.getElementsByClassName('post-container')[0].dataset
+              .number != 0) {
+                postLeftArrow.classList.add('display');
+              }
+
+            // Otherwise, hide left arrow
+            else {
+              postLeftArrow.classList.remove('display');
+            }
+
+            /* If there are more posts on the server, display right navigation
+            arrow */
+            if (morePostsExist) {
+              postRightArrow.classList.add('display');
+            }
+
+            // Otherwise, hide right arrow
+            else {
+              postRightArrow.classList.remove('display');
+            }
+          });
+
+          return;
+        }
+
+        /* Otherwise, if server responds with other error, clear post area and
+        hide navigation arrows */
+        postList.innerHTML = '';
+        postLeftArrow.classList.remove('display');
+        postRightArrow.classList.remove('display');
+
+        // Display error banner with Thought Writer link
+        twErrorLink.classList.remove('hidden');
+        twEditorLink.classList.add('hidden');
 
         return;
-      }
-
-      /* Otherwise, if server responds with other error, clear post area and
-      hide navigation arrows */
-      postList.innerHTML = '';
-      postLeftArrow.classList.remove('display');
-      postRightArrow.classList.remove('display');
-
-      // Display error banner with Thought Writer link
-      twErrorLink.classList.remove('hidden');
-      twEditorLink.classList.add('hidden');
-
-      return;
-    });
+      });
 }
 
 
@@ -1161,8 +1147,8 @@ drawingRightArrow.onclick = function() {
 }
 
 
-// Request lower-numbered posts from server if left arrow is clicked in Posts
-// menu
+/* Request lower-numbered posts from server if left arrow is clicked in Posts
+menu */
 postLeftArrow.onclick = function() {
   if (this.classList.contains('display')) {
     postStart = postStart - 6;
@@ -1174,8 +1160,8 @@ postLeftArrow.onclick = function() {
 }
 
 
-// Request higher-numbered posts from server if right arrow is clicked in Posts
-// menu
+/* Request higher-numbered posts from server if right arrow is clicked in Posts
+menu */
 postRightArrow.onclick = function() {
   if (this.classList.contains('display')) {
     postStart = postStart + 6;

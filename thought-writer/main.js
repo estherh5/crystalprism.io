@@ -33,7 +33,7 @@ window.onload = function() {
 
 // Load posts to post board from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/post-board' + '?start=' + requestStart +
+  return fetch(api + '/thought-writer/posts' + '?start=' + requestStart +
     '&end=' + requestEnd)
 
     /* Display error message if server is down and error isn't already displayed
@@ -75,21 +75,18 @@ function loadPosts() {
               postContainer.classList.add('post-container');
 
               // Create container for post title
-              var postTitle = document.createElement('div');
+              var postTitle = document.createElement('a');
               postTitle.classList.add('post-title');
               postTitle.innerHTML = posts[i].title;
-
-              /* Set data-writer and data-timestamp attributes to save in
-              sessionStorage when clicked */
-              postTitle.dataset.writer = posts[i].writer;
-              postTitle.dataset.timestamp = posts[i].timestamp;
+              postTitle.href = 'post/?post=' + posts[i].post_id;
 
               // Create container with post content
               var postContent = document.createElement('div');
               postContent.classList.add('post-content');
               postContent.innerHTML = posts[i].content;
 
-              // Create container for post timestamp, comment number, and writer
+              /* Create container for post timestamp, comment number, and
+              writer */
               var postInfo = document.createElement('div');
               postInfo.classList.add('post-info');
 
@@ -98,29 +95,25 @@ function loadPosts() {
 
               /* Convert UTC timestamp from server to local timestamp in
               'MM/DD/YYYY, HH:MM AM/PM' format */
-              postTimestamp.innerHTML = moment(posts[i].timestamp)
+              postTimestamp.innerHTML = moment(posts[i].created)
                 .format('MM/DD/YYYY, LT');
 
               // Create container for number of post comments
-              var postComments = document.createElement('div');
+              var postComments = document.createElement('a');
               postComments.classList.add('post-comments');
+              postComments.href = 'post/?post=' + posts[i]
+                .post_id + '#comments';
 
-              if (posts[i].comments.length == 1) {
-                postComments.innerHTML = posts[i].comments.length + ' comment';
+              if (posts[i].comment_count == 1) {
+                postComments.innerHTML = posts[i].comment_count + ' comment';
               } else {
-                postComments.innerHTML = posts[i].comments.length + ' comments';
+                postComments.innerHTML = posts[i].comment_count + ' comments';
               }
-
-              /* Set data-writer and data-timestamp attributes to save in
-              sessionStorage when clicked */
-              postComments.dataset.writer = posts[i].writer;
-              postComments.dataset.timestamp = posts[i].timestamp;
 
               // Create container for post writer with link to profile
               var postWriter = document.createElement('a');
-              postWriter.href = '../user/?username=' + posts[i]
-                .writer;
-              postWriter.innerHTML = posts[i].writer;
+              postWriter.href = '../user/?username=' + posts[i].username;
+              postWriter.innerHTML = posts[i].username;
               postBoard.appendChild(postContainer);
               postContainer.appendChild(postTitle);
               postContainer.appendChild(postContent);
@@ -128,26 +121,6 @@ function loadPosts() {
               postInfo.appendChild(postTimestamp);
               postInfo.appendChild(postComments);
               postInfo.appendChild(postWriter);
-
-              /* Set sessionStorage items when post title is clicked and go to
-              post page */
-              postTitle.onclick = function() {
-                sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('post-timestamp-public', this.dataset
-                  .timestamp);
-                window.location = 'post/';
-                return;
-              }
-
-              /* Set sessionStorage items when post comment number is clicked
-              and go to post page's comments */
-              postComments.onclick = function() {
-                sessionStorage.setItem('writer', this.dataset.writer);
-                sessionStorage.setItem('post-timestamp-public', this.dataset
-                  .timestamp);
-                window.location = 'post/#comments';
-                return;
-              }
             }
           }
 

@@ -1,4 +1,5 @@
 // Define global variables
+var postId = window.location.search.split('post=')[1];
 var errorMessage = null;
 var postWriter = document.getElementById('post-writer');
 
@@ -36,61 +37,89 @@ function loadPost() {
   var comments = document.getElementById('comments');
   var commentCount = document.getElementById('comment-count');
 
-  // Request post based on items stored in sessionStorage
-  var postPath = sessionStorage.getItem('writer') + '/' +
-    encodeURIComponent(sessionStorage.getItem('post-timestamp-public'));
+  // Request post based on webpage query param
+  return fetch(api + '/thought-writer/post/' + postId)
 
-  return fetch(api + '/thought-writer/post/' + postPath)
+      /* Display error message if server is down and error isn't already
+      displayed (i.e., prevent multiple errors if user submits comment and
+      requests to reload post) */
+      .catch(function(error) {
+        if (errorMessage == null) {
+          errorMessage = document.createElement('text');
+          errorMessage.id = 'error-message';
+          errorMessage.innerHTML = 'There was an error loading the post. ' +
+            'Please refresh the page.';
+          // Clear post and append error message
+          document.getElementById('post-background').innerHTML = '';
+          document.getElementById('post-background').appendChild(errorMessage);
+          return;
+        }
+      })
 
-    /* Display error message if server is down and error isn't already displayed
-    (i.e., prevent multiple errors if user submits comment and requests to
-    reload post) */
-    .catch(function(error) {
-      if (errorMessage == null) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post. ' +
-          'Please refresh the page.';
-        // Clear post and append error message
-        document.getElementById('post-background').innerHTML = '';
-        document.getElementById('post-background').appendChild(errorMessage);
-        return;
-      }
-    })
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(post) {
+
+            // Set page title and post title container to title of post
+            document.title = post.title;
+            postTitle.innerHTML = post.title;
+
+            // Add post content to post content container
+            postContent.innerHTML = post.content;
+
+            /* Convert UTC timestamp from server to local timestamp in
+            'MM/DD/YYYY, HH:MM AM/PM' format */
+            postTimestamp.innerHTML = moment(post.created)
+              .format('MM/DD/YYYY, LT');
+
+            // Add link to writer's profile
+            postWriter.href = '../../user/?username=' + post.username;
+            postWriter.innerHTML = post.username;
+
+            /* Clear comments list (for function call when user submits new
+            comment) */
+            comments.innerHTML = '';
+
+            // Display comment count
+            if (post.comment_count == 1) {
+              commentCount.innerHTML = post.comment_count + ' comment';
+            } else {
+              commentCount.innerHTML = post.comment_count + ' comments';
+            }
+
+            // Load post comments to comments list
+            loadComments(post.post_id);
+          });
+
+          return;
+        }
+
+        // Display error message if server responds with error
+        if (errorMessage == null) {
+          errorMessage = document.createElement('text');
+          errorMessage.id = 'error-message';
+          errorMessage.innerHTML = 'There was an error loading the post. ' +
+            'Please refresh the page.';
+
+          // Clear page container and append error message
+          document.getElementById('container').innerHTML = '';
+          document.getElementById('container').appendChild(errorMessage);
+
+          return;
+        }
+      });
+}
+
+
+// Load comments for passed post id
+function loadComments(postId) {
+  return fetch(api + '/thought-writer/comments/post/' + postId)
 
     .then(function(response) {
       if (response.ok) {
-        response.json().then(function(post) {
+        response.json().then(function(comments) {
 
-          // Set page title and post title container to title of post
-          document.title = post.title;
-          postTitle.innerHTML = post.title;
-
-          // Add post content to post content container
-          postContent.innerHTML = post.content;
-
-          /* Convert UTC timestamp from server to local timestamp in
-          'MM/DD/YYYY, HH:MM AM/PM' format */
-          postTimestamp.innerHTML = moment(post.timestamp)
-            .format('MM/DD/YYYY, LT');
-
-          // Add link to writer's profile
-          postWriter.href = '../../user/?username=' + post.writer;
-          postWriter.innerHTML = post.writer;
-
-          /* Clear comments list (for function call when user submits new
-          comment) */
-          comments.innerHTML = '';
-
-          // Display comment count
-          if (post.comments.length == 1) {
-            commentCount.innerHTML = post.comments.length + ' comment';
-          } else {
-            commentCount.innerHTML = post.comments.length + ' comments';
-          }
-
-          // Append post comments to comments list
-          for (var i = 0; i < post.comments.length; i++) {
+          for (var i = 0; i < comments.length; i++) {
             // Create container for comment
             var commentContainer = document.createElement('div');
             commentContainer.classList.add('comment-container');
@@ -98,14 +127,13 @@ function loadPost() {
             // Create container for comment content
             var commentContent = document.createElement('div');
             commentContent.classList.add('comment-content');
-            commentContent.innerHTML = post.comments[i].content;
+            commentContent.innerHTML = comments[i].content;
 
             // Create link to commenter's profile
             var commenter = document.createElement('a');
             commenter.classList.add('commenter');
-            commenter.href = '../../user/?username=' + post
-              .comments[i].commenter;
-            commenter.innerHTML = post.comments[i].commenter;
+            commenter.href = '../../user/?username=' + comments[i].username;
+            commenter.innerHTML = comments[i].username;
 
             // Create container for comment timestamp
             var commentTimestamp = document.createElement('div');
@@ -113,40 +141,30 @@ function loadPost() {
 
             /* Convert UTC timestamp from server to local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
-            var commentDate = new Date(post.comments[i].timestamp);
-            commentTimestamp.innerHTML = moment(post.comments[i].timestamp)
+            commentTimestamp.innerHTML = moment(comments[i].created)
               .format('MM/DD/YYYY, LT');
-            comments.appendChild(commentContainer);
+
+            document.getElementById('comments').appendChild(commentContainer);
             commentContainer.appendChild(commentContent);
             commentContainer.appendChild(commenter);
             commentContainer.appendChild(commentTimestamp);
           }
         });
-
-        return;
       }
-
-      // Display error message if server responds with error
-      if (errorMessage == null) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post. ' +
-          'Please refresh the page.';
-
-        // Clear page container and append error message
-        document.getElementById('container').innerHTML = '';
-        document.getElementById('container').appendChild(errorMessage);
-
-        return;
-      }
+      return;
     });
 }
-
 
 // Post comment to server when Submit button is clicked
 document.getElementById('submit-comment').onclick = submitComment;
 
 function submitComment() {
+  // If user is not logged in, warn user that login is required to post comment
+  if (localStorage.getItem('token') == null) {
+    window.alert('You must log in to leave a comment.');
+    return;
+  }
+
   var newComment = document.getElementById('new-comment-box');
 
   /* If comment does not contain any non-space characters (excluding empty
@@ -157,11 +175,10 @@ function submitComment() {
   }
 
   // Otherwise, send comment to server
-  var data = JSON.stringify({'content': newComment.innerHTML});
-  var postPath = postWriter.innerHTML + '/' + encodeURIComponent(sessionStorage
-    .getItem('post-timestamp-public'));
+  var data = JSON.stringify({'content': newComment.innerHTML,
+    'post_id': parseInt(postId)});
 
-  return fetch(api + '/thought-writer/comment/' + postPath, {
+  return fetch(api + '/thought-writer/comment', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'POST',

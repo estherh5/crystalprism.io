@@ -729,10 +729,10 @@ function requestMorePhotos() {
 }
 
 
-// Load Thought Writer posts written by Esther to Ideas page
+// Load Thought Writer posts written by webpage owner to Ideas page
 function loadPosts() {
-  return fetch(api + '/thought-writer/post-board/esther?start=' +
-    postRequestStart + '&end=' + postRequestEnd)
+  return fetch(api + '/homepage/ideas?start=' + postRequestStart + '&end=' +
+    postRequestEnd)
 
       /* Display error message if server is down and error isn't already
       displayed (i.e., prevent multiple errors when scrolling to load more
@@ -789,7 +789,7 @@ function loadPosts() {
 
                 /* Convert UTC timestamp from server to local timestamp in
                 'MM/DD/YYYY, HH:MM AM/PM' format */
-                postTimestamp.innerHTML = moment(posts[i].timestamp)
+                postTimestamp.innerHTML = moment(posts[i].created)
                   .format('MM/DD/YYYY, LT');
 
                 // Create body row with post content in cell
@@ -799,7 +799,7 @@ function loadPosts() {
                 postContainer.colSpan = '3';
                 var postContent = document.createElement('div');
                 postContent.classList.add('post-content');
-                postContent.id = posts[i].title;
+                postContent.id = posts[i].post_id;
 
                 // Display preview of post if >= 200 characters
                 if (posts[i].content.length >= 200) {
@@ -813,7 +813,7 @@ function loadPosts() {
                   toggleTextIcon.classList.add('fa-plus-square-o');
                   var toggleTextButton = document.createElement('button');
                   toggleTextButton.classList.add('toggle-full-text');
-                  toggleTextButton.dataset.post = posts[i].title;
+                  toggleTextButton.dataset.post = posts[i].post_id;
                   toggleTextButton.appendChild(toggleTextIcon);
 
                   // Toggle full post text if user clicks plus/minus icon
@@ -854,6 +854,31 @@ function loadPosts() {
 }
 
 
+/* Display/hide full post text if user clicks plus/minus icon for posts with
+previews */
+function toggleFullText() {
+  // Display full text if plus icon is displayed
+  if (this.getElementsByTagName('i')[0].classList
+    .contains('fa-plus-square-o')) {
+      this.getElementsByTagName('i')[0].classList.remove('fa-plus-square-o');
+      this.getElementsByTagName('i')[0].classList.add('fa-minus-square-o');
+      var postToDisplay = document.getElementById(this.dataset.post);
+      postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
+      postToDisplay.appendChild(this);
+      return;
+  }
+
+  // Otherwise, hide full text and display preview if minus icon is displayed
+  this.getElementsByTagName('i')[0].classList.remove('fa-minus-square-o');
+  this.getElementsByTagName('i')[0].classList.add('fa-plus-square-o');
+  var postToDisplay = document.getElementById(this.dataset.post);
+  postToDisplay.innerHTML = postToDisplay.dataset.fulltext
+    .slice(0, 200) + '...';
+  postToDisplay.appendChild(this);
+  return;
+}
+
+
 // Request more posts as user scrolls down Ideas page (infinite scroll)
 window.addEventListener('scroll', function() {
   if (selectedPage.id == 'ideas-page') {
@@ -876,31 +901,6 @@ function requestMorePosts() {
     loadPosts();
   }
 
-  return;
-}
-
-
-/* Display/hide full post text if user clicks plus/minus icon for posts with
-previews */
-function toggleFullText() {
-  // Display full text if plus icon is displayed
-  if (this.getElementsByTagName('i')[0].classList
-    .contains('fa-plus-square-o')) {
-      this.getElementsByTagName('i')[0].classList.remove('fa-plus-square-o');
-      this.getElementsByTagName('i')[0].classList.add('fa-minus-square-o');
-      var postToDisplay = document.getElementById(this.dataset.post);
-      postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
-      postToDisplay.appendChild(this);
-      return;
-  }
-
-  // Otherwise, hide full text and display preview if minus icon is displayed
-  this.getElementsByTagName('i')[0].classList.remove('fa-minus-square-o');
-  this.getElementsByTagName('i')[0].classList.add('fa-plus-square-o');
-  var postToDisplay = document.getElementById(this.dataset.post);
-  postToDisplay.innerHTML = postToDisplay.dataset.fulltext
-    .slice(0, 200) + '...';
-  postToDisplay.appendChild(this);
   return;
 }
 

@@ -42,11 +42,11 @@ window.onload = function() {
 
   /* If user has post stored in sessionStorage (by clicking post from My
   Account page), request post from server */
-  if (sessionStorage.getItem('post-timestamp-private') != null) {
-    openPost(sessionStorage.getItem('post-timestamp-private'));
+  if (sessionStorage.getItem('post-id') != null) {
+    openPost(sessionStorage.getItem('post-id'));
     /* Clear sessionStorage item to allow user to open another previous post
     (i.e., from cabinet) */
-    sessionStorage.removeItem('post-timestamp-private');
+    sessionStorage.removeItem('post-id');
   }
 
   // Load user's previous posts to cabinet
@@ -125,7 +125,7 @@ function loadPosts() {
   }
 
   // Otherwise, load previously written posts to cabinet
-  return fetch(api + '/thought-writer/post-board/' +
+  return fetch(api + '/thought-writer/posts/' +
     localStorage.getItem('username') + '?start=' + requestStart + '&end=' +
     requestEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
@@ -164,10 +164,8 @@ function loadPosts() {
               previousPost.classList.add('display');
             }
 
-            /* Set data-title and data-timestamp attribute to use if post is
-            clicked from cabinet */
-            previousPost.dataset.title = posts[i].title;
-            previousPost.dataset.timestamp = posts[i].timestamp;
+            // Set data-postid attribute to use if post is clicked from cabinet
+            previousPost.dataset.postid = posts[i].post_id;
 
             /* Set data-number attribute to track the post number for displaying
             more posts later */
@@ -175,8 +173,8 @@ function loadPosts() {
 
             /* Display hover title for post as post title and local timestamp in
             'MM/DD/YYYY, HH:MM AM/PM' format */
-            previousPost.title = previousPost.dataset.title + '  ' +
-              moment(posts[i].timestamp).format('MM/DD/YYYY, LT');
+            previousPost.title = posts[i].title + '  ' +
+              moment(posts[i].created).format('MM/DD/YYYY, LT');
             previousPost.dataset.public = posts[i].public;
 
             // Create container with post content
@@ -188,7 +186,7 @@ function loadPosts() {
 
             // Open post in post editor when user clicks it
             previousPost.onclick = function() {
-              openPost(this.dataset.timestamp);
+              openPost(this.dataset.postid);
               return;
             }
           }
@@ -226,12 +224,9 @@ function loadPosts() {
 }
 
 
-// Open post that has passed timestamp in editor
-function openPost(timestamp) {
-  var postPath = localStorage.getItem('username') + '/' +
-    encodeURIComponent(timestamp);
-
-  return fetch(api + '/thought-writer/post/' + postPath, {
+// Open post that has passed post id in editor
+function openPost(postId) {
+  return fetch(api + '/thought-writer/post/' + postId, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     })
 
@@ -246,7 +241,7 @@ function openPost(timestamp) {
         // Set post title, content, data-timestamp attribute, and public status
         postTitle.value = requestedPost.title;
         post.innerHTML = requestedPost.content;
-        post.dataset.timestamp = requestedPost.timestamp;
+        post.dataset.postid = requestedPost.post_id;
         publicInput.checked = requestedPost.public;
 
         if (requestedPost.public) {
@@ -383,7 +378,7 @@ function clearPost() {
   post.innerHTML = '';
   publicInput.checked = false;
   publicCheckbox.classList.remove('checked');
-  delete post.dataset.timestamp;
+  delete post.dataset.postid;
   return;
 }
 
@@ -392,6 +387,12 @@ function clearPost() {
 document.getElementById('submit-post').onclick = submitPost;
 
 function submitPost() {
+  // If user is not logged in, warn user that login is required to submit post
+  if (localStorage.getItem('token') == null) {
+    window.alert('You must log in to create a post.');
+    return;
+  }
+
   /* If post is blank, warn user that blank post cannot be submitted (excludes
   empty elements) */
   if (!/\S/.test(post.textContent)) {
@@ -419,12 +420,6 @@ function submitPost() {
     }
   }
 
-  // If user is not logged in, warn user that login is required to submit post
-  if (localStorage.getItem('token') == null) {
-    window.alert('You must log in to create a post.');
-    return;
-  }
-
   // Otherwise, submit post to server
   var data = JSON.stringify({'title': postTitle.value, 'content': post
     .innerHTML, 'public': publicInput.checked});
@@ -445,7 +440,7 @@ function submitPost() {
     .then(function(response) {
       // If post was submitted successfully, clear post and flip board
       if (response.ok) {
-        response.text().then(function(postTimestamp) {
+        response.text().then(function(postId) {
 
           // If cabinet is open, close it to refresh posts
           if (cabinetOpen) {
@@ -455,9 +450,9 @@ function submitPost() {
           // Reload user's posts to cabinet to include newly submitted post
           loadPosts();
 
-          /* Set data-timestamp attribute for Modify Last Post button in case
-          user wants to modify last post */
-          document.getElementById('go-back').dataset.timestamp = postTimestamp;
+          /* Set data-postid attribute for Modify Last Post button in case user
+          wants to modify last post */
+          document.getElementById('go-back').dataset.postid = postId;
 
           // Clear post title and content
           clearPost();
@@ -537,10 +532,10 @@ function modifyPost() {
   }
 
   // Otherwise, submit modified post to server
-  var data = JSON.stringify({'title': postTitle.value, 'timestamp': post.dataset
-    .timestamp, 'content': post.innerHTML, 'public': publicInput.checked});
+  var data = JSON.stringify({'title': postTitle.value,
+    'content': post.innerHTML, 'public': publicInput.checked});
 
-  return fetch(api + '/thought-writer/post', {
+  return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -565,10 +560,10 @@ function modifyPost() {
         // Reload user's posts to cabinet to include newly modified post
         loadPosts();
 
-        /* Set data-timestamp attribute for Modify Last Post button in case user
+        /* Set data-postid attribute for Modify Last Post button in case user
         wants to modify last post */
-        document.getElementById('go-back').dataset.timestamp = post.dataset
-          .timestamp;
+        document.getElementById('go-back').dataset.postid = post.dataset
+          .postid;
 
         // Clear post title and content
         clearPost();
@@ -596,15 +591,13 @@ document.getElementById('delete-post').onclick = deletePost;
 function deletePost() {
   // Prompt for confirmation to delete post
   var confirmDelete = confirm('Are you sure you want to delete this post?');
-  var data = JSON.stringify({'timestamp': post.dataset.timestamp});
 
   if (confirmDelete == true) {
 
-    return fetch(api + '/thought-writer/post', {
+    return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'DELETE',
-      body: data,
     })
 
       // Display error message if server is down
@@ -750,7 +743,7 @@ document.getElementById('go-board').onclick = function() {
 /* Open last post when user clicks Modify Last Post button from back of post
 board */
 document.getElementById('go-back').onclick = function() {
-  openPost(this.dataset.timestamp);
+  openPost(this.dataset.postid);
   return;
 }
 

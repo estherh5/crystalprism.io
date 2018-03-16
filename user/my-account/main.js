@@ -37,8 +37,6 @@ var editingPersonal = false; // If user is editing information in Personal menu
 
 
 // Define global variables for Scores menu
-var rhythmScores = []; // Array of user's Rhythm of Life scores
-var shapesScores = []; // Array of user's Shapes in Rain scores
 var displayedScores = []; // Array of displayed scores
 var rhythmScoresStart = 0; // Range start for number of scores to display
 var rhythmScoresEnd = 11; // Range end for number of scores to display
@@ -191,25 +189,22 @@ function loadPersonalInfo() {
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY' format */
           document.getElementById('member-stat')
-            .innerHTML = moment(info['member_since']).format('MM/DD/YYYY');
+            .innerHTML = moment(info['created']).format('MM/DD/YYYY');
+
           document.getElementById('rhythm-plays-stat')
-            .innerHTML = info['rhythm_plays'];
-          rhythmScores = info['rhythm_scores'];
+            .innerHTML = info['rhythm_score_count'];
 
-          // Load Rhythm of Life scores to Scores menu with array from server
-          displayScores('rhythm');
           document.getElementById('shapes-plays-stat')
-            .innerHTML = info['shapes_plays'];
-          shapesScores = info['shapes_scores'];
+            .innerHTML = info['shapes_score_count'];
 
-          // Load Shapes in Rain scores to Scores menu with array from server
-          displayScores('shapes');
-          likedDrawings = info['liked_drawings'];
           document.getElementById('drawings-stat')
             .innerHTML = info['drawing_count'];
-          document.getElementById('liked-stat').innerHTML = likedDrawings
-            .length;
+
+          document.getElementById('liked-stat')
+            .innerHTML = info['drawing_like_count'];
+
           document.getElementById('posts-stat').innerHTML = info['post_count'];
+
           document.getElementById('comments-stat')
             .innerHTML = info['comment_count'];
         });
@@ -1497,7 +1492,8 @@ function editPersonal() {
   backgroundColor = backgroundColorPicker.value;
   iconColor = iconColorPicker.value;
 
-  // Add editing style to fields and enable inputs that were previously disabled
+  /* Add editing style to fields and enable inputs that were previously
+  disabled */
   profileBackground.classList.add('editing');
   profileIcon.classList.add('editing');
   diamond.classList.add('editing');
@@ -1621,17 +1617,24 @@ function checkPassword() {
 
 // Submit requested edits to user's personal information to server
 function submitEdits() {
+  // Set email value to null if blank to prevent uniqueness error on back-end
+  if (emailInput.value) {
+    var email = emailInput.value;
+  } else {
+    var email = null;
+  }
+
   var data = JSON.stringify({
-    'username': usernameInput.value,
-    'password': passwordInput.value,
+    'about': aboutInput.value,
+    'background_color': backgroundColorPicker.value,
+    'email': email,
+    'email_public': emailPublicInput.checked,
     'first_name': firstNameInput.value,
+    'icon_color': iconColorPicker.value,
     'last_name': lastNameInput.value,
     'name_public': namePublicInput.checked,
-    'email': emailInput.value,
-    'email_public': emailPublicInput.checked,
-    'background_color': backgroundColorPicker.value,
-    'icon_color': iconColorPicker.value,
-    'about': aboutInput.value
+    'password': passwordInput.value,
+    'username': usernameInput.value
   });
 
   return fetch(api + '/user', {
@@ -1665,8 +1668,7 @@ function submitEdits() {
           document.getElementById('profile-link').innerHTML = localStorage
             .getItem('username');
           document.getElementById('profile-link')
-            .href = '../?username=' + localStorage
-            .getItem('username');
+            .href = '../?username=' + localStorage.getItem('username');
 
           // Return Personal menu fields to view-only mode and disable inputs
           profileBackground.classList.remove('editing');

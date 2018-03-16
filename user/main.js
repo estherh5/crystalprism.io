@@ -68,9 +68,14 @@ function loadPersonalInfo() {
           /* Populate user's about me blurb, name, email address, background
           color, and icon color */
           document.getElementById('about-blurb').innerHTML = info['about'];
-          document.getElementById('name').innerHTML = info['name'];
-          document.getElementById('email').innerHTML = info['email'];
-          document.getElementById('email').href = 'mailto:' + info['email'];
+          if (info['first_name']) {
+            document.getElementById('name')
+              .innerHTML = info['first_name'] + ' ' + info['last_name'];
+          }
+          if (info['email']) {
+            document.getElementById('email').innerHTML = info['email'];
+            document.getElementById('email').href = 'mailto:' + info['email'];
+          }
           document.body.style.backgroundColor = info['background_color'];
           document.getElementById('diamond').style.fill = info['icon_color'];
 
@@ -87,7 +92,7 @@ function loadPersonalInfo() {
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY' format */
           document.getElementById("member-stat").innerHTML = 'Member since ' +
-            moment(info['member_since']).format('MM/DD/YYYY');
+            moment(info['created']).format('MM/DD/YYYY');
 
           // Display high scores for Rhythm of Life and Shapes in Rain
           document.getElementById('rhythm-stat')

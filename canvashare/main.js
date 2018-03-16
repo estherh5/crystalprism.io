@@ -10,11 +10,6 @@ var menuOpen = false;
 
 // Define load functions
 window.onload = function() {
-  /* Remove sessionStorage items from previous drawing clicks so user can
-  select new or blank drawing to start from */
-  sessionStorage.removeItem('drawing-title');
-  sessionStorage.removeItem('drawing-source');
-
   // Create page header (from common.js script)
   createPageHeader();
 
@@ -42,8 +37,22 @@ window.onload = function() {
     // Unhide continue option in drawing menu
     continueOption.classList.remove('hidden');
 
-    // Set drawing source as in-progress drawing when option is clicked
-    continueOption.onclick = setDrawingSource;
+    // Go to easel page if continue option is clicked
+    continueOption.onclick = function() {
+      // Add click animation to create pop effect
+      this.classList.add('clicked');
+
+      /* Remove clicked class from clicked menu option to allow animation to play
+      if clicked again */
+      this.addEventListener('animationend', function() {
+        this.classList.remove('clicked');
+        return;
+      }, false);
+
+      window.location = 'easel/';
+
+      return;
+    };
 
     /* Add preview of locally stored in-progress drawing to continue option
     button */
@@ -86,7 +95,7 @@ function setHoverTitle() {
 
 // Load drawings to gallery from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/gallery?start=' + requestStart + '&end=' +
+  return fetch(api + '/canvashare/drawings?start=' + requestStart + '&end=' +
     requestEnd)
 
     /* Display error message if server is down and error isn't already
@@ -131,15 +140,16 @@ function loadDrawings() {
               // Create container for drawing title
               var drawingTitle = document.createElement('div');
               drawingTitle.classList.add('drawing-title');
-
-              /* Set data-drawing attribute as drawing file name for later
-              identification */
-              drawingTitle.dataset.drawing = drawings[i];
+              drawingTitle.innerHTML = drawings[i]['title'];
 
               // Create drawing image
               var drawing = document.createElement('img');
               drawing.classList.add('drawing');
-              drawing.src = api + '/canvashare/drawing/' + drawings[i];
+              drawing.src = drawings[i]['url'];
+
+              /* Set data-drawing attribute as drawing id for later
+              identification */
+              drawing.dataset.drawing = drawings[i]['drawing_id'];
 
               /* Create container for drawing artist and number of likes and
               views */
@@ -151,16 +161,16 @@ function loadDrawings() {
               drawingLikes.classList.add('drawing-likes');
               drawingLikes.title = 'Likes';
 
-              /* Set data-drawing attribute as drawing file name for later
-              identification */
-              drawingLikes.dataset.drawing = drawings[i];
-
               // Create text to display number of likes
               var likeText = document.createElement('text');
+              likeText.innerHTML = drawings[i]['like_count'];
 
-              /* Set data-drawing attribute as drawing file name for later
+              /* Set data-drawing attribute as drawing id for later
               identification */
-              likeText.dataset.drawing = drawings[i];
+              likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
+
+              // Set likers to list of users who liked drawing
+              var likers = drawings[i]['likers'];
 
               // Create drawing views container
               var drawingViews = document.createElement('div');
@@ -174,10 +184,11 @@ function loadDrawings() {
 
               // Create text to display number of views
               var viewText = document.createElement('text');
+              viewText.innerHTML = drawings[i]['views'];
 
-              /* Set data-drawing attribute as drawing file name for later
+              /* Set data-drawing attribute as drawing id for later
               identification */
-              viewText.dataset.drawing = drawings[i];
+              viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
 
               // Create container for drawing artist
               var drawingArtist = document.createElement('div');
@@ -186,10 +197,9 @@ function loadDrawings() {
 
               // Create link to artist's profile
               var artistLink = document.createElement('a');
-              artistLink.href = '../user/?username=' + drawings[i]
-                .substr(0, drawings[i].indexOf('/'));
-              artistLink.innerHTML = drawings[i].substr(0, drawings[i]
-                .indexOf('/'));
+              artistLink.href = '../user/?username=' + drawings[i].username;
+              artistLink.innerHTML = drawings[i].username;
+
               gallery.appendChild(drawingContainer);
               drawingContainer.appendChild(drawingTitle);
               drawingContainer.appendChild(drawing);
@@ -205,8 +215,8 @@ function loadDrawings() {
               // Update number of views when user clicks drawing
               drawing.onclick = updateViews;
 
-              // Fill in drawing title, views, and likes
-              getDrawingInfo(drawings[i]);
+              // Display drawing like hearts
+              displayDrawingLikes(drawings[i]['drawing_id'], likers);
             }
           }
 
@@ -231,47 +241,45 @@ function loadDrawings() {
 }
 
 
-// Get title and number of views and likes for passed drawing file
-function getDrawingInfo(drawingFile) {
-  var filename = drawingFile.split('.png')[0];
-  return fetch(api + '/canvashare/drawing-info/' + filename)
-    .then(function(response) {
-      response.json().then(function(drawingInfo) {
-        // Get elements that have data-drawing attribute set as file name
-        var fileElements = document
-          .querySelectorAll('[data-drawing="' + drawingFile + '"]');
+// Display drawing like hearts for passed drawing
+function displayDrawingLikes(drawingId, likers) {
+  // Get likes text that has data-drawing attribute set as drawing id
+  var likeText = document
+    .querySelectorAll('[data-drawing="likes' + drawingId + '"]')[0];
 
-        // Set title and number of likes and views for drawing
-        fileElements[0].innerHTML = drawingInfo['title'];
-        fileElements[2].innerHTML = drawingInfo['likes'];
-        fileElements[3].innerHTML = drawingInfo['views'];
+  // Check if user liked drawing if user is logged in
+  if (checkIfLoggedIn()) {
+    /* If current user liked the drawing, display a filled-in red heart in
+    likes container */
+    for (var i = 0; i < likers.length; i++) {
 
-        /* If current user liked the drawing, display a filled-in red heart in
-        likes container */
-        if (drawingInfo['liked_users'].includes(localStorage
-          .getItem('username'))) {
-            var likedHeart = document.createElement('i');
-            likedHeart.classList.add('fa');
-            likedHeart.classList.add('fa-heart');
-            fileElements[1].insertBefore(likedHeart, fileElements[1]
-              .firstChild);
-            // Update like count when user clicks heart
-            likedHeart.onclick = updateLikes;
-            return;
-          }
-
-        // Otherwise, display an empty heart outline
-        var unlikedHeart = document.createElement('i');
-        unlikedHeart.classList.add('fa');
-        unlikedHeart.classList.add('fa-heart-o');
-        fileElements[1].insertBefore(unlikedHeart, fileElements[1].firstChild);
+      if (likers[i]['username'] == localStorage.getItem('username')) {
+        var likedHeart = document.createElement('i');
+        likedHeart.classList.add('fa');
+        likedHeart.classList.add('fa-heart');
+        likedHeart.dataset.drawinglike = likers[i]['drawing_like_id'];
+        likedHeart.dataset.drawing = drawingId;
+        likeText.parentNode.insertBefore(likedHeart, likeText);
 
         // Update like count when user clicks heart
-        unlikedHeart.onclick = updateLikes;
+        likedHeart.onclick = updateLikes;
 
         return;
-      });
-    });
+      }
+    }
+  }
+
+  // Otherwise, display an empty heart outline
+  var unlikedHeart = document.createElement('i');
+  unlikedHeart.classList.add('fa');
+  unlikedHeart.classList.add('fa-heart-o');
+  likeText.parentNode.insertBefore(unlikedHeart, likeText);
+  unlikedHeart.dataset.drawing = drawingId;
+
+  // Update like count when user clicks heart
+  unlikedHeart.onclick = updateLikes;
+
+  return;
 }
 
 
@@ -279,20 +287,10 @@ function getDrawingInfo(drawingFile) {
 function updateViews() {
   var clickedDrawing = this;
 
-  /* Set sessionStorage items for drawing's source, used to populate easel on
-  redirected webpage */
-  sessionStorage.setItem('drawing-source', clickedDrawing.src);
-
   // Send request to server to update view count
-  var data = JSON.stringify({'request': 'view'});
-  var filename = clickedDrawing.src.split('/canvashare/drawing/')[1]
-    .split('.png')[0];
-
-  return fetch(api + '/canvashare/drawing-info/' + filename, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+  return fetch(api + '/canvashare/drawing/' + clickedDrawing.dataset.drawing, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',
-    body: data,
   })
 
     // Display error message if server is down
@@ -305,10 +303,10 @@ function updateViews() {
       /* If server responds without error, update view count and redirect to
       easel page */
       if (response.ok) {
-        var viewText = document.querySelectorAll('[data-drawing="' +
-          clickedDrawing.src.split('/canvashare/drawing/')[1] + '"]')[3];
+        var viewText = document.querySelectorAll('[data-drawing="views' +
+          clickedDrawing.dataset.drawing + '"]')[0];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = 'easel/';
+        window.location = 'easel/?drawing=' + clickedDrawing.dataset.drawing;
         return;
       }
 
@@ -334,21 +332,14 @@ function updateLikes() {
     return;
   }, false);
 
-  // Define filename for fetch request
-  var filename = heart.nextSibling.dataset.drawing.split('.png')[0];
-
   // If heart is already filled in, decrease drawing like count
   if (this.classList.contains('fa-heart')) {
 
-    // Send request to server to decrease like count
-    var data = JSON.stringify({'request': 'unlike'});
-
-    return fetch(api + '/canvashare/drawing-info/' + filename, {
-        headers: {'Authorization': 'Bearer ' + localStorage
-        .getItem('token'), 'Content-Type': 'application/json'},
-        method: 'PATCH',
-        body: data,
-      })
+    return fetch(api + '/canvashare/drawing-like/' + this.dataset.drawinglike, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'},
+      method: 'DELETE'
+    })
 
       // Display error message if server is down
       .catch(function(error) {
@@ -364,6 +355,7 @@ function updateLikes() {
           var currentLikes = likeText.innerHTML;
           heart.classList.remove('fa-heart');
           heart.classList.add('fa-heart-o');
+          delete heart.dataset.drawinglike;
           likeText.innerHTML = parseInt(currentLikes) - 1;
           return;
         }
@@ -376,14 +368,14 @@ function updateLikes() {
   }
 
   // Otherwise, send request to server to increase like count
-  var data = JSON.stringify({'request': 'like'});
+  var data = JSON.stringify({'drawing_id': this.dataset.drawing});
 
-  return fetch(api + '/canvashare/drawing-info/' + filename, {
-      headers: {'Authorization': 'Bearer ' + localStorage
-      .getItem('token'), 'Content-Type': 'application/json'},
-      method: 'PATCH',
-      body: data,
-    })
+  return fetch(api + '/canvashare/drawing-like', {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
+    method: 'POST',
+    body: data,
+  })
 
     // Display error message if server is down
     .catch(function(error) {
@@ -391,15 +383,18 @@ function updateLikes() {
       return;
     })
 
+    /* If server responds without error, fill in heart and increase like count
+    user sees */
     .then(function(response) {
-      /* If server responds without error, fill in heart and increase like count
-      user sees */
       if (response.ok) {
-        var likeText = heart.nextSibling;
-        var currentLikes = likeText.innerHTML;
-        likeText.innerHTML = parseInt(currentLikes) + 1;
-        heart.classList.remove('fa-heart-o');
-        heart.classList.add('fa-heart');
+        response.text().then(function(drawingLikeId) {
+          var likeText = heart.nextSibling;
+          var currentLikes = likeText.innerHTML;
+          likeText.innerHTML = parseInt(currentLikes) + 1;
+          heart.classList.remove('fa-heart-o');
+          heart.classList.add('fa-heart');
+          heart.dataset.drawinglike = drawingLikeId;
+        });
         return;
       }
 
@@ -507,11 +502,9 @@ function toggleMenu() {
 }
 
 
-/* Set sessionStorage drawing source as source of previewed drawing and open
-that drawing on easel page when user clicks menu option */
-document.getElementById('new-option').onclick = setDrawingSource;
-
-function setDrawingSource() {
+/* Set sessionStorage drawing request item for new drawing and go to easel page
+when user clicks new option from menu */
+document.getElementById('new-option').onclick = function() {
   // Add click animation to create pop effect
   this.classList.add('clicked');
 
@@ -522,15 +515,8 @@ function setDrawingSource() {
     return;
   }, false);
 
-  // Set sessionStorage items for drawing source and title
-  sessionStorage.setItem('drawing-source', this.getElementsByTagName('img')[0]
-    .src);
-
-  // Use locally stored drawing title if user clicks Continue option
-  if (this == continueOption) {
-    sessionStorage.setItem('drawing-title', localStorage
-      .getItem('drawing-title'));
-  }
+  // Set sessionStorage item for create new drawing request
+  sessionStorage.setItem('drawing-request', 'new');
 
   // Go to easel page
   window.location = 'easel/';

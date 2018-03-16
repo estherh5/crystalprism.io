@@ -1,5 +1,7 @@
 // Define global variables
+var drawingId = window.location.search.split('drawing=')[1];
 var drawingTitle = document.getElementById('drawing-title');
+var blankCanvas;
 var canvasContext;
 var initialDrawing; // Starting drawing on canvas
 var drawingCanvas;
@@ -13,22 +15,19 @@ var enteredTitle;
 
 
 // Define palettes of colors for drawing
-var basic = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff',
-  '#800080'];
+var basic = ['#ff0000', '#ffa500', '#ffff00', '#008000', '#0000ff', '#800080'];
 var pastel = ['#ffe4e7', '#ffc5a7', '#fff0a5', '#ffffa9', '#d2ffc5',
   '#cffeff'];
 var seashore = ['#594f4f', '#547980', '#45ada8', '#9de0ad', '#e5fcc2',
   '#f9ebc2'];
-var bold = ['#00a0b0', '#6a4a3c', '#cc333f', '#eb6841', '#edc951',
-  '#a1ad1a'];
+var bold = ['#00a0b0', '#6a4a3c', '#cc333f', '#eb6841', '#edc951', '#a1ad1a'];
 var oblique = ['#ca8484', '#ff3d7f', '#ff9e9d', '#8484ca', '#3fb8af',
   '#7fc7af'];
 var contrast = ['#e3d1ff', '#cbe86b', '#f2e9e1', '#1c140d', '#f9abab',
   '#95d8e5'];
 var calico = ['#f5f5c7', '#dce9be', '#555152', '#2e2633', '#99173c',
   '#46c2dd'];
-var mauve = ['#413e4a', '#73626e', '#b38184', '#f0b49e', '#f7e4be',
-  '#bce4bf'];
+var mauve = ['#413e4a', '#73626e', '#b38184', '#f0b49e', '#f7e4be', '#bce4bf'];
 var grayscale = ['#ffffff', '#999999', '#666666', '#333333', '#111111',
   '#000000'];
 
@@ -47,89 +46,78 @@ window.onload = function() {
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 
-  // Set up drawing space
-  assembleEasel();
+  /* Draw blank drawing on separate canvas to reference later (to ensure user
+  is not posting a blank drawing) */
+  var blankCanvasContext = document.getElementById('blank-canvas')
+    .getContext('2d');
+  setTimeout(function() {
+    blankCanvasContext.drawImage(document.getElementById('blank'), 0, 0);
+    return;
+  }, 500);
+  blankCanvas = new createjs.Stage(document.getElementById('blank-canvas'));
+
+  /* Load initial drawing source if drawing id is not null (e.g., if user
+  clicked a drawing from the gallery) */
+  if (drawingId != null) {
+    loadDrawing();
+  }
+
+  /* Load initial drawing as blank canvas if sessionStorage item is 'new'
+  (i.e., if user chose to start a new drawing from gallery) */
+  else if (sessionStorage.getItem('drawing-request') == 'new') {
+    assembleEasel(document.getElementById('blank').src, '');
+    sessionStorage.removeItem('drawing-request');
+  }
+
+  /* Load initial drawing and title as localStorage items if not null (e.g., if
+  user came to easel page directly) */
+  else if (localStorage.getItem('drawing-source') != null) {
+    var title = '';
+
+    // Set drawing title as localStorage item if not null
+    if (localStorage.getItem('drawing-title') != null) {
+      title = localStorage.getItem('drawing-title');
+    }
+
+    assembleEasel(localStorage.getItem('drawing-source'), title);
+  }
+
+  // Otherwise, load initial drawing as blank canvas
+  else {
+    assembleEasel(document.getElementById('blank').src, '');
+  }
 
   return;
 }
 
-// Set up drawing space
-function assembleEasel() {
+
+// Load drawing if specified in URL hash
+function loadDrawing() {
+  return fetch(api + '/canvashare/drawing/' + drawingId)
+
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(drawing) {
+          // Load initial drawing with URL from server
+          assembleEasel(drawing.url, '');
+        });
+      }
+    });
+}
+
+
+// Set up drawing space with passed drawing source and title
+function assembleEasel(drawingSrc, title) {
   /* Create new image as initial starting drawing and set CORS requests as
   anonymous (no credentials required to display image) */
   initialDrawing = new Image();
   initialDrawing.crossOrigin = 'Anonymous';
 
-  /* Set initial drawing source as sessionStorage item if not null (i.e., if
-  user came from gallery) */
-  if (sessionStorage.getItem('drawing-source') != null) {
-    initialDrawing.src = sessionStorage.getItem('drawing-source');
-    sessionStorage.removeItem('drawing-source');
+  // Set initial drawing title to passed title
+  drawingTitle.value = title;
 
-    /* Set drawing title as sessionStorage item if not null (i.e., if user is
-    continuing previous drawing from gallery) */
-    if (sessionStorage.getItem('drawing-title') != null) {
-      drawingTitle.value = sessionStorage.getItem('drawing-title');
-      sessionStorage.removeItem('drawing-title');
-    }
-
-    // Otherwise, set drawing title to blank
-    else {
-      drawingTitle.value = '';
-    }
-  }
-
-  /* Otherwise, set initial drawing source as localStorage item if not null
-  (i.e., if user came to easel page directly) */
-  else if (localStorage.getItem('drawing-source') != null) {
-    initialDrawing.src = localStorage.getItem('drawing-source');
-
-    // Set drawing title as localStorage item if not null
-    if (localStorage.getItem('drawing-title') != null) {
-      drawingTitle.value = localStorage.getItem('drawing-title');
-    }
-
-    // Otherwise, set drawing title to blank
-    else {
-      drawingTitle.value = '';
-    }
-  }
-
-  /* Otherwise, set initial drawing source to blank white canvas with blank
-  title */
-  else {
-    initialDrawing.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAA' +
-      'AAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZC' +
-      'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-      'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-      'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-      'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-      'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-      'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-      'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-      'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-      'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-      'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-      'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-      'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAk' +
-      'BgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCA' +
-      'CJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYE' +
-      'AkBgIAImBAJAYCACJgQCQGAgAiYEkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYC' +
-      'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-      'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-      'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-      'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-      'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-      'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-      'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-      'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-      'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-      'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-      'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-      'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbh' +
-      'VKrAAAAAElFTkSuQmCC';
-    drawingTitle.value = '';
-  }
+  // Set drawing source to passed drawing source
+  initialDrawing.src = drawingSrc;
 
   // Add initial drawing to HTML canvas
   canvasContext = document.getElementById('canvas').getContext('2d');
@@ -141,7 +129,8 @@ function assembleEasel() {
   // Create EaselJS stage to render to canvas
   drawingCanvas = new createjs.Stage(document.getElementById('canvas'));
 
-  // Prevent stage from automatically clearing after each drawing mark on canvas
+  /* Prevent stage from automatically clearing after each drawing mark on
+  canvas */
   drawingCanvas.autoClear = false;
 
   // Enable event listeners that stage adds to DOM events
@@ -362,8 +351,6 @@ function clearEmptyTitle(e) {
   if (!drawingTitle.contains(e.target)) {
     if (!/\S/.test(drawingTitle.value)) {
       drawingTitle.value = '';
-      // Save drawing title as blank
-      saveData();
     }
   }
 
@@ -379,46 +366,15 @@ function clearDrawing() {
   drawingCanvas.clear();
 
   // Set initial drawing source as blank white canvas
-  initialDrawing.src = 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAA' +
-    'AAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZC' +
-    'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-    'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-    'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-    'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-    'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-    'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-    'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-    'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-    'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-    'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-    'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-    'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAk' +
-    'BgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCA' +
-    'CJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYE' +
-    'AkBgIAImBAJAYCACJgQCQGAgAiYEkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYC' +
-    'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-    'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-    'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-    'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-    'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-    'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-    'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-    'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-    'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-    'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-    'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-    'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbh' +
-    'VKrAAAAAElFTkSuQmCC';
+  initialDrawing.src = document.getElementById('blank').src;
 
-  // Add initial drawing to canvas
+  // Add initial drawing to main canvas
   canvasContext.drawImage(initialDrawing, 0, 0);
 
   // Set title to default
   drawingTitle.value = '';
 
-  // Remove session and localStorage items for drawing title and source
-  sessionStorage.removeItem('drawing-title');
-  sessionStorage.removeItem('drawing-source');
+  // Remove localStorage items for drawing title and source
   localStorage.removeItem('drawing-source');
   localStorage.removeItem('drawing-title');
 
@@ -430,38 +386,15 @@ function clearDrawing() {
 document.getElementById('post').onclick = postDrawing;
 
 function postDrawing() {
+  /* If user is not logged in, warn user that login is required to post to
+  gallery */
+  if (localStorage.getItem('token') == null) {
+    window.alert('You must log in to post your drawing to the gallery.');
+    return;
+  }
+
   // If drawing is blank, warn user that blank drawing cannot be posted
-  if (drawingCanvas
-    .toDataURL() == 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAZAA' +
-    'AAGQCAYAAACAvzbMAAAFlElEQVR4nO3VMQ0AMAzAsPInvXLIM1WyEeTLPAAI5ncAADcZC' +
-    'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-    'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-    'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-    'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-    'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-    'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-    'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-    'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-    'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-    'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-    'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-    'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAk' +
-    'BgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCA' +
-    'CJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYE' +
-    'AkBgIAImBAJAYCACJgQCQGAgAiYEkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYC' +
-    'ACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiY' +
-    'EAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJA' +
-    'YCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgA' +
-    'iYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBA' +
-    'JAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGA' +
-    'gAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAIm' +
-    'BAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQ' +
-    'GAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIA' +
-    'ImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQ' +
-    'CQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBg' +
-    'IAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJ' +
-    'gQCQGAgAiYEAkBgIAImBAJAYCACJgQCQGAgAiYEAkBgIAImBAJAYCACJgQCQLKMezedbh' +
-    'VKrAAAAAElFTkSuQmCC') {
+  if (drawingCanvas.toDataURL() == blankCanvas.toDataURL()) {
     window.alert('Your drawing cannot be blank.');
     return;
   }
@@ -471,23 +404,21 @@ function postDrawing() {
   while (!/\S/.test(drawingTitle.value)) {
     enteredTitle = prompt('Enter a title for your drawing. Tip: Click ' +
       '"[title]" to enter a title at any time.');
+
     if (!/\S/.test(enteredTitle)) {
       enteredTitle = prompt('Enter a title for your drawing. Tip: Click ' +
         '"[title]" to enter a title at any time.');
-    } else if (enteredTitle == null) {
+    }
+
+    else if (enteredTitle == null) {
       return;
-    } else {
+    }
+
+    else {
       drawingTitle.value = enteredTitle;
       // Save new drawing title to localStorage
       saveData();
     }
-  }
-
-  /* If user is not logged in, warn user that login is required to post to
-  gallery */
-  if (localStorage.getItem('token') == null) {
-    window.alert('You must log in to post your drawing to the gallery.');
-    return;
   }
 
   // Otherwise, send data URI of drawing to server

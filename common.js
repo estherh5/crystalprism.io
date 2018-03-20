@@ -13,8 +13,8 @@ if (window.location.hostname == 'crystalprism.io') {
   var root = 'https://' + domain;
 } else {
   var api = 'http://localhost:5000/api';
-  var domain = 'estherh5.github.io';
-  var root = window.location.href.split('estherh5.github.io')[0] + domain;
+  var domain = 'crystalprism.io';
+  var root = window.location.href.split('crystalprism.io')[0] + domain;
 }
 
 

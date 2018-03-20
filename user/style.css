@@ -466,13 +466,22 @@ button.close:active, button.close:hover {
   font-size: 42px;
 }
 
-#logout {
+.banner {
   position: absolute;
-  top: 45px;
+  margin: auto;
+  top: 0px;
+  left: 0px;
+  right: 0px;
   display: none;
+  font-family: 'Rajdhani', sans-serif;
   font-size: 15px;
   font-style: italic;
   color: #ff0000;
+  text-align: center;
+}
+
+#logout {
+  top: 45px;
 }
 
 #main-container {
@@ -532,6 +541,10 @@ input:focus, button:focus {
 
 #verify-password-input {
   font-size: 15px;
+}
+
+#success {
+  margin-top: 3px;
 }
 
 #title {
@@ -1327,7 +1340,7 @@ label.editing {
     font-size: 54px !important;
   }
 
-  #logout {
+  .banner {
     font-size: 19px;
   }
 

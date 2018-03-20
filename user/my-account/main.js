@@ -181,16 +181,21 @@ function retryFunctions() {
 
 // Display confirmation of account creation
 function confirmCreation() {
-  // Display successful account creation modal with new username as title
-  document.getElementById('success-title').innerHTML = localStorage
-    .getItem('username');
-  $(success).modal('show');
-
-  // Focus on Okay button to close modal
-  document.getElementById('okay').focus();
+  // Display successful account creation banner
+  document.getElementById('success').style.display = 'block';
 
   // Remove account creation request from sessionStorage
   sessionStorage.removeItem('account-request');
+
+  /* If user clicks anywhere on page and success banner is displayed, clear the
+  banner */
+  window.addEventListener('click', function() {
+    if (document.getElementById('success').style.display == 'block') {
+      document.getElementById('success').style.display = 'none';
+    }
+
+    return;
+  });
 
   return;
 }

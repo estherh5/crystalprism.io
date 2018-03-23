@@ -27,7 +27,6 @@ window.onload = function() {
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
     checkIfLoggedIn();
-    loadPosts();
     return;
   });
 
@@ -41,9 +40,6 @@ window.onload = function() {
   if (window.location.hash) {
     togglePage();
   }
-
-  // Load posts to Ideas page
-  loadPosts();
 
   return;
 }
@@ -190,6 +186,11 @@ function togglePage() {
     // Load photos to Photos page if user toggles to this page
     if (selectedPage.id == 'photos-page') {
       loadPhotos();
+    }
+
+    // Load posts to Ideas page if user toggles to this page
+    if (selectedPage.id == 'ideas-page') {
+      loadPosts();
     }
 
     // Remove bold/color style of button for the previous page
@@ -616,6 +617,8 @@ function loadPhotos() {
 
 // Load Thought Writer posts written by Esther to Ideas page
 function loadPosts() {
+  document.getElementById('ideas-page').innerHTML = '';
+
   return fetch(api + '/thought-writer/post-board/esther')
 
     // Display error if server is down

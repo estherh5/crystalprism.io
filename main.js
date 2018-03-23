@@ -41,6 +41,11 @@ window.onload = function() {
     togglePage();
   }
 
+  // Otherwise, load splash page
+  else {
+    document.getElementById('splash-page').classList.remove('hidden');
+  }
+
   return;
 }
 

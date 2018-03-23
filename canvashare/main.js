@@ -491,10 +491,19 @@ function toggleMenu() {
       return;
     }, false);
 
+    // Count number of style transitions that occur
+    var transitions = 0
+
     // Hide menu after it moves down the page to close
     menu.addEventListener('transitionend', function hideMenu() {
-      menu.classList.add('hidden');
-      menu.removeEventListener('transitionend', hideMenu, false);
+      transitions++;
+
+      // Only run menu function once, after first transition
+      if (transitions == 1) {
+        menu.classList.add('hidden');
+        menu.removeEventListener('transitionend', hideMenu, false);
+      }
+
       return;
     }, false);
 

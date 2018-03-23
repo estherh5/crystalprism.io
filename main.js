@@ -168,43 +168,56 @@ window.onhashchange = function() {
 function togglePage() {
   // Hide page that user is navigating away from
   previousPage.classList.add('fade');
+
+  // Count number of style transitions that occur
+  var transitions = 0;
+
+  // Navigate to selected page after previous page style transition ends
   previousPage.addEventListener('transitionend', function changePage() {
-    previousPage.classList.add('hidden');
+    transitions++;
 
-    // Unhide page header if navigating away from splash page
-    if (selectedPage.id == 'splash-page') {
-      document.getElementById('front-page-icon').classList.remove('hidden');
-      document.getElementById('nav-buttons').classList.remove('hidden');
+    // Only run navigation function once, after first transition
+    if (transitions == 1) {
+      previousPage.classList.add('hidden');
+
+      // Unhide page header if navigating away from splash page
+      if (selectedPage.id == 'splash-page') {
+        document.getElementById('front-page-icon').classList.remove('hidden');
+        document.getElementById('nav-buttons').classList.remove('hidden');
+      }
+
+      // Display page specified in page URL hash
+      selectedPage = document.getElementById((window.location.hash)
+        .split('#')[1]);
+      selectedPage.classList.remove('hidden');
+      selectedPage.classList.remove('fade');
+
+      // Load photos to Photos page if user toggles to this page
+      if (selectedPage.id == 'photos-page') {
+        loadPhotos();
+      }
+
+      // Load posts to Ideas page if user toggles to this page
+      if (selectedPage.id == 'ideas-page') {
+        loadPosts();
+      }
+
+      // Remove bold/color style of button for the previous page
+      selectedButton.classList.remove('selected');
+
+      // Add bold/color style of button for the requested page
+      selectedButton = document.getElementById((window.location.hash)
+        .split('#')[1] + '-button');
+      selectedButton.classList.add('selected');
+
+      // Set previous page as currently selected page for future toggling
+      previousPage = selectedPage;
+
+      previousPage.removeEventListener('transitionend', changePage, false);
     }
 
-    // Display page specified in page URL hash
-    selectedPage = document.getElementById((window.location.hash)
-      .split('#')[1]);
-    selectedPage.classList.remove('hidden');
-    selectedPage.classList.remove('fade');
-
-    // Load photos to Photos page if user toggles to this page
-    if (selectedPage.id == 'photos-page') {
-      loadPhotos();
-    }
-
-    // Load posts to Ideas page if user toggles to this page
-    if (selectedPage.id == 'ideas-page') {
-      loadPosts();
-    }
-
-    // Remove bold/color style of button for the previous page
-    selectedButton.classList.remove('selected');
-
-    // Add bold/color style of button for the requested page
-    selectedButton = document.getElementById((window.location.hash)
-      .split('#')[1] + '-button');
-    selectedButton.classList.add('selected');
-
-    // Set previous page as currently selected page for future toggling
-    previousPage = selectedPage;
-    previousPage.removeEventListener('transitionend', changePage, false);
     return;
+
   }, false);
 
   return;

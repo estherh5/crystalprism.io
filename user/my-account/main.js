@@ -76,12 +76,18 @@ var liked = document.getElementById('liked');
 // Define global variables for Posts menu
 var twErrorLink = document.getElementById('thought-writer-link-error');
 var twEditorLink = document.getElementById('thought-writer-link-editor');
+var twBoardLink = document.getElementById('thought-writer-link-post-board');
 var postStart = 0; // Range start for number of posts to request/display
 var postEnd = 7; // Range end for number of posts to request/display
 var morePostsExist = false; // If there are more posts to display in array
 var postList = document.getElementById('post-list');
 var postRightArrow = document.getElementById('posts-right-arrow');
 var postLeftArrow = document.getElementById('posts-left-arrow');
+var commentStart = 0; // Range start for number of comments to request/display
+var commentEnd = 7; // Range end for number of comments to request/display
+var moreCommentsExist = false; // If there are more comments to display in array
+var postsButton = document.getElementById('posts');
+var commentsButton = document.getElementById('comments');
 
 
 // Define load functions
@@ -836,6 +842,7 @@ function loadPosts() {
         // Display error banner with Thought Writer link
         twErrorLink.classList.remove('hidden');
         twEditorLink.classList.add('hidden');
+        twBoardLink.classList.add('hidden');
         return;
       })
 
@@ -852,6 +859,7 @@ function loadPosts() {
 
               // Display Thought Writer link to create posts
               twErrorLink.classList.add('hidden');
+              twBoardLink.classList.add('hidden');
               twEditorLink.classList.remove('hidden');
 
               return;
@@ -861,18 +869,19 @@ function loadPosts() {
             postList.innerHTML = '';
             twErrorLink.classList.add('hidden');
             twEditorLink.classList.add('hidden');
+            twBoardLink.classList.add('hidden');
 
             /* Assess if there are more than requested posts - 1 (number of
             loaded posts) on server */
             if (posts.length > (postEnd - postStart - 1)) {
               morePostsExist = true;
-              postsLoadNumber = postEnd - postStart - 1;
+              var postsLoadNumber = postEnd - postStart - 1;
             }
 
             // If there are not, load all posts sent from server
             else {
               morePostsExist = false;
-              postsLoadNumber = posts.length;
+              var postsLoadNumber = posts.length;
             }
 
             for (var i = 0; i < postsLoadNumber; i++) {
@@ -991,6 +1000,155 @@ function loadPosts() {
         // Display error banner with Thought Writer link
         twErrorLink.classList.remove('hidden');
         twEditorLink.classList.add('hidden');
+        twBoardLink.classList.add('hidden');
+
+        return;
+      });
+}
+
+
+// Load user's comments from server
+function loadComments() {
+  return fetch(api + '/thought-writer/comments/user/' +
+    localStorage.getItem('username') + '?start=' + commentStart + '&end=' +
+    commentEnd)
+
+      // If server is down, clear post area and hide navigation arrows
+      .catch(function(error) {
+        postList.innerHTML = '';
+        postLeftArrow.classList.remove('display');
+        postRightArrow.classList.remove('display');
+
+        // Display error banner with Thought Writer link
+        twErrorLink.classList.remove('hidden');
+        twEditorLink.classList.add('hidden');
+        twBoardLink.classList.add('hidden');
+        return;
+      })
+
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(comments) {
+
+            /* If there are no comments sent from server, clear post area and
+            hide navigation arrows */
+            if (comments.length == 0) {
+              postList.innerHTML = '';
+              postLeftArrow.classList.remove('display');
+              postRightArrow.classList.remove('display');
+
+              // Display Thought Writer link to create comments
+              twErrorLink.classList.add('hidden');
+              twEditorLink.classList.add('hidden');
+              twBoardLink.classList.remove('hidden');
+
+              return;
+            }
+
+            // Otherwise, clear post area to display new comments from server
+            postList.innerHTML = '';
+            twErrorLink.classList.add('hidden');
+            twEditorLink.classList.add('hidden');
+            twBoardLink.classList.add('hidden');
+
+            /* Assess if there are more than requested comments - 1 (number of
+            loaded comments) on server */
+            if (comments.length > (commentEnd - commentStart - 1)) {
+              moreCommentsExist = true;
+              var commentsLoadNumber = commentEnd - commentStart - 1;
+            }
+
+            // If there are not, load all comments sent from server
+            else {
+              moreCommentsExist = false;
+              var commentsLoadNumber = comments.length;
+            }
+
+            for (var i = 0; i < commentsLoadNumber; i++) {
+              // Create container for comment and its components
+              var commentContainer = document.createElement('div');
+              commentContainer.classList.add('comment-container');
+
+              /* Set data-number attribute to track the comment number for
+              displaying more comments later */
+              commentContainer.dataset.number = commentStart + i;
+
+              // Create container for comment background
+              var commentBoard = document.createElement('div');
+              commentBoard.classList.add('comment-board');
+
+              // Create container with comment content
+              var commentContent = document.createElement('div');
+              commentContent.classList.add('comment-content');
+              commentContent.innerHTML = comments[i].content;
+
+              // Create container for comment timestamp and link to parent post
+              var commentInfo = document.createElement('div');
+              commentInfo.classList.add('comment-info');
+
+              // Create container for comment timestamp
+              var commentTimestamp = document.createElement('div');
+              commentTimestamp.classList.add('comment-time');
+
+              /* Convert UTC timestamp from server to local timestamp in
+              'MM/DD/YYYY, HH:MM AM/PM' format */
+              commentTimestamp.innerHTML = moment(comments[i].created)
+                .format('MM/DD/YYYY, LT');
+
+              // Create container for link to parent post
+              var parentPost = document.createElement('a');
+              parentPost.classList.add('parent-post');
+              parentPost.title = 'View post';
+              parentPost.href = '../../thought-writer/post/?post=' +
+                comments[i].post_id;
+              parentPost.innerHTML = comments[i].title;
+
+              postList.appendChild(commentContainer);
+              commentContainer.appendChild(commentBoard);
+              commentBoard.appendChild(commentContent);
+              commentContainer.appendChild(commentInfo);
+              commentInfo.appendChild(commentTimestamp);
+              commentInfo.appendChild(parentPost);
+            }
+
+            /* If first comment displayed in post area is not comment 0 (i.e.,
+            there are lower-numbered comments to display), display left
+            navigation arrow */
+            if (postList.getElementsByClassName('comment-container')[0].dataset
+              .number != 0) {
+                postLeftArrow.classList.add('display');
+              }
+
+            // Otherwise, hide left arrow
+            else {
+              postLeftArrow.classList.remove('display');
+            }
+
+            /* If there are more comments on the server, display right
+            navigation arrow */
+            if (moreCommentsExist) {
+              postRightArrow.classList.add('display');
+            }
+
+            // Otherwise, hide right arrow
+            else {
+              postRightArrow.classList.remove('display');
+            }
+          });
+
+          return;
+        }
+
+        /* Otherwise, if server responds with other error, clear post area and
+        hide navigation arrows */
+        postList.innerHTML = '';
+        postLeftArrow.classList.remove('display');
+        postRightArrow.classList.remove('display');
+
+        // Display error banner with Thought Writer link
+        twErrorLink.classList.remove('hidden');
+        twEditorLink.classList.add('hidden');
+        twBoardLink.classList.add('hidden');
 
         return;
       });
@@ -1147,26 +1305,48 @@ drawingRightArrow.onclick = function() {
 }
 
 
-/* Request lower-numbered posts from server if left arrow is clicked in Posts
-menu */
+/* Request lower-numbered posts or comments from server if left arrow is
+clicked in Posts menu */
 postLeftArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    postStart = postStart - 6;
-    postEnd = postEnd - 6;
-    loadPosts();
+
+    /* If user is on Posts view in Posts menu, request lower-numbered posts
+    from server */
+    if (postsButton.classList.contains('selected')) {
+      postStart = postStart - 6;
+      postEnd = postEnd - 6;
+      loadPosts();
+      return;
+    }
+
+    // Otherwise, request lower-numbered comments
+    commentStart = commentStart - 6;
+    commentEnd = commentEnd - 6;
+    loadComments();
   }
 
   return;
 }
 
 
-/* Request higher-numbered posts from server if right arrow is clicked in Posts
-menu */
+/* Request higher-numbered posts or comments from server if right arrow is
+clicked in Posts menu */
 postRightArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    postStart = postStart + 6;
-    postEnd = postEnd + 6;
-    loadPosts();
+
+    /* If user is on Posts view in Posts menu, request higher-numbered posts
+    from server */
+    if (postsButton.classList.contains('selected')) {
+      postStart = postStart + 6;
+      postEnd = postEnd + 6;
+      loadPosts();
+      return;
+    }
+
+    // Otherwise, request higher-numbered comments
+    commentStart = commentStart + 6;
+    commentEnd = commentEnd + 6;
+    loadComments();
   }
 
   return;
@@ -1196,6 +1376,36 @@ function toggleDrawings() {
   mine.classList.add('selected');
   liked.classList.remove('selected');
   loadDrawings('drawings');
+
+  return;
+}
+
+
+/* Toggle Posts/Comments views of Posts menu when Posts/Comments buttons are
+clicked */
+postsButton.onclick = togglePosts;
+commentsButton.onclick = togglePosts;
+
+function togglePosts() {
+  // Set post/comment request numbers to starting numbers
+  postStart = 0;
+  postEnd = 7;
+  commentStart = 0;
+  commentEnd = 7;
+
+  /* If the Comments button is clicked, set the button as selected and request
+  comments from server */
+  if (this == commentsButton) {
+    commentsButton.classList.add('selected');
+    postsButton.classList.remove('selected');
+    loadComments();
+    return;
+  }
+
+  // Otherwise, set the Posts button as selected and request posts from server
+  postsButton.classList.add('selected');
+  commentsButton.classList.remove('selected');
+  loadPosts();
 
   return;
 }

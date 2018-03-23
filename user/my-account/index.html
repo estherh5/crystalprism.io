@@ -127,15 +127,20 @@
 
           <!-- Personal menu -->
           <div id="personal-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+
             <!-- Front side of menu with title -->
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="personal-menu">Personal</div>
+
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column justify-content-center">
+
               <!-- Clickable profile background -->
               <div id="profile-background" class="container-fluid d-flex flex-column align-items-center justify-content-center">
+
                 <!-- Delete Account button -->
                 <button id="delete" type="button" data-toggle="modal" data-target="#confirm-delete">Delete Account</button>
                 <input id="background-color-picker" type="color" disabled>
+
                 <!-- Profile icon -->
                 <div id="profile-icon-container" class="row my-row d-flex align-items-center justify-content-center">
                   <div id="profile-icon" class="d-flex align-items-center justify-content-center">
@@ -145,12 +150,14 @@
                     </svg>
                   </div>
                 </div>
+
                 <!-- About me blurb -->
                 <div class="row my-row d-flex justify-content-center">
                   <div class="col-7 col-sm-6 user-data d-flex flex-column">
                     <textarea id="about-input" class="form-control" type="text" placeholder="Write something about yourself for others to see" maxlength="110" disabled></textarea>
                   </div>
                 </div>
+
                 <!-- Change username input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
                   <div class="field-title">Username:</div>
@@ -163,6 +170,7 @@
                   </div>
                   <div class="col-1 user-data d-flex flex-column"></div>
                 </div>
+
                 <!-- Change password input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
                   <div class="field-title">Password:</div>
@@ -173,6 +181,7 @@
                   </div>
                   <div class="col-1 user-data d-flex flex-column"></div>
                 </div>
+
                 <!-- Confirm changed password input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
                   <div class="field-title">Confirm password:</div>
@@ -183,6 +192,7 @@
                   </div>
                   <div class="col-1 user-data d-flex flex-column"></div>
                 </div>
+
                 <!-- First and last name input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
                   <div class="field-title">Name:</div>
@@ -192,6 +202,7 @@
                   <div class="col-3 user-data d-flex flex-column">
                     <input id="last-name-input" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="Last" disabled>
                   </div>
+
                   <!-- Checkbox for whether or not name is public -->
                   <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
                     <text class="public-text">Public?</text>
@@ -201,6 +212,7 @@
                     </label>
                   </div>
                 </div>
+
                 <!-- Email address input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
                   <div class="field-title">Email address:</div>
@@ -209,6 +221,7 @@
                     <!-- Warning that displays if email address does not contain correct character -->
                     <div id="email-chars" class="warning">Email address should include "@" symbol</div>
                   </div>
+
                   <!-- Checkbox for whether or not email address is public -->
                   <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
                     <text class="public-text">Public?</text>
@@ -219,6 +232,7 @@
                   </div>
                 </div>
               </div>
+
               <div id="button-row" class="row d-flex justify-content-center align-items-center">
                 <div class="col-1 d-flex align-items-center justify-content-center">
                   <!-- Cancel edits button -->
@@ -229,22 +243,29 @@
                   <button id="save" class="form-button">save</button>
                 </div>
               </div>
+
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="personal-menu">undo</i>
+
             </div>
+
           </div>
 
           <!-- Scores menu -->
           <div id="scores-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+
             <!-- Front side of menu with title -->
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="scores-menu">Scores</div>
+
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex align-items-center justify-content-center">
+
               <!-- Up and down navigation arrows -->
               <div class="arrow-container">
                 <i id="rhythm-up-arrow" class="material-icons up">keyboard_arrow_up</i>
                 <i id="rhythm-down-arrow" class="material-icons down">keyboard_arrow_down</i>
               </div>
+
               <!-- Rhythm of Life scores header -->
               <div id="rhythm-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="rhythm-link" class="hidden">
@@ -259,6 +280,7 @@
                     Date:
                   </div>
                 </div>
+
                 <!-- Error loading scores banner -->
                 <div id="rhythm-error" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
@@ -267,6 +289,7 @@
                     <a href="../../rhythm-of-life/">Rhythm of Life</a>
                   </div>
                 </div>
+
                 <!-- No scores to display banner -->
                 <div id="rhythm-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
@@ -275,9 +298,12 @@
                     <a href="../../rhythm-of-life/">Rhythm of Life</a>
                   </div>
                 </div>
+
                 <!-- Rhythm of Life scores -->
                 <div id="rhythm-score-data" class="w-100"></div>
+
               </div>
+
               <!-- Shapes in Rain scores header -->
               <div id="shapes-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="shapes-link" class="hidden">
@@ -292,6 +318,7 @@
                     Date:
                   </div>
                 </div>
+
                 <!-- Error loading scores banner -->
                 <div id="shapes-error" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
@@ -300,6 +327,7 @@
                     <a href="../../shapes-in-rain/">Shapes in Rain</a>
                   </div>
                 </div>
+
                 <!-- No scores to display banner -->
                 <div id="shapes-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center">
                   <div class="col">
@@ -308,37 +336,47 @@
                     <a href="../../shapes-in-rain/">Shapes in Rain</a>
                   </div>
                 </div>
+
                 <!-- Shapes in Rain scores -->
                 <div id="shapes-score-data" class="w-100"></div>
               </div>
+
               <!-- Up and down navigation arrows -->
               <div class="arrow-container">
                 <i id="shapes-up-arrow" class="material-icons up">keyboard_arrow_up</i>
                 <i id="shapes-down-arrow" class="material-icons down">keyboard_arrow_down</i>
               </div>
+
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="scores-menu">undo</i>
+
             </div>
+
           </div>
 
           <!-- Drawings menu -->
           <div id="drawings-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+
             <!-- Front side of menu with title -->
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="drawings-menu">Drawings</div>
+
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-end">
+
               <!-- Buttons to toggle between user's created drawings and liked drawings -->
-              <div id="drawings-menu-options">
+              <div class="menu-options">
                 <button id="mine" class="selected">Mine</button>
                 <button id="liked">Liked</button>
               </div>
-              <div id="drawing-area" class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+
+              <div id="gallery-container" class="content-container d-flex flex-row flex-wrap align-items-center justify-content-center">
                 <!-- Area where drawings are loaded -->
-                <div id="gallery" class="d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
+                <div id="gallery" class="content-display d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
                 <!-- Left and right navigation arrows -->
                 <i id="drawings-left-arrow" class="material-icons left">keyboard_arrow_left</i>
                 <i id="drawings-right-arrow" class="material-icons right">keyboard_arrow_right</i>
               </div>
+
               <!-- Error loading drawings banner -->
               <div id="canvashare-link-error" class="canvashare-link-container row my-row d-flex flex-row flex-wrap align-items-center justify-content-center hidden">
                 <div class="col">
@@ -347,6 +385,7 @@
                   <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
                 </div>
               </div>
+
               <!-- No created drawings to display banner -->
               <div id="canvashare-link-draw" class="canvashare-link-container row my-row d-flex flex-row flex-wrap align-items-center justify-content-center hidden">
                 <div class="col">
@@ -355,6 +394,7 @@
                   <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
                 </div>
               </div>
+
               <!-- No liked drawings to display banner -->
               <div id="canvashare-link-like" class="canvashare-link-container row my-row d-flex flex-row flex-wrap align-items-center justify-content-center hidden">
                 <div class="col">
@@ -363,24 +403,37 @@
                   <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
                 </div>
               </div>
+
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="drawings-menu">undo</i>
+
             </div>
+
           </div>
 
           <!-- Posts menu -->
           <div id="posts-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+
             <!-- Front side of menu with title -->
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="posts-menu">Posts</div>
+
             <!-- Back side of menu with content -->
-            <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-center">
-              <div id="post-area" class="d-flex flex-row flex-wrap align-items-center justify-content-center">
+            <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-end">
+
+              <!-- Buttons to toggle between user's posts and comments -->
+              <div class="menu-options">
+                <button id="posts" class="selected">Posts</button>
+                <button id="comments">Comments</button>
+              </div>
+
+              <div id="post-list-container" class="content-container d-flex flex-row flex-wrap align-items-center justify-content-center">
                 <!-- Area where posts are loaded -->
-                <div id="post-list" class="w-100 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
+                <div id="post-list" class="content-display w-100 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
                 <!-- Left and right navigation arrows -->
                 <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
                 <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
               </div>
+
               <!-- Error loading posts banner -->
               <div id="thought-writer-link-error" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
@@ -389,6 +442,7 @@
                   <a class="thought-writer-link" href="../../thought-writer/">Thought Writer</a>
                 </div>
               </div>
+
               <!-- No posts to display banner -->
               <div id="thought-writer-link-editor" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
                 <div class="col">
@@ -397,61 +451,86 @@
                   <a class="thought-writer-link" href="../../thought-writer/editor/">Thought Writer</a>
                 </div>
               </div>
+
+              <!-- No comments to display banner -->
+              <div id="thought-writer-link-post-board" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
+                <div class="col">
+                  You don't have any comments! Click here to browse the post board:
+                  <br>
+                  <a class="thought-writer-link" href="../../thought-writer/">Thought Writer</a>
+                </div>
+              </div>
+
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="posts-menu">undo</i>
+
             </div>
+
           </div>
 
           <!-- Stats menu -->
           <div id="stats-menu" class="menu-section d-flex justify-content-center align-items-center" data-flipped="false">
+
             <!-- Front side of menu with title -->
             <div class="front-menu h-100 w-100 d-flex align-items-center justify-content-center" data-section="stats-menu">Stats</div>
+
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column justify-content-center">
+
               <!-- Star header -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div>
                   <i class="fa fa-star" aria-hidden="true"></i>
                 </div>
               </div>
+
               <!-- Member since MM/DD/YYYY stat -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Member since:</div>
                 <div id="member-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of Rhythm of Life plays -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Rhythm of Life plays:</div>
                 <div id="rhythm-plays-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of Shapes in Rain plays -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Shapes in Rain plays:</div>
                 <div id="shapes-plays-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of CanvaShare drawings created -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Drawings created:</div>
                 <div id="drawings-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of CanvaShare drawings liked -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Drawings liked:</div>
                 <div id="liked-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of Thought Writer posts written -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Posts written:</div>
                 <div id="posts-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Number of Thought Writer comments written -->
               <div class="row my-row d-flex justify-content-center align-items-center">
                 <div class="field-title col-3 col-lg-2">Comments written:</div>
                 <div id="comments-stat" class="col-3 user-data d-flex flex-column"></div>
               </div>
+
               <!-- Back button to flip menu to front side -->
               <i class="material-icons back-button" data-section="stats-menu">undo</i>
+
             </div>
+
           </div>
 
         </div>

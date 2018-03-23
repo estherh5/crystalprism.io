@@ -32,7 +32,7 @@ a:active {
   text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover, .drawing-title:hover, .post-title:hover, .post-comments:hover {
+a:hover, .drawing-title:hover, .post-title:hover, .post-comments:hover, .parent-post:hover {
   color: #808080;
   text-decoration: none;
 }
@@ -109,7 +109,7 @@ a:focus {
   -webkit-user-select: text;
 }
 
-#gallery-row, #post-list-row {
+.content-row {
   min-height: 250px;
 }
 
@@ -127,7 +127,7 @@ a:focus {
   opacity: 1 !important;
 }
 
-#gallery, #post-list {
+.content-display {
   max-width: 311px;
   font-family: 'Chathura', sans-serif;
   text-align: center;
@@ -226,7 +226,7 @@ a:focus {
   }
 }
 
-#gallery text, #post-list text {
+.content-display text {
   padding: 3px;
   font-size: 25px;
   cursor: default;
@@ -236,7 +236,8 @@ a:focus {
   font-family: 'Cutive Mono', monospace;
 }
 
-.post-container {
+.post-container, .comment-container {
+  position: relative;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -256,6 +257,10 @@ a:focus {
   justify-content: center;
 }
 
+.comment-container {
+  margin-top: 1%;
+}
+
 .post-title {
   width: 140px;
   margin-left: 10px;
@@ -269,8 +274,9 @@ a:focus {
   white-space: nowrap;
 }
 
-.post-board {
-  height: 140px;
+.post-board, .comment-board {
+  position: relative;
+  height: 125px;
   width: 140px;
   margin-bottom: 3px;
   margin-left: 10px;
@@ -294,20 +300,24 @@ a:focus {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  background-color: #ff90cd;
   color: #000000;
   transition: all 0.4s;
 }
 
-.post-content {
-  height: 126px;
+.post-board {
+  background-color: #ff90cd;
+}
+
+.comment-board {
+  background-color: #cecece;
+}
+
+.post-content, .comment-content {
+  height: 111px;
   width: 126px;
   padding: 5px;
-  border-style: solid;
-  border-width: 2px;
   outline: none;
   resize: none;
-  background-color: #ffff00;
   font-size: 12px;
   text-align: left;
   cursor: default;
@@ -316,12 +326,22 @@ a:focus {
   -webkit-user-select: text;
 }
 
-.post-content img {
+.post-content {
+  border-style: solid;
+  border-width: 2px;
+  background-color: #ffff00;
+}
+
+.comment-content {
+  background-color: #cecece;
+}
+
+.post-content img, .comment-content img {
   max-height: 100%;
   max-width: 100%;
 }
 
-.post-info {
+.post-info, .comment-info {
   width: 140px;
   margin-left: 10px;
   margin-right: 10px;
@@ -329,7 +349,7 @@ a:focus {
   text-align: left;
 }
 
-.post-comments {
+.post-comments, .parent-post {
   cursor: pointer;
 }
 
@@ -883,14 +903,14 @@ label.editing {
   background-color: #78d9f1;
 }
 
-#drawings-menu-options {
+.menu-options {
   position: absolute;
   height: 26px;
   margin-top: 3px;
   top: 0px;
 }
 
-#drawings-menu-options button {
+.menu-options button {
   border: none;
   outline: none;
   padding: 0px;
@@ -901,12 +921,12 @@ label.editing {
   transform: none;
 }
 
-#drawings-menu-options button:hover {
+.menu-options button:hover {
   font-weight: bold;
   color: #000000;
 }
 
-#drawings-menu-options button.selected, #drawings-menu-options button:focus, #drawings-menu-options button:active {
+.menu-options button.selected, .menu-options button:focus, .menu-options button:active {
   border-bottom-color: #000000;
   border-bottom-style: solid;
   border-bottom-width: 1px;
@@ -916,22 +936,25 @@ label.editing {
   text-shadow: 0.2px 0.2px 0px #000000;
 }
 
-#drawing-area, .canvashare-link-container {
+.content-container, .canvashare-link-container, .thought-writer-link-container {
   position: absolute;
   height: 100%;
   max-height: 365px;
   width: 100%;
   max-width: 600px;
-  font-family: 'Chathura', sans-serif;
   text-align: center;
   overflow: scroll;
 }
 
-#drawing-area #gallery {
+#gallery-container, .canvashare-link-container {
+  font-family: 'Chathura', sans-serif;
+}
+
+.content-container .content-display {
   height: 100%;
 }
 
-#drawing-area text {
+.content-container text {
   padding: 3px;
   font-size: 25px;
 }
@@ -966,19 +989,8 @@ label.editing {
   background-color: #b096eb;
 }
 
-#post-area, .thought-writer-link-container {
-  position: absolute;
-  height: 100%;
-  max-height: 400px;
-  width: 100%;
-  max-width: 600px;
+#post-list-container, .thought-writer-link-container {
   font-family: 'Cutive Mono', monospace;
-  text-align: center;
-  overflow: scroll;
-}
-
-#post-area #post-list {
-  height: 100%;
 }
 
 .thought-writer-link {
@@ -992,7 +1004,7 @@ label.editing {
 }
 
 @media only screen and (min-width: 576px) {
-  #gallery, #post-list {
+  .content-display {
     max-width: 500px;
   }
 
@@ -1083,11 +1095,11 @@ label.editing {
     right: unset;
   }
 
-  #drawing-area, #drawing-area #gallery {
+  .content-container, .content-container .content-display {
     overflow: unset;
   }
 
-  #drawing-area text {
+  .content-container text {
     font-size: 25px;
   }
 }
@@ -1117,11 +1129,11 @@ label.editing {
     margin-top: 150px;
   }
 
-  #gallery-row, #post-list-row {
+  .content-row {
     min-height: 300px;
   }
 
-  #gallery, #post-list {
+  .content-display {
     max-width: 700px;
     overflow: unset;
   }
@@ -1157,18 +1169,18 @@ label.editing {
     font-size: 18px;
   }
 
-  .post-board {
-    height: 181px;
+  .post-board, .comment-board {
+    height: 164px;
     width: 181px;
   }
 
-  .post-content {
-    height: 160px;
+  .post-content, .comment-content {
+    height: 143px;
     width: 160px;
     font-size: 20px;
   }
 
-  .post-info {
+  .post-info, .comment-info {
     width: 181px;
     font-size: 12px;
   }
@@ -1234,11 +1246,11 @@ label.editing {
     line-height: 2;
   }
 
-  #drawings-menu-options button {
+  .menu-options button {
     font-size: 15px;
   }
 
-  #drawing-area, .canvashare-link-container {
+  .content-container, .canvashare-link-container, .thought-writer-link-container {
     max-height: 460px;
     max-width: 800px;
     overflow: unset;
@@ -1250,12 +1262,6 @@ label.editing {
 
   .canvashare-link {
     font-size: 45px;
-  }
-
-  #post-area, .thought-writer-link-container {
-    max-height: 500px;
-    max-width: 800px;
-    overflow: unset;
   }
 
   .thought-writer-link {

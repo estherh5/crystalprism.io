@@ -134,6 +134,14 @@ window.onload = function() {
   loadScores('rhythm-of-life');
   loadScores('shapes-in-rain');
 
+  // Scroll to specified menu if hash is in URL
+  if (window.location.hash) {
+    $('#menu-scroll-area').animate({
+      scrollTop: $(window.location.hash).offset().top + $('#menu-scroll-area')
+        .scrollTop() - $('#menu-scroll-area').offset().top
+    }, 0);
+  }
+
   return;
 }
 
@@ -1164,7 +1172,7 @@ $('#navbar li a[href^="#"]').on('click', function(e) {
 
   // Set scroll position in menu scrolling area to top of specified menu
   $('#menu-scroll-area').animate({
-    scrollTop: $(this.hash).offset().top + $('#menu-scroll-area')
+    scrollTop: $(menuHash).offset().top + $('#menu-scroll-area')
       .scrollTop() - $('#menu-scroll-area').offset().top
   }, 600,
 

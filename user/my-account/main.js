@@ -63,6 +63,7 @@ var shapesDownArrow = document.getElementById('shapes-down-arrow');
 var drawingStart = 0; // Range start for number of drawings to request/display
 var drawingEnd = 7; // Range end for number of drawings to request/display
 var moreDrawingsToDisplay = false; // If there are more drawings to display in array
+var csMainLink = document.getElementById('canvashare-main-link');
 var csErrorLink = document.getElementById('canvashare-link-error');
 var csDrawLink = document.getElementById('canvashare-link-draw');
 var csLikeLink = document.getElementById('canvashare-link-like');
@@ -74,6 +75,7 @@ var liked = document.getElementById('liked');
 
 
 // Define global variables for Posts menu
+var twMainLink = document.getElementById('thought-writer-main-link');
 var twErrorLink = document.getElementById('thought-writer-link-error');
 var twEditorLink = document.getElementById('thought-writer-link-editor');
 var twBoardLink = document.getElementById('thought-writer-link-post-board');
@@ -103,6 +105,12 @@ window.onload = function() {
     window.location = '../sign-in/';
     return;
   }
+
+  // Display profile link in Personal menu
+  document.getElementById('profile-main-link').innerHTML = localStorage
+    .getItem('username');
+  document.getElementById('profile-main-link')
+    .href = '../?username=' + localStorage.getItem('username');
 
   /* Display confirmation of account creation if user redirected from Create
   Account page */
@@ -500,6 +508,7 @@ function loadDrawings(type) {
 
         // Display error banner with CanvaShare link
         csErrorLink.classList.remove('hidden');
+        csMainLink.classList.add('hidden');
         csDrawLink.classList.add('hidden');
         csLikeLink.classList.add('hidden');
         return;
@@ -522,6 +531,7 @@ function loadDrawings(type) {
 
         // Display error banner with CanvaShare link
         csErrorLink.classList.remove('hidden');
+        csMainLink.classList.add('hidden');
         csDrawLink.classList.add('hidden');
         csLikeLink.classList.add('hidden');
 
@@ -546,6 +556,7 @@ function displayDrawings(type, drawings) {
     /* If user is on the "Mine" view in the Drawings menu, display link to
     create drawings */
     if (mine.classList.contains('selected')) {
+      csMainLink.classList.add('hidden');
       csErrorLink.classList.add('hidden');
       csDrawLink.classList.remove('hidden');
       csLikeLink.classList.add('hidden');
@@ -553,6 +564,7 @@ function displayDrawings(type, drawings) {
     }
 
     // Otherwise, display link to like drawings
+    csMainLink.classList.add('hidden');
     csErrorLink.classList.add('hidden');
     csDrawLink.classList.add('hidden');
     csLikeLink.classList.remove('hidden');
@@ -560,7 +572,8 @@ function displayDrawings(type, drawings) {
     return;
   }
 
-  // Otherwise, hide CanvaShare links
+  // Otherwise, hide CanvaShare error links and display main link
+  csMainLink.classList.remove('hidden');
   csErrorLink.classList.add('hidden');
   csDrawLink.classList.add('hidden');
   csLikeLink.classList.add('hidden');
@@ -930,6 +943,7 @@ function loadPosts() {
 
         // Display error banner with Thought Writer link
         twErrorLink.classList.remove('hidden');
+        twMainLink.classList.add('hidden');
         twEditorLink.classList.add('hidden');
         twBoardLink.classList.add('hidden');
         return;
@@ -947,6 +961,7 @@ function loadPosts() {
               postRightArrow.classList.remove('display');
 
               // Display Thought Writer link to create posts
+              twMainLink.classList.add('hidden');
               twErrorLink.classList.add('hidden');
               twBoardLink.classList.add('hidden');
               twEditorLink.classList.remove('hidden');
@@ -956,6 +971,9 @@ function loadPosts() {
 
             // Otherwise, clear post area to display new posts from server
             postList.innerHTML = '';
+
+            // Hide Thought Writer error links and display main link
+            twMainLink.classList.remove('hidden');
             twErrorLink.classList.add('hidden');
             twEditorLink.classList.add('hidden');
             twBoardLink.classList.add('hidden');
@@ -1118,6 +1136,7 @@ function loadPosts() {
 
         // Display error banner with Thought Writer link
         twErrorLink.classList.remove('hidden');
+        twMainLink.classList.add('hidden');
         twEditorLink.classList.add('hidden');
         twBoardLink.classList.add('hidden');
 
@@ -1140,6 +1159,7 @@ function loadComments() {
 
         // Display error banner with Thought Writer link
         twErrorLink.classList.remove('hidden');
+        twMainLink.classList.add('hidden');
         twEditorLink.classList.add('hidden');
         twBoardLink.classList.add('hidden');
         return;
@@ -1158,6 +1178,7 @@ function loadComments() {
 
               // Display Thought Writer link to create comments
               twErrorLink.classList.add('hidden');
+              twMainLink.classList.add('hidden');
               twEditorLink.classList.add('hidden');
               twBoardLink.classList.remove('hidden');
 
@@ -1166,6 +1187,9 @@ function loadComments() {
 
             // Otherwise, clear post area to display new comments from server
             postList.innerHTML = '';
+
+            // Hide Thought Writer error links and display main link
+            twMainLink.classList.remove('hidden');
             twErrorLink.classList.add('hidden');
             twEditorLink.classList.add('hidden');
             twBoardLink.classList.add('hidden');
@@ -1295,6 +1319,7 @@ function loadComments() {
         postRightArrow.classList.remove('display');
 
         // Display error banner with Thought Writer link
+        twMainLink.classList.add('hidden');
         twErrorLink.classList.remove('hidden');
         twEditorLink.classList.add('hidden');
         twBoardLink.classList.add('hidden');

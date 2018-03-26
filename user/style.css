@@ -578,6 +578,14 @@ input:focus, button:focus {
   background-color: #f1958a;
 }
 
+.main-link {
+  position: absolute;
+  top: 5px;
+  left: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
 #personal-menu .row {
   width: 100%;
 }
@@ -948,6 +956,10 @@ label.editing {
   background-color: #78d9f1;
 }
 
+#drawings-menu .main-link {
+  font-family: 'League Script', cursive;
+}
+
 .menu-options {
   position: absolute;
   height: 26px;
@@ -1039,6 +1051,11 @@ label.editing {
 
 #posts-menu {
   background-color: #b096eb;
+}
+
+#posts-menu .main-link {
+  font-family: 'Share', cursive;
+  font-variant: small-caps;
 }
 
 #post-list-container, .thought-writer-link-container {
@@ -1165,6 +1182,10 @@ label.editing {
 }
 
 @media only screen and (min-width: 768px) {
+  .main-link {
+    font-size: 23px;
+  }
+
   #profile-icon {
     height: 90px;
     width: 90px;

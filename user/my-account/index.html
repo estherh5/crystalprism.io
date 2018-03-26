@@ -110,7 +110,7 @@
     <div id="my-account-container" class="container-fluid w-100">
 
       <!-- Page title -->
-      <a href=".">
+      <a href="." title="My Account">
         <h1 id="title">My Account</h1>
       </a>
 
@@ -120,19 +120,19 @@
           <nav id="navbar" class="navbar w-100 align-self-start">
             <ul class="nav nav-pills">
               <li class="nav-item">
-                <a class="nav-link active" href="#personal-menu">Personal</a>
+                <a class="nav-link active" href="#personal-menu" title="Personal menu">Personal</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#scores-menu">Scores</a>
+                <a class="nav-link" href="#scores-menu" title="Scores menu">Scores</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#drawings-menu">Drawings</a>
+                <a class="nav-link" href="#drawings-menu" title="Drawings menu">Drawings</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#posts-menu">Posts</a>
+                <a class="nav-link" href="#posts-menu" title="Posts menu">Posts</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#stats-menu">Stats</a>
+                <a class="nav-link" href="#stats-menu" title="Stats menu">Stats</a>
               </li>
             </ul>
           </nav>
@@ -151,6 +151,9 @@
 
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column justify-content-center">
+
+              <!-- Link to profile -->
+              <a id="profile-main-link" class="main-link" title="View profile"></a>
 
               <!-- Clickable profile background -->
               <div id="profile-background" class="container-fluid d-flex flex-column align-items-center justify-content-center">
@@ -287,7 +290,7 @@
               <!-- Rhythm of Life scores header -->
               <div id="rhythm-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="rhythm-link" class="hidden">
-                  <a href="../../rhythm-of-life/">Rhythm of Life</a>
+                  <a href="../../rhythm-of-life/" title="Rhythm of Life">Rhythm of Life</a>
                 </div>
                 <div id="rhythm-header" class="row no-gutters w-100 d-flex justify-content-center hidden">
                   <div class="col-1"></div>
@@ -304,7 +307,7 @@
                   <div class="col">
                     There was an error loading your scores. Please refresh the page.
                     <br>
-                    <a href="../../rhythm-of-life/">Rhythm of Life</a>
+                    <a href="../../rhythm-of-life/" title="Rhythm of Life">Rhythm of Life</a>
                   </div>
                 </div>
 
@@ -313,7 +316,7 @@
                   <div class="col">
                     You don't have any scores! Click here to play a game:
                     <br>
-                    <a href="../../rhythm-of-life/">Rhythm of Life</a>
+                    <a href="../../rhythm-of-life/" title="Rhythm of Life">Rhythm of Life</a>
                   </div>
                 </div>
 
@@ -325,7 +328,7 @@
               <!-- Shapes in Rain scores header -->
               <div id="shapes-score-area" class="col-5 score-area d-flex flex-column align-items-center">
                 <div id="shapes-link" class="hidden">
-                  <a href="../../shapes-in-rain/">Shapes in Rain</a>
+                  <a href="../../shapes-in-rain/" title="Shapes in Rain">Shapes in Rain</a>
                 </div>
                 <div id="shapes-header" class="row no-gutters w-100 d-flex justify-content-center  hidden">
                   <div class="col-1"></div>
@@ -342,7 +345,7 @@
                   <div class="col">
                     There was an error loading your scores. Please refresh the page.
                     <br>
-                    <a href="../../shapes-in-rain/">Shapes in Rain</a>
+                    <a href="../../shapes-in-rain/" title="Shapes in Rain">Shapes in Rain</a>
                   </div>
                 </div>
 
@@ -351,7 +354,7 @@
                   <div class="col">
                     You don't have any scores! Click here to play a game:
                     <br>
-                    <a href="../../shapes-in-rain/">Shapes in Rain</a>
+                    <a href="../../shapes-in-rain/" title="Shapes in Rain">Shapes in Rain</a>
                   </div>
                 </div>
 
@@ -381,6 +384,9 @@
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-end">
 
+              <!-- Link to project -->
+              <a id="canvashare-main-link" class="main-link hidden" href="../../canvashare/" title="CanvaShare">CanvaShare</a>
+
               <!-- Buttons to toggle between user's created drawings and liked drawings -->
               <div class="menu-options">
                 <button id="mine" class="selected">Mine</button>
@@ -400,7 +406,7 @@
                 <div class="col">
                   There was an error loading the drawings. Please refresh the page.
                   <br>
-                  <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
+                  <a class="canvashare-link" href="../../canvashare/" title="CanvaShare">CanvaShare</a>
                 </div>
               </div>
 
@@ -409,7 +415,7 @@
                 <div class="col">
                   You don't have any drawings! Click here to create one:
                   <br>
-                  <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
+                  <a class="canvashare-link" href="../../canvashare/" title="CanvaShare">CanvaShare</a>
                 </div>
               </div>
 
@@ -418,7 +424,7 @@
                 <div class="col">
                   You haven't liked any drawings! Click here to browse the gallery:
                   <br>
-                  <a class="canvashare-link" href="../../canvashare/">CanvaShare</a>
+                  <a class="canvashare-link" href="../../canvashare/" title="CanvaShare">CanvaShare</a>
                 </div>
               </div>
 
@@ -437,6 +443,9 @@
 
             <!-- Back side of menu with content -->
             <div class="back-menu h-100 w-100 d-flex flex-column align-items-center justify-content-end">
+
+              <!-- Link to project -->
+              <a id="thought-writer-main-link" class="main-link hidden" href="../../thought-writer/" title="Thought Writer">Thought Writer</a>
 
               <!-- Buttons to toggle between user's posts and comments -->
               <div class="menu-options">
@@ -457,7 +466,7 @@
                 <div class="col">
                   There was an error loading the posts. Please refresh the page.
                   <br>
-                  <a class="thought-writer-link" href="../../thought-writer/">Thought Writer</a>
+                  <a class="thought-writer-link" href="../../thought-writer/" title="Thought Writer">Thought Writer</a>
                 </div>
               </div>
 
@@ -466,7 +475,7 @@
                 <div class="col">
                   You don't have any posts! Click here to write one:
                   <br>
-                  <a class="thought-writer-link" href="../../thought-writer/editor/">Thought Writer</a>
+                  <a class="thought-writer-link" href="../../thought-writer/editor/" title="Thought Writer">Thought Writer</a>
                 </div>
               </div>
 
@@ -475,7 +484,7 @@
                 <div class="col">
                   You don't have any comments! Click here to browse the post board:
                   <br>
-                  <a class="thought-writer-link" href="../../thought-writer/">Thought Writer</a>
+                  <a class="thought-writer-link" href="../../thought-writer/" title="Thought Writer">Thought Writer</a>
                 </div>
               </div>
 

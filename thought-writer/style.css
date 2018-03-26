@@ -410,39 +410,6 @@ a:focus, button:focus {
   -webkit-user-select: text;
 }
 
-.comment-container {
-  width: 65vw;
-  max-width: 384px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: horizontal;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: row;
-  -ms-flex-direction: row;
-  flex-direction: row;
-  -webkit-flex-wrap: wrap;
-  -ms-flex-wrap: wrap;
-  flex-wrap: wrap;
-}
-
-.comment-content {
-  width: 75%;
-  padding-right: 5%;
-  padding-bottom: 15px;
-}
-
-.commenter {
-  width: 15%;
-  padding-left: 5%;
-  text-align: right;
-}
-
-.comment-timestamp {
-  margin-bottom: 50px;
-}
-
 button {
   width: fit-content;
   border: none;
@@ -464,7 +431,79 @@ button:hover {
 }
 
 #submit-comment {
+  -webkit-align-self: flex-end;
+  -ms-flex-item-align: end;
   align-self: flex-end;
+}
+
+.comment-container {
+  width: 73vw;
+  max-width: 384px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: horizontal;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: row;
+  -ms-flex-direction: row;
+  flex-direction: row;
+  -webkit-flex-wrap: wrap;
+  -ms-flex-wrap: wrap;
+  flex-wrap: wrap;
+  -webkit-box-pack: justify;
+  -webkit-justify-content: space-between;
+  -ms-flex-pack: justify;
+  justify-content: space-between;
+}
+
+.comment-content {
+  width: 75%;
+  padding-right: 5%;
+  padding-bottom: 15px;
+}
+
+.comment-content.editing {
+  outline: none;
+  resize: none;
+  cursor: text;
+  user-select: text;
+  -webkit-user-select: text;
+}
+
+.commenter {
+  width: 15%;
+  padding-left: 5%;
+  text-align: right;
+}
+
+.comment-timestamp {
+  width: 55%;
+  margin-bottom: 50px;
+}
+
+.button-container {
+  width: 45%;
+  margin-bottom: 50px;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: end;
+  -webkit-justify-content: flex-end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
+}
+
+.button-container button {
+  padding: 0px;
+  margin-left: 8px;
+  font-size: 12px;
+  line-height: 1.1;
+}
+
+.submit-button, .cancel-button {
+  display: none;
 }
 
 #editor-container {
@@ -827,12 +866,16 @@ input {
     max-width: 400px;
   }
 
+  button {
+    font-size: 20px;
+  }
+
   .comment-container {
     max-width: 434px;
   }
 
-  button {
-    font-size: 20px;
+  .button-container button {
+    margin-left: 15px;
   }
 
   #edit-space {

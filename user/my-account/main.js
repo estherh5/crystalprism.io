@@ -1270,9 +1270,9 @@ function loadComments() {
               // Create container for link to parent post
               var parentPost = document.createElement('a');
               parentPost.classList.add('parent-post');
-              parentPost.title = 'View post';
+              parentPost.title = 'View comment on post page';
               parentPost.href = '../../thought-writer/post/?post=' +
-                comments[i].post_id;
+                comments[i].post_id + '#comment' + comments[i].comment_id;
               parentPost.innerHTML = comments[i].title;
 
               postList.appendChild(commentContainer);

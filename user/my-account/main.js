@@ -226,9 +226,15 @@ function loadPersonalInfo() {
 'shapes-in-rain') */
 function loadScores(game) {
   if (game == 'rhythm-of-life') {
+    // Clear score area to replace with requested scores
+    rhythmScoreData.innerHTML = '';
+
     scoresStart = rhythmScoresStart;
     scoresEnd = rhythmScoresEnd;
   } else {
+    // Clear score area to replace with requested scores
+    shapesScoreData.innerHTML = '';
+
     scoresStart = shapesScoresStart;
     scoresEnd = shapesScoresEnd;
   }
@@ -304,8 +310,6 @@ function displayScores(scores, game) {
     rhythmError.classList.add('hidden');
     rhythmNoScores.classList.add('hidden');
 
-    // Clear score area to replace with requested scores
-    rhythmScoreData.innerHTML = '';
     var scoreData = rhythmScoreData;
     var upArrow = rhythmUpArrow;
     var downArrow = rhythmDownArrow;
@@ -336,8 +340,6 @@ function displayScores(scores, game) {
     shapesError.classList.add('hidden');
     shapesNoScores.classList.add('hidden');
 
-    // Clear score area to replace with requested scores
-    shapesScoreData.innerHTML = '';
     var scoreData = shapesScoreData;
     var upArrow = shapesUpArrow;
     var downArrow = shapesDownArrow;
@@ -371,6 +373,38 @@ function displayScores(scores, game) {
       more scores later */
       scoreRow.dataset.number = scoresStart + i;
 
+      // Add button to delete score
+      var deleteScoreButton = document.createElement('button');
+      deleteScoreButton.classList.add('delete-button');
+      deleteScoreButton.title = 'Delete score';
+      deleteScoreButton.innerHTML = 'X';
+      deleteScoreButton.type = 'button';
+      deleteScoreButton.dataset.toggle = 'modal';
+      deleteScoreButton.dataset.target = '#confirm-delete-content';
+      deleteScoreButton.dataset.scoreid = scores[i].score_id;
+
+      /* Set confirmation modal title and content deletion function to
+      run upon confirmation when delete button is clicked */
+      deleteScoreButton.onclick = function() {
+        document.getElementById('modal-title-content')
+          .innerHTML = 'Are you sure you want to delete this score?';
+
+        document.getElementById('confirm-delete-content-button')
+          .dataset.contentid = this.dataset.scoreid;
+
+        document.getElementById('confirm-delete-content-button')
+          .onclick = function() {
+            deleteContent(game + '/score', this.dataset.contentid, function() {
+              loadScores(game);
+              return;
+            });
+
+            return;
+          }
+
+        return;
+      }
+
       /* Create column for displaying star next to first score in total scores
       array (high score) */
       var starCol = document.createElement('div');
@@ -383,12 +417,12 @@ function displayScores(scores, game) {
         starCol.appendChild(star);
       }
 
-      // Create column for score
-      var scoreCol = document.createElement('div');
-      scoreCol.classList.add('col-3');
-
       // If game is Rhythm of Life, display lifespan as score
       if (game == 'rhythm-of-life') {
+        // Create column for score
+        var scoreCol = document.createElement('div');
+        scoreCol.classList.add('col-3');
+
         var sec_num = displayedScores[i].score;
         var score_hours = Math.floor(sec_num / 3600);
         var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
@@ -403,6 +437,10 @@ function displayScores(scores, game) {
 
       // Otherwise, display score
       else {
+        // Create column for score
+        var scoreCol = document.createElement('div');
+        scoreCol.classList.add('col-2');
+
         scoreCol.innerHTML = displayedScores[i].score;
       }
 
@@ -415,6 +453,7 @@ function displayScores(scores, game) {
       scoreTimestampCol.innerHTML = moment(displayedScores[i].created)
         .format('MM/DD/YYYY, LT');
       scoreData.appendChild(scoreRow);
+      scoreRow.appendChild(deleteScoreButton);
       scoreRow.appendChild(starCol);
       scoreRow.appendChild(scoreCol);
       scoreRow.appendChild(scoreTimestampCol);
@@ -550,6 +589,42 @@ function displayDrawings(type, drawings) {
     /* Set data-number attribute to track the drawing number for displaying
     more drawings later */
     drawingContainer.dataset.number = drawingStart + i;
+
+    // Add button to delete drawing if displaying user's drawings
+    if (type == 'drawings') {
+      var deleteDrawingButton = document.createElement('button');
+      deleteDrawingButton.classList.add('delete-button');
+      deleteDrawingButton.title = 'Delete drawing';
+      deleteDrawingButton.innerHTML = 'X';
+      deleteDrawingButton.type = 'button';
+      deleteDrawingButton.dataset.toggle = 'modal';
+      deleteDrawingButton.dataset.target = '#confirm-delete-content';
+      deleteDrawingButton.dataset.drawingid = drawings[i].drawing_id;
+
+      /* Set confirmation modal title and content deletion function to
+      run upon confirmation when delete button is clicked */
+      deleteDrawingButton.onclick = function() {
+        document.getElementById('modal-title-content')
+          .innerHTML = 'Are you sure you want to delete this drawing?';
+
+        document.getElementById('confirm-delete-content-button')
+          .dataset.contentid = this.dataset.drawingid;
+
+        document.getElementById('confirm-delete-content-button')
+          .onclick = function() {
+            deleteContent('canvashare/drawing', this.dataset.contentid,
+            function() {
+              loadDrawings('drawings');
+              return;
+            });
+            return;
+          }
+
+        return;
+      }
+
+      drawingContainer.appendChild(deleteDrawingButton);
+    }
 
     // Create container for drawing title
     var drawingTitle = document.createElement('div');
@@ -782,6 +857,9 @@ function updateLikes() {
             heart.classList.add('fa-heart-o');
             delete heart.dataset.drawinglike;
             likeText.innerHTML = parseInt(currentLikes) - 1;
+
+            // Reload personal information to update user stats
+            loadPersonalInfo();
           });
           return;
         }
@@ -820,6 +898,9 @@ function updateLikes() {
           heart.classList.remove('fa-heart-o');
           heart.classList.add('fa-heart');
           heart.dataset.drawinglike = drawingLikeId;
+
+          // Reload personal information to update user stats
+          loadPersonalInfo();
         });
         return;
       }
@@ -901,6 +982,35 @@ function loadPosts() {
               displaying more posts later */
               postContainer.dataset.number = postStart + i;
 
+              // Add button to delete post
+              var deletePostButton = document.createElement('button');
+              deletePostButton.classList.add('delete-button');
+              deletePostButton.title = 'Delete post';
+              deletePostButton.innerHTML = 'X';
+              deletePostButton.type = 'button';
+              deletePostButton.dataset.toggle = 'modal';
+              deletePostButton.dataset.target = '#confirm-delete-content';
+              deletePostButton.dataset.postid = posts[i].post_id;
+
+              /* Set confirmation modal title and content deletion function to
+              run upon confirmation when delete button is clicked */
+              deletePostButton.onclick = function() {
+                document.getElementById('modal-title-content')
+                  .innerHTML = 'Are you sure you want to delete this post?';
+
+                document.getElementById('confirm-delete-content-button')
+                  .dataset.contentid = this.dataset.postid;
+
+                document.getElementById('confirm-delete-content-button')
+                  .onclick = function() {
+                    deleteContent('thought-writer/post',
+                    this.dataset.contentid, loadPosts);
+                    return;
+                  }
+
+                return;
+              }
+
               // Create container for post title
               var postTitle = document.createElement('div');
               postTitle.classList.add('post-title');
@@ -963,6 +1073,7 @@ function loadPosts() {
               }
 
               postList.appendChild(postContainer);
+              postContainer.appendChild(deletePostButton);
               postContainer.appendChild(postTitle);
               postContainer.appendChild(postBoard);
               postBoard.appendChild(postContent);
@@ -1085,6 +1196,35 @@ function loadComments() {
               var commentBoard = document.createElement('div');
               commentBoard.classList.add('comment-board');
 
+              // Add button to delete comment
+              var deleteCommentButton = document.createElement('button');
+              deleteCommentButton.classList.add('delete-button');
+              deleteCommentButton.title = 'Delete comment';
+              deleteCommentButton.innerHTML = 'X';
+              deleteCommentButton.type = 'button';
+              deleteCommentButton.dataset.toggle = 'modal';
+              deleteCommentButton.dataset.target = '#confirm-delete-content';
+              deleteCommentButton.dataset.commentid = comments[i].comment_id;
+
+              /* Set confirmation modal title and content deletion function to
+              run upon confirmation when delete button is clicked */
+              deleteCommentButton.onclick = function() {
+                document.getElementById('modal-title-content')
+                  .innerHTML = 'Are you sure you want to delete this comment?';
+
+                document.getElementById('confirm-delete-content-button')
+                  .dataset.contentid = this.dataset.commentid;
+
+                document.getElementById('confirm-delete-content-button')
+                  .onclick = function() {
+                    deleteContent('thought-writer/comment',
+                    this.dataset.contentid, loadComments);
+                    return;
+                  }
+
+                return;
+              }
+
               // Create container with comment content
               var commentContent = document.createElement('div');
               commentContent.classList.add('comment-content');
@@ -1113,6 +1253,7 @@ function loadComments() {
 
               postList.appendChild(commentContainer);
               commentContainer.appendChild(commentBoard);
+              commentBoard.appendChild(deleteCommentButton);
               commentBoard.appendChild(commentContent);
               commentContainer.appendChild(commentInfo);
               commentInfo.appendChild(commentTimestamp);
@@ -1422,7 +1563,8 @@ function togglePosts() {
 // Define Personal menu functions
 
 // Delete account when user confirms deletion in modal
-document.getElementById('confirm').onclick = deleteAccount;
+document.getElementById('confirm-delete-account-button')
+  .onclick = deleteAccount;
 
 function deleteAccount() {
   return fetch(api + '/user', {
@@ -2006,4 +2148,47 @@ function cancelEdits() {
   saveButton.style.display = 'none';
 
   return;
+}
+
+
+// Define content deletion functions
+
+// Delete content when user confirms deletion in modal
+document.getElementById('confirm-delete-content-button')
+  .onclick = function() {
+    deleteContent(
+      this.dataset.contenttype, this.dataset.contentid, this.dataset.function
+    );
+    return;
+  };
+
+/* Delete content by specifying type (e.g., 'thought-writer/post'), id, and
+function to run after deletion */
+function deleteContent(contentType, contentId, afterFunction) {
+  return fetch(api + '/' + contentType + '/' + contentId, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+      'Content-Type': 'application/json'},
+    method: 'DELETE',
+  })
+
+    // Display warning if server is down
+    .catch(function(error) {
+      window.alert('Your request did not go through. Please try again soon.');
+      return;
+    })
+
+    .then(function(response) {
+      /* Call specified function and reload personal info to refresh user stats
+      if server responds without error */
+      if (response.ok) {
+        afterFunction();
+        loadPersonalInfo();
+        return;
+      }
+
+      // Otherwise, display warning if server responds with error
+      window.alert('Your request did not go through. Please try again soon.');
+
+      return;
+    });
 }

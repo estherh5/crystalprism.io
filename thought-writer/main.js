@@ -55,9 +55,14 @@ function loadPosts() {
 
           // Add posts to post board if there is at least 1 sent from server
           if (posts.length != 0) {
+
+            // Remove error message from post board if it is displayed
+            if (errorMessage != null) {
+              postBoard.removeChild(errorMessage);
+            }
+
             /* Assess if there are more than requested posts - 1 (number of
             loaded posts) on server */
-
             if (posts.length > (requestEnd - requestStart - 1)) {
               morePostsOnServer = true;
               var loadNumber = requestEnd - requestStart - 1;

@@ -31,8 +31,8 @@ window.onload = function() {
 
 // Load post to post board from server
 function loadPost() {
+  var postBackground = document.getElementById('post-background');
   var postTitle = document.getElementById('post-title');
-  var postContent = document.getElementById('post-content');
   var postTimestamp = document.getElementById('post-timestamp');
   var comments = document.getElementById('comments');
   var commentCount = document.getElementById('comment-count');
@@ -40,74 +40,82 @@ function loadPost() {
   // Request post based on webpage query param
   return fetch(api + '/thought-writer/post/' + postId)
 
-      /* Display error message if server is down and error isn't already
-      displayed (i.e., prevent multiple errors if user submits comment and
-      requests to reload post) */
-      .catch(function(error) {
-        if (errorMessage == null) {
-          errorMessage = document.createElement('text');
-          errorMessage.id = 'error-message';
-          errorMessage.innerHTML = 'There was an error loading the post. ' +
-            'Please refresh the page.';
-          // Clear post and append error message
-          document.getElementById('post-background').innerHTML = '';
-          document.getElementById('post-background').appendChild(errorMessage);
-          return;
-        }
-      })
+    /* Display error message if server is down and error isn't already
+    displayed (i.e., prevent multiple errors if user submits comment and
+    requests to reload post) */
+    .catch(function(error) {
+      if (errorMessage == null) {
+        errorMessage = document.createElement('text');
+        errorMessage.id = 'error-message';
+        errorMessage.innerHTML = 'There was an error loading the post. ' +
+          'Please refresh the page.';
+        // Clear post and append error message
+        postBackground.innerHTML = '';
+        postBackground.appendChild(errorMessage);
+        return;
+      }
+    })
 
-      .then(function(response) {
-        if (response.ok) {
-          response.json().then(function(post) {
+    .then(function(response) {
+      if (response.ok) {
+        response.json().then(function(post) {
 
-            // Set page title and post title container to title of post
-            document.title = post.title;
-            postTitle.innerHTML = post.title;
+          // Clear post background to display post
+          postBackground.innerHTML = '';
 
-            // Add post content to post content container
-            postContent.innerHTML = post.content;
+          // Set page title and post title container to title of post
+          document.title = post.title;
+          postTitle.innerHTML = post.title;
 
-            /* Convert UTC timestamp from server to local timestamp in
-            'MM/DD/YYYY, HH:MM AM/PM' format */
-            postTimestamp.innerHTML = moment(post.created)
-              .format('MM/DD/YYYY, LT');
+          // Create post content container
+          var postContent = document.createElement('div');
+          postContent.id = 'post-content';
+          postBackground.appendChild(postContent);
 
-            // Add link to writer's profile
-            postWriter.href = '../../user/?username=' + post.username;
-            postWriter.innerHTML = post.username;
+          // Add content to post content container
+          postContent.innerHTML = post.content;
 
-            /* Clear comments list (for function call when user submits new
-            comment) */
-            comments.innerHTML = '';
+          /* Convert UTC timestamp from server to local timestamp in
+          'MM/DD/YYYY, HH:MM AM/PM' format */
+          postTimestamp.innerHTML = moment(post.created)
+            .format('MM/DD/YYYY, LT');
 
-            // Display comment count
-            if (post.comment_count == 1) {
-              commentCount.innerHTML = post.comment_count + ' comment';
-            } else {
-              commentCount.innerHTML = post.comment_count + ' comments';
-            }
+          // Add link to writer's profile
+          postWriter.href = '../../user/?username=' + post.username;
+          postWriter.innerHTML = post.username;
 
-            // Load post comments to comments list
-            loadComments(post.post_id);
-          });
+          /* Clear comments list (for function call when user submits new
+          comment) */
+          comments.innerHTML = '';
 
-          return;
-        }
+          // Display comment count
+          if (post.comment_count == 1) {
+            commentCount.innerHTML = post.comment_count + ' comment';
+          } else {
+            commentCount.innerHTML = post.comment_count + ' comments';
+          }
 
-        // Display error message if server responds with error
-        if (errorMessage == null) {
-          errorMessage = document.createElement('text');
-          errorMessage.id = 'error-message';
-          errorMessage.innerHTML = 'There was an error loading the post. ' +
-            'Please refresh the page.';
+          // Load post comments to comments list
+          loadComments(post.post_id);
+        });
 
-          // Clear page container and append error message
-          document.getElementById('container').innerHTML = '';
-          document.getElementById('container').appendChild(errorMessage);
+        return;
+      }
 
-          return;
-        }
-      });
+      // Display error message if server responds with error
+      if (errorMessage == null) {
+        errorMessage = document.createElement('text');
+        errorMessage.id = 'error-message';
+        errorMessage.innerHTML = 'There was an error loading the post. ' +
+          'Please refresh the page.';
+
+        // Clear page container and append error message
+        document.getElementById('container').innerHTML = '';
+        document.getElementById('container').appendChild(errorMessage);
+
+        return;
+      }
+    });
 }
 
 

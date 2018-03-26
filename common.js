@@ -226,26 +226,28 @@ function checkIfLoggedIn() {
         return true;
       }
 
-      /* Otherwise, set account menu to default and remove username and token
-      from localStorage */
-      localStorage.removeItem('username');
-      localStorage.removeItem('token');
-      accountLink.innerHTML = 'Create Account';
-      signInLink.innerHTML = 'Sign In';
+      /* If server responds with unauthorized status, set account menu to
+      default and remove username and token from localStorage */
+      if (response.status == 401) {
+        localStorage.removeItem('username');
+        localStorage.removeItem('token');
+        accountLink.innerHTML = 'Create Account';
+        signInLink.innerHTML = 'Sign In';
 
-      /* Store current window for user to return to after logging in, if
-      current window is not homepage, Create Account, or Sign In pages */
-      if (currentPath != domain && currentPath != 'create-account'
-        && currentPath != 'sign-in') {
-          signInLink.onclick = function() {
-            sessionStorage.setItem('previous-window', window.location.href);
-            return;
+        /* Store current window for user to return to after logging in, if
+        current window is not homepage, Create Account, or Sign In pages */
+        if (currentPath != domain && currentPath != 'create-account'
+          && currentPath != 'sign-in') {
+            signInLink.onclick = function() {
+              sessionStorage.setItem('previous-window', window.location.href);
+              return;
+            }
           }
-        }
 
-      // Redirect to Sign In page if user is on My Account page
-      if (currentPath == 'my-account') {
-        window.location = '../sign-in/';
+        // Redirect to Sign In page if user is on My Account page
+        if (currentPath == 'my-account') {
+          window.location = '../sign-in/';
+        }
       }
 
       return false;

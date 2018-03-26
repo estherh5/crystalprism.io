@@ -115,9 +115,14 @@ function loadDrawings() {
     .then(function(response) {
       if (response.ok) {
         response.json().then(function(drawings) {
-          // Add drawings to gallery if there is at least 1 sent from server
 
+          // Add drawings to gallery if there is at least 1 sent from server
           if (drawings.length != 0) {
+
+            // Remove error message from gallery if it is displayed
+            if (errorMessage != null) {
+              gallery.removeChild(errorMessage);
+            }
 
             /* Assess if there are more than requested drawings - 1 (number of
             loaded drawings) on server */

@@ -27,6 +27,17 @@ window.onload = function() {
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
     checkIfLoggedIn();
+
+    // Reload photos if user is on Photos page
+    if (selectedPage.id == 'photos-page') {
+      loadPhotos();
+    }
+
+    // Reload posts if user is on Ideas page
+    if (selectedPage.id == 'ideas-page') {
+      loadPosts();
+    }
+
     return;
   });
 

@@ -3,6 +3,9 @@ var postId = window.location.search.split('post=')[1];
 var errorMessage = null;
 var postWriter = document.getElementById('post-writer');
 var loaded = false; // Track whether or not comments have loaded
+var requestStart = 0; // Range start for number of comments to request from server
+var requestEnd = 11; // Range end for number of comments to request from server
+var moreCommentsOnServer = false;
 
 
 // Define load functions
@@ -123,102 +126,113 @@ function loadPost() {
 
 // Load comments for passed post id
 function loadComments(postId) {
-  return fetch(api + '/thought-writer/comments/post/' + postId)
+  return fetch(api + '/thought-writer/comments/post/' + postId + '?start=' +
+    requestStart + '&end=' + requestEnd)
 
-    .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(comments) {
-          // Clear comments list
-          document.getElementById('comments-list').innerHTML = '';
-
-          for (var i = 0; i < comments.length; i++) {
-            // Create container for comment
-            var commentContainer = document.createElement('div');
-            commentContainer.classList.add('comment-container');
-            commentContainer.id = 'comment' + comments[i].comment_id;
-
-            // Create container for comment content
-            var commentContent = document.createElement('div');
-            commentContent.classList.add('comment-content');
-            commentContent.dataset.id = comments[i].comment_id;
-            commentContent.innerHTML = comments[i].content;
-
-            // Create link to commenter's profile
-            var commenter = document.createElement('a');
-            commenter.classList.add('commenter');
-            commenter.href = '../../user/?username=' + comments[i].username;
-            commenter.innerHTML = comments[i].username;
-
-            // Create container for comment timestamp
-            var commentTimestamp = document.createElement('div');
-            commentTimestamp.classList.add('comment-timestamp');
-
-            /* Display modified timestamp if comment was edited, converting
-            UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM
-            AM/PM' format */
-            if (comments[i].created != comments[i].modified) {
-              commentTimestamp.innerHTML = moment(comments[i].created)
-                .format('MM/DD/YYYY, LT') + ' (edited)';
-            } else {
-              commentTimestamp.innerHTML = moment(comments[i].created)
-                .format('MM/DD/YYYY, LT');
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(comments) {
+            /* Assess if there are more than requested comments - 1 (number of
+            loaded comments) on server */
+            if (comments.length > (requestEnd - requestStart - 1)) {
+              moreCommentsOnServer = true;
+              var loadNumber = requestEnd - requestStart - 1;
             }
 
-            document.getElementById('comments-list')
-              .appendChild(commentContainer);
-            commentContainer.appendChild(commentContent);
-            commentContainer.appendChild(commenter);
-            commentContainer.appendChild(commentTimestamp);
-
-            /* Create buttons for editing and deleting comment if user created
-            the comment */
-            if (comments[i].username == localStorage.getItem('username')) {
-              var buttonContainer = document.createElement('div');
-              buttonContainer.classList.add('button-container');
-
-              var submitButton = document.createElement('button');
-              submitButton.classList.add('submit-button');
-              submitButton.dataset.submitid = comments[i].comment_id;
-              submitButton.innerHTML = 'Submit';
-              submitButton.onclick = submitEdits;
-
-              var cancelButton = document.createElement('button');
-              cancelButton.classList.add('cancel-button');
-              cancelButton.dataset.cancelid = comments[i].comment_id;
-              cancelButton.dataset.content = comments[i].content;
-              cancelButton.innerHTML = 'Cancel';
-              cancelButton.onclick = cancelEdits;
-
-              var modifyButton = document.createElement('button');
-              modifyButton.classList.add('modify-button');
-              modifyButton.dataset.modifyid = comments[i].comment_id;
-              modifyButton.innerHTML = 'Modify';
-              modifyButton.onclick = modifyComment;
-
-              var deleteButton = document.createElement('button');
-              deleteButton.classList.add('delete-button');
-              deleteButton.dataset.deleteid = comments[i].comment_id;
-              deleteButton.innerHTML = 'Delete';
-              deleteButton.onclick = deleteComment;
-
-              commentContainer.appendChild(buttonContainer);
-              buttonContainer.appendChild(submitButton);
-              buttonContainer.appendChild(cancelButton);
-              buttonContainer.appendChild(modifyButton);
-              buttonContainer.appendChild(deleteButton);
+            // If there are not, load all comments sent from server
+            else {
+              moreCommentsOnServer = false;
+              var loadNumber = comments.length;
             }
-          }
 
-          // Jump to comment specified in URL hash after comments load
-          if (window.location.hash && !loaded) {
-            window.location = window.location.href;
-            loaded = true;
-          }
+            for (var i = 0; i < loadNumber; i++) {
+              // Create container for comment
+              var commentContainer = document.createElement('div');
+              commentContainer.classList.add('comment-container');
+              commentContainer.id = 'comment' + comments[i].comment_id;
 
-        });
-      }
-      return;
-    });
+              // Create container for comment content
+              var commentContent = document.createElement('div');
+              commentContent.classList.add('comment-content');
+              commentContent.dataset.id = comments[i].comment_id;
+              commentContent.innerHTML = comments[i].content;
+
+              // Create link to commenter's profile
+              var commenter = document.createElement('a');
+              commenter.classList.add('commenter');
+              commenter.href = '../../user/?username=' + comments[i].username;
+              commenter.innerHTML = comments[i].username;
+
+              // Create container for comment timestamp
+              var commentTimestamp = document.createElement('div');
+              commentTimestamp.classList.add('comment-timestamp');
+
+              /* Display modified timestamp if comment was edited, converting
+              UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM
+              AM/PM' format */
+              if (comments[i].created != comments[i].modified) {
+                commentTimestamp.innerHTML = moment(comments[i].created)
+                  .format('MM/DD/YYYY, LT') + ' (edited)';
+              } else {
+                commentTimestamp.innerHTML = moment(comments[i].created)
+                  .format('MM/DD/YYYY, LT');
+              }
+
+              document.getElementById('comments-list')
+                .appendChild(commentContainer);
+              commentContainer.appendChild(commentContent);
+              commentContainer.appendChild(commenter);
+              commentContainer.appendChild(commentTimestamp);
+
+              /* Create buttons for editing and deleting comment if user created
+              the comment */
+              if (comments[i].username == localStorage.getItem('username')) {
+                var buttonContainer = document.createElement('div');
+                buttonContainer.classList.add('button-container');
+
+                var submitButton = document.createElement('button');
+                submitButton.classList.add('submit-button');
+                submitButton.dataset.submitid = comments[i].comment_id;
+                submitButton.innerHTML = 'Submit';
+                submitButton.onclick = submitEdits;
+
+                var cancelButton = document.createElement('button');
+                cancelButton.classList.add('cancel-button');
+                cancelButton.dataset.cancelid = comments[i].comment_id;
+                cancelButton.dataset.content = comments[i].content;
+                cancelButton.innerHTML = 'Cancel';
+                cancelButton.onclick = cancelEdits;
+
+                var modifyButton = document.createElement('button');
+                modifyButton.classList.add('modify-button');
+                modifyButton.dataset.modifyid = comments[i].comment_id;
+                modifyButton.innerHTML = 'Modify';
+                modifyButton.onclick = modifyComment;
+
+                var deleteButton = document.createElement('button');
+                deleteButton.classList.add('delete-button');
+                deleteButton.dataset.deleteid = comments[i].comment_id;
+                deleteButton.innerHTML = 'Delete';
+                deleteButton.onclick = deleteComment;
+
+                commentContainer.appendChild(buttonContainer);
+                buttonContainer.appendChild(submitButton);
+                buttonContainer.appendChild(cancelButton);
+                buttonContainer.appendChild(modifyButton);
+                buttonContainer.appendChild(deleteButton);
+              }
+            }
+
+            // Jump to comment specified in URL hash after comments load
+            if (window.location.hash && !loaded) {
+              window.location = window.location.href;
+              loaded = true;
+            }
+
+          });
+        }
+        return;
+      });
 }
 
 
@@ -267,6 +281,10 @@ function submitComment() {
 
         // Clear comments list
         document.getElementById('comments-list').innerHTML = '';
+
+        // Reset request query params
+        requestStart = 0;
+        requestEnd = 11;
 
         // Reload comments list
         loadComments(postId);
@@ -420,6 +438,10 @@ function deleteComment() {
           // Clear comments list
           document.getElementById('comments-list').innerHTML = '';
 
+          // Reset request query params
+          requestStart = 0;
+          requestEnd = 11;
+
           // Reload comments list
           loadComments(postId);
 
@@ -434,4 +456,25 @@ function deleteComment() {
     }
 
     return;
+}
+
+
+// Request more comments as user scrolls down page (infinite scroll)
+window.addEventListener('scroll', requestMoreComments, false);
+
+function requestMoreComments() {
+  /* If user has scrolled more than 90% of way down page and the server has
+  more comments, update request numbers */
+  if (percentScrolled() > 90 && moreCommentsOnServer) {
+    // Set comment request start number to previous end number - 1
+    requestStart = requestEnd - 1;
+
+    // Set comment request end number to previous end number + 10
+    requestEnd = requestEnd + 10;
+
+    // Load comments with new request numbers
+    loadComments(postId);
+  }
+
+  return;
 }

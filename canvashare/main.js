@@ -418,8 +418,8 @@ function requestMoreDrawings() {
   /* If user has scrolled more than 90% of way down page and the server has
   more drawings, update request numbers */
   if (percentScrolled() > 90 && moreDrawingsOnServer) {
-    // Set drawing request start number to previous end number
-    requestStart = requestEnd;
+    // Set drawing request start number to previous end number - 1
+    requestStart = requestEnd - 1;
 
     // Set drawing request end number to previous end number + number of
     // drawings that can fit in one row of gallery

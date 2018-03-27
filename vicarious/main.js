@@ -91,7 +91,7 @@ function storeImages() {
             if (i == info['data']['children'].length - 1) {
               /* If this is the last object from the Reddit data and the "after"
               value is null, return */
-              if (after == null) {
+              if (!after) {
                 return;
               }
 

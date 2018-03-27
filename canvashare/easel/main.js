@@ -58,7 +58,7 @@ window.onload = function() {
 
   /* Load initial drawing source if drawing id is not null (e.g., if user
   clicked a drawing from the gallery) */
-  if (drawingId != null) {
+  if (drawingId) {
     loadDrawing();
   }
 
@@ -71,11 +71,11 @@ window.onload = function() {
 
   /* Load initial drawing and title as localStorage items if not null (e.g., if
   user came to easel page directly) */
-  else if (localStorage.getItem('drawing-source') != null) {
+  else if (localStorage.getItem('drawing-source')) {
     var title = '';
 
     // Set drawing title as localStorage item if not null
-    if (localStorage.getItem('drawing-title') != null) {
+    if (localStorage.getItem('drawing-title')) {
       title = localStorage.getItem('drawing-title');
     }
 
@@ -388,7 +388,7 @@ document.getElementById('post').onclick = postDrawing;
 function postDrawing() {
   /* If user is not logged in, warn user that login is required to post to
   gallery */
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     window.alert('You must log in to post your drawing to the gallery.');
     return;
   }
@@ -410,7 +410,7 @@ function postDrawing() {
         '"[title]" to enter a title at any time.');
     }
 
-    else if (enteredTitle == null) {
+    else if (!enteredTitle) {
       return;
     }
 
@@ -468,7 +468,7 @@ function downloadDrawing() {
       enteredTitle = prompt('Enter a title for your drawing.');
     }
 
-    else if (enteredTitle == null) {
+    else if (!enteredTitle) {
       return;
     }
 

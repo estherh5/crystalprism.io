@@ -101,7 +101,7 @@ window.onload = function() {
   createPageFooter();
 
   // If user is not logged in, redirect to Sign In page
-  if (localStorage.getItem('token') == null || !checkIfLoggedIn()) {
+  if (!localStorage.getItem('token') || !checkIfLoggedIn()) {
     window.location = '../sign-in/';
     return;
   }

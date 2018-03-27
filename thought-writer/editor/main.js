@@ -42,7 +42,7 @@ window.onload = function() {
 
   /* If user has post stored in sessionStorage (by clicking post from My
   Account page), request post from server */
-  if (sessionStorage.getItem('post-id') != null) {
+  if (sessionStorage.getItem('post-id')) {
     openPost(sessionStorage.getItem('post-id'));
     /* Clear sessionStorage item to allow user to open another previous post
     (i.e., from cabinet) */
@@ -62,17 +62,17 @@ window.onload = function() {
 // Display in-progress post if one is stored locally
 function displayDraft() {
   // Display in-progress post title if it is stored
-  if (localStorage.getItem('post-title') != null) {
+  if (localStorage.getItem('post-title')) {
     postTitle.value = localStorage.getItem('post-title');
   }
 
   // Display in-progress post content if it is stored
-  if (localStorage.getItem('post-content') != null) {
+  if (localStorage.getItem('post-content')) {
     post.innerHTML = localStorage.getItem('post-content');
   }
 
   // Display whether or not in-progress post is public if stored
-  if (localStorage.getItem('post-public') != null) {
+  if (localStorage.getItem('post-public')) {
 
     // If draft is public, display checked checkbox
     if (localStorage.getItem('post-public') == 'true') {
@@ -120,7 +120,7 @@ function toggleButtons() {
 // Load user's posts from server
 function loadPosts() {
   // Do nothing if user is not logged in
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     return;
   }
 
@@ -388,7 +388,7 @@ document.getElementById('submit-post').onclick = submitPost;
 
 function submitPost() {
   // If user is not logged in, warn user that login is required to submit post
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     window.alert('You must log in to create a post.');
     return;
   }
@@ -411,7 +411,7 @@ function submitPost() {
         '"[title]" to enter a title at any time.');
     }
 
-    else if (enteredTitle == null) {
+    else if (!enteredTitle) {
       return;
     }
 
@@ -516,7 +516,7 @@ function modifyPost() {
         '"[title]" to enter a title at any time.');
     }
 
-    else if (enteredTitle == null) {
+    else if (!enteredTitle) {
       return;
     }
 
@@ -526,7 +526,7 @@ function modifyPost() {
   }
 
   // If user is not logged in, warn user that login is required to modify post
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     window.alert('You must log in to edit a post.');
     return;
   }

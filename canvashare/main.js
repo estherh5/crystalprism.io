@@ -1,7 +1,7 @@
 // Define global variables
 var requestStart = 0; // Range start for number of drawings to request
 var requestEnd = 12; // Range end for number of drawings to request
-var errorMessage = null;
+var errorMessage;
 var moreDrawingsOnServer = false;
 var gallery = document.getElementById('gallery');
 var continueOption = document.getElementById('continue-option');
@@ -33,7 +33,7 @@ window.onload = function() {
   loadDrawings();
 
   // Load preview of in-progress drawing if one is stored locally
-  if (localStorage.getItem('drawing-source') != null) {
+  if (localStorage.getItem('drawing-source')) {
     // Unhide continue option in drawing menu
     continueOption.classList.remove('hidden');
 
@@ -102,7 +102,7 @@ function loadDrawings() {
     displayed (i.e., prevent multiple errors when scrolling to load more
     drawings) */
     .catch(function(error) {
-      if (errorMessage == null) {
+      if (!errorMessage || errorMessage.parentNode != gallery) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the gallery. ' +
@@ -120,7 +120,7 @@ function loadDrawings() {
           if (drawings.length != 0) {
 
             // Remove error message from gallery if it is displayed
-            if (errorMessage != null) {
+            if (errorMessage && errorMessage.parentNode == gallery) {
               gallery.removeChild(errorMessage);
             }
 
@@ -234,7 +234,7 @@ function loadDrawings() {
       }
 
       // Display error message if the server sends an error
-      if (errorMessage == null) {
+      if (!errorMessage || errorMessage.parentNode != gallery) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the gallery. ' +

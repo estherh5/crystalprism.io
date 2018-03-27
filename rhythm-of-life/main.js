@@ -750,12 +750,15 @@ function setHeartAttr() {
 
   // If blood pressure is >= 164/102, end game
   if (systolic >= 164 && diastolic >= 102) {
+
     // Send game score to server if user is logged in
-    if (localStorage.getItem('token') != null) {
+    if (localStorage.getItem('token')) {
       storeScore();
     }
+
     // Display Game Over screen
     gameOverScreen.style.visibility = 'visible';
+
     // Stop heartbeat sound
     heartbeat.stop();
   }

@@ -11,11 +11,11 @@ var projects = document.getElementsByClassName('project-listing');
 var projectOverviews = document.getElementsByClassName('project-overview');
 var videoContainers = document.getElementsByClassName('video-container');
 var videos = document.getElementsByTagName('video');
-var photosError = null;
+var photosError;
 var photoRequestStart = 0; // Range start for number of Photos page photos to request from server
 var photoRequestEnd = 21; // Range end for number of Photos page photos to request from server
 var morePhotosOnServer = false;
-var postsError = null;
+var postsError;
 var postRequestStart = 0; // Range start for number of Ideas page posts to request from server
 var postRequestEnd = 11; // Range end for number of Ideas page posts to request from server
 var morePostsOnServer = false;
@@ -623,14 +623,15 @@ function loadPhotos() {
       displayed (i.e., prevent multiple errors when scrolling to load more
       photos) */
       .catch(function(error) {
-        if (photosError == null) {
-          photosError = document.createElement('text');
-          photosError.id = 'photos-error';
-          photosError.innerHTML = 'There was an error loading the photos. ' +
-            'Please refresh the page.';
-          document.getElementById('photos-page').appendChild(photosError);
-          return;
-        }
+        if (!photosError || photosError.parentNode != document
+          .getElementById('photos-page')) {
+            photosError = document.createElement('text');
+            photosError.id = 'photos-error';
+            photosError.innerHTML = 'There was an error loading the photos. ' +
+              'Please refresh the page.';
+            document.getElementById('photos-page').appendChild(photosError);
+            return;
+          }
       })
 
       .then(function(response) {
@@ -641,10 +642,11 @@ function loadPhotos() {
             if (s3Photos.length != 0) {
 
               // Remove error message from Photos page if it is displayed
-              if (photosError != null) {
-                document.getElementById('photos-page')
-                  .removeChild(photosError);
-              }
+              if (photosError && photosError.parentNode == document
+                .getElementById('photos-page')) {
+                  document.getElementById('photos-page')
+                    .removeChild(photosError);
+                }
 
               /* Assess if there are more than requested photos - 1 (number of
               loaded photos) on server */
@@ -691,14 +693,15 @@ function loadPhotos() {
         }
 
         // Display error message if server returned error
-        if (photosError == null) {
-          photosError = document.createElement('text');
-          photosError.id = 'photos-error';
-          photosError.innerHTML = 'There are no photos right now. ' +
-            'Please check later.';
-          document.getElementById('photos-page').appendChild(photosError);
-          return;
-        }
+        if (!photosError || photosError.parentNode != document
+          .getElementById('photos-page')) {
+            photosError = document.createElement('text');
+            photosError.id = 'photos-error';
+            photosError.innerHTML = 'There are no photos right now. ' +
+              'Please check later.';
+            document.getElementById('photos-page').appendChild(photosError);
+            return;
+          }
       });
 }
 
@@ -738,14 +741,15 @@ function loadPosts() {
       displayed (i.e., prevent multiple errors when scrolling to load more
       posts) */
       .catch(function(error) {
-        if (postsError == null) {
-          postsError = document.createElement('text');
-          postsError.id = 'posts-error';
-          postsError.innerHTML = 'There was an error loading the Ideas ' +
-            'posts. Please refresh the page.';
-          document.getElementById('ideas-page').appendChild(postsError);
-          return;
-        }
+        if (!postsError || postsError.parentNode != document
+          .getElementById('ideas-page')) {
+            postsError = document.createElement('text');
+            postsError.id = 'posts-error';
+            postsError.innerHTML = 'There was an error loading the Ideas ' +
+              'posts. Please refresh the page.';
+            document.getElementById('ideas-page').appendChild(postsError);
+            return;
+          }
 
       }).then(function(response) {
         if (response.ok) {
@@ -755,9 +759,10 @@ function loadPosts() {
             if (posts.length != 0) {
 
               // Remove error message from Ideas page if it is displayed
-              if (postsError != null) {
-                document.getElementById('ideas-page').removeChild(postsError);
-              }
+              if (postsError && postsError.parentNode == document
+                .getElementById('ideas-page')) {
+                  document.getElementById('ideas-page').removeChild(postsError);
+                }
 
               /* Assess if there are more than requested posts - 1 (number of
               loaded posts) on server */
@@ -842,14 +847,15 @@ function loadPosts() {
         }
 
         // Display error message if server returned error
-        if (postsError == null) {
-          postsError = document.createElement('text');
-          postsError.id = 'posts-error';
-          postsError.innerHTML = 'There are no posts right now. ' +
-            'Please check later.';
-          document.getElementById('ideas-page').appendChild(postsError);
-          return;
-        }
+        if (!postsError || postsError.parentNode != document
+          .getElementById('ideas-page')) {
+            postsError = document.createElement('text');
+            postsError.id = 'posts-error';
+            postsError.innerHTML = 'There are no posts right now. ' +
+              'Please check later.';
+            document.getElementById('ideas-page').appendChild(postsError);
+            return;
+          }
       });
 }
 

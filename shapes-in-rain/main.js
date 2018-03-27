@@ -178,7 +178,7 @@ window.onbeforeunload = sendScore;
 
 function sendScore() {
   // If user is logged in, send score to server
-  if (localStorage.getItem('username') != null) {
+  if (localStorage.getItem('username')) {
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
     data = JSON.stringify(finalScore);
 

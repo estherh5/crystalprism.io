@@ -1,6 +1,6 @@
 // Define global variables
 var postId = window.location.search.split('post=')[1];
-var errorMessage = null;
+var errorMessage;
 var postWriter = document.getElementById('post-writer');
 var loaded = false; // Track whether or not comments have loaded
 var requestStart = 0; // Range start for number of comments to request from server
@@ -51,7 +51,7 @@ function loadPost() {
     displayed (i.e., prevent multiple errors if user submits comment and
     requests to reload post) */
     .catch(function(error) {
-      if (errorMessage == null) {
+      if (!errorMessage) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the post. ' +
@@ -108,7 +108,7 @@ function loadPost() {
       }
 
       // Display error message if server responds with error
-      if (errorMessage == null) {
+      if (!errorMessage) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the post. ' +
@@ -241,7 +241,7 @@ document.getElementById('submit-comment').onclick = submitComment;
 
 function submitComment() {
   // If user is not logged in, warn user that login is required to post comment
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     window.alert('You must log in to leave a comment.');
     return;
   }

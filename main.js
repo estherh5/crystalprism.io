@@ -11,6 +11,14 @@ var projects = document.getElementsByClassName('project-listing');
 var projectOverviews = document.getElementsByClassName('project-overview');
 var videoContainers = document.getElementsByClassName('video-container');
 var videos = document.getElementsByTagName('video');
+var photosError = null;
+var photoRequestStart = 0; // Range start for number of Photos page photos to request from server
+var photoRequestEnd = 21; // Range end for number of Photos page photos to request from server
+var morePhotosOnServer = false;
+var postsError = null;
+var postRequestStart = 0; // Range start for number of Ideas page posts to request from server
+var postRequestEnd = 11; // Range end for number of Ideas page posts to request from server
+var morePostsOnServer = false;
 var parentSections = document.getElementsByClassName('expand-parent');
 var childSections = document.getElementsByClassName('expand-child');
 var sectionDetails = document.getElementsByClassName('subsection-details');
@@ -28,13 +36,17 @@ window.onload = function() {
   pingServer(function() {
     checkIfLoggedIn();
 
-    // Reload photos if user is on Photos page
+    // Reset request variables and reload photos if user is on Photos page
     if (selectedPage.id == 'photos-page') {
+      photoRequestStart = 0;
+      photoRequestEnd = 21;
       loadPhotos();
     }
 
-    // Reload posts if user is on Ideas page
+    // Reset request variables and reload posts if user is on Ideas page
     if (selectedPage.id == 'ideas-page') {
+      postRequestStart = 0;
+      postRequestEnd = 11;
       loadPosts();
     }
 
@@ -208,13 +220,21 @@ function togglePage() {
       selectedPage.classList.remove('hidden');
       selectedPage.classList.remove('fade');
 
-      // Load photos to Photos page if user toggles to this page
+      /* Reset request variables and load photos to Photos page if user toggles
+      to this page */
       if (selectedPage.id == 'photos-page') {
+        photoRequestStart = 0;
+        photoRequestEnd = 21;
+        document.getElementById('photos-list').innerHTML = '';
         loadPhotos();
       }
 
-      // Load posts to Ideas page if user toggles to this page
+      /* Reset request variables and load posts to Ideas page if user toggles
+      to this page */
       if (selectedPage.id == 'ideas-page') {
+        postRequestStart = 0;
+        postRequestEnd = 11;
+        document.getElementById('ideas-page').innerHTML = '';
         loadPosts();
       }
 
@@ -579,168 +599,267 @@ window.addEventListener('keydown', function(e) {
 
 // Load photos from Amazon S3 bucket to Photos page
 function loadPhotos() {
-  document.getElementById('photos-page').innerHTML = '';
+  return fetch(api + '/homepage/photos?start=' + photoRequestStart + '&end=' +
+    photoRequestEnd)
 
-  return fetch(api + '/homepage/photos?start=0&end=20')
+      /* Display error message if server is down and error isn't already
+      displayed (i.e., prevent multiple errors when scrolling to load more
+      photos) */
+      .catch(function(error) {
+        if (photosError == null) {
+          photosError = document.createElement('text');
+          photosError.id = 'photos-error';
+          photosError.innerHTML = 'There was an error loading the photos. ' +
+            'Please refresh the page.';
+          document.getElementById('photos-page').appendChild(photosError);
+          return;
+        }
+      })
 
-    // Display error if server is down
-    .catch(function(error) {
-      var photosError = document.createElement('text');
-      photosError.id = 'photos-error';
-      photosError.innerHTML = 'There was an error loading the photos. ' +
-        'Please refresh the page.';
-      document.getElementById('photos-page').appendChild(photosError);
-      return;
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(s3Photos) {
+            /* Add photo(s) to Photos page if there is at least one photo sent
+            from server */
+            if (s3Photos.length != 0) {
 
-    }).then(function(response) {
-      if (response.ok) {
-        response.json().then(function(s3Photos) {
-          /* Add photo(s) to Photos page if there is at least one photo sent
-          from server */
-          if (s3Photos.length != 0) {
-            // Create container for photos list
-            var photosList = document.createElement('ul');
-            photosList.id = 'photos-list';
-            document.getElementById('photos-page').appendChild(photosList);
+              // Remove error message from Photos page if it is displayed
+              if (photosError != null) {
+                document.getElementById('photos-page')
+                  .removeChild(photosError);
+              }
 
-            for (var i = 0; i < s3Photos.length; i++) {
-              if (s3Photos[i].includes('thumb')) {
-                // Create containers for photo
-                var photoContainer = document.createElement('li');
-                var photoListing = document.createElement('div');
-                photoListing.classList.add('photo-listing');
-                photoListing.dataset.displayed = 'false';
+              /* Assess if there are more than requested photos - 1 (number of
+              loaded photos) on server */
+              if (s3Photos.length > (photoRequestEnd - photoRequestStart - 1)) {
+                morePhotosOnServer = true;
+                var loadNumber = photoRequestEnd - photoRequestStart - 1;
+              }
 
-                // Add photo to Photos page
-                var photo = document.createElement('img');
-                photo.classList.add('photo');
-                photo.src = s3Photos[i];
-                photoContainer.appendChild(photoListing);
-                photoListing.appendChild(photo);
-                photosList.appendChild(photoContainer);
+              // If there are not, load all photos sent from server
+              else {
+                morePhotosOnServer = false;
+                var loadNumber = s3Photos.length;
+              }
 
-                // Open photo modal when photo is clicked from Photos page
-                photoListing.addEventListener('click', function() {
-                  openModal(this, 'photo');
-                  return;
-                }, false);
+              for (var i = 0; i < loadNumber; i++) {
+                if (s3Photos[i].includes('thumb')) {
+                  // Create containers for photo
+                  var photoContainer = document.createElement('li');
+                  var photoListing = document.createElement('div');
+                  photoListing.classList.add('photo-listing');
+                  photoListing.dataset.displayed = 'false';
 
+                  // Add photo to Photos page
+                  var photo = document.createElement('img');
+                  photo.classList.add('photo');
+                  photo.src = s3Photos[i];
+                  photoContainer.appendChild(photoListing);
+                  photoListing.appendChild(photo);
+                  document.getElementById('photos-list')
+                    .appendChild(photoContainer);
+
+                  // Open photo modal when photo is clicked from Photos page
+                  photoListing.addEventListener('click', function() {
+                    openModal(this, 'photo');
+                    return;
+                  }, false);
+
+                }
               }
             }
-          }
-        });
+          });
 
-        return;
-      }
+          return;
+        }
 
-      // Display error message if server returned error
-      var photosError = document.createElement('text');
-      photosError.id = 'photos-error';
-      photosError.innerHTML = 'There are no photos right now. ' +
-        'Please check later.';
-      document.getElementById('photos-page').appendChild(photosError);
-      return;
-    });
+        // Display error message if server returned error
+        if (photosError == null) {
+          photosError = document.createElement('text');
+          photosError.id = 'photos-error';
+          photosError.innerHTML = 'There are no photos right now. ' +
+            'Please check later.';
+          document.getElementById('photos-page').appendChild(photosError);
+          return;
+        }
+      });
+}
+
+
+// Request more photos as user scrolls down Photos page (infinite scroll)
+window.addEventListener('scroll', function() {
+  if (selectedPage.id == 'photos-page') {
+    requestMorePhotos;
+  }
+  return;
+}, false);
+
+function requestMorePhotos() {
+  /* If user has scrolled more than 90% of way down page and the server has
+  more photos, update request numbers */
+  if (percentScrolled() > 90 && morePhotosOnServer) {
+    // Set photo request start number to previous end number - 1
+    photoRequestStart = photoRequestEnd - 1;
+
+    // Set photo request end number to previous end number + 10
+    photoRequestEnd = photoRequestEnd + 10;
+
+    // Load photos with new request numbers
+    loadPhotos();
+  }
+
+  return;
 }
 
 
 // Load Thought Writer posts written by Esther to Ideas page
 function loadPosts() {
-  document.getElementById('ideas-page').innerHTML = '';
+  return fetch(api + '/thought-writer/post-board/esther?start=' +
+    postRequestStart + '&end=' + postRequestEnd)
 
-  return fetch(api + '/thought-writer/post-board/esther')
+      /* Display error message if server is down and error isn't already
+      displayed (i.e., prevent multiple errors when scrolling to load more
+      posts) */
+      .catch(function(error) {
+        if (postsError == null) {
+          postsError = document.createElement('text');
+          postsError.id = 'posts-error';
+          postsError.innerHTML = 'There was an error loading the Ideas ' +
+            'posts. Please refresh the page.';
+          document.getElementById('ideas-page').appendChild(postsError);
+          return;
+        }
 
-    // Display error if server is down
-    .catch(function(error) {
-      var ideasError = document.createElement('text');
-      ideasError.id = 'ideas-error';
-      ideasError.innerHTML = 'There was an error loading the Ideas posts. ' +
-        'Please refresh the page.';
-      document.getElementById('ideas-page').appendChild(ideasError);
-      return;
+      }).then(function(response) {
+        if (response.ok) {
+          response.json().then(function(posts) {
+            /* Add post(s) to Ideas page if there is at least one post sent
+            from server */
+            if (posts.length != 0) {
 
-    }).then(function(response) {
-      if (response.ok) {
-        response.json().then(function(posts) {
-          /* Add post(s) to Ideas page if there is at least one post sent
-          from server */
-          if (posts.length != 0) {
-            for (var i = 0; i < posts.length; i++) {
-
-              // Create table for post header and body rows
-              var post = document.createElement('table');
-              post.classList.add('post');
-
-              // Create header row to display post title and timestamp in cells
-              var postHeader = document.createElement('tr');
-              postHeader.classList.add('post-header');
-              var postTitle = document.createElement('td');
-              postTitle.classList.add('post-title');
-              postTitle.innerHTML = posts[i].title;
-              var postTimestamp = document.createElement('td');
-              postTimestamp.classList.add('post-timestamp');
-
-              /* Convert UTC timestamp from server to local timestamp in
-              'MM/DD/YYYY, HH:MM AM/PM' format */
-              postTimestamp.innerHTML = moment(posts[i].timestamp)
-                .format('MM/DD/YYYY, LT');
-
-              // Create body row with post content in cell
-              var postBody = document.createElement('tr');
-              var postContainer = document.createElement('td');
-              postContainer.classList.add('post-container');
-              postContainer.colSpan = '3';
-              var postContent = document.createElement('div');
-              postContent.classList.add('post-content');
-              postContent.id = posts[i].title;
-
-              // Display preview of post if >= 200 characters
-              if (posts[i].content.length >= 200) {
-                /* Store full text in data-fulltext attribute to load if user
-                expands preview */
-                postContent.dataset.fulltext = posts[i].content;
-                postContent.innerHTML = posts[i].content.slice(0, 200) + '...';
-                var toggleTextIcon = document.createElement('i');
-                toggleTextIcon.classList.add('fa');
-                toggleTextIcon.classList.add('fa-plus-square-o');
-                var toggleTextButton = document.createElement('button');
-                toggleTextButton.classList.add('toggle-full-text');
-                toggleTextButton.dataset.post = posts[i].title;
-                toggleTextButton.appendChild(toggleTextIcon);
-
-                // Toggle full post text if user clicks plus/minus icon
-                toggleTextButton.onclick = toggleFullText;
-                postContent.appendChild(toggleTextButton);
+              // Remove error message from Ideas page if it is displayed
+              if (postsError != null) {
+                document.getElementById('ideas-page').removeChild(postsError);
               }
 
-              // Display full post otherwise
+              /* Assess if there are more than requested posts - 1 (number of
+              loaded posts) on server */
+              if (posts.length > (postRequestEnd - postRequestStart - 1)) {
+                morePostsOnServer = true;
+                var loadNumber = postRequestEnd - postRequestStart - 1;
+              }
+
+              // If there are not, load all posts sent from server
               else {
-                postContent.innerHTML = posts[i].content;
+                morePostsOnServer = false;
+                var loadNumber = posts.length;
               }
 
-              // Add post to Ideas page
-              document.getElementById('ideas-page').appendChild(post);
-              post.appendChild(postHeader);
-              postHeader.appendChild(postTitle);
-              postHeader.appendChild(postTimestamp);
-              post.appendChild(postBody);
-              postBody.appendChild(postContainer);
-              postContainer.appendChild(postContent);
+              for (var i = 0; i < loadNumber; i++) {
+                // Create table for post header and body rows
+                var post = document.createElement('table');
+                post.classList.add('post');
+
+                /* Create header row to display post title and timestamp in
+                cells */
+                var postHeader = document.createElement('tr');
+                postHeader.classList.add('post-header');
+                var postTitle = document.createElement('td');
+                postTitle.classList.add('post-title');
+                postTitle.innerHTML = posts[i].title;
+                var postTimestamp = document.createElement('td');
+                postTimestamp.classList.add('post-timestamp');
+
+                /* Convert UTC timestamp from server to local timestamp in
+                'MM/DD/YYYY, HH:MM AM/PM' format */
+                postTimestamp.innerHTML = moment(posts[i].timestamp)
+                  .format('MM/DD/YYYY, LT');
+
+                // Create body row with post content in cell
+                var postBody = document.createElement('tr');
+                var postContainer = document.createElement('td');
+                postContainer.classList.add('post-container');
+                postContainer.colSpan = '3';
+                var postContent = document.createElement('div');
+                postContent.classList.add('post-content');
+                postContent.id = posts[i].title;
+
+                // Display preview of post if >= 200 characters
+                if (posts[i].content.length >= 200) {
+                  /* Store full text in data-fulltext attribute to load if user
+                  expands preview */
+                  postContent.dataset.fulltext = posts[i].content;
+                  postContent.innerHTML = posts[i].content.slice(0, 200) +
+                    '...';
+                  var toggleTextIcon = document.createElement('i');
+                  toggleTextIcon.classList.add('fa');
+                  toggleTextIcon.classList.add('fa-plus-square-o');
+                  var toggleTextButton = document.createElement('button');
+                  toggleTextButton.classList.add('toggle-full-text');
+                  toggleTextButton.dataset.post = posts[i].title;
+                  toggleTextButton.appendChild(toggleTextIcon);
+
+                  // Toggle full post text if user clicks plus/minus icon
+                  toggleTextButton.onclick = toggleFullText;
+                  postContent.appendChild(toggleTextButton);
+                }
+
+                // Display full post otherwise
+                else {
+                  postContent.innerHTML = posts[i].content;
+                }
+
+                // Add post to Ideas page
+                document.getElementById('ideas-page').appendChild(post);
+                post.appendChild(postHeader);
+                postHeader.appendChild(postTitle);
+                postHeader.appendChild(postTimestamp);
+                post.appendChild(postBody);
+                postBody.appendChild(postContainer);
+                postContainer.appendChild(postContent);
+              }
             }
-          }
-        });
+          });
 
-        return;
-      }
+          return;
+        }
 
-      // Display error message if server returned error
-      var ideasError = document.createElement('text');
-      ideasError.id = 'ideas-error';
-      ideasError.innerHTML = 'There are no posts right now. ' +
-        'Please check later.';
-      document.getElementById('ideas-page').appendChild(ideasError);
-      return;
-    });
+        // Display error message if server returned error
+        if (postsError == null) {
+          postsError = document.createElement('text');
+          postsError.id = 'posts-error';
+          postsError.innerHTML = 'There are no posts right now. ' +
+            'Please check later.';
+          document.getElementById('ideas-page').appendChild(postsError);
+          return;
+        }
+      });
+}
+
+
+// Request more posts as user scrolls down Ideas page (infinite scroll)
+window.addEventListener('scroll', function() {
+  if (selectedPage.id == 'ideas-page') {
+    requestMorePosts;
+  }
+  return;
+}, false);
+
+function requestMorePosts() {
+  /* If user has scrolled more than 90% of way down page and the server has
+  more posts, update request numbers */
+  if (percentScrolled() > 90 && morePostsOnServer) {
+    // Set post request start number to previous end number - 1
+    postRequestStart = postRequestEnd - 1;
+
+    // Set post request end number to previous end number + 5
+    postRequestEnd = postRequestEnd + 5;
+
+    // Load posts with new request numbers
+    loadPosts();
+  }
+
+  return;
 }
 
 

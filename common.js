@@ -251,3 +251,27 @@ function checkIfLoggedIn() {
       return false;
     });
 }
+
+
+// Assess percentage that user has scrolled down page
+function percentScrolled() {
+  // Determine document height (different for different browsers)
+  var documentHeight = Math.max(
+      document.body.scrollHeight, document.documentElement.scrollHeight,
+      document.body.offsetHeight, document.documentElement.offsetHeight,
+      document.body.clientHeight, document.documentElement.clientHeight);
+
+  // Determine window height (different for different browsers)
+  var windowHeight = window.innerHeight || (document
+    .documentElement || document.body).clientHeight;
+
+  // Determine how far from top user has scrolled down page
+  var scrollTop = window.pageYOffset || (document.documentElement || document
+    .body.parentNode || document.body).scrollTop;
+
+  // Determine length scrollbar can travel down
+  var scrollLength = documentHeight - windowHeight;
+
+  // Return percentage scrolled down page
+  return Math.floor((scrollTop / scrollLength) * 100);
+}

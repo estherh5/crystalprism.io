@@ -153,7 +153,7 @@ function requestLogin() {
         localStorage.setItem('token', token);
 
         // Take user to previous page if stored in sessionStorage
-        if (sessionStorage.getItem('previous-window') != null) {
+        if (sessionStorage.getItem('previous-window')) {
           window.location = sessionStorage.getItem('previous-window');
           sessionStorage.removeItem('previous-window');
           return;

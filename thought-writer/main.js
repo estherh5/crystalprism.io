@@ -1,5 +1,5 @@
 // Define global variables
-var errorMessage = null;
+var errorMessage;
 var requestStart = 0; // Range start for number of posts to request from server
 var requestEnd = 12; // Range end for number of posts to request from server
 var morePostsOnServer = false;
@@ -40,7 +40,7 @@ function loadPosts() {
       displayed (i.e., prevent multiple errors when scrolling to load more
       posts) */
       .catch(function(error) {
-        if (errorMessage == null) {
+        if (!errorMessage || errorMessage.parentNode != postBoard) {
           errorMessage = document.createElement('text');
           errorMessage.id = 'error-message';
           errorMessage.innerHTML = 'There was an error loading the post ' +
@@ -58,7 +58,7 @@ function loadPosts() {
             if (posts.length != 0) {
 
               // Remove error message from post board if it is displayed
-              if (errorMessage != null) {
+              if (errorMessage && errorMessage.parentNode == postBoard) {
                 postBoard.removeChild(errorMessage);
               }
 
@@ -140,7 +140,7 @@ function loadPosts() {
         }
 
         // Display error message if the server sends an error
-        if (errorMessage == null) {
+        if (!errorMessage || errorMessage.parentNode != postBoard) {
           errorMessage = document.createElement('text');
           errorMessage.id = 'error-message';
           errorMessage.innerHTML = 'There are no posts on the post board. ' +

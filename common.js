@@ -163,7 +163,7 @@ function pingServer(action) {
 // Check if user is logged in by assessing JWT token's validity
 function checkIfLoggedIn() {
   // If user does not have a token stored locally, set account menu to default
-  if (localStorage.getItem('token') == null) {
+  if (!localStorage.getItem('token')) {
     accountLink.innerHTML = 'Create Account';
     signInLink.innerHTML = 'Sign In';
 

@@ -447,7 +447,13 @@ function postDrawing() {
         return;
       }
 
-      // Otherwise, display error message
+      // If drawing is not unique, display error message
+      if (response.status == 409) {
+        window.alert('Your drawing must be unique.');
+        return;
+      }
+
+      // Otherwise, display login error message
       window.alert('You must log in to post your drawing to the gallery.');
 
       return;

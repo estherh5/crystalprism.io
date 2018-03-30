@@ -11,6 +11,7 @@ var projects = document.getElementsByClassName('project-listing');
 var projectOverviews = document.getElementsByClassName('project-overview');
 var videoContainers = document.getElementsByClassName('video-container');
 var videos = document.getElementsByTagName('video');
+var videosLoaded = false;
 var photosError;
 var photoRequestStart = 0; // Range start for number of Photos page photos to request from server
 var photoRequestEnd = 21; // Range end for number of Photos page photos to request from server
@@ -233,6 +234,14 @@ function togglePage() {
       selectedPage.classList.remove('hidden');
       selectedPage.classList.remove('fade');
 
+      /* Load videos to Projects page if user toggles to this page and they
+      aren't loaded yet */
+      if (selectedPage.id == 'projects-page') {
+        if (!videosLoaded) {
+          loadVideos();
+        }
+      }
+
       /* Reset request variables and load photos to Photos page if user toggles
       to this page */
       if (selectedPage.id == 'photos-page') {
@@ -276,6 +285,20 @@ function togglePage() {
     return;
 
   }, false);
+
+  return;
+}
+
+
+// Load videos to Projects page modal
+function loadVideos() {
+  for (var i = 0; i < videos.length; i++) {
+    videos[i].src = 'https://crystalprism.io/videos/' +
+      videos[i].dataset.project + '.mp4';
+    videos[i].load();
+  }
+
+  videosLoaded = true;
 
   return;
 }

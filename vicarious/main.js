@@ -402,18 +402,19 @@ function closeCarousel() {
 
 
 // Define carousel keyboard shortcuts
-window.addEventListener('keyup', function(e) {
+window.addEventListener('keydown', function(e) {
   // Close carousel when escape key is clicked
-  if (carousel.style.display != 'none' && e.keyCode == 27) {
+  if (window.getComputedStyle(carousel).display != 'none' && e.keyCode == 27) {
     e.preventDefault();
     carouselCloseButton.click();
   }
 
   // Advance to next carousel item when space key is clicked
-  else if (carousel.style.display != 'none' && e.keyCode == 32) {
-    e.preventDefault();
-    carouselNext.click();
-  }
+  else if (window.getComputedStyle(carousel).display != 'none' && e
+    .keyCode == 32) {
+      e.preventDefault();
+      carouselNext.click();
+    }
 
   return;
 }, false);

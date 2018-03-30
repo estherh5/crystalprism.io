@@ -215,8 +215,17 @@ function togglePage() {
       }
 
       // Display page specified in page URL hash
-      selectedPage = document.getElementById((window.location.hash)
-        .split('#')[1]);
+      if (window.location.hash) {
+        selectedPage = document.getElementById((window.location.hash)
+          .split('#')[1]);
+      }
+      // If hash is blank, display splash page and unhide page header
+      else {
+        selectedPage = document.getElementById('splash-page');
+        document.getElementById('front-page-icon').classList.add('hidden');
+        document.getElementById('nav-buttons').classList.add('hidden');
+      }
+
       selectedPage.classList.remove('hidden');
       selectedPage.classList.remove('fade');
 
@@ -241,9 +250,17 @@ function togglePage() {
       // Remove bold/color style of button for the previous page
       selectedButton.classList.remove('selected');
 
+      // Set button for the requested page based on URL hash
+      if (window.location.hash) {
+        selectedButton = document.getElementById((window.location.hash)
+          .split('#')[1] + '-button');
+      }
+      // If hash is blank, set selected button as first nav button
+      else {
+        selectedButton = navButtons[0];
+      }
+
       // Add bold/color style of button for the requested page
-      selectedButton = document.getElementById((window.location.hash)
-        .split('#')[1] + '-button');
       selectedButton.classList.add('selected');
 
       // Set previous page as currently selected page for future toggling

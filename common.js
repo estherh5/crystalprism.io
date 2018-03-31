@@ -3,19 +3,17 @@ var profileLink;
 var accountLink;
 var signInLink;
 var currentPath = window.location.href.split('/').slice(-2)[0];
+var domain = window.location.origin.split('/').slice(-2)[1];
+var root = window.location.origin;
 var refreshed = false // If Refresh button was clicked for pingServer function
 var scrolled = false // Stores if user scrolled down page with infinite scroll
 
 
-// Determine API endpoint, domain and root URL based on window location
+// Determine API endpoint based on window location
 if (window.location.hostname == 'crystalprism.io') {
   var api = 'https://api.crystalprism.io/api';
-  var domain = 'crystalprism.io';
-  var root = 'https://' + domain;
 } else {
   var api = 'http://localhost:5000/api';
-  var domain = 'crystalprism.io';
-  var root = window.location.href.split('crystalprism.io')[0] + domain;
 }
 
 
@@ -77,8 +75,8 @@ function createPageFooter() {
 
   // Create contact information display
   var contact = document.createElement('div');
-  contact.innerHTML = 'Find any bugs? Email <a href="admin@crystalprism.io">' +
-    'admin@crystalprism.io</a> with details.';
+  contact.innerHTML = 'Email <a href="admin@crystalprism.io">' +
+    'admin@crystalprism.io</a> with any questions or concerns.';
 
   // Create footer to contain copyright and contact information
   var footer = document.createElement('div');
@@ -247,6 +245,7 @@ function checkIfLoggedIn() {
 
         // Redirect to Sign In page if user is on My Account page
         if (currentPath == 'my-account') {
+          sessionStorage.setItem('account-request', 'logout');
           window.location = '../sign-in/';
         }
       }

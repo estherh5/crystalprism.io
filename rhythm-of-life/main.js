@@ -25,8 +25,11 @@ var direction;
 var xStart;
 var yStart;
 var heart;
+var heartLoaded = false;
 var relievers = [];
+var relieversLoaded = false;
 var stressors = [];
+var stressorsLoaded = false;
 var reliever;
 var stressor;
 // Add heartbeat sound with Howler
@@ -77,6 +80,23 @@ function retryFunctions() {
 }
 
 
+// Add heart SVG to game board when heart SVG object loads
+document.getElementById('heart').onload = function() {
+  // Add heart to game board if it is not already there
+  if (!heartLoaded) {
+    heart = Snap(document.getElementById('heart').contentDocument
+      .getElementsByTagName('svg')[0]).attr({fill: '#56d056', 'x': 0, 'y': 0,
+      width: scale, height: scale});
+
+    svgGame.append(heart);
+  }
+
+  heartLoaded = true;
+
+  return;
+}
+
+
 // Add reliever SVG objects to relievers array when they load
 for (var i = 0; i < document.getElementsByClassName('reliever').length; i++) {
   document.getElementsByClassName('reliever')[i]
@@ -86,6 +106,7 @@ for (var i = 0; i < document.getElementsByClassName('reliever').length; i++) {
       // Place reliever on game board when all 4 relievers have loaded
       if (relievers.length == 4) {
         reliever = place(relievers);
+        relieversLoaded = true;
       }
 
       return;
@@ -102,22 +123,13 @@ for (var i = 0; i < document.getElementsByClassName('stressor').length; i++) {
       // Place stressor on game board when all 4 stressors have loaded
       if (stressors.length == 4) {
         stressor = place(stressors);
+        stressorsLoaded = true;
       }
 
       return;
     }, false);
 }
 
-// Add heart SVG to game board when heart SVG object loads
-document.getElementById('heart').onload = function() {
-  heart = Snap(document.getElementById('heart').contentDocument
-    .getElementsByTagName('svg')[0]).attr({fill: '#56d056', 'x': 0, 'y': 0,
-    width: scale, height: scale});
-
-  svgGame.append(heart);
-
-  return;
-}
 
 
 // Define game state functions
@@ -139,16 +151,18 @@ function reset() {
   systolicText.style.color = '#56d056';
   diastolicText.style.color = '#56d056';
 
-  // Place heart at top left of game board
-  heart.attr({'x': 0, 'y': 0, fill: '#56d056'});
+  if (heartLoaded && stressorsLoaded && relieversLoaded) {
+    // Place heart at top left of game board
+    heart.attr({'x': 0, 'y': 0, fill: '#56d056'});
 
-  // Place stressor randomly on game board
-  stressor.remove();
-  stressor = place(stressors);
+    // Place stressor randomly on game board
+    stressor.remove();
+    stressor = place(stressors);
 
-  // Place reliever randomly on game board
-  reliever.remove();
-  reliever = place(relievers);
+    // Place reliever randomly on game board
+    reliever.remove();
+    reliever = place(relievers);
+  }
 
   // Hide Game Over screen and Learn More screen
   gameOverScreen.style.visibility = 'hidden';
@@ -237,6 +251,19 @@ function resume() {
 
 
 // Define game states
+
+// Assess that game is on large enough screen if warnings are not displayed
+function largeEnoughScreen() {
+  var warning = document.getElementById('warning');
+  var mobileWarning = document.getElementById('warning-mobile');
+
+  if (window.getComputedStyle(warning).display == 'none' && window
+    .getComputedStyle(mobileWarning).display == 'none') {
+      return true;
+    }
+
+  return false;
+}
 
 /* Assess that game is ready to start if Start screen is the only screen
 displayed */
@@ -387,8 +414,9 @@ document.body.onkeydown = function(e) {
   if (e.keyCode == 32) {
     e.preventDefault();
 
-    // Do nothing if game is over or hasn't started yet
-    if (gameOver() || readyToStart()) {
+    /* Do nothing if screen is too small or if game is over or hasn't started
+    yet */
+    if (!largeEnoughScreen() || gameOver() || readyToStart()) {
       return;
     }
 
@@ -422,8 +450,9 @@ document.body.onkeydown = function(e) {
   else if (e.keyCode == '80' && !paused()) {
     e.preventDefault();
 
-    // Do nothing if game is over or hasn't started yet
-    if (gameOver() || readyToStart()) {
+    /* Do nothing if screen is too small or if game is over or hasn't started
+    yet */
+    if (!largeEnoughScreen() || gameOver() || readyToStart()) {
       return;
     }
 
@@ -437,8 +466,9 @@ document.body.onkeydown = function(e) {
   else if (e.keyCode == '82' && paused()) {
     e.preventDefault();
 
-    // Do nothing if game is over or hasn't started yet
-    if (gameOver() || readyToStart()) {
+    /* Do nothing if screen is too small or if game is over or hasn't started
+    yet */
+    if (largeEnoughScreen() || gameOver() || readyToStart()) {
       return;
     }
 
@@ -474,8 +504,15 @@ setTimeout(gameLoop, speed);
 function gameLoop() {
   setTimeout(gameLoop, speed);
 
-  // Do nothing if game hasn't started yet, is paused, or is over
-  if (readyToStart() || paused() || gameOver()) {
+  // Pause game if screen is too small and game is in progress
+  if (!largeEnoughScreen() && !(readyToStart() || paused() || gameOver())) {
+    pause();
+    return;
+  }
+
+  /* Do nothing if screen is too small or if game hasn't started yet, is
+  paused, or is over */
+  if (!largeEnoughScreen() || readyToStart() || paused() || gameOver()) {
     return;
   }
 
@@ -504,8 +541,9 @@ function gameLoop() {
 setInterval(updateLifespan, 1000);
 
 function updateLifespan() {
-  // Do nothing if game hasn't started yet, is paused, or is over
-  if (readyToStart() || paused() || gameOver()) {
+  /* Do nothing if screen is too small or if game hasn't started yet, is
+  paused, or is over */
+  if (!largeEnoughScreen() || readyToStart() || paused() || gameOver()) {
     return;
   }
 
@@ -586,8 +624,9 @@ setTimeout(orientStressor, speed * 1.5);
 function orientStressor() {
   setTimeout(orientStressor, speed * 1.5);
 
-  // Do nothing if game hasn't started yet, is paused, or is over
-  if (readyToStart() || paused() || gameOver()) {
+  /* Do nothing if screen is too small or if game hasn't started yet, is
+  paused, or is over */
+  if (!largeEnoughScreen() || readyToStart() || paused() || gameOver()) {
     return;
   }
 
@@ -842,6 +881,7 @@ function loadLeaders() {
           errorCell.innerHTML = 'The leaderboard could not be loaded.';
           leaders[0].appendChild(errorCell);
         }
+      }
 
       return;
     })

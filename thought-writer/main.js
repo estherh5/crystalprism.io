@@ -156,20 +156,26 @@ function loadPosts() {
 window.addEventListener('scroll', requestMorePosts, false);
 
 function requestMorePosts() {
-  /* If user has scrolled more than 90% of way down page and the server has
-  more posts, update request numbers */
-  if (percentScrolled() > 90 && morePostsOnServer) {
-    // Set post request start number to previous end number - 1
-    requestStart = requestEnd - 1;
+  if (scrolled) {
+    /* If user has scrolled more than 90% of way down page and the server has
+    more posts, update request numbers */
+    if (percentScrolled() > 90 && morePostsOnServer) {
+      // Set post request start number to previous end number - 1
+      requestStart = requestEnd - 1;
 
-    /* Set post request end number to previous end number + number of posts
-    that can fit in one row of post board */
-    requestEnd = requestEnd + Math.floor((postBoard.offsetWidth) / (document
-      .getElementsByClassName('post-container')[0].offsetWidth));
+      /* Set post request end number to previous end number + number of posts
+      that can fit in one row of post board */
+      requestEnd = requestEnd + Math.floor((postBoard.offsetWidth) / (document
+        .getElementsByClassName('post-container')[0].offsetWidth));
 
-    // Load posts with new request numbers
-    loadPosts();
+      // Load posts with new request numbers
+      loadPosts();
+    }
   }
+
+  /* Otherwise, set scrolled variable to true to indicate user scrolled down
+  infinite scroll page (used for smooth scrolling in common.js file) */
+  scrolled = true;
 
   return;
 }

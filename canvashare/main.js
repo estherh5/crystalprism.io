@@ -411,8 +411,29 @@ function updateLikes() {
 }
 
 
-// Request more drawings as user scrolls down page (infinite scroll)
-window.addEventListener('scroll', requestMoreDrawings, false);
+/* Toggle shrink style on header when user scrolls and request more drawings
+(infinite scroll) */
+window.addEventListener('scroll', function() {
+  if (scrolled) {
+    // Add shrink style to header when user scrolls down page
+    if (window.pageYOffset > 60) {
+      document.getElementById('header').classList.add('shrink');
+    }
+
+    // Remove shrink style when user scrolls back to top of page
+    else {
+      document.getElementById('header').classList.remove('shrink');
+    }
+
+    requestMoreDrawings();
+  }
+
+  /* Otherwise, set scrolled variable to true to indicate user scrolled down
+  infinite scroll page (used for smooth scrolling in common.js file) */
+  scrolled = true;
+
+  return;
+}, false);
 
 function requestMoreDrawings() {
   /* If user has scrolled more than 90% of way down page and the server has
@@ -528,18 +549,3 @@ document.getElementById('new-option').onclick = function() {
 
   return;
 }
-
-
-// Toggle shrink style on header when user scrolls
-window.addEventListener('scroll', function() {
-  // Add shrink style to header when user scrolls down page
-  if (window.pageYOffset > 60) {
-    document.getElementById('header').classList.add('shrink');
-    return;
-  }
-
-  // Remove shrink style when user scrolls back to top of page
-  document.getElementById('header').classList.remove('shrink');
-
-  return;
-}, false);

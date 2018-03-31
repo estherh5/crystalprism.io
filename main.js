@@ -706,32 +706,6 @@ function loadPhotos() {
 }
 
 
-// Request more photos as user scrolls down Photos page (infinite scroll)
-window.addEventListener('scroll', function() {
-  if (selectedPage.id == 'photos-page') {
-    requestMorePhotos;
-  }
-  return;
-}, false);
-
-function requestMorePhotos() {
-  /* If user has scrolled more than 90% of way down page and the server has
-  more photos, update request numbers */
-  if (percentScrolled() > 90 && morePhotosOnServer) {
-    // Set photo request start number to previous end number - 1
-    photoRequestStart = photoRequestEnd - 1;
-
-    // Set photo request end number to previous end number + 10
-    photoRequestEnd = photoRequestEnd + 10;
-
-    // Load photos with new request numbers
-    loadPhotos();
-  }
-
-  return;
-}
-
-
 // Load Thought Writer posts written by webpage owner to Ideas page
 function loadPosts() {
   return fetch(api + '/homepage/ideas?start=' + postRequestStart + '&end=' +
@@ -885,13 +859,41 @@ function toggleFullText() {
 }
 
 
-// Request more posts as user scrolls down Ideas page (infinite scroll)
 window.addEventListener('scroll', function() {
-  if (selectedPage.id == 'ideas-page') {
-    requestMorePosts;
+  if (scrolled) {
+    // Request more photos as user scrolls down Photos page (infinite scroll)
+    if (selectedPage.id == 'photos-page') {
+      requestMorePhotos();
+    }
+
+    // Request more posts as user scrolls down Ideas page (infinite scroll)
+    if (selectedPage.id == 'ideas-page') {
+      requestMorePosts();
+    }
   }
+  /* Otherwise, set scrolled variable to true to indicate user scrolled down
+  infinite scroll page (used for smooth scrolling in common.js file) */
+  scrolled = true;
+
   return;
 }, false);
+
+function requestMorePhotos() {
+  /* If user has scrolled more than 90% of way down page and the server has
+  more photos, update request numbers */
+  if (percentScrolled() > 90 && morePhotosOnServer) {
+    // Set photo request start number to previous end number - 1
+    photoRequestStart = photoRequestEnd - 1;
+
+    // Set photo request end number to previous end number + 10
+    photoRequestEnd = photoRequestEnd + 10;
+
+    // Load photos with new request numbers
+    loadPhotos();
+  }
+
+  return;
+}
 
 function requestMorePosts() {
   /* If user has scrolled more than 90% of way down page and the server has

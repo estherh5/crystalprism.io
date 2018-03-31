@@ -1680,31 +1680,40 @@ function deleteAccount() {
 }
 
 
-/* Click hidden color picker input when profile background is clicked (must
-focus first to open) */
+// Click hidden color picker input when profile background is clicked
 profileBackground.onclick = function(e) {
-  if (e.target == this) {
-    backgroundColorPicker.focus();
-    backgroundColorPicker.click();
+  if (e.target == this && !backgroundColorPicker.disabled) {
+    backgroundColorPicker.jscolor.show();
   }
 
   return;
 }
 
 
-/* Click hidden color picker input when profile rows are clicked (must focus
-first to open) */
+// Click hidden color picker input when profile rows are clicked
 for (var i = 0; i < profileBackground.getElementsByClassName('row')
   .length; i++) {
     profileBackground.getElementsByClassName('row')[i].addEventListener('click',
       function(e) {
-        if (e.target == this) {
-          backgroundColorPicker.focus();
-          backgroundColorPicker.click();
+        if (e.target == this && !backgroundColorPicker.disabled) {
+          backgroundColorPicker.jscolor.show();
         }
         return;
       }, false);
   }
+
+
+/* Change color of profile background when user selects color from background
+color picker */
+function updateBgColor(color) {
+  profileBackground.style.backgroundColor = '#' + color;
+  backgroundColorPicker.value = '#' + color;
+
+  // Update field font colors based on background color
+  updateFontColors();
+
+  return;
+}
 
 
 /* Assess darkness of user's profile background color and adjust font color of
@@ -1770,22 +1779,11 @@ function updateFontColors() {
 }
 
 
-/* Click hidden color picker input when profile icon container is clicked (must
-focus first to open) */
+// Click hidden color picker input when profile icon container is clicked
 profileIcon.onclick = function() {
-  iconColorPicker.focus();
-  iconColorPicker.click();
-  return;
-}
-
-
-/* Change color of profile background when user selects color from background
-color picker */
-backgroundColorPicker.oninput = function() {
-  profileBackground.style.backgroundColor = this.value;
-
-  // Update field font colors based on background color
-  updateFontColors();
+  if (!iconColorPicker.disabled) {
+    iconColorPicker.jscolor.show();
+  }
 
   return;
 }
@@ -1793,8 +1791,9 @@ backgroundColorPicker.oninput = function() {
 
 /* Change diamond profile icon color when user selects color from icon color
 picker */
-iconColorPicker.oninput = function() {
-  diamond.style.fill = this.value;
+function updateIconColor(color) {
+  diamond.style.fill = '#' + color;
+  iconColorPicker.value = '#' + color;
 
   // Update icon background color based on icon color
   updateIconBackground();
@@ -2325,6 +2324,7 @@ function cancelEdits() {
 
   // Update icon background color based on icon color
   updateIconBackground();
+
   aboutInput.value = aboutBlurb;
   usernameInput.value = username;
   passwordInput.value = password;

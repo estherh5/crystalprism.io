@@ -46,7 +46,7 @@
           <!-- Toolbar for post editing (buttons with data-commands and icons) -->
           <div id="format-toolbar">
             <button id="font-color-icon">
-              <input id="font-color-picker" type="color" data-command="foreColor">
+              <input id="font-color-picker" class="jscolor {onFineChange: 'formatFontColor(this)'}" data-command="foreColor">
               <i class="material-icons">format_color_text</i>
             </button>
             <button data-command="removeFormat">
@@ -148,6 +148,9 @@
 
     <!-- Moment.js script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
+
+    <!-- jscolor script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jscolor/2.0.4/jscolor.min.js"></script>
 
     <!-- Main and common JS scripts -->
     <script src="../../common.js"></script>

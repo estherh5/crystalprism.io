@@ -329,34 +329,50 @@ for (var i = 0; i < toolbarButtons.length; i++) {
 }
 
 
-/* Click hidden color picker input when font color icon is clicked (must focus
-first to open) */
+// Click hidden color picker input when font color icon is clicked
 document.getElementById('font-color-icon').addEventListener('click',
   function() {
-    document.getElementById('font-color-picker').focus();
-    document.getElementById('font-color-picker').click();
+    document.getElementById('font-color-picker').jscolor.show();
     return;
   }, false);
 
 
-// Format post content when font color is chosen from color picker input
-document.getElementById('font-color-picker').oninput = formatContent;
+  // Update font color icon and font color when color is chosen from input
+function formatFontColor(color) {
+  document.getElementById('font-color-icon').style.color = '#' + color;
+  document.execCommand('foreColor', false, '#' + color);
+  document.getElementById('font-color-picker').value = '#' + color;
+  return;
+}
+
 
 function formatContent() {
   // Get data-command from clicked button/input
   var command = this.dataset.command;
 
-  // Update font color icon and font color when color is chosen from input
-  if (command == 'foreColor') {
-    document.getElementById('font-color-icon').style.color = this.value;
-    document.execCommand(command, false, this.value);
+  // Prompt for URL and insert image or link if those buttons are clicked
+  if (command == 'insertImage' || command == 'createLink') {
+    var url = prompt('Specify link here: ', 'https:\/\/');
+
+    // If URL is not blank, add image/link to post
+    if (url) {
+      document.execCommand(command, false, url);
+      return;
+    }
+
+    // Refocus on post otherwise
+    post.focus();
+
     return;
   }
 
-  // Prompt for URL and insert image or link if those buttons are clicked
-  else if (command == 'insertImage' || command == 'createLink') {
-    var url = prompt('Specify link here: ', 'http:\/\/');
-    document.execCommand(command, false, url);
+  /* Return font color icon to black and clear formatting when clear format
+  button is clicked */
+  else if (command == 'removeFormat') {
+    document.getElementById('font-color-icon').style.color = '#000000';
+    document.getElementById('font-color-picker').value = '#000000';
+    document.getElementById('font-color-picker').jscolor.fromString('#000000');
+    document.execCommand(command, false, null);
     return;
   }
 

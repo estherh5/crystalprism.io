@@ -4,6 +4,7 @@ var accountLink;
 var signInLink;
 var currentPath = window.location.href.split('/').slice(-2)[0];
 var refreshed = false // If Refresh button was clicked for pingServer function
+var scrolled = false // Stores if user scrolled down page with infinite scroll
 
 
 // Determine API endpoint, domain and root URL based on window location
@@ -277,3 +278,20 @@ function percentScrolled() {
   // Return percentage scrolled down page
   return Math.floor((scrollTop / scrollLength) * 100);
 }
+
+
+/* Reset scrolled variable when infinite scrolling to maintain smooth
+frame-per-second scrolling rate */
+window.addEventListener('scroll', function scroll() {
+  setTimeout(function() {
+    if (scrolled) {
+      scrolled = false;
+      scroll();
+      return;
+    }
+
+    scrolled = true;
+    scroll();
+    return;
+  }, 500);
+}, false);

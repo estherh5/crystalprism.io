@@ -463,18 +463,24 @@ function deleteComment() {
 window.addEventListener('scroll', requestMoreComments, false);
 
 function requestMoreComments() {
-  /* If user has scrolled more than 90% of way down page and the server has
-  more comments, update request numbers */
-  if (percentScrolled() > 90 && moreCommentsOnServer) {
-    // Set comment request start number to previous end number - 1
-    requestStart = requestEnd - 1;
+  if (scrolled) {
+    /* If user has scrolled more than 90% of way down page and the server has
+    more comments, update request numbers */
+    if (percentScrolled() > 90 && moreCommentsOnServer) {
+      // Set comment request start number to previous end number - 1
+      requestStart = requestEnd - 1;
 
-    // Set comment request end number to previous end number + 10
-    requestEnd = requestEnd + 10;
+      // Set comment request end number to previous end number + 10
+      requestEnd = requestEnd + 10;
 
-    // Load comments with new request numbers
-    loadComments(postId);
+      // Load comments with new request numbers
+      loadComments(postId);
+    }
   }
+
+  /* Otherwise, set scrolled variable to true to indicate user scrolled down
+  infinite scroll page (used for smooth scrolling in common.js file) */
+  scrolled = true;
 
   return;
 }

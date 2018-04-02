@@ -3,6 +3,7 @@ var game = document.getElementById('game');
 var score = document.getElementById('score');
 var shapeObjects = document.getElementsByClassName('shape');
 var shapes = []; // Array to store SVG shapes
+var started = false; // Stores whether game has started or not
 
 
 // Define load functions
@@ -19,17 +20,96 @@ window.onload = function() {
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 
+  // Assess if user is on mobile device (from common.js script)
+  assessMobile();
+
+  // Unhide starting instructions based on device
+  if (mobile) {
+    document.getElementById('mobile-body-start').classList.remove('hidden');
+    document.getElementById('mobile-start').classList.remove('hidden');
+  } else {
+    document.getElementById('desktop-body-start').classList.remove('hidden');
+    document.getElementById('desktop-start').classList.remove('hidden');
+  }
+
+  // Load top 5 game leaders
+  loadLeaders();
+
+  // Create page header (from common.js script)
+  createPageHeader();
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
+  // Create page footer (from common.js script)
+  createPageFooter();
+
   // Resize game to full screen
   resizeGame();
 
-  // Set intervals for creating hearts that move down screen like rain
-  setInterval(multiplyHeart, 2500);
-  setInterval(rain, 15);
-
-  // Set interval for creating random shapes for user to clear from screen
-  setInterval(createRandomShape, 2000);
-
   return;
+}
+
+
+// Load leaders from server to display on game screen
+function loadLeaders() {
+  var leaders = document.getElementsByClassName('leader');
+
+  // Request top 5 game leaders from server
+  return fetch(api + '/shapes-in-rain/scores')
+
+    // Display error message if server is down
+    .catch(function(error) {
+      // Clear leaders list
+      for (var i = 0; i < leaders.length; i++) {
+        leaders[i].innerHTML = '';
+      }
+
+      // Display error
+      var errorCell = document.createElement('td');
+      errorCell.id = 'error-cell';
+      errorCell.colSpan = "2";
+      errorCell.innerHTML = 'The leaderboard could not be loaded.';
+      leaders[0].appendChild(errorCell);
+
+      // Display game screen
+      document.getElementById('game-screen').classList.remove('hidden');
+
+      return;
+    })
+
+    .then(function(response) {
+      response.json().then(function(leadersList) {
+
+        for (var i = 0; i < leadersList.length; i++) {
+          /* Create cells for score and player name in leaders list from
+          server */
+          var scoreCell = document.createElement('td');
+          var playerCell = document.createElement('td');
+
+          /* Clear current leader display on game board and replace with new
+          player and score cells for mobile/desktop */
+          leaders[i].innerHTML = '';
+          leaders[i].appendChild(scoreCell);
+          leaders[i].appendChild(playerCell);
+
+          // Display score in score cell
+          scoreCell.innerHTML = leadersList[i].score;
+
+          // Display link to player's user profile in player cell
+          var userLink = document.createElement('a');
+          userLink.href = '../user/?username=' + leadersList[i].username;
+          userLink.innerHTML = leadersList[i].username;
+          playerCell.appendChild(userLink);
+
+          // Display game screen
+          document.getElementById('game-screen').classList.remove('hidden');
+        }
+      });
+    });
 }
 
 
@@ -38,7 +118,13 @@ window.addEventListener('resize', resizeGame, false);
 
 function resizeGame() {
   game.setAttribute('width', window.innerWidth);
-  game.setAttribute('height', window.innerHeight);
+
+  // Set game height to window height minus header and footer height
+  game.setAttribute('height', window.innerHeight - parseInt(window.
+    getComputedStyle(document.getElementById('header')).height
+    .slice(0, -2)) - parseInt(window.getComputedStyle(document
+    .getElementById('footer')).height.slice(0, -2)));
+
   return;
 }
 
@@ -49,6 +135,30 @@ for (var i = 0; i < shapeObjects.length; i++) {
     shapes.push(this.contentDocument.getElementsByTagName('svg')[0]);
     return;
   }, false);
+}
+
+
+// Start game when user clicks game screen
+document.getElementById('game-screen').onclick = startGame;
+
+function startGame() {
+  // Hide game screen
+  document.getElementById('game-screen').classList.add('hidden');
+
+  // Unhide game and score
+  game.classList.remove('hidden');
+  score.classList.remove('hidden');
+
+  // Reset intervals for creating hearts that move down screen like rain
+  heartInterval = setInterval(multiplyHeart, 2500);
+  rainInterval = setInterval(rain, 15);
+
+  // Reset interval for creating random shapes for user to clear from screen
+  shapeInterval = setInterval(createRandomShape, 2000);
+
+  started = true;
+
+  return;
 }
 
 
@@ -133,6 +243,7 @@ function createRandomShape() {
   // Create random shape from shapes array and append to game space
   var randomNumber = Math.floor(Math.random() * shapes.length);
   var randomShape = shapes[randomNumber].cloneNode(true);
+  randomShape.classList.add('shapes');
   randomShape.setAttribute('height', '15%');
   randomShape.setAttribute('width', '15%');
   randomShape.setAttribute('x', randomXCoordinate + '%');
@@ -157,15 +268,15 @@ function createRandomShape() {
 
 
 // Create blast on click
-document.body.onclick = createBlast;
+game.onclick = createBlast;
 
 function createBlast() {
   // Change cursor to filled in blast shape on click
-  document.body.style.cursor = 'url("images/blast-filled.svg") 25 20, auto';
+  game.style.cursor = 'url("images/blast-filled.svg") 25 20, auto';
 
   // Set cursor back to blast outline after 300 ms
   setTimeout(function() {
-    document.body.style.cursor = '';
+    game.style.cursor = '';
     return;
   }, 300);
 
@@ -173,11 +284,90 @@ function createBlast() {
 }
 
 
-// Send score to server when user exits page
-window.onbeforeunload = sendScore;
+// Reset game when user clicks Restart button
+document.getElementById('restart').onclick = function() {
+  // Do nothing if game hasn't started yet
+  if (!started) {
+    return;
+  }
 
-function sendScore() {
-  // If user is logged in, send score to server
+  // Hide ending text and unhide starting instructions based on device
+  document.getElementById('body-end').classList.add('hidden');
+
+  if (mobile) {
+    document.getElementById('mobile-end').classList.add('hidden');
+    document.getElementById('mobile-body-start').classList.remove('hidden');
+    document.getElementById('mobile-start').classList.remove('hidden');
+  } else {
+    document.getElementById('desktop-end').classList.add('hidden');
+    document.getElementById('desktop-body-start').classList.remove('hidden');
+    document.getElementById('desktop-start').classList.remove('hidden');
+  }
+
+  resetGame();
+
+  loadLeaders();
+
+  return;
+}
+
+function resetGame() {
+  // Clear heart rain and shapes from game
+  clearInterval(heartInterval);
+  clearInterval(rainInterval);
+  clearInterval(shapeInterval);
+
+  game.innerHTML = '';
+
+  // Reset score to 0
+  score.innerHTML = 'Score: 0';
+
+  // Hide game and score
+  game.classList.add('hidden');
+  score.classList.add('hidden');
+
+  started = false;
+
+  return;
+}
+
+
+// End game when user clicks End button
+document.getElementById('end').onclick = function() {
+  // Do nothing if game hasn't started yet
+  if (!started) {
+    return;
+  }
+
+  endGame();
+
+  return;
+}
+
+function endGame() {
+  // Hide starting instructions and unhide ending text based on device
+  document.getElementById('body-end').classList.remove('hidden');
+
+  if (mobile) {
+    document.getElementById('mobile-end').classList.remove('hidden');
+    document.getElementById('mobile-body-start').classList.add('hidden');
+    document.getElementById('mobile-start').classList.add('hidden');
+  } else {
+    document.getElementById('desktop-end').classList.remove('hidden');
+    document.getElementById('desktop-body-start').classList.add('hidden');
+    document.getElementById('desktop-start').classList.add('hidden');
+  }
+
+  /* Disable menu buttons and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('restart').disabled = true;
+  document.getElementById('end').disabled = true;
+  document.body.style.cursor = 'wait';
+
+  // Reset game to starting state
+  resetGame();
+
+  // If user is logged in, send score to server and display leaders
   if (localStorage.getItem('username')) {
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
     data = JSON.stringify(finalScore);
@@ -187,7 +377,44 @@ function sendScore() {
         'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
+    })
+
+    // Display error message if server is down
+    .catch(function(error) {
+      // Display error
+      window.alert('Your score could not be saved. Please play again later.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('restart').disabled = false;
+      document.getElementById('end').disabled = false;
+      document.body.style.cursor = '';
+
+      return;
+    })
+
+    .then(function(response) {
+      if (!response.ok) {
+        window.alert('Your score could not be saved. Please play again ' +
+          'later.');
+        return;
+      }
+
+      loadLeaders();
+
+      // Reset menu buttons and cursor style
+      document.getElementById('restart').disabled = false;
+      document.getElementById('end').disabled = false;
+      document.body.style.cursor = '';
     });
+  }
+
+  else {
+    loadLeaders();
+
+    // Reset menu buttons and cursor style
+    document.getElementById('restart').disabled = false;
+    document.getElementById('end').disabled = false;
+    document.body.style.cursor = '';
   }
 
   return;

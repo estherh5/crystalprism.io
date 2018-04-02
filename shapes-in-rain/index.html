@@ -8,7 +8,7 @@
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
     <!-- Google Fonts and CSS stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Bungee+Shade|Rajdhani" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Bangers|Bungee+Shade|Rajdhani" rel="stylesheet">
     <link href="../common.css" rel="stylesheet">
     <link href="style.css" rel="stylesheet">
 
@@ -43,11 +43,45 @@
     <!-- Main page container -->
     <div id="container">
 
+      <!-- Game control buttons -->
+      <div id="controls">
+        <button id="restart">Restart</button>
+        <button id="end">End</button>
+      </div>
+
+      <!-- Game information screen -->
+      <button id="game-screen" class="hidden">
+        <div class="title">Shapes in Rain</div>
+        <div id="desktop-body-start" class="body hidden">Welcome to Shapes in Rain! Click the shapes to increase your score. If you have an account, click "End" when you're done to save your score.</div>
+        <div id="mobile-body-start" class="body hidden">Welcome to Shapes in Rain! Tap the shapes to increase your score. If you have an account, tap "End" when you're done to save your score.</div>
+        <div id="body-end" class="body hidden">Good game!</div>
+        <div id="desktop-start" class="start hidden">Click here to start.</div>
+        <div id="mobile-start" class="start hidden">Tap here to start.</div>
+        <div id="desktop-end" class="start hidden">Click here to play again.</div>
+        <div id="mobile-end" class="start hidden">Tap here to play again.</div>
+        <table id="leaders-table">
+          <thead>
+            <caption class="title">Leaders</caption>
+            <tr>
+              <th>Score</th>
+              <th>Name</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr class="leader"></tr>
+            <tr class="leader"></tr>
+            <tr class="leader"></tr>
+            <tr class="leader"></tr>
+            <tr class="leader"></tr>
+          </tbody>
+        </table>
+      </button>
+
       <!-- SVG game space -->
-      <svg id="game">
-        <text id="title" x="50%" y="45%">Clear the shapes</text>
-        <text id="score" x="50%" y="55%">Score: 0</text>
-      </svg>
+      <svg id="game" class="hidden"></svg>
+
+      <!-- Game score -->
+      <text id="score" class="hidden">Score: 0</text>
 
     </div>
 

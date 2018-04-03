@@ -492,6 +492,7 @@ input:focus, button:focus {
   display: none;
   font-size: 9px;
   color: #ff0000;
+  text-align: left;
 }
 
 #verify-password-input {

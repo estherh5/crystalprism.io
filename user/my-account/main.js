@@ -1852,11 +1852,13 @@ function validateEmail() {
   symbol, display warning */
   if ((email.length > 0 || emailPublicInput.checked) && !email.match('@')) {
     document.getElementById('email-chars').style.display = 'block';
+    document.getElementById('email-claimed').style.display = 'none';
     return false;
   }
 
-  // Otherwise, hide warning
+  // Otherwise, hide warnings
   document.getElementById('email-chars').style.display = 'none';
+  document.getElementById('email-claimed').style.display = 'none';
 
   return true;
 }
@@ -2038,9 +2040,20 @@ function submitEdits() {
     })
 
     .then(function(response) {
-      // If server responds that username already exists, display warning
       if (response.status == 409) {
-        document.getElementById('user-exists').style.display = 'block';
+        response.text().then(function(error) {
+          // If server responds that username already exists, display warning
+          if (error == 'Username already exists') {
+            document.getElementById('user-exists').style.display = 'block';
+          }
+
+          /* If server responds that email address already claimed, display
+          warning */
+          if (error == 'Email address already claimed') {
+            document.getElementById('email-claimed').style.display = 'block';
+          }
+        });
+
         return;
       }
 
@@ -2144,6 +2157,7 @@ function cancelEdits() {
   document.getElementById('pass-short').style.display = 'none';
   document.getElementById('pass-mismatch').style.display = 'none';
   document.getElementById('email-chars').style.display = 'none';
+  document.getElementById('email-claimed').style.display = 'none';
 
   // Return Personal menu fields to view-only mode and disable inputs
   profileBackground.classList.remove('editing');

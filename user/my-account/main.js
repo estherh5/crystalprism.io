@@ -1840,6 +1840,30 @@ function validatePasswordMatch() {
 }
 
 
+/* Determine if name fields have errors when user focuses out of fields or
+public checkbox */
+firstNameInput.onfocusout = validateName;
+lastNameInput.onfocusout = validateName;
+namePublicInput.onfocusout = validateName;
+
+function validateName() {
+  var firstName = firstNameInput.value;
+
+  // If name is marked as public and first name is blank, display warning
+  if (firstName.length == 0 && namePublicInput.checked) {
+    document.getElementById('first-name-blank').style.display = 'block';
+    document.getElementById('last-name-blank').style.display = 'block';
+    return false;
+  }
+
+  // Otherwise, hide warning
+  document.getElementById('first-name-blank').style.display = 'none';
+  document.getElementById('last-name-blank').style.display = 'none';
+
+  return true;
+}
+
+
 /* Determine if email address has errors when user focuses out of field or
 public checkbox */
 emailInput.onfocusout = validateEmail;
@@ -1922,7 +1946,7 @@ saveButton.onclick = function() {
 
     // Do nothing if errors are present
     if (!validateUsername() || !validatePassword() || !validatePasswordMatch()
-      || !validateEmail()) {
+      || !validateName() || !validateEmail()) {
         return;
       }
 
@@ -2156,6 +2180,8 @@ function cancelEdits() {
   document.getElementById('user-exists').style.display = 'none';
   document.getElementById('pass-short').style.display = 'none';
   document.getElementById('pass-mismatch').style.display = 'none';
+  document.getElementById('first-name-blank').style.display = 'none';
+  document.getElementById('last-name-blank').style.display = 'none';
   document.getElementById('email-chars').style.display = 'none';
   document.getElementById('email-claimed').style.display = 'none';
 

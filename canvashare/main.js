@@ -184,7 +184,7 @@ function loadDrawings() {
 
               // Create eye icon to display with drawing views
               var viewsIcon = document.createElement('i');
-              viewsIcon.classList.add('fa');
+              viewsIcon.classList.add('fas');
               viewsIcon.classList.add('fa-eye');
 
               // Create text to display number of views
@@ -260,7 +260,7 @@ function displayDrawingLikes(drawingId, likers) {
 
       if (likers[i]['username'] == localStorage.getItem('username')) {
         var likedHeart = document.createElement('i');
-        likedHeart.classList.add('fa');
+        likedHeart.classList.add('fas');
         likedHeart.classList.add('fa-heart');
         likedHeart.dataset.drawinglike = likers[i]['drawing_like_id'];
         likedHeart.dataset.drawing = drawingId;
@@ -276,8 +276,8 @@ function displayDrawingLikes(drawingId, likers) {
 
   // Otherwise, display an empty heart outline
   var unlikedHeart = document.createElement('i');
-  unlikedHeart.classList.add('fa');
-  unlikedHeart.classList.add('fa-heart-o');
+  unlikedHeart.classList.add('far');
+  unlikedHeart.classList.add('fa-heart');
   likeText.parentNode.insertBefore(unlikedHeart, likeText);
   unlikedHeart.dataset.drawing = drawingId;
 
@@ -338,7 +338,7 @@ function updateLikes() {
   }, false);
 
   // If heart is already filled in, decrease drawing like count
-  if (this.classList.contains('fa-heart')) {
+  if (this.classList.contains('fas')) {
 
     return fetch(api + '/canvashare/drawing-like/' + this.dataset.drawinglike, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -358,8 +358,8 @@ function updateLikes() {
         if (response.ok) {
           var likeText = heart.nextSibling;
           var currentLikes = likeText.innerHTML;
-          heart.classList.remove('fa-heart');
-          heart.classList.add('fa-heart-o');
+          heart.classList.remove('fas');
+          heart.classList.add('far');
           delete heart.dataset.drawinglike;
           likeText.innerHTML = parseInt(currentLikes) - 1;
           return;
@@ -396,8 +396,8 @@ function updateLikes() {
           var likeText = heart.nextSibling;
           var currentLikes = likeText.innerHTML;
           likeText.innerHTML = parseInt(currentLikes) + 1;
-          heart.classList.remove('fa-heart-o');
-          heart.classList.add('fa-heart');
+          heart.classList.remove('far');
+          heart.classList.add('fas');
           heart.dataset.drawinglike = drawingLikeId;
         });
         return;

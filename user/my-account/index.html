@@ -219,9 +219,13 @@
                   <div class="field-title">Name:</div>
                   <div class="col-2 user-data d-flex flex-column">
                     <input id="first-name-input" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="First" disabled>
+                    <!-- Warning that displays if name is blank and marked as public -->
+                    <div id="first-name-blank" class="warning">Public name cannot be blank</div>
                   </div>
                   <div class="col-3 user-data d-flex flex-column">
                     <input id="last-name-input" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="Last" disabled>
+                    <!-- Warning that displays if name is blank and marked as public -->
+                    <div id="last-name-blank" class="warning">&nbsp;</div>
                   </div>
 
                   <!-- Checkbox for whether or not name is public -->

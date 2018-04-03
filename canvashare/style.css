@@ -266,11 +266,11 @@ a:focus, button:focus {
   cursor: default;
 }
 
-.fa-heart {
+.fas.fa-heart {
   color: #ff0000;
 }
 
-.fa-heart, .fa-heart-o {
+.fa-heart {
   cursor: pointer;
 }
 
@@ -389,7 +389,7 @@ a:focus, button:focus {
   transition: all 0.4s;
 }
 
-.fa-sign-in, .fa-plus {
+.fa-sign-in-alt, .fa-plus {
   position: absolute;
   height: 45px;
   width: 45px;
@@ -413,7 +413,7 @@ a:focus, button:focus {
   transition: all 0.4s;
 }
 
-.menu-option:hover > .fa-sign-in, .menu-option:hover > .fa-plus {
+.menu-option:hover > .fa-sign-in-alt, .menu-option:hover > .fa-plus {
   opacity: 1 !important;
   transform: scale(1.1);
   transition: all 0.4s;

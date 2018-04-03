@@ -788,8 +788,8 @@ function loadPosts() {
                   postContent.innerHTML = posts[i].content.slice(0, 200) +
                     '...';
                   var toggleTextIcon = document.createElement('i');
-                  toggleTextIcon.classList.add('fa');
-                  toggleTextIcon.classList.add('fa-plus-square-o');
+                  toggleTextIcon.classList.add('far');
+                  toggleTextIcon.classList.add('fa-plus-square');
                   var toggleTextButton = document.createElement('button');
                   toggleTextButton.classList.add('toggle-full-text');
                   toggleTextButton.dataset.post = posts[i].post_id;
@@ -840,8 +840,8 @@ function toggleFullText() {
   // Display full text if plus icon is displayed
   if (this.getElementsByTagName('i')[0].classList
     .contains('fa-plus-square-o')) {
-      this.getElementsByTagName('i')[0].classList.remove('fa-plus-square-o');
-      this.getElementsByTagName('i')[0].classList.add('fa-minus-square-o');
+      this.getElementsByTagName('i')[0].classList.remove('fa-plus-square');
+      this.getElementsByTagName('i')[0].classList.add('fa-minus-square');
       var postToDisplay = document.getElementById(this.dataset.post);
       postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
       postToDisplay.appendChild(this);
@@ -849,8 +849,8 @@ function toggleFullText() {
   }
 
   // Otherwise, hide full text and display preview if minus icon is displayed
-  this.getElementsByTagName('i')[0].classList.remove('fa-minus-square-o');
-  this.getElementsByTagName('i')[0].classList.add('fa-plus-square-o');
+  this.getElementsByTagName('i')[0].classList.remove('fa-minus-square');
+  this.getElementsByTagName('i')[0].classList.add('fa-plus-square');
   var postToDisplay = document.getElementById(this.dataset.post);
   postToDisplay.innerHTML = postToDisplay.dataset.fulltext
     .slice(0, 200) + '...';

@@ -228,11 +228,11 @@ a:focus {
   opacity: 0.6;
 }
 
-.fa-heart {
+.fas.fa-heart {
   color: #ff0000;
 }
 
-.fa-heart, .fa-heart-o {
+.fa-heart {
   cursor: pointer;
 }
 

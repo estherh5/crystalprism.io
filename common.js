@@ -209,20 +209,23 @@ function checkIfLoggedIn() {
       /* If server verifies token is correct, display link to profile, My
       Account page, and Sign In page (with "Sign Out" title) */
       if (response.ok) {
-        profileLink.innerHTML = localStorage.getItem('username');
-        profileLink.href = root + '/user/?username=' + localStorage
-          .getItem('username');
-        accountLink.innerHTML = 'My Account';
-        accountLink.href = root + '/user/my-account/';
-        signInLink.innerHTML = 'Sign Out';
+        response.json().then(function(payload) {
+          // Set localStorage username to payload username
+          localStorage.setItem('username', payload['username']);
 
-        /* Send request to log user out when Sign In page link ("Sign Out"
-        title) is clicked */
-        signInLink.onclick = function() {
-          sessionStorage.setItem('account-request', 'logout');
-          return;
-        }
+          profileLink.innerHTML = payload['username'];
+          profileLink.href = root + '/user/?username=' + payload['username'];
+          accountLink.innerHTML = 'My Account';
+          accountLink.href = root + '/user/my-account/';
+          signInLink.innerHTML = 'Sign Out';
 
+          /* Send request to log user out when Sign In page link ("Sign Out"
+          title) is clicked */
+          signInLink.onclick = function() {
+            sessionStorage.setItem('account-request', 'logout');
+            return;
+          }
+        });
         return true;
       }
 

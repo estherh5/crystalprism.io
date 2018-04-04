@@ -145,10 +145,12 @@ function requestLogin() {
         return;
       }
 
-      // Otherwise, save username and returned token from server to localStorage
+      /* Otherwise, save returned token from server and decoded token's payload
+      (username) to localStorage */
       response.text().then(function(token) {
         localStorage.removeItem('username');
-        localStorage.setItem('username', username);
+        localStorage.setItem('username', decodeURIComponent(atob(token
+          .split('.')[1]))['username']);
         localStorage.removeItem('token');
         localStorage.setItem('token', token);
 

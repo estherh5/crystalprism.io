@@ -222,22 +222,22 @@ function createRandomShape() {
     var rightOrLeft = Math.floor(Math.random() * 2) + 1;
 
     /* If number is 1, set x-coordinate as random number to left of text
-    (between 5 and 10) */
+    (between 5 and 35) */
     if (rightOrLeft == 1) {
-      var randomXCoordinate = Math.random() * 5 + 5;
+      var randomXCoordinate = Math.random() * 30 + 5;
     }
 
     /* Otherwise, set x-coordinate as random number to right of text (between
-    90 and 95) */
+    60 and 90) */
     else {
-      var randomXCoordinate = Math.random() * 5 + 90;
+      var randomXCoordinate = Math.random() * 30 + 60;
     }
   }
 
   /* If random y-coordinate does not overlap with text, generate random
-  x-coordinate between 20 and 80 */
+  x-coordinate between 10 and 90 */
   else {
-    var randomXCoordinate = Math.random() * 60 + 20;
+    var randomXCoordinate = Math.random() * 80 + 10;
   }
 
   // Create random shape from shapes array and append to game space

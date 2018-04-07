@@ -247,6 +247,20 @@ function updateBrush() {
   var brushCursor = document.getElementById('brush-cursor');
   brushCursor.setAttribute('fill', currentPaint.dataset.color);
   brushCursor.setAttribute('r', stroke/2);
+
+  // Set cursor outline to black/white if selected paint color is light/dark
+  var rgb = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i
+    .exec(currentPaint.dataset.color);
+  var r = parseInt(rgb[1], 16);
+  var g = parseInt(rgb[2], 16);
+  var b = parseInt(rgb[3], 16);
+
+  if (r + g + b > 382) {
+    brushCursor.setAttribute('stroke', '#000000');
+  } else {
+    brushCursor.setAttribute('stroke', '#ffffff');
+  }
+
   var XMLS = new XMLSerializer();
   var brushSVG = XMLS.serializeToString(document.getElementById('brush-svg'));
   canvg(brushCanvas, brushSVG);

@@ -104,7 +104,7 @@ a:focus, button:focus {
 
 #post-board {
   position: relative;
-  max-width: 190px;
+  max-width: 265px;
   margin-bottom: 50px;
   outline-style: solid;
   outline-width: 2px;
@@ -150,7 +150,7 @@ a:focus, button:focus {
 }
 
 .post-container {
-  margin-bottom: 10px;
+  margin-bottom: 40px;
   margin-left: 10px;
   margin-right: 10px;
   display: -webkit-box;
@@ -173,7 +173,7 @@ a:focus, button:focus {
 }
 
 .post-title {
-  width: 160px;
+  width: 200px;
   font-size: 15px;
   text-align: center;
   text-overflow: ellipsis;
@@ -184,8 +184,8 @@ a:focus, button:focus {
 }
 
 .post-content {
-  height: 150px;
-  width: 150px;
+  height: 200px;
+  width: 200px;
   padding: 5px;
   border-style: solid;
   border-width: 2px;
@@ -837,10 +837,6 @@ input {
 }
 
 @media only screen and (min-width: 400px) {
-  #post-board {
-    max-width: 380px;
-  }
-
   #post-background {
     width: 71vw;
   }
@@ -849,6 +845,21 @@ input {
 @media only screen and (min-width: 576px) {
   #post-board {
     max-width: 560px;
+  }
+
+  .post-container {
+    margin-bottom: 50px;
+    margin-left: 20px;
+    margin-right: 20px;
+  }
+
+  .post-title {
+    width: 220px;
+  }
+
+  .post-content {
+    height: 220px;
+    width: 220px;
   }
 
   #post-background {
@@ -917,18 +928,22 @@ input {
   }
 
   #post-board {
-    max-width: 715px;
+    max-width: 625px;
+  }
+
+  .post-container {
+    margin-bottom: 60px;
   }
 
   .post-title {
-    width: 210px;
+    width: 240px;
     font-size: 18px;
   }
 
   .post-content {
-    height: 200px;
-    width: 200px;
-    font-size: 20px;
+    height: 240px;
+    width: 240px;
+    font-size: 16px;
   }
 
   .post-info {
@@ -976,8 +991,14 @@ input {
   }
 }
 
-@media only screen and (min-width: 1000px) {
+@media only screen and (min-width: 980px) {
   #post-board {
-    max-width: 950px;
+    max-width: 900px;
+  }
+}
+
+@media only screen and (min-width: 1260px) {
+  #post-board {
+    max-width: 1200px;
   }
 }

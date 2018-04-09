@@ -10,25 +10,6 @@ var menuOpen = false;
 
 // Define load functions
 window.onload = function() {
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadDrawings();
-    return;
-  });
-
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
-  // Set quote that appears when hovering over gallery title
-  setHoverTitle();
-
   // Load drawings to gallery from server
   loadDrawings();
 
@@ -59,6 +40,25 @@ window.onload = function() {
     document.getElementById('drawing-draft').src = localStorage
       .getItem('drawing-source');
   }
+
+  // Set quote that appears when hovering over gallery title
+  setHoverTitle();
+
+  // Create page header (from common.js script)
+  createPageHeader();
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(function() {
+    checkIfLoggedIn();
+    loadDrawings();
+    return;
+  });
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

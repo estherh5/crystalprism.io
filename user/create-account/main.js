@@ -6,20 +6,14 @@ var confirmPassInput = document.getElementById('confirm-password-input');
 
 // Define load functions
 window.onload = function() {
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
   /* Display confirmation of account deletion if user requested it from My
   Account page */
   if (sessionStorage.getItem('account-request') == 'delete') {
     confirmDeletion();
   }
 
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(checkIfLoggedIn);
+  // Create page header (from common.js script)
+  createPageHeader();
 
   // If user is logged in, redirect to My Account page
   if (checkIfLoggedIn()) {
@@ -28,6 +22,12 @@ window.onload = function() {
 
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

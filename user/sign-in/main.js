@@ -5,25 +5,25 @@ var passwordInput = document.getElementById('password-input');
 
 // Define load functions
 window.onload = function() {
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
   /* Display confirmation of account logout if user requested it from another
   page and populate page header based on logged out status (from common.js) */
   if (sessionStorage.getItem('account-request') == 'logout') {
     confirmLogout();
   }
 
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(checkIfLoggedIn);
+  // Create page header (from common.js script)
+  createPageHeader();
 
   // If user is logged in, redirect to My Account page
   if (checkIfLoggedIn()) {
     window.location = '../my-account/';
   }
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

@@ -34,18 +34,6 @@ var grayscale = ['#ffffff', '#999999', '#666666', '#333333', '#111111',
 
 // Define load functions
 window.onload = function() {
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(checkIfLoggedIn);
-
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
   /* Draw blank drawing on separate canvas to reference later (to ensure user
   is not posting a blank drawing) */
   var blankCanvasContext = document.getElementById('blank-canvas')
@@ -86,6 +74,18 @@ window.onload = function() {
   else {
     assembleEasel(document.getElementById('blank').src, '');
   }
+
+  // Create page header (from common.js script)
+  createPageHeader();
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

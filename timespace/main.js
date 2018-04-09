@@ -3,14 +3,14 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Create page footer (from common.js script)
-  createPageFooter();
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(checkIfLoggedIn);
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

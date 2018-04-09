@@ -10,14 +10,23 @@ var postList = document.getElementById('post-list');
 
 // Define load functions
 window.onload = function() {
+  // Load profile user's personal information to profile from server
+  loadPersonalInfo();
+
+  // Load profile user's drawings to profile gallery from server
+  loadDrawings();
+
+  // Load profile user's posts to profile post area from server
+  loadPosts();
+
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Create page footer (from common.js script)
-  createPageFooter();
-
   // Apply additional style to header
   document.getElementById('header').classList.add('divider');
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
@@ -28,17 +37,8 @@ window.onload = function() {
     return;
   });
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
-  // Load profile user's personal information to profile from server
-  loadPersonalInfo();
-
-  // Load profile user's drawings to profile gallery from server
-  loadDrawings();
-
-  // Load profile user's posts to profile post area from server
-  loadPosts();
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

@@ -97,13 +97,24 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Create page footer (from common.js script)
-  createPageFooter();
-
   // If user is not logged in, redirect to Sign In page
   if (!localStorage.getItem('token') || !checkIfLoggedIn()) {
     window.location = '../sign-in/';
     return;
+  }
+
+  /* Display confirmation of account creation if user redirected from Create
+  Account page */
+  if (sessionStorage.getItem('account-request') == 'create') {
+    confirmCreation();
+  }
+
+  // Scroll to specified menu if hash is in URL
+  if (window.location.hash) {
+    $('#menu-scroll-area').animate({
+      scrollTop: $(window.location.hash).offset().top + $('#menu-scroll-area')
+        .scrollTop() - $('#menu-scroll-area').offset().top
+    }, 0);
   }
 
   // Display profile link in Personal menu
@@ -112,11 +123,18 @@ window.onload = function() {
   document.getElementById('profile-main-link')
     .href = '../?username=' + localStorage.getItem('username');
 
-  /* Display confirmation of account creation if user redirected from Create
-  Account page */
-  if (sessionStorage.getItem('account-request') == 'create') {
-    confirmCreation();
-  }
+  // Load user's personal information from server
+  loadPersonalInfo();
+
+  // Load user's game scores from server
+  loadScores('rhythm-of-life');
+  loadScores('shapes-in-rain');
+
+  // Load user's drawings from server
+  loadDrawings('drawings');
+
+  // Load user's posts from server
+  loadPosts();
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
@@ -129,26 +147,8 @@ window.onload = function() {
     return;
   });
 
-  // Load user's personal information from server
-  loadPersonalInfo();
-
-  // Load user's drawings from server
-  loadDrawings('drawings');
-
-  // Load user's posts from server
-  loadPosts();
-
-  // Load user's game scores from server
-  loadScores('rhythm-of-life');
-  loadScores('shapes-in-rain');
-
-  // Scroll to specified menu if hash is in URL
-  if (window.location.hash) {
-    $('#menu-scroll-area').animate({
-      scrollTop: $(window.location.hash).offset().top + $('#menu-scroll-area')
-        .scrollTop() - $('#menu-scroll-area').offset().top
-    }, 0);
-  }
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

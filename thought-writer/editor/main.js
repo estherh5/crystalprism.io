@@ -18,22 +18,6 @@ var postDeleted = false; // Used to track when user has just deleted a post
 
 // Define load functions
 window.onload = function() {
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadPosts();
-    return;
-  });
-
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
   // Display in-progress post if user has one
   displayDraft();
 
@@ -49,11 +33,27 @@ window.onload = function() {
     sessionStorage.removeItem('post-id');
   }
 
+  // Set focus in contenteditable post for immediate editing
+  post.focus();
+
   // Load user's previous posts to cabinet
   loadPosts();
 
-  // Set focus in contenteditable post for immediate editing
-  post.focus();
+  // Create page header (from common.js script)
+  createPageHeader();
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(function() {
+    checkIfLoggedIn();
+    loadPosts();
+    return;
+  });
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

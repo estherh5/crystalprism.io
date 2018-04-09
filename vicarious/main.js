@@ -27,23 +27,23 @@ window.onload = function() {
   // Stop carousel from cycling (starts cycling by default)
   $('.carousel').carousel('pause');
 
-  // Create page header (from common.js script)
-  createPageHeader();
-
-  // Create page footer (from common.js script)
-  createPageFooter();
-
-  // Check if Crystal Prism API is online (from common.js script)
-  pingServer(checkIfLoggedIn);
-
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
   // Store images from Reddit's API in an array
   storeImages();
 
   // Set random location as location search input placeholder
   setLocationPlaceholder();
+
+  // Create page header (from common.js script)
+  createPageHeader();
+
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
+
+  // Check if Crystal Prism API is online (from common.js script)
+  pingServer(checkIfLoggedIn);
+
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

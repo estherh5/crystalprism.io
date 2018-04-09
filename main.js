@@ -26,11 +26,21 @@ var sectionDetails = document.getElementsByClassName('subsection-details');
 
 // Define load functions
 window.onload = function() {
+  // Toggle page if page URL has hash
+  if (window.location.hash) {
+    togglePage();
+  }
+
+  // Otherwise, load splash page
+  else {
+    document.getElementById('splash-page').classList.remove('hidden');
+  }
+
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Create page footer (from common.js script)
-  createPageFooter();
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
@@ -53,21 +63,11 @@ window.onload = function() {
     return;
   });
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   // Set page theme to night view or Day View
   setTheme();
-
-  // Toggle page if page URL has hash
-  if (window.location.hash) {
-    togglePage();
-  }
-
-  // Otherwise, load splash page
-  else {
-    document.getElementById('splash-page').classList.remove('hidden');
-  }
 
   return;
 }

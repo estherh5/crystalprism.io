@@ -8,11 +8,14 @@ var postBoard = document.getElementById('post-board');
 
 // Define load functions
 window.onload = function() {
+  // Load posts to post board from server
+  loadPosts();
+
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Create page footer (from common.js script)
-  createPageFooter();
+  // Check if user is logged in (from common.js script)
+  checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(function() {
@@ -21,11 +24,8 @@ window.onload = function() {
     return;
   });
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
-
-  // Load posts to post board from server
-  loadPosts();
+  // Create page footer (from common.js script)
+  createPageFooter();
 
   return;
 }

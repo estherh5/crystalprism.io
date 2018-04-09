@@ -392,7 +392,11 @@ a:focus {
 
 .modal-header, .modal-footer {
   border: none;
-  font-family: -apple-system,system-ui,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  font-family: 'Rajdhani', sans-serif;
+}
+
+.modal-title {
+  font-size: 18px;
 }
 
 button {
@@ -424,6 +428,17 @@ button:focus {
   outline: none !important;
   border: 2px solid rgba(0, 128, 0, 0.69);
   box-shadow: 0px 0px 2px 0px rgba(0, 128, 0, 0.69);
+}
+
+.close {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  font-size: 25px;
+}
+
+button.close:active, button.close:hover {
+  background: none !important;
 }
 
 .title {
@@ -496,7 +511,7 @@ input:focus, button:focus {
 }
 
 #verify-password-input {
-  font-size: 20px;
+  font-size: 15px;
 }
 
 #title {

@@ -76,7 +76,7 @@ function createPageFooter() {
 
   // Create contact information display
   var contact = document.createElement('div');
-  contact.innerHTML = 'Email <a href="admin@crystalprism.io">' +
+  contact.innerHTML = 'Email <a href="mailto:admin@crystalprism.io">' +
     'admin@crystalprism.io</a> with any questions or concerns.';
 
   // Create footer to contain copyright and contact information

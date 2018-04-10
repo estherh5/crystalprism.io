@@ -115,6 +115,12 @@ window.onload = function() {
       scrollTop: $(window.location.hash).offset().top + $('#menu-scroll-area')
         .scrollTop() - $('#menu-scroll-area').offset().top
     }, 0);
+
+    // Flip specified menu to back view
+    document.getElementById(window.location.hash.split('#')[1]).classList
+      .add('flip');
+    document.getElementById(window.location.hash.split('#')[1]).dataset.
+      flipped = 'true';
   }
 
   // Display profile link in Personal menu
@@ -1335,6 +1341,10 @@ function loadComments() {
 $('#navbar li a[href^="#"]').on('click', function(e) {
   e.preventDefault();
   var menuHash = this.hash;
+
+  // Flip specified menu to back view
+  document.getElementById(menuHash.split('#')[1]).classList.add('flip');
+  document.getElementById(menuHash.split('#')[1]).dataset.flipped = 'true';
 
   // Set scroll position in menu scrolling area to top of specified menu
   $('#menu-scroll-area').animate({

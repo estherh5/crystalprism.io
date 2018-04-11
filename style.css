@@ -270,26 +270,6 @@ a:hover, button:hover {
   color: #000000 !important;
 }
 
-.skill > .small-icon {
-  color: #ffffff !important;
-}
-
-.night-view .small-icon {
-  color: #ffffff !important;
-}
-
-.night-view .skill > .small-icon {
-  color: #000000 !important;
-}
-
-.fontello-icon {
-  font-family: 'logos';
-  font-style: normal;
-  display: inline-block;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
 .night-view text {
   fill: #ffffff;
 }
@@ -320,7 +300,7 @@ a:hover, button:hover {
   justify-content: center;
 }
 
-.skill {
+.project-skills > .skill {
   margin-right: 4px;
   margin-left: 4px;
   display: -webkit-box;
@@ -335,6 +315,26 @@ a:hover, button:hover {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+}
+
+.project-skills > .skill > .small-icon {
+  color: #ffffff !important;
+}
+
+.night-view .small-icon {
+  color: #ffffff !important;
+}
+
+.night-view .project-skills > .skill > .small-icon {
+  color: #000000 !important;
+}
+
+.fontello-icon {
+  font-family: 'logos';
+  font-style: normal;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .text-small {
@@ -1065,6 +1065,10 @@ h1 {
   white-space: nowrap;
 }
 
+.about-skills > .skill {
+  display: inline-block;
+}
+
 .chevron-text {
   display: inline-flex;
   -webkit-box-align: baseline;
@@ -1164,7 +1168,7 @@ h1 {
     font-size: 15px;
   }
 
-  .skill {
+  .project-skills > .skill {
     margin-left: 7.5px;
     margin-right: 7.5px;
   }

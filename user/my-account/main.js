@@ -1859,6 +1859,25 @@ function validatePasswordMatch() {
 }
 
 
+// Check name public checkbox if user clicks "Public?" text
+document.getElementById('name-public-text').onclick = function() {
+  if (!this.classList.contains('editing')) {
+    return;
+  }
+
+  if (namePublicInput.checked) {
+    namePublicInput.checked = false;
+    namePublicInput.focus();
+    return;
+  }
+
+  namePublicInput.checked = true;
+  namePublicInput.focus();
+
+  return;
+}
+
+
 /* Determine if name fields have errors when user focuses out of fields or
 public checkbox */
 firstNameInput.onfocusout = validateName;
@@ -1880,6 +1899,25 @@ function validateName() {
   document.getElementById('last-name-blank').style.display = 'none';
 
   return true;
+}
+
+
+// Check email public checkbox if user clicks "Public?" text
+document.getElementById('email-public-text').onclick = function() {
+  if (!this.classList.contains('editing')) {
+    return;
+  }
+
+  if (emailPublicInput.checked) {
+    emailPublicInput.checked = false;
+    emailPublicInput.focus();
+    return;
+  }
+
+  emailPublicInput.checked = true;
+  emailPublicInput.focus();
+
+  return;
 }
 
 
@@ -1936,6 +1974,12 @@ function editPersonal() {
     fields[i].classList.add('editing');
     fields[i].disabled = false;
   }
+
+  for (var i = 0; i < document.getElementsByClassName('public-text')
+    .length; i++) {
+      document.getElementsByClassName('public-text')[i].classList
+        .add('editing');
+    }
 
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxContainers[i].classList.add('editing');
@@ -2125,6 +2169,12 @@ function submitEdits() {
             fields[i].disabled = true;
           }
 
+          for (var i = 0; i < document.getElementsByClassName('public-text')
+            .length; i++) {
+              document.getElementsByClassName('public-text')[i].classList
+                .remove('editing');
+            }
+
           for (var i = 0; i < checkboxes.length; i++) {
             checkboxContainers[i].classList.remove('editing');
             checkboxes[i].classList.remove('editing');
@@ -2215,6 +2265,12 @@ function cancelEdits() {
     fields[i].classList.remove('editing');
     fields[i].disabled = true;
   }
+
+  for (var i = 0; i < document.getElementsByClassName('public-text')
+    .length; i++) {
+      document.getElementsByClassName('public-text')[i].classList
+        .remove('editing');
+    }
 
   for (var i = 0; i < checkboxes.length; i++) {
     checkboxContainers[i].classList.remove('editing');

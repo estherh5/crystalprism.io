@@ -821,6 +821,10 @@ input:focus, button:focus {
   cursor: default;
 }
 
+.public-text.editing {
+  cursor: pointer;
+}
+
 label {
   min-height: unset !important;
   padding: 0px !important;

@@ -340,8 +340,9 @@ function formatContent() {
 }
 
 
-// Toggle post's public status when user clicks Public checkbox
+// Toggle post's public status when user clicks Public checkbox or public text
 publicCheckbox.onclick = togglePublic;
+document.getElementById('public-text').onclick = togglePublic;
 
 function togglePublic() {
   // If public status checkbox is currently checked, uncheck it

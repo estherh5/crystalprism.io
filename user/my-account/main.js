@@ -32,6 +32,7 @@ var deleteButton = document.getElementById('delete');
 var editButton = document.getElementById('edit');
 var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('cancel');
+var submitButton = document.getElementById('submit');
 var verifyPassInput = document.getElementById('verify-password-input');
 var editingPersonal = false; // If user is editing information in Personal menu
 
@@ -2037,7 +2038,7 @@ submitting edits to personal information */
 verifyPassInput.addEventListener('keyup', function(e) {
   if (e.keyCode == 13) {
     e.preventDefault();
-    document.getElementById('submit').click();
+    submitButton.click();
   }
 
   return;
@@ -2046,7 +2047,7 @@ verifyPassInput.addEventListener('keyup', function(e) {
 
 /* Check that password is correct in verify password input when submitting
 edits to personal information */
-document.getElementById('submit').onclick = checkPassword;
+submitButton.onclick = checkPassword;
 
 function checkPassword() {
   verifyPassword = verifyPassInput.value;
@@ -2093,6 +2094,12 @@ function checkPassword() {
 
 // Submit requested edits to user's personal information to server
 function submitEdits() {
+  /* Disable Submit and Cancel buttons and set cursor style to waiting until
+  server request goes through */
+  submitButton.disabled = true;
+  cancelButton.disabled = true;
+  document.body.style.cursor = 'wait';
+
   // Set email value to null if blank to prevent uniqueness error on back-end
   if (emailInput.value) {
     var email = emailInput.value;
@@ -2123,6 +2130,12 @@ function submitEdits() {
     // Display error if server is down
     .catch(function(error) {
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Submit and Cancel buttons and cursor style
+      submitButton.disabled = false;
+      cancelButton.disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
@@ -2140,6 +2153,11 @@ function submitEdits() {
             document.getElementById('email-claimed').style.display = 'block';
           }
         });
+
+        // Reset Submit and Cancel buttons and cursor style
+        submitButton.disabled = false;
+        cancelButton.disabled = false;
+        document.body.style.cursor = '';
 
         return;
       }
@@ -2198,11 +2216,22 @@ function submitEdits() {
           updateFontColors();
 
         });
+
+        // Reset Submit and Cancel buttons and cursor style
+        submitButton.disabled = false;
+        cancelButton.disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // Otherwise, display warning if server responds with other error
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Submit and Cancel buttons and cursor style
+      submitButton.disabled = false;
+      cancelButton.disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });
@@ -2305,6 +2334,14 @@ document.getElementById('confirm-delete-content-button')
 /* Delete content by specifying type (e.g., 'thought-writer/post'), id, and
 function to run after deletion */
 function deleteContent(contentType, contentId, afterFunction) {
+  /* Disable Delete buttons and set cursor style to waiting until server
+  request goes through */
+  for (var i = 0; i < document.getElementsByClassName('delete-button')
+    .length; i++) {
+      document.getElementsByClassName('delete-button')[i].disabled = true;
+    }
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/' + contentType + '/' + contentId, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -2313,7 +2350,15 @@ function deleteContent(contentType, contentId, afterFunction) {
 
     // Display warning if server is down
     .catch(function(error) {
+      // Reset Delete buttons and cursor style
+      for (var i = 0; i < document.getElementsByClassName('delete-button')
+        .length; i++) {
+          document.getElementsByClassName('delete-button')[i].disabled = false;
+        }
+      document.body.style.cursor = '';
+
       window.alert('Your request did not go through. Please try again soon.');
+
       return;
     })
 
@@ -2321,6 +2366,14 @@ function deleteContent(contentType, contentId, afterFunction) {
       /* Call specified function and reload personal info to refresh user stats
       if server responds without error */
       if (response.ok) {
+        // Reset Delete buttons and cursor style
+        for (var i = 0; i < document.getElementsByClassName('delete-button')
+          .length; i++) {
+            document.getElementsByClassName('delete-button')[i]
+              .disabled = false;
+          }
+        document.body.style.cursor = '';
+
         afterFunction();
         loadPersonalInfo();
         return;
@@ -2328,6 +2381,13 @@ function deleteContent(contentType, contentId, afterFunction) {
 
       // Otherwise, display warning if server responds with error
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Delete buttons and cursor style
+      for (var i = 0; i < document.getElementsByClassName('delete-button')
+        .length; i++) {
+          document.getElementsByClassName('delete-button')[i].disabled = false;
+      }
+      document.body.style.cursor = '';
 
       return;
     });

@@ -487,6 +487,12 @@ button:hover {
   color: #ff8282;
 }
 
+button:hover:disabled, button:disabled {
+  color: #e2e2e2;
+  text-shadow: 0.1px -0.1px 0px #e2e2e2;
+  cursor: not-allowed;
+}
+
 button.selected, button:active {
   text-shadow: 0.1px -0.1px 0px #000000;
   color: #ff8282;

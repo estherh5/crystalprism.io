@@ -430,6 +430,11 @@ button:hover {
   font-weight: bold;
 }
 
+button:hover:disabled, button:disabled {
+  font-weight: normal;
+  cursor: not-allowed;
+}
+
 #submit-comment {
   -webkit-align-self: flex-end;
   -ms-flex-item-align: end;

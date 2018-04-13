@@ -108,6 +108,12 @@ a:focus, button:focus {
   text-decoration: none !important;
 }
 
+button:disabled, button:hover:disabled {
+  background-color: #ffdb86;
+  font-weight: normal;
+  color: #000000;
+}
+
 #title-link {
   width: fit-content;
   align-self: center;

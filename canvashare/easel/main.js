@@ -373,7 +373,16 @@ function clearEmptyTitle(e) {
 
 
 // Clear drawing when user clicks Clear button
-document.getElementById('clear').onclick = clearDrawing;
+document.getElementById('clear').onclick = function() {
+  // Prompt for confirmation to clear drawing
+  var confirmDelete = confirm('Are you sure you want to clear your drawing?');
+
+  if (confirmDelete == true) {
+    clearDrawing();
+  }
+
+  return;
+}
 
 function clearDrawing() {
   // Clear drawing canvas

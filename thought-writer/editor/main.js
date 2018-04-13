@@ -365,10 +365,15 @@ function togglePublic() {
 /* Clear in-progress post when user clicks Clear button or when called from
 another function */
 document.getElementById('clear-post').onclick = function() {
-  clearPost();
+  // Prompt for confirmation to clear post
+  var confirmDelete = confirm('Are you sure you want to clear your post?');
 
-  // Save cleared state to localStorage
-  savePost();
+  if (confirmDelete == true) {
+    clearPost();
+
+    // Save cleared state to localStorage
+    savePost();
+  }
 
   return;
 }

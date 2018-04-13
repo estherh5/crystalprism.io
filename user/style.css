@@ -14,13 +14,19 @@ body {
   background-color: #ffb1b1;
 }
 
-#profile-container {
-  min-height: 100vh;
-}
-
 .divider {
   border-bottom: 4px solid #000000;
   background-color: #ffffff;
+}
+
+#header.divider {
+  height: 48px;
+  transition: all 0.3s;
+}
+
+#header.divider.shrink {
+  height: 35px;
+  transition: all 0.3s;
 }
 
 a {
@@ -43,10 +49,20 @@ a:focus {
   text-decoration: none;
 }
 
-#profile-icon-row {
+#profile-container {
+  padding: 0px;
+  flex: 1;
+}
+
+#profile-info {
   position: fixed;
+  margin-top: 23px;
+  transition: all 0.3s;
+  z-index: 2;
+}
+
+#profile-icon-row {
   min-height: fit-content;
-  margin-top: 28px;
   z-index: 2;
 }
 
@@ -58,7 +74,7 @@ a:focus {
   border-style: solid;
   border-width: 4px;
   background-color: #ffffff;
-  z-index: 2;
+  transition: all 0.3s;
 }
 
 #diamond {
@@ -68,19 +84,15 @@ a:focus {
 }
 
 #user-link-row {
-  position: fixed;
   min-height: fit-content;
-  margin-top: 97px;
 }
 
 #profile-title {
-  margin-top: 6px;
+  margin-top: 5px;
+  margin-bottom: 5px;
   font-size: 24px;
   font-weight: bold;
-}
-
-#profile-info {
-  margin-top: 128px;
+  transition: all 0.3s;
 }
 
 #name {
@@ -107,10 +119,16 @@ a:focus {
   font-style: italic;
   user-select: text;
   -webkit-user-select: text;
+  word-wrap: break-word;
 }
 
-.content-row {
-  min-height: 250px;
+#content-area {
+  max-height: 56vh;
+  margin-top: 15px;
+}
+
+#content-area .menu-options {
+  position: relative;
 }
 
 .left, .right {
@@ -129,12 +147,8 @@ a:focus {
 
 .content-display {
   max-width: 311px;
+  font-family: 'Rajdhani', sans-serif;
   text-align: center;
-  overflow: scroll;
-}
-
-#gallery {
-  font-family: 'Chathura', sans-serif;
 }
 
 .drawing-container {
@@ -156,6 +170,7 @@ a:focus {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  font-family: 'Chathura', sans-serif;
   font-size: 25px;
 }
 
@@ -300,10 +315,6 @@ button:focus {
   cursor: default;
 }
 
-#post-list {
-  font-family: 'Cutive Mono', monospace;
-}
-
 .post-container, .comment-container {
   position: relative;
   display: -webkit-box;
@@ -323,6 +334,7 @@ button:focus {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  font-family: 'Cutive Mono', monospace;
 }
 
 .comment-container {
@@ -1225,26 +1237,20 @@ label.editing {
     margin-top: 6px;
   }
 
-  #user-link-row {
-    margin-top: 111px;
+  #profile-info {
+    margin-top: 14px;
   }
 
   #profile-title {
-    margin-top: 10px;
     font-size: 30px;
   }
 
-  #profile-info {
-    margin-top: 150px;
-  }
-
-  .content-row {
-    min-height: 300px;
+  #content-area {
+    max-height: 55vh;
   }
 
   .content-display {
     max-width: 700px;
-    overflow: unset;
   }
 
   .drawing-container {

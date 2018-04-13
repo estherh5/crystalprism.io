@@ -30,66 +30,80 @@
     <!-- Main page container -->
     <div id="profile-container" class="container-fluid w-100 d-flex flex-column">
 
-      <!-- User's profile icon -->
-      <div id="profile-icon-row" class="row no-gutters d-flex align-self-center justify-content-center">
-        <div id="profile-icon" class="d-flex align-items-center justify-content-center">
-          <svg id="diamond" xmlns="http://www.w3.org/2000/svg" viewBox="5 15 90 70">
-            <path d="m28 16c-0.1 0-0.1 0-0.2 0-0.5 0.1-1 0.3-1.3 0.7l-20 22c-0.7 0.7-0.6 2 0.1 2.8l42 42c0.7 0.7 2.1 0.7 2.8 0l42-42c0.7-0.7 0.7-2 0.1-2.7l-20-22C73.1 16.2 72.6 16 72 16zm0.9 4 10.4 0-8.6 18L12.5 38zm14.8 0 12.6 0 8.6 18-29.7 0zm17 0L71.1 20 87.5 38 69.3 38zm-47.9 22 17.8 0 13.4 31.2zm22.2 0 29.9 0L50 76.9zM69.3 42 87.2 42 55.9 73.2z"/>
-          </svg>
+      <!-- User's personal information and stats -->
+      <div id="profile-info" class="align-self-center">
+        <!-- User's profile icon -->
+        <div id="profile-icon-row" class="row no-gutters d-flex justify-content-center align-items-center">
+          <div id="profile-icon" class="d-flex justify-content-center align-items-center">
+            <svg id="diamond" xmlns="http://www.w3.org/2000/svg" viewBox="5 15 90 70">
+              <path d="m28 16c-0.1 0-0.1 0-0.2 0-0.5 0.1-1 0.3-1.3 0.7l-20 22c-0.7 0.7-0.6 2 0.1 2.8l42 42c0.7 0.7 2.1 0.7 2.8 0l42-42c0.7-0.7 0.7-2 0.1-2.7l-20-22C73.1 16.2 72.6 16 72 16zm0.9 4 10.4 0-8.6 18L12.5 38zm14.8 0 12.6 0 8.6 18-29.7 0zm17 0L71.1 20 87.5 38 69.3 38zm-47.9 22 17.8 0 13.4 31.2zm22.2 0 29.9 0L50 76.9zM69.3 42 87.2 42 55.9 73.2z"/>
+            </svg>
+          </div>
         </div>
-      </div>
 
-      <!-- User's username (link to profile) -->
-      <div id="user-link-row" class="row no-gutters w-100 align-self-center">
-        <div class="col d-flex flex-column align-items-center justify-content-center">
-          <a id="user-link">
-            <h1 id="profile-title"></h1>
-          </a>
+        <!-- User's username (link to profile) -->
+        <div id="user-link-row" class="row no-gutters w-100 align-items-center">
+          <div class="col d-flex flex-column justify-content-center align-items-center">
+            <a id="user-link">
+              <h1 id="profile-title"></h1>
+            </a>
+          </div>
         </div>
-      </div>
 
-      <!-- User's personal information sand stats -->
-      <div id="profile-info">
         <!-- User's first and last name -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="name-row" class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <div id="name" class="col-auto personal-info"></div>
         </div>
+
         <!-- User's email address -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="email-row" class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <a id="email" class="col-auto personal-info"></a>
         </div>
+
         <!-- User's member stat (member since MM/DD/YYYY) -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="member-row" class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <div id="member-stat" class="col-auto personal-info"></div>
         </div>
+
         <!-- User's high score in Rhythm of Life -->
         <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <i class="fas fa-star" aria-hidden="true"></i>
           <div class="col-auto personal-info"><a href="../rhythm-of-life/">Rhythm of Life</a> high score: <b id="rhythm-stat">00:00:00</b></div>
         </div>
+
         <!-- User's high score in Shapes in Rain -->
         <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <i class="fas fa-star" aria-hidden="true"></i>
           <div class="col-auto personal-info"><a href="../shapes-in-rain/">Shapes in Rain</a> high score: <b id="shapes-stat">0</b></div>
         </div>
+
         <!-- User's about me blurb -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="about-row" class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <div id="about-blurb" class="col personal-info"></div>
         </div>
-      </div>
 
-      <!-- User's CanvaShare drawings -->
-      <div id="gallery-row" class="content-row row no-gutters my-1 my-lg-2 h-100 w-100 d-flex flex-nowrap align-items-center justify-content-center">
-        <i id="drawing-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-        <div id="gallery" class="content-display h-100 w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
-        <i id="drawing-right-arrow" class="material-icons right">keyboard_arrow_right</i>
-      </div>
+        <div id="content-area" class="row w-100 no-gutters d-flex justify-content-center align-items-center">
+          <!-- Menu options to toggle user's content -->
+          <div class="menu-options">
+            <button id="drawings" class="selected">Drawings</button>
+            <button id="posts">Posts</button>
+          </div>
 
-      <!-- User's public Thought Writer posts -->
-      <div id="post-list-row" class="content-row row no-gutters my-1 my-lg-2 h-100 w-100 d-flex flex-nowrap align-items-center justify-content-center">
-        <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-        <div id="post-list" class="content-display h-100 w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
-        <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+          <!-- User's CanvaShare drawings -->
+          <div id="gallery-row" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center">
+            <i id="drawing-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+            <div id="gallery" class="content-display w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
+            <i id="drawing-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+          </div>
+
+          <!-- User's public Thought Writer posts -->
+          <div id="post-list-row" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center hidden">
+            <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+            <div id="post-list" class="content-display w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
+            <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+          </div>
+        </div>
+
       </div>
 
     </div>

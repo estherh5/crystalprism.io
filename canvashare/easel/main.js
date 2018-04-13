@@ -439,6 +439,13 @@ function postDrawing() {
   var data = JSON.stringify({'drawing': drawingCanvas.toDataURL(),
     'title': drawingTitle.value});
 
+  /* Disable menu buttons and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('clear').disabled = true;
+  document.getElementById('post').disabled = true;
+  document.getElementById('download').disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/canvashare/drawing', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -449,6 +456,13 @@ function postDrawing() {
     // Display error message if server is down
     .catch(function(error) {
       window.alert('Your drawing did not get posted. Please try again soon.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear').disabled = false;
+      document.getElementById('post').disabled = false;
+      document.getElementById('download').disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
@@ -458,17 +472,37 @@ function postDrawing() {
       if (response.status == 201) {
         clearDrawing();
         window.location = '../';
+
+        // Reset menu buttons and cursor style
+        document.getElementById('clear').disabled = false;
+        document.getElementById('post').disabled = false;
+        document.getElementById('download').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // If drawing is not unique, display error message
       if (response.status == 409) {
         window.alert('Your drawing must be unique.');
+
+        // Reset menu buttons and cursor style
+        document.getElementById('clear').disabled = false;
+        document.getElementById('post').disabled = false;
+        document.getElementById('download').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // Otherwise, display login error message
       window.alert('You must log in to post your drawing to the gallery.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear').disabled = false;
+      document.getElementById('post').disabled = false;
+      document.getElementById('download').disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });

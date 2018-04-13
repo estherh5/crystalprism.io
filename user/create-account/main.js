@@ -161,6 +161,11 @@ function createAccount() {
     return;
   }
 
+  /* Disable Submit button and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('submit').disabled = true;
+  document.body.style.cursor = 'wait';
+
   var data = JSON.stringify({'username': username, 'password': password});
 
   return fetch(api + '/user', {
@@ -172,15 +177,24 @@ function createAccount() {
     // Display warning if server is down
     .catch(function(error) {
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Submit button and cursor style
+      document.getElementById('submit').disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
-    /* Display warning that username already exists if server responds with
-    error */
     .then(function(response) {
-
+      /* Display warning that username already exists if server responds with
+      error */
       if (response.status == 409) {
         document.getElementById('user-exists').style.display = 'block';
+
+        // Reset Submit button and cursor style
+        document.getElementById('submit').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
@@ -213,6 +227,10 @@ function createAccount() {
                 passwordInput.value = '';
                 confirmPassInput.value = '';
 
+                // Reset Submit button and cursor style
+                document.getElementById('submit').disabled = false;
+                document.body.style.cursor = '';
+
                 // Take user to My Account page
                 window.location = '../my-account/';
               });
@@ -224,6 +242,10 @@ function createAccount() {
 
       // Otherwise, display warning if server responds with other error
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Submit button and cursor style
+      document.getElementById('submit').disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });

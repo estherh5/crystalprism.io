@@ -159,6 +159,45 @@ a:focus {
   font-size: 25px;
 }
 
+button {
+  border: none;
+  background-color: #ffb1b1;
+  font-family: 'Bungee Hairline', cursive;
+  font-size: 10px;
+  font-weight: bold;
+  color: #000000;
+  cursor: pointer;
+  transform: scale(1) translateZ(0);
+  transition: all 0.3s;
+}
+
+button:active {
+  box-shadow: 1px 1px #000000;
+  background-color: rgba(0, 128, 0, 0.75);
+  text-shadow: 0.1px 0.1px 0px #000000;
+}
+
+button:hover {
+  background-color: rgba(0, 128, 0, 0.75);
+  color: #ffffff;
+  transform: scale(1.1) translateZ(0);
+  transition: all 0.3s;
+}
+
+button:hover:disabled, button:disabled {
+  background-color: #c5c5c5;
+  color: #000000;
+  cursor: not-allowed;
+  transform: scale(1) translateZ(0);
+  transition: all 0.3s;
+}
+
+button:focus {
+  outline: none !important;
+  border: 2px solid rgba(0, 128, 0, 0.69);
+  box-shadow: 0px 0px 2px 0px rgba(0, 128, 0, 0.69);
+}
+
 .delete-button {
   position: absolute;
   top: 0px;
@@ -397,37 +436,6 @@ a:focus {
 
 .modal-title {
   font-size: 18px;
-}
-
-button {
-  border: none;
-  background-color: #ffb1b1;
-  font-family: 'Bungee Hairline', cursive;
-  font-size: 10px;
-  font-weight: bold;
-  color: #000000;
-  cursor: pointer;
-  transform: scale(1) translateZ(0);
-  transition: all 0.3s;
-}
-
-button:active {
-  box-shadow: 1px 1px #000000;
-  background-color: rgba(0, 128, 0, 0.75);
-  text-shadow: 0.1px 0.1px 0px #000000;
-}
-
-button:hover {
-  background-color: rgba(0, 128, 0, 0.75);
-  color: #ffffff;
-  transform: scale(1.1) translateZ(0);
-  transition: all 0.3s;
-}
-
-button:focus {
-  outline: none !important;
-  border: 2px solid rgba(0, 128, 0, 0.69);
-  box-shadow: 0px 0px 2px 0px rgba(0, 128, 0, 0.69);
 }
 
 .close {

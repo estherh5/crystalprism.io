@@ -113,6 +113,11 @@ button:active {
   text-shadow: 0.1px -0.1px 0px;
 }
 
+button:disabled {
+  background-color: #6f6f6fad;
+  cursor: not-allowed;
+}
+
 #game-screen {
   position: absolute;
   height: 65%;

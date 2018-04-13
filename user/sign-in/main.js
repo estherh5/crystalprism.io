@@ -104,7 +104,6 @@ passwordInput.addEventListener('keyup', function(e) {
 // Call requestLogin function when user clicks Submit button
 document.getElementById('submit').onclick = requestLogin;
 
-
 // Send request to log into account to server
 function requestLogin() {
   // Hide logout banner
@@ -117,6 +116,11 @@ function requestLogin() {
     return;
   }
 
+  /* Disable Submit button and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('submit').disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)},
     method: 'GET',
@@ -125,13 +129,17 @@ function requestLogin() {
     // Display warning if server is down
     .catch(function(error) {
       window.alert('Your request did not go through. Please try again soon.');
+
+      // Reset Submit button and cursor style
+      document.getElementById('submit').disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
-    /* If server responds with error, display warning that credentials are
-    incorrect */
     .then(function(response) {
-
+      /* If server responds with error, display warning that credentials are
+      incorrect */
       if (response.status != 200) {
         $(incorrect).modal('show');
 
@@ -141,6 +149,10 @@ function requestLogin() {
         // Clear username and password inputs
         usernameInput.value = '';
         passwordInput.value = '';
+
+        // Reset Submit button and cursor style
+        document.getElementById('submit').disabled = false;
+        document.body.style.cursor = '';
 
         return;
       }
@@ -153,6 +165,10 @@ function requestLogin() {
           .split('.')[1]))['username']);
         localStorage.removeItem('token');
         localStorage.setItem('token', token);
+
+        // Reset Submit button and cursor style
+        document.getElementById('submit').disabled = false;
+        document.body.style.cursor = '';
 
         // Take user to previous page if stored in sessionStorage
         if (sessionStorage.getItem('previous-window')) {

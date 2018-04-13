@@ -259,6 +259,11 @@ function submitComment() {
   var data = JSON.stringify({'content': newComment.innerHTML,
     'post_id': parseInt(postId)});
 
+  /* Disable Submit button and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('submit-comment').disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/thought-writer/comment', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -269,6 +274,12 @@ function submitComment() {
     // Display error if server is down
     .catch(function(error) {
       window.alert('Your comment did not go through. Please try again soon.');
+
+      // Reset Submit button and cursor style
+      document.getElementById('submit-comment').disabled = false;
+      document.body.style.cursor = '';
+
+      return;
     })
 
     .then(function(response) {
@@ -289,11 +300,19 @@ function submitComment() {
         // Reload comments list
         loadComments(postId);
 
+        // Reset Submit button and cursor style
+        document.getElementById('submit-comment').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // Display alert if server responded with error
       window.alert('You must log in to leave a comment.');
+
+      // Reset Submit button and cursor style
+      document.getElementById('submit-comment').disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });
@@ -361,6 +380,8 @@ function submitEdits() {
     .dataset.submitid + '"]')[0];
   var modifyButton = document.querySelectorAll('[data-modifyid="' + this
     .dataset.submitid + '"]')[0];
+  var deleteButton = document.querySelectorAll('[data-deleteid="' + this
+    .dataset.submitid + '"]')[0];
 
   /* If comment does not contain any non-space characters (excluding empty
   elements), display warning to user */
@@ -372,6 +393,14 @@ function submitEdits() {
   // Otherwise, send comment to server
   var data = JSON.stringify({'content': comment.innerHTML});
 
+  /* Disable menu buttons and set cursor style to waiting until server request
+  goes through */
+  submitButton.disabled = true;
+  cancelButton.disabled = true;
+  modifyButton.disabled = true;
+  deleteButton.disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/thought-writer/comment/' + this.dataset.submitid, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -382,6 +411,15 @@ function submitEdits() {
     // Display error if server is down
     .catch(function(error) {
       window.alert('Your edits did not go through. Please try again soon.');
+
+      // Reset menu buttons and cursor style
+      submitButton.disabled = false;
+      cancelButton.disabled = false;
+      modifyButton.disabled = false;
+      deleteButton.disabled = false;
+      document.body.style.cursor = '';
+
+      return;
     })
 
     .then(function(response) {
@@ -396,6 +434,13 @@ function submitEdits() {
         button */
         cancelButton.dataset.content = comment.innerHTML;
 
+        // Reset menu buttons and cursor style
+        submitButton.disabled = false;
+        cancelButton.disabled = false;
+        modifyButton.disabled = false;
+        deleteButton.disabled = false;
+        document.body.style.cursor = '';
+
         // Hide Submit and Cancel buttons and display Modify button
         submitButton.style.display = 'none';
         cancelButton.style.display = 'none';
@@ -407,6 +452,13 @@ function submitEdits() {
       // Display alert if server responded with error
       window.alert('You must log in to modify a comment.');
 
+      // Reset menu buttons and cursor style
+      submitButton.disabled = false;
+      cancelButton.disabled = false;
+      modifyButton.disabled = false;
+      deleteButton.disabled = false;
+      document.body.style.cursor = '';
+
       return;
     });
 }
@@ -417,6 +469,22 @@ function deleteComment() {
   var confirmDelete = confirm('Are you sure you want to delete this comment?');
 
   if (confirmDelete == true) {
+
+    var deleteButton = this;
+    var submitButton = document.querySelectorAll('[data-submitid="' + this
+      .dataset.deleteid + '"]')[0];
+    var cancelButton = document.querySelectorAll('[data-cancelid="' + this
+      .dataset.deleteid + '"]')[0];
+    var modifyButton = document.querySelectorAll('[data-modifyid="' + this
+      .dataset.deleteid + '"]')[0];
+
+    /* Disable menu buttons and set cursor style to waiting until server
+    request goes through */
+    deleteButton.disabled = true;
+    submitButton.disabled = true;
+    cancelButton.disabled = true;
+    modifyButton.disabled = true;
+    document.body.style.cursor = 'wait';
 
     return fetch(api + '/thought-writer/comment/' + this.dataset.deleteid, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -445,11 +513,25 @@ function deleteComment() {
           // Reload comments list
           loadComments(postId);
 
+          // Reset menu buttons and cursor style
+          submitButton.disabled = false;
+          cancelButton.disabled = false;
+          modifyButton.disabled = false;
+          deleteButton.disabled = false;
+          document.body.style.cursor = '';
+
           return;
         }
 
         // Otherwise, display error message
         window.alert('You must log in to delete a comment.');
+
+        // Reset menu buttons and cursor style
+        submitButton.disabled = false;
+        cancelButton.disabled = false;
+        modifyButton.disabled = false;
+        deleteButton.disabled = false;
+        document.body.style.cursor = '';
 
         return;
       });

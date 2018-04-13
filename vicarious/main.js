@@ -154,6 +154,11 @@ window.addEventListener('keyup', function(e) {
 /* Find API images that match input term (input is blank on load to match on
 first 5 images) */
 function findImages(input) {
+  /* Disable Submit button and set cursor style to waiting until server request
+  goes through */
+  submitButton.disabled = true;
+  document.body.style.cursor = 'wait';
+
   // Display loading style and animation while images load
   document.getElementById('dimmer').style.display = 'block';
   loadingImage.style.animationPlayState = 'running';
@@ -214,6 +219,11 @@ function findImages(input) {
         });
 
         populateCarousel();
+
+        // Reset Submit button and cursor style
+        submitButton.disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
@@ -248,6 +258,11 @@ function displayImages() {
     displayedImageTitles[i].href = imageTitleLinks[i];
     displayedImageTitles[i].innerHTML = imageTitleTexts[i];
   }
+
+  // Reset Submit button and cursor style
+  submitButton.disabled = false;
+  document.body.style.cursor = '';
+
   return;
 }
 

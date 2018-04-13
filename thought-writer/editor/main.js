@@ -425,6 +425,12 @@ function submitPost() {
   var data = JSON.stringify({'title': postTitle.value, 'content': post
     .innerHTML, 'public': publicInput.checked});
 
+  /* Disable menu buttons and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('clear-post').disabled = true;
+  document.getElementById('submit-post').disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/thought-writer/post', {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -435,6 +441,12 @@ function submitPost() {
     // Display error message if server is down
     .catch(function(error) {
       window.alert('Your post did not go through. Please try again soon.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear-post').disabled = false;
+      document.getElementById('submit-post').disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
@@ -465,11 +477,21 @@ function submitPost() {
           flipBoard();
         });
 
+        // Reset menu buttons and cursor style
+        document.getElementById('clear-post').disabled = false;
+        document.getElementById('submit-post').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // Otherwise, display error message
       window.alert('You must log in to create a post.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear-post').disabled = false;
+      document.getElementById('submit-post').disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });
@@ -536,6 +558,12 @@ function modifyPost() {
   var data = JSON.stringify({'title': postTitle.value,
     'content': post.innerHTML, 'public': publicInput.checked});
 
+  /* Disable menu buttons and set cursor style to waiting until server request
+  goes through */
+  document.getElementById('clear-post').disabled = true;
+  document.getElementById('submit-post').disabled = true;
+  document.body.style.cursor = 'wait';
+
   return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
@@ -546,6 +574,12 @@ function modifyPost() {
     // Display error message if server is down
     .catch(function(error) {
       window.alert('Your post did not go through. Please try again soon.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear-post').disabled = false;
+      document.getElementById('submit-post').disabled = false;
+      document.body.style.cursor = '';
+
       return;
     })
 
@@ -575,11 +609,21 @@ function modifyPost() {
         // Flip to back of post board
         flipBoard();
 
+        // Reset menu buttons and cursor style
+        document.getElementById('clear-post').disabled = false;
+        document.getElementById('submit-post').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       }
 
       // Otherwise, display error message
       window.alert('You must log in to edit a post.');
+
+      // Reset menu buttons and cursor style
+      document.getElementById('clear-post').disabled = false;
+      document.getElementById('submit-post').disabled = false;
+      document.body.style.cursor = '';
 
       return;
     });
@@ -594,6 +638,11 @@ function deletePost() {
   var confirmDelete = confirm('Are you sure you want to delete this post?');
 
   if (confirmDelete == true) {
+    /* Disable menu buttons and set cursor style to waiting until server
+    request goes through */
+    document.getElementById('clear-post').disabled = true;
+    document.getElementById('submit-post').disabled = true;
+    document.body.style.cursor = 'wait';
 
     return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
@@ -604,6 +653,12 @@ function deletePost() {
       // Display error message if server is down
       .catch(function(error) {
         window.alert('Your request did not go through. Please try again soon.');
+
+        // Reset menu buttons and cursor style
+        document.getElementById('clear-post').disabled = false;
+        document.getElementById('submit-post').disabled = false;
+        document.body.style.cursor = '';
+
         return;
       })
 
@@ -628,11 +683,21 @@ function deletePost() {
           postDeleted = true;
           flipBoard();
 
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+
           return;
         }
 
         // Otherwise, display error message
         window.alert('You must log in to delete a post.');
+
+        // Reset menu buttons and cursor style
+        document.getElementById('clear-post').disabled = false;
+        document.getElementById('submit-post').disabled = false;
+        document.body.style.cursor = '';
 
         return;
       });

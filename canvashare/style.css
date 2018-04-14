@@ -26,7 +26,7 @@ a:active, .action:active {
   text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover {
+a:hover, .drawing-title:hover {
   color: #808080;
 }
 
@@ -233,8 +233,8 @@ a:focus, button:focus {
 }
 
 .drawing-title {
-  width: 240px;
-  cursor: default;
+  max-width: 240px;
+  cursor: pointer;
 }
 
 .drawing {

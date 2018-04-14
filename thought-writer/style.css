@@ -38,7 +38,7 @@ a:active, button:active {
   text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover, button:hover, .post-title:hover, .post-comments:hover {
+a:hover, button:hover, .post-title:hover, .post-comments:hover, #edit:hover {
   color: #808080;
 }
 
@@ -379,9 +379,16 @@ a:focus, button:focus {
 }
 
 #post-info {
+  position: relative;
   margin-left: 10px;
   margin-right: 10px;
   font-size: 10px;
+}
+
+#edit {
+  position: absolute;
+  right: 0px;
+  cursor: pointer;
 }
 
 #comment-area {

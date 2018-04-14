@@ -81,6 +81,21 @@ function loadPost() {
           // Add content to post content container
           postContent.innerHTML = post.content;
 
+          // If user is the post writer, display edit button
+          if (post.username == localStorage.getItem('username')) {
+            document.getElementById('edit').classList.remove('hidden');
+
+            /* Set sessionStorage post-id item when button is clicked and
+            go to editor page */
+            document.getElementById('edit').onclick = function() {
+              sessionStorage.setItem('post-id', postId);
+              window.location = '../editor/';
+              return;
+            }
+          } else {
+            document.getElementById('edit').classList.add('hidden');
+          }
+
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY, HH:MM AM/PM' format */
           postTimestamp.innerHTML = moment(post.created)

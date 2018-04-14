@@ -147,6 +147,10 @@ function loadDrawings() {
               drawingTitle.classList.add('drawing-title');
               drawingTitle.innerHTML = drawings[i]['title'];
 
+              /* Set data-drawing attribute as drawing id for later
+              identification */
+              drawingTitle.dataset.drawing = drawings[i]['drawing_id'];
+
               // Create drawing image
               var drawing = document.createElement('img');
               drawing.classList.add('drawing');
@@ -217,8 +221,17 @@ function loadDrawings() {
               drawingInfo.appendChild(drawingArtist);
               drawingArtist.appendChild(artistLink);
 
-              // Update number of views when user clicks drawing
-              drawing.onclick = updateViews;
+              /* Update number of views when user clicks drawing or drawing
+              title */
+              drawing.onclick = function() {
+                updateViews(this.dataset.drawing);
+                return;
+              }
+
+              drawingTitle.onclick = function() {
+                updateViews(this.dataset.drawing);
+                return;
+              }
 
               // Display drawing like hearts
               displayDrawingLikes(drawings[i]['drawing_id'], likers);
@@ -289,11 +302,9 @@ function displayDrawingLikes(drawingId, likers) {
 
 
 // Update drawing's view count
-function updateViews() {
-  var clickedDrawing = this;
-
+function updateViews(drawingId) {
   // Send request to server to update view count
-  return fetch(api + '/canvashare/drawing/' + clickedDrawing.dataset.drawing, {
+  return fetch(api + '/canvashare/drawing/' + drawingId, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',
   })
@@ -309,9 +320,9 @@ function updateViews() {
       easel page */
       if (response.ok) {
         var viewText = document.querySelectorAll('[data-drawing="views' +
-          clickedDrawing.dataset.drawing + '"]')[0];
+          drawingId + '"]')[0];
         viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = 'easel/?drawing=' + clickedDrawing.dataset.drawing;
+        window.location = 'easel/?drawing=' + drawingId;
         return;
       }
 

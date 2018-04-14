@@ -147,10 +147,22 @@ window.onload = function() {
   pingServer(function() {
     checkIfLoggedIn();
     loadPersonalInfo();
-    loadDrawings('drawings');
-    loadPosts();
+
+    if (mine.classList.contains('selected')) {
+      loadDrawings('drawings');
+    } else {
+      loadDrawings('drawing-likes/user');
+    }
+
+    if (postsButton.classList.contains('selected')) {
+      loadPosts();
+    } else {
+      loadComments();
+    }
+
     loadScores('rhythm-of-life');
     loadScores('shapes-in-rain');
+
     return;
   });
 

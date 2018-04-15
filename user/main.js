@@ -4,9 +4,14 @@ var drawingStart = 0; // Range start for number of drawings to request from API
 var drawingEnd = 4; // Range end for number of drawings to request from API
 var postStart = 0; // Range start for number of posts to request from API
 var postEnd = 4; // Range end for number of posts to request from API
+var commentStart = 0; // Range start for number of comments to request from API
+var commentEnd = 4; // Range end for number of comments to request from API
 var gallery = document.getElementById('gallery');
 var drawingsButton = document.getElementById('drawings');
 var postList = document.getElementById('post-list');
+var postsButton = document.getElementById('posts');
+var commentList = document.getElementById('comment-list');
+var commentsButton = document.getElementById('comments');
 
 
 // Define load functions
@@ -30,6 +35,15 @@ window.onload = function() {
   pingServer(function() {
     checkIfLoggedIn();
     loadPersonalInfo();
+
+    if (drawingsButton.classList.contains('selected')) {
+      loadDrawings();
+    } else if (postsButton.classList.contains('selected')) {
+      loadPosts();
+    } else {
+      loadComments();
+    }
+
     return;
   });
 
@@ -645,6 +659,134 @@ function loadPosts() {
 }
 
 
+// Load user's comments to profile comment area from server
+function loadComments() {
+  return fetch(api + '/thought-writer/comments/user/' + username + '?start=' +
+    commentStart + '&end=' + commentEnd)
+
+      // Add error message to comment list if server responds with error
+      .catch(function(error) {
+        commentList.innerHTML = 'There was an error loading the user\'s ' +
+          'comments. Please refresh the page.';
+        return;
+      })
+
+      .then(function(response) {
+        if (response.ok) {
+          response.json().then(function(comments) {
+            // Clear comment area to display new comments from server
+            commentList.innerHTML = '';
+
+            if (comments.length > 0) {
+              /* Assess if there are more than requested comments - 1 (number
+              of loaded comments) on server */
+              if (comments.length > (commentEnd - commentStart - 1)) {
+                moreCommentsExist = true;
+                var commentsLoadNumber = commentEnd - commentStart - 1;
+              }
+
+              // If there are not, load all comments sent from server
+              else {
+                moreCommentsExist = false;
+                var commentsLoadNumber = comments.length;
+              }
+
+              for (var i = 0; i < commentsLoadNumber; i++) {
+                // Create container for comment and its components
+                var commentContainer = document.createElement('div');
+                commentContainer.classList.add('comment-container');
+
+                /* Set data-number attribute to track the comment number for
+                displaying more comments later */
+                commentContainer.dataset.number = commentStart + i;
+
+                // Create container for comment background
+                var commentBoard = document.createElement('div');
+                commentBoard.classList.add('comment-board');
+
+                // Create container with comment content
+                var commentContent = document.createElement('div');
+                commentContent.classList.add('comment-content');
+                commentContent.innerHTML = comments[i].content;
+
+                /* Create container for comment timestamp and link to parent
+                post */
+                var commentInfo = document.createElement('div');
+                commentInfo.classList.add('comment-info');
+
+                // Create container for comment timestamp
+                var commentTimestamp = document.createElement('div');
+                commentTimestamp.classList.add('comment-time');
+
+                /* Convert UTC timestamp from server to local timestamp in
+                'MM/DD/YYYY, HH:MM AM/PM' format */
+                commentTimestamp.innerHTML = moment(comments[i].created)
+                  .format('MM/DD/YYYY, LT');
+
+                // Create container for link to parent post
+                var parentPost = document.createElement('a');
+                parentPost.classList.add('parent-post');
+                parentPost.title = 'View comment on post page';
+                parentPost.href = '../../thought-writer/post/?post=' +
+                  comments[i].post_id + '#comment' + comments[i].comment_id;
+                parentPost.innerHTML = comments[i].title;
+
+                commentList.appendChild(commentContainer);
+                commentContainer.appendChild(commentBoard);
+                commentBoard.appendChild(commentContent);
+                commentContainer.appendChild(commentInfo);
+                commentInfo.appendChild(commentTimestamp);
+                commentInfo.appendChild(parentPost);
+              }
+
+              /* If first comment displayed in post area is not comment 0 (i.e.,
+              there are lower-numbered comments to display), display left
+              navigation arrow */
+              if (commentList.getElementsByClassName('comment-container')[0]
+                .dataset.number != 0) {
+                  document.getElementById('comments-left-arrow').classList
+                    .add('display');
+                }
+
+              // Otherwise, hide left arrow
+              else {
+                document.getElementById('comments-left-arrow').classList
+                  .remove('display');
+              }
+
+              /* If there are more comments on the server, display right
+              navigation arrow */
+              if (moreCommentsExist) {
+                document.getElementById('comments-right-arrow').classList
+                  .add('display');
+              }
+
+              // Otherwise, hide right arrow
+              else {
+                document.getElementById('comments-right-arrow').classList
+                  .remove('display');
+              }
+            }
+
+            // Display message if user has no comments
+            else {
+              commentList.innerHTML = 'There are no comments for this user.';
+            }
+
+          });
+
+          return;
+        }
+
+        // Add error message to comment list if server responds with error
+        commentList.innerHTML = 'There was an error loading the user\'s ' +
+          'comments. Please refresh the page.';
+
+        return;
+      });
+}
+
+
 // Request lower-numbered drawings if left arrow is clicked in profile gallery
 document.getElementById('drawing-left-arrow').onclick = function() {
   if (this.classList.contains('display')) {
@@ -693,35 +835,82 @@ document.getElementById('posts-right-arrow').onclick = function() {
 }
 
 
-// Toggle drawings and posts when Drawings/Posts buttons are clicked
-document.getElementById('drawings').onclick = toggleContent;
-document.getElementById('posts').onclick = toggleContent;
+/* Request lower-numbered comments if left arrow is clicked in profile comment
+area */
+document.getElementById('comments-left-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    commentStart = commentStart - 3;
+    commentEnd = commentEnd - 3;
+    loadComments();
+  }
+
+  return;
+}
+
+
+/* Request higher-numbered comments if right arrow is clicked in profile
+comment area */
+document.getElementById('comments-right-arrow').onclick = function() {
+  if (this.classList.contains('display')) {
+    commentStart = commentStart + 3;
+    commentEnd = commentEnd + 3;
+    loadComments();
+  }
+
+  return;
+}
+
+
+/* Toggle drawings, posts and comments when Drawings/Posts/Comments buttons are
+clicked */
+drawingsButton.onclick = toggleContent;
+postsButton.onclick = toggleContent;
+commentsButton.onclick = toggleContent;
 
 function toggleContent() {
-  // Set drawing/post request numbers to starting numbers
+  // Set drawing/post/comment request numbers to starting numbers
   drawingStart = 0;
   drawingEnd = 4;
   postStart = 0;
   postEnd = 4;
+  commentStart = 0;
+  commentEnd = 4;
 
-  /* If the Drawings button is clicked, set the button as selected, hide posts,
-  and request drawings from server */
+  /* If the Drawings button is clicked, set the button as selected, hide posts
+  and comments, and request drawings from server */
   if (this.id == 'drawings') {
-    document.getElementById('drawings').classList.add('selected');
-    document.getElementById('posts').classList.remove('selected');
-    document.getElementById('gallery-row').classList.remove('hidden');
+    postsButton.classList.remove('selected');
+    commentsButton.classList.remove('selected');
+    drawingsButton.classList.add('selected');
     document.getElementById('post-list-row').classList.add('hidden');
+    document.getElementById('comment-list-row').classList.add('hidden');
+    document.getElementById('gallery-row').classList.remove('hidden');
     loadDrawings();
     return;
   }
 
-  /* Otherwise, set the Posts button as selected, hide drawings, and request
-  posts from server */
-  document.getElementById('posts').classList.add('selected');
-  document.getElementById('drawings').classList.remove('selected');
-  document.getElementById('post-list-row').classList.remove('hidden');
+  /* If the Posts button is clicked, set the button as selected, hide drawings
+  and comments, and request posts from server */
+  if (this.id == 'posts') {
+    drawingsButton.classList.remove('selected');
+    commentsButton.classList.remove('selected');
+    postsButton.classList.add('selected');
+    document.getElementById('gallery-row').classList.add('hidden');
+    document.getElementById('comment-list-row').classList.add('hidden');
+    document.getElementById('post-list-row').classList.remove('hidden');
+    loadPosts();
+    return;
+  }
+
+  /* Otherwise, set the Comments button as selected, hide drawings and posts,
+  and request comments from server */
+  drawingsButton.classList.remove('selected');
+  postsButton.classList.remove('selected');
+  commentsButton.classList.add('selected');
   document.getElementById('gallery-row').classList.add('hidden');
-  loadPosts();
+  document.getElementById('post-list-row').classList.add('hidden');
+  document.getElementById('comment-list-row').classList.remove('hidden');
+  loadComments();
 
   return;
 }

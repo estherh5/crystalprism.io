@@ -81,9 +81,10 @@ function loadPost() {
           // Add content to post content container
           postContent.innerHTML = post.content;
 
-          // If user is the post writer, display edit button
+          // If user is the post writer, display edit and delete buttons
           if (post.username == localStorage.getItem('username')) {
             document.getElementById('edit').classList.remove('hidden');
+            document.getElementById('delete').classList.remove('hidden');
 
             /* Set sessionStorage post-id item when button is clicked and
             go to editor page */
@@ -94,6 +95,7 @@ function loadPost() {
             }
           } else {
             document.getElementById('edit').classList.add('hidden');
+            document.getElementById('delete').classList.add('hidden');
           }
 
           /* Convert UTC timestamp from server to local timestamp in
@@ -136,6 +138,66 @@ function loadPost() {
         return;
       }
     });
+}
+
+
+// Delete post from server when post writer clicks Delete button
+document.getElementById('delete').onclick = deletePost;
+
+function deletePost() {
+  // Prompt for confirmation to delete post
+  var confirmDelete = confirm('Are you sure you want to delete this post?');
+
+  if (confirmDelete == true) {
+    /* Disable menu buttons and set cursor style to waiting until server
+    request goes through */
+    document.getElementById('edit').disabled = true;
+    document.getElementById('delete').disabled = true;
+    document.body.style.cursor = 'wait';
+
+    return fetch(api + '/thought-writer/post/' + postId, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+        'Content-Type': 'application/json'},
+      method: 'DELETE',
+    })
+
+      // Display error message if server is down
+      .catch(function(error) {
+        window.alert('Your request did not go through. Please try again soon.');
+
+        // Reset menu buttons and cursor style
+        document.getElementById('edit').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.body.style.cursor = '';
+
+        return;
+      })
+
+      .then(function(response) {
+        if (response.ok) {
+          // Reset menu buttons and cursor style
+          document.getElementById('edit').disabled = false;
+          document.getElementById('delete').disabled = false;
+          document.body.style.cursor = '';
+
+          window.location = '../';
+
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('You must log in to delete a post.');
+
+        // Reset menu buttons and cursor style
+        document.getElementById('edit').disabled = false;
+        document.getElementById('delete').disabled = false;
+        document.body.style.cursor = '';
+
+        return;
+      });
+    }
+
+    return;
 }
 
 

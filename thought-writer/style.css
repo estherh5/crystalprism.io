@@ -38,7 +38,7 @@ a:active, button:active {
   text-shadow: 0.1px -0.1px 0px #000000;
 }
 
-a:hover, button:hover, .post-title:hover, .post-comments:hover, #edit:hover {
+a:hover, button:hover, .post-title:hover, .post-comments:hover, #edit:hover, #delete:hover {
   color: #808080;
 }
 
@@ -385,10 +385,14 @@ a:focus, button:focus {
   font-size: 10px;
 }
 
-#edit {
+#edit, #delete {
   position: absolute;
   right: 0px;
   cursor: pointer;
+}
+
+#delete {
+  margin-top: 10px;
 }
 
 #comment-area {
@@ -992,6 +996,10 @@ input {
 
   #post-info {
     font-size: 12px;
+  }
+
+  #delete {
+    margin-top: 12px;
   }
 
   #new-comment-box {

@@ -23,8 +23,8 @@ window.onload = function() {
       // Add click animation to create pop effect
       this.classList.add('clicked');
 
-      /* Remove clicked class from clicked menu option to allow animation to play
-      if clicked again */
+      /* Remove clicked class from clicked menu option to allow animation to
+      play if clicked again */
       this.addEventListener('animationend', function() {
         this.classList.remove('clicked');
         return;
@@ -51,11 +51,7 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadDrawings();
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
@@ -64,26 +60,35 @@ window.onload = function() {
 }
 
 
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+  loadDrawings();
+  return;
+}
+
+
 // Set quote that appears when hovering over gallery title
 function setHoverTitle() {
   // Define array of quotes about canvases
-  var hoverTitles = ['"The world is but a canvas to our imagination." -Henry ' +
-    'David Thoreau',
-  '"Life is a great big canvas; throw all the paint you can at it." -Danny ' +
-    'Kaye',
-  '"A great artist can paint a great picture on a small canvas." -Charles ' +
+  var hoverTitles = ['"The world is but a canvas to our imagination." -Henry' +
+    ' David Thoreau',
+    '"Life is a great big canvas; throw all the paint you can at it." -Danny' +
+    ' Kaye',
+    '"A great artist can paint a great picture on a small canvas." -Charles ' +
     'Dudley Warner',
-  '"I put on the canvas whatever comes into my mind." -Frida Kahlo',
-  '"An empty canvas is a living wonder... far lovelier than certain ' +
+    '"I put on the canvas whatever comes into my mind." -Frida Kahlo',
+    '"An empty canvas is a living wonder... far lovelier than certain ' +
     'pictures." -Wassily Kandinsky',
-  '"I never know what I\'m going to put on the canvas. The canvas paints ' +
+    '"I never know what I\'m going to put on the canvas. The canvas paints ' +
     'itself. I\'m just the middleman." -Peter Max',
-  '"Cover the canvas at the first go, then work at it until you see nothing ' +
-    'more to add." -Camille Pissarro',
-  '"All I try to do is put as many colors as I can on the canvas every ' +
+    '"Cover the canvas at the first go, then work at it until you see ' +
+    'nothing more to add." -Camille Pissarro',
+    '"All I try to do is put as many colors as I can on the canvas every ' +
     'night." -Leslie Odom, Jr.',
-  '"I was blown away by being able to color. Then I started to draw... ' +
-    'bringing a blank white canvas to life was fascinating." James De La Vega'];
+    '"I was blown away by being able to color. Then I started to draw... ' +
+    'bringing a blank white canvas to life was fascinating." James De La ' +
+    'Vega'];
 
   // Select a random quote to display as hover title
   var randomNumber = Math.floor(Math.random() * hoverTitles.length);
@@ -102,157 +107,167 @@ function loadDrawings() {
     displayed (i.e., prevent multiple errors when scrolling to load more
     drawings) */
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       if (!errorMessage || errorMessage.parentNode != gallery) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the gallery. ' +
           'Please refresh the page.';
         gallery.appendChild(errorMessage);
-        return;
       }
+
+      return;
     })
 
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(drawings) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          // Add drawings to gallery if there is at least 1 sent from server
-          if (drawings.length != 0) {
+        if (response.ok) {
+          response.json().then(function(drawings) {
 
-            // Remove error message from gallery if it is displayed
-            if (errorMessage && errorMessage.parentNode == gallery) {
-              gallery.removeChild(errorMessage);
+            // Add drawings to gallery if there is at least 1 sent from server
+            if (drawings.length != 0) {
+
+              // Remove error message from gallery if it is displayed
+              if (errorMessage && errorMessage.parentNode == gallery) {
+                gallery.removeChild(errorMessage);
+              }
+
+              /* Assess if there are more than requested drawings - 1 (number of
+              loaded drawings) on server */
+              if (drawings.length > (requestEnd - requestStart - 1)) {
+                moreDrawingsOnServer = true;
+                var drawingLoadNumber = requestEnd - requestStart - 1;
+              }
+
+              // If there are not, load all drawings sent from server
+              else {
+                moreDrawingsOnServer = false;
+                var drawingLoadNumber = drawings.length;
+              }
+
+              for (var i = 0; i < drawingLoadNumber; i++) {
+                // Create container for drawing and its components
+                var drawingContainer = document.createElement('div');
+                drawingContainer.classList.add('drawing-container');
+
+                // Create container for drawing title
+                var drawingTitle = document.createElement('div');
+                drawingTitle.classList.add('drawing-title');
+                drawingTitle.innerHTML = drawings[i]['title'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                drawingTitle.dataset.drawing = drawings[i]['drawing_id'];
+
+                // Create drawing image
+                var drawing = document.createElement('img');
+                drawing.classList.add('drawing');
+                drawing.src = drawings[i]['url'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                drawing.dataset.drawing = drawings[i]['drawing_id'];
+
+                /* Create container for drawing artist and number of likes and
+                views */
+                var drawingInfo = document.createElement('div');
+                drawingInfo.classList.add('drawing-info');
+
+                // Create container for number of drawing likes
+                var drawingLikes = document.createElement('div');
+                drawingLikes.classList.add('drawing-likes');
+                drawingLikes.title = 'Likes';
+
+                // Create text to display number of likes
+                var likeText = document.createElement('text');
+                likeText.innerHTML = drawings[i]['like_count'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
+
+                // Set likers to list of users who liked drawing
+                var likers = drawings[i]['likers'];
+
+                // Create drawing views container
+                var drawingViews = document.createElement('div');
+                drawingViews.classList.add('drawing-views');
+                drawingViews.title = 'Views';
+
+                // Create eye icon to display with drawing views
+                var viewsIcon = document.createElement('i');
+                viewsIcon.classList.add('fas');
+                viewsIcon.classList.add('fa-eye');
+
+                // Create text to display number of views
+                var viewText = document.createElement('text');
+                viewText.innerHTML = drawings[i]['views'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
+
+                // Create container for drawing artist
+                var drawingArtist = document.createElement('div');
+                drawingArtist.classList.add('drawing-artist');
+                drawingArtist.title = 'Artist';
+
+                // Create link to artist's profile
+                var artistLink = document.createElement('a');
+                artistLink.href = '../user/?username=' + drawings[i].username;
+                artistLink.innerHTML = drawings[i].username;
+
+                gallery.appendChild(drawingContainer);
+                drawingContainer.appendChild(drawingTitle);
+                drawingContainer.appendChild(drawing);
+                drawingContainer.appendChild(drawingInfo);
+                drawingInfo.appendChild(drawingLikes);
+                drawingLikes.appendChild(likeText);
+                drawingInfo.appendChild(drawingViews);
+                drawingViews.appendChild(viewsIcon);
+                drawingViews.appendChild(viewText);
+                drawingInfo.appendChild(drawingArtist);
+                drawingArtist.appendChild(artistLink);
+
+                /* Update number of views when user clicks drawing or drawing
+                title */
+                drawing.onclick = function() {
+                  updateViews(this.dataset.drawing);
+                  return;
+                }
+
+                drawingTitle.onclick = function() {
+                  updateViews(this.dataset.drawing);
+                  return;
+                }
+
+                // Display drawing like hearts
+                displayDrawingLikes(drawings[i]['drawing_id'], likers);
+              }
             }
 
-            /* Assess if there are more than requested drawings - 1 (number of
-            loaded drawings) on server */
-            if (drawings.length > (requestEnd - requestStart - 1)) {
-              moreDrawingsOnServer = true;
-              var drawingLoadNumber = requestEnd - requestStart - 1;
-            }
-
-            // If there are not, load all drawings sent from server
+            // If there are no drawings sent from server, set variable to false
             else {
               moreDrawingsOnServer = false;
-              var drawingLoadNumber = drawings.length;
             }
+          });
+          return;
+        }
 
-            for (var i = 0; i < drawingLoadNumber; i++) {
-              // Create container for drawing and its components
-              var drawingContainer = document.createElement('div');
-              drawingContainer.classList.add('drawing-container');
+        // Display error message if the server sends an error
+        if (!errorMessage || errorMessage.parentNode != gallery) {
+          errorMessage = document.createElement('text');
+          errorMessage.id = 'error-message';
+          errorMessage.innerHTML = 'There was an error loading the gallery. ' +
+            'Please refresh the page.';
+          gallery.appendChild(errorMessage);
+        }
 
-              // Create container for drawing title
-              var drawingTitle = document.createElement('div');
-              drawingTitle.classList.add('drawing-title');
-              drawingTitle.innerHTML = drawings[i]['title'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              drawingTitle.dataset.drawing = drawings[i]['drawing_id'];
-
-              // Create drawing image
-              var drawing = document.createElement('img');
-              drawing.classList.add('drawing');
-              drawing.src = drawings[i]['url'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              drawing.dataset.drawing = drawings[i]['drawing_id'];
-
-              /* Create container for drawing artist and number of likes and
-              views */
-              var drawingInfo = document.createElement('div');
-              drawingInfo.classList.add('drawing-info');
-
-              // Create container for number of drawing likes
-              var drawingLikes = document.createElement('div');
-              drawingLikes.classList.add('drawing-likes');
-              drawingLikes.title = 'Likes';
-
-              // Create text to display number of likes
-              var likeText = document.createElement('text');
-              likeText.innerHTML = drawings[i]['like_count'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
-
-              // Set likers to list of users who liked drawing
-              var likers = drawings[i]['likers'];
-
-              // Create drawing views container
-              var drawingViews = document.createElement('div');
-              drawingViews.classList.add('drawing-views');
-              drawingViews.title = 'Views';
-
-              // Create eye icon to display with drawing views
-              var viewsIcon = document.createElement('i');
-              viewsIcon.classList.add('fas');
-              viewsIcon.classList.add('fa-eye');
-
-              // Create text to display number of views
-              var viewText = document.createElement('text');
-              viewText.innerHTML = drawings[i]['views'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
-
-              // Create container for drawing artist
-              var drawingArtist = document.createElement('div');
-              drawingArtist.classList.add('drawing-artist');
-              drawingArtist.title = 'Artist';
-
-              // Create link to artist's profile
-              var artistLink = document.createElement('a');
-              artistLink.href = '../user/?username=' + drawings[i].username;
-              artistLink.innerHTML = drawings[i].username;
-
-              gallery.appendChild(drawingContainer);
-              drawingContainer.appendChild(drawingTitle);
-              drawingContainer.appendChild(drawing);
-              drawingContainer.appendChild(drawingInfo);
-              drawingInfo.appendChild(drawingLikes);
-              drawingLikes.appendChild(likeText);
-              drawingInfo.appendChild(drawingViews);
-              drawingViews.appendChild(viewsIcon);
-              drawingViews.appendChild(viewText);
-              drawingInfo.appendChild(drawingArtist);
-              drawingArtist.appendChild(artistLink);
-
-              /* Update number of views when user clicks drawing or drawing
-              title */
-              drawing.onclick = function() {
-                updateViews(this.dataset.drawing);
-                return;
-              }
-
-              drawingTitle.onclick = function() {
-                updateViews(this.dataset.drawing);
-                return;
-              }
-
-              // Display drawing like hearts
-              displayDrawingLikes(drawings[i]['drawing_id'], likers);
-            }
-          }
-
-          // If there are no drawings sent from server, set variable to false
-          else {
-            moreDrawingsOnServer = false;
-          }
-        });
-        return;
-      }
-
-      // Display error message if the server sends an error
-      if (!errorMessage || errorMessage.parentNode != gallery) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the gallery. ' +
-          'Please refresh the page.';
-        gallery.appendChild(errorMessage);
         return;
       }
     });
@@ -311,25 +326,35 @@ function updateViews(drawingId) {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your request did not go through. Please try again soon.');
+
       return;
     })
 
     .then(function(response) {
-      /* If server responds without error, update view count and redirect to
-      easel page */
-      if (response.ok) {
-        var viewText = document.querySelectorAll('[data-drawing="views' +
-          drawingId + '"]')[0];
-        viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = 'easel/?drawing=' + drawingId;
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        /* If server responds without error, update view count and redirect to
+        easel page */
+        if (response.ok) {
+          var viewText = document.querySelectorAll('[data-drawing="views' +
+            drawingId + '"]')[0];
+          viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
+          window.location = 'easel/?drawing=' + drawingId;
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('Your request did not go through. Please try again ' +
+          'soon.');
+
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
     });
 }
 
@@ -351,36 +376,46 @@ function updateLikes() {
   // If heart is already filled in, decrease drawing like count
   if (this.classList.contains('fas')) {
 
-    return fetch(api + '/canvashare/drawing-like/' + this.dataset.drawinglike, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
-      method: 'DELETE'
-    })
-
-      // Display error message if server is down
-      .catch(function(error) {
-        window.alert('Your like did not go through. Please try again soon.');
-        return;
+    return fetch(api + '/canvashare/drawing-like/' + this.dataset
+      .drawinglike, {
+        headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
+          'Content-Type': 'application/json'},
+        method: 'DELETE',
       })
 
-      .then(function(response) {
-        /* If server responds without error, remove heart fill and decrease like
-        count user sees */
-        if (response.ok) {
-          var likeText = heart.nextSibling;
-          var currentLikes = likeText.innerHTML;
-          heart.classList.remove('fas');
-          heart.classList.add('far');
-          delete heart.dataset.drawinglike;
-          likeText.innerHTML = parseInt(currentLikes) - 1;
+        // Display error message if server is down
+        .catch(function(error) {
+          // Add server down banner to page (from common.js script)
+          pingServer(retryFunctions);
+
+          window.alert('Your like did not go through. Please try again soon.');
+
           return;
-        }
+        })
 
-        // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
+        .then(function(response) {
+          if (response) {
+            // Remove server down banner from page (from common.js script)
+            pingServer();
 
-        return;
-      });
+            /* If server responds without error, remove heart fill and decrease
+            like count user sees */
+            if (response.ok) {
+              var likeText = heart.nextSibling;
+              var currentLikes = likeText.innerHTML;
+              heart.classList.remove('fas');
+              heart.classList.add('far');
+              delete heart.dataset.drawinglike;
+              likeText.innerHTML = parseInt(currentLikes) - 1;
+              return;
+            }
+
+            // Otherwise, display error message
+            window.alert('You must log in to like a drawing.');
+
+            return;
+          }
+        });
   }
 
   // Otherwise, send request to server to increase like count
@@ -395,29 +430,38 @@ function updateLikes() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your like did not go through. Please try again soon.');
+
       return;
     })
 
-    /* If server responds without error, fill in heart and increase like count
-    user sees */
     .then(function(response) {
-      if (response.ok) {
-        response.text().then(function(drawingLikeId) {
-          var likeText = heart.nextSibling;
-          var currentLikes = likeText.innerHTML;
-          likeText.innerHTML = parseInt(currentLikes) + 1;
-          heart.classList.remove('far');
-          heart.classList.add('fas');
-          heart.dataset.drawinglike = drawingLikeId;
-        });
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        /* If server responds without error, fill in heart and increase like
+        count user sees */
+        if (response.ok) {
+          response.text().then(function(drawingLikeId) {
+            var likeText = heart.nextSibling;
+            var currentLikes = likeText.innerHTML;
+            likeText.innerHTML = parseInt(currentLikes) + 1;
+            heart.classList.remove('far');
+            heart.classList.add('fas');
+            heart.dataset.drawinglike = drawingLikeId;
+          });
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('You must log in to like a drawing.');
+
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('You must log in to like a drawing.');
-
-      return;
     });
 }
 

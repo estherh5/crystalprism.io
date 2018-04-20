@@ -60,15 +60,19 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    displayLeaders();
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
 
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+  displayLeaders();
   return;
 }
 
@@ -290,8 +294,8 @@ document.getElementById('pause').onclick = function() {
 }
 
 
-// Restart game if Retry or Start Over button is clicked
-document.getElementById('retry').onclick = reset;
+// Restart game if Replay or Start Over button is clicked
+document.getElementById('replay').onclick = reset;
 
 document.getElementById('restart').onclick = function() {
   // Do nothing if game hasn't started yet
@@ -773,13 +777,23 @@ function storeScore() {
 
     // Display warning if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your score could not be saved. Please play again later.');
+
+      return;
     })
 
     // Display updated top 5 game leaders if server receives score successfully
     .then(function(response) {
-      if (response.ok) {
-        displayLeaders();
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (response.ok) {
+          displayLeaders();
+        }
       }
     });
 }
@@ -792,6 +806,9 @@ function displayLeaders() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       if (mobile) {
         // Clear leaders list
         for (var i = 0; i < leadersMobile.length; i++) {
@@ -817,49 +834,57 @@ function displayLeaders() {
         errorCell.innerHTML = 'The leaderboard could not be loaded.';
         leaders[0].appendChild(errorCell);
       }
+
+      return;
     })
 
     .then(function(response) {
-      response.json().then(function(leadersList) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        for (var i = 0; i < leadersList.length; i++) {
-          /* Create cells for lifespan and player name in leaders list from
-          server */
-          var lifespanCell = document.createElement('td');
-          var playerCell = document.createElement('td');
+        response.json().then(function(leadersList) {
 
-          /* Clear current leader display on game board and replace with new
-          player and score cells for mobile/desktop */
-          if (mobile) {
-            leadersMobile[i].innerHTML = '';
-            leadersMobile[i].appendChild(lifespanCell);
-            leadersMobile[i].appendChild(playerCell);
-          } else {
-            leaders[i].innerHTML = '';
-            leaders[i].appendChild(lifespanCell);
-            leaders[i].appendChild(playerCell);
+          for (var i = 0; i < leadersList.length; i++) {
+            /* Create cells for lifespan and player name in leaders list from
+            server */
+            var lifespanCell = document.createElement('td');
+            var playerCell = document.createElement('td');
+
+            /* Clear current leader display on game board and replace with new
+            player and score cells for mobile/desktop */
+            if (mobile) {
+              leadersMobile[i].innerHTML = '';
+              leadersMobile[i].appendChild(lifespanCell);
+              leadersMobile[i].appendChild(playerCell);
+            } else {
+              leaders[i].innerHTML = '';
+              leaders[i].appendChild(lifespanCell);
+              leaders[i].appendChild(playerCell);
+            }
+
+            // Display lifespan in lifespan cell
+            var sec_num = leadersList[i].score;
+            var score_hours = Math.floor(sec_num / 3600);
+            var score_minutes = Math
+              .floor((sec_num - (score_hours * 3600)) / 60);
+            var score_seconds = sec_num - (score_hours * 3600) -
+              (score_minutes * 60);
+            var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
+              ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
+              .slice(-2);
+
+            lifespanCell.appendChild(document.createTextNode(lifespan_value));
+
+            // Display link to player's user profile in player cell
+            var userLink = document.createElement('a');
+            userLink.href = '../user/?username=' + leadersList[i].username;
+            userLink.appendChild(
+              document.createTextNode(leadersList[i].username));
+            playerCell.appendChild(userLink);
           }
-
-          // Display lifespan in lifespan cell
-          var sec_num = leadersList[i].score;
-          var score_hours = Math.floor(sec_num / 3600);
-          var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
-          var score_seconds = sec_num - (score_hours * 3600) -
-            (score_minutes * 60);
-          var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
-            ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
-            .slice(-2);
-
-          lifespanCell.appendChild(document.createTextNode(lifespan_value));
-
-          // Display link to player's user profile in player cell
-          var userLink = document.createElement('a');
-          userLink.href = '../user/?username=' + leadersList[i].username;
-          userLink.appendChild(
-            document.createTextNode(leadersList[i].username));
-          playerCell.appendChild(userLink);
-        }
-      });
+        });
+      }
     });
 }
 

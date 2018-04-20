@@ -23,15 +23,20 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadPost();
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
 
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+  loadPost();
+  loadComments(postId);
   return;
 }
 
@@ -51,91 +56,101 @@ function loadPost() {
     displayed (i.e., prevent multiple errors if user submits comment and
     requests to reload post) */
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       if (!errorMessage) {
         errorMessage = document.createElement('text');
         errorMessage.id = 'error-message';
         errorMessage.innerHTML = 'There was an error loading the post. ' +
           'Please refresh the page.';
+
         // Clear post and append error message
         postBackground.innerHTML = '';
         postBackground.appendChild(errorMessage);
-        return;
       }
+
+      return;
     })
 
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(post) {
-          // Clear post background to display post
-          postBackground.innerHTML = '';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          // Set page title and post title container to title of post
-          document.title = post.title;
-          postTitle.innerHTML = post.title;
+        if (response.ok) {
+          response.json().then(function(post) {
+            // Clear post background to display post
+            postBackground.innerHTML = '';
 
-          // Create post content container
-          var postContent = document.createElement('div');
-          postContent.id = 'post-content';
-          postBackground.appendChild(postContent);
+            // Set page title and post title container to title of post
+            document.title = post.title;
+            postTitle.innerHTML = post.title;
 
-          // Add content to post content container
-          postContent.innerHTML = post.content;
+            // Create post content container
+            var postContent = document.createElement('div');
+            postContent.id = 'post-content';
+            postBackground.appendChild(postContent);
 
-          // If user is the post writer, display edit and delete buttons
-          if (post.username == localStorage.getItem('username')) {
-            document.getElementById('edit').classList.remove('hidden');
-            document.getElementById('delete').classList.remove('hidden');
+            // Add content to post content container
+            postContent.innerHTML = post.content;
 
-            /* Set sessionStorage post-id item when button is clicked and
-            go to editor page */
-            document.getElementById('edit').onclick = function() {
-              sessionStorage.setItem('post-id', postId);
-              window.location = '../editor/';
-              return;
+            // If user is the post writer, display edit and delete buttons
+            if (post.username == localStorage.getItem('username')) {
+              document.getElementById('edit').classList.remove('hidden');
+              document.getElementById('delete').classList.remove('hidden');
+
+              /* Set sessionStorage post-id item when button is clicked and
+              go to editor page */
+              document.getElementById('edit').onclick = function() {
+                sessionStorage.setItem('post-id', postId);
+                window.location = '../editor/';
+                return;
+              }
+            } else {
+              document.getElementById('edit').classList.add('hidden');
+              document.getElementById('delete').classList.add('hidden');
             }
-          } else {
-            document.getElementById('edit').classList.add('hidden');
-            document.getElementById('delete').classList.add('hidden');
-          }
 
-          /* Convert UTC timestamp from server to local timestamp in
-          'MM/DD/YYYY, HH:MM AM/PM' format */
-          postTimestamp.innerHTML = moment(post.created)
-            .format('MM/DD/YYYY, LT');
-
-          // Display modified timestamp if post was edited
-          if (post.created != post.modified) {
-            postModTimestamp.innerHTML = 'Edited ' + moment(post.modified)
+            /* Convert UTC timestamp from server to local timestamp in
+            'MM/DD/YYYY, HH:MM AM/PM' format */
+            postTimestamp.innerHTML = moment(post.created)
               .format('MM/DD/YYYY, LT');
-          }
 
-          // Add link to writer's profile
-          postWriter.href = '../../user/?username=' + post.username;
-          postWriter.innerHTML = post.username;
+            // Display modified timestamp if post was edited
+            if (post.created != post.modified) {
+              postModTimestamp.innerHTML = 'Edited ' + moment(post.modified)
+                .format('MM/DD/YYYY, LT');
+            }
 
-          // Display comment count
-          if (post.comment_count == 1) {
-            commentCount.innerHTML = post.comment_count + ' comment';
-          } else {
-            commentCount.innerHTML = post.comment_count + ' comments';
-          }
-        });
+            // Add link to writer's profile
+            postWriter.href = '../../user/?username=' + post.username;
+            postWriter.innerHTML = post.username;
 
-        return;
-      }
+            // Display comment count
+            if (post.comment_count == 1) {
+              commentCount.innerHTML = post.comment_count + ' comment';
+            } else {
+              commentCount.innerHTML = post.comment_count + ' comments';
+            }
+          });
 
-      // Display error message if server responds with error
-      if (!errorMessage) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the post. ' +
-          'Please refresh the page.';
+          return;
+        }
 
-        // Clear page container and append error message
-        document.getElementById('container').innerHTML = '';
-        document.getElementById('container').appendChild(errorMessage);
+        // Display error message if server responds with error
+        if (!errorMessage) {
+          errorMessage = document.createElement('text');
+          errorMessage.id = 'error-message';
+          errorMessage.innerHTML = 'There was an error loading the post. ' +
+            'Please refresh the page.';
 
-        return;
+          // Clear page container and append error message
+          document.getElementById('container').innerHTML = '';
+          document.getElementById('container').appendChild(errorMessage);
+
+          return;
+        }
       }
     });
 }
@@ -163,7 +178,11 @@ function deletePost() {
 
       // Display error message if server is down
       .catch(function(error) {
-        window.alert('Your request did not go through. Please try again soon.');
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
+        window.alert('Your request did not go through. Please try again ' +
+          'soon.');
 
         // Reset menu buttons and cursor style
         document.getElementById('edit').disabled = false;
@@ -174,26 +193,31 @@ function deletePost() {
       })
 
       .then(function(response) {
-        if (response.ok) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
+
+          if (response.ok) {
+            // Reset menu buttons and cursor style
+            document.getElementById('edit').disabled = false;
+            document.getElementById('delete').disabled = false;
+            document.body.style.cursor = '';
+
+            window.location = '../';
+
+            return;
+          }
+
+          // Otherwise, display error message
+          window.alert('You must log in to delete a post.');
+
           // Reset menu buttons and cursor style
           document.getElementById('edit').disabled = false;
           document.getElementById('delete').disabled = false;
           document.body.style.cursor = '';
 
-          window.location = '../';
-
           return;
         }
-
-        // Otherwise, display error message
-        window.alert('You must log in to delete a post.');
-
-        // Reset menu buttons and cursor style
-        document.getElementById('edit').disabled = false;
-        document.getElementById('delete').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
       });
     }
 
@@ -207,108 +231,114 @@ function loadComments(postId) {
     requestStart + '&end=' + requestEnd)
 
       .then(function(response) {
-        if (response.ok) {
-          response.json().then(function(comments) {
-            /* Assess if there are more than requested comments - 1 (number of
-            loaded comments) on server */
-            if (comments.length > (requestEnd - requestStart - 1)) {
-              moreCommentsOnServer = true;
-              var loadNumber = requestEnd - requestStart - 1;
-            }
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-            // If there are not, load all comments sent from server
-            else {
-              moreCommentsOnServer = false;
-              var loadNumber = comments.length;
-            }
-
-            for (var i = 0; i < loadNumber; i++) {
-              // Create container for comment
-              var commentContainer = document.createElement('div');
-              commentContainer.classList.add('comment-container');
-              commentContainer.id = 'comment' + comments[i].comment_id;
-
-              // Create container for comment content
-              var commentContent = document.createElement('div');
-              commentContent.classList.add('comment-content');
-              commentContent.dataset.id = comments[i].comment_id;
-              commentContent.innerHTML = comments[i].content;
-
-              // Create link to commenter's profile
-              var commenter = document.createElement('a');
-              commenter.classList.add('commenter');
-              commenter.href = '../../user/?username=' + comments[i].username;
-              commenter.innerHTML = comments[i].username;
-
-              // Create container for comment timestamp
-              var commentTimestamp = document.createElement('div');
-              commentTimestamp.classList.add('comment-timestamp');
-
-              /* Display modified timestamp if comment was edited, converting
-              UTC timestamp from server to local timestamp in 'MM/DD/YYYY, HH:MM
-              AM/PM' format */
-              if (comments[i].created != comments[i].modified) {
-                commentTimestamp.innerHTML = moment(comments[i].created)
-                  .format('MM/DD/YYYY, LT') + ' (edited)';
-              } else {
-                commentTimestamp.innerHTML = moment(comments[i].created)
-                  .format('MM/DD/YYYY, LT');
+          if (response.ok) {
+            response.json().then(function(comments) {
+              /* Assess if there are more than requested comments - 1 (number
+              of loaded comments) on server */
+              if (comments.length > (requestEnd - requestStart - 1)) {
+                moreCommentsOnServer = true;
+                var loadNumber = requestEnd - requestStart - 1;
               }
 
-              document.getElementById('comments-list')
-                .appendChild(commentContainer);
-              commentContainer.appendChild(commentContent);
-              commentContainer.appendChild(commenter);
-              commentContainer.appendChild(commentTimestamp);
-
-              /* Create buttons for editing and deleting comment if user created
-              the comment */
-              if (comments[i].username == localStorage.getItem('username')) {
-                var buttonContainer = document.createElement('div');
-                buttonContainer.classList.add('button-container');
-
-                var submitButton = document.createElement('button');
-                submitButton.classList.add('submit-button');
-                submitButton.dataset.submitid = comments[i].comment_id;
-                submitButton.innerHTML = 'Submit';
-                submitButton.onclick = submitEdits;
-
-                var cancelButton = document.createElement('button');
-                cancelButton.classList.add('cancel-button');
-                cancelButton.dataset.cancelid = comments[i].comment_id;
-                cancelButton.dataset.content = comments[i].content;
-                cancelButton.innerHTML = 'Cancel';
-                cancelButton.onclick = cancelEdits;
-
-                var modifyButton = document.createElement('button');
-                modifyButton.classList.add('modify-button');
-                modifyButton.dataset.modifyid = comments[i].comment_id;
-                modifyButton.innerHTML = 'Modify';
-                modifyButton.onclick = modifyComment;
-
-                var deleteButton = document.createElement('button');
-                deleteButton.classList.add('delete-button');
-                deleteButton.dataset.deleteid = comments[i].comment_id;
-                deleteButton.innerHTML = 'Delete';
-                deleteButton.onclick = deleteComment;
-
-                commentContainer.appendChild(buttonContainer);
-                buttonContainer.appendChild(submitButton);
-                buttonContainer.appendChild(cancelButton);
-                buttonContainer.appendChild(modifyButton);
-                buttonContainer.appendChild(deleteButton);
+              // If there are not, load all comments sent from server
+              else {
+                moreCommentsOnServer = false;
+                var loadNumber = comments.length;
               }
-            }
 
-            // Jump to comment specified in URL hash after comments load
-            if (window.location.hash && !loaded) {
-              window.location = window.location.href;
-              loaded = true;
-            }
+              for (var i = 0; i < loadNumber; i++) {
+                // Create container for comment
+                var commentContainer = document.createElement('div');
+                commentContainer.classList.add('comment-container');
+                commentContainer.id = 'comment' + comments[i].comment_id;
 
-          });
+                // Create container for comment content
+                var commentContent = document.createElement('div');
+                commentContent.classList.add('comment-content');
+                commentContent.dataset.id = comments[i].comment_id;
+                commentContent.innerHTML = comments[i].content;
+
+                // Create link to commenter's profile
+                var commenter = document.createElement('a');
+                commenter.classList.add('commenter');
+                commenter.href = '../../user/?username=' + comments[i]
+                  .username;
+                commenter.innerHTML = comments[i].username;
+
+                // Create container for comment timestamp
+                var commentTimestamp = document.createElement('div');
+                commentTimestamp.classList.add('comment-timestamp');
+
+                /* Display modified timestamp if comment was edited, converting
+                UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+                HH:MM AM/PM' format */
+                if (comments[i].created != comments[i].modified) {
+                  commentTimestamp.innerHTML = moment(comments[i].created)
+                    .format('MM/DD/YYYY, LT') + ' (edited)';
+                } else {
+                  commentTimestamp.innerHTML = moment(comments[i].created)
+                    .format('MM/DD/YYYY, LT');
+                }
+
+                document.getElementById('comments-list')
+                  .appendChild(commentContainer);
+                commentContainer.appendChild(commentContent);
+                commentContainer.appendChild(commenter);
+                commentContainer.appendChild(commentTimestamp);
+
+                /* Create buttons for editing and deleting comment if user
+                created the comment */
+                if (comments[i].username == localStorage.getItem('username')) {
+                  var buttonContainer = document.createElement('div');
+                  buttonContainer.classList.add('button-container');
+
+                  var submitButton = document.createElement('button');
+                  submitButton.classList.add('submit-button');
+                  submitButton.dataset.submitid = comments[i].comment_id;
+                  submitButton.innerHTML = 'Submit';
+                  submitButton.onclick = submitEdits;
+
+                  var cancelButton = document.createElement('button');
+                  cancelButton.classList.add('cancel-button');
+                  cancelButton.dataset.cancelid = comments[i].comment_id;
+                  cancelButton.dataset.content = comments[i].content;
+                  cancelButton.innerHTML = 'Cancel';
+                  cancelButton.onclick = cancelEdits;
+
+                  var modifyButton = document.createElement('button');
+                  modifyButton.classList.add('modify-button');
+                  modifyButton.dataset.modifyid = comments[i].comment_id;
+                  modifyButton.innerHTML = 'Modify';
+                  modifyButton.onclick = modifyComment;
+
+                  var deleteButton = document.createElement('button');
+                  deleteButton.classList.add('delete-button');
+                  deleteButton.dataset.deleteid = comments[i].comment_id;
+                  deleteButton.innerHTML = 'Delete';
+                  deleteButton.onclick = deleteComment;
+
+                  commentContainer.appendChild(buttonContainer);
+                  buttonContainer.appendChild(submitButton);
+                  buttonContainer.appendChild(cancelButton);
+                  buttonContainer.appendChild(modifyButton);
+                  buttonContainer.appendChild(deleteButton);
+                }
+              }
+
+              // Jump to comment specified in URL hash after comments load
+              if (window.location.hash && !loaded) {
+                window.location = window.location.href;
+                loaded = true;
+              }
+
+            });
+          }
+          return;
         }
-        return;
       });
 }
 
@@ -350,6 +380,9 @@ function submitComment() {
 
     // Display error if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your comment did not go through. Please try again soon.');
 
       // Reset Submit button and cursor style
@@ -360,22 +393,36 @@ function submitComment() {
     })
 
     .then(function(response) {
-      if (response.ok) {
-        // Clear new comment box
-        newComment.innerHTML = '';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        // Reload post
-        loadPost();
+        if (response.ok) {
+          // Clear new comment box
+          newComment.innerHTML = '';
 
-        // Clear comments list
-        document.getElementById('comments-list').innerHTML = '';
+          // Reload post
+          loadPost();
 
-        // Reset request query params
-        requestStart = 0;
-        requestEnd = 11;
+          // Clear comments list
+          document.getElementById('comments-list').innerHTML = '';
 
-        // Reload comments list
-        loadComments(postId);
+          // Reset request query params
+          requestStart = 0;
+          requestEnd = 11;
+
+          // Reload comments list
+          loadComments(postId);
+
+          // Reset Submit button and cursor style
+          document.getElementById('submit-comment').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // Display alert if server responded with error
+        window.alert('You must log in to leave a comment.');
 
         // Reset Submit button and cursor style
         document.getElementById('submit-comment').disabled = false;
@@ -383,15 +430,6 @@ function submitComment() {
 
         return;
       }
-
-      // Display alert if server responded with error
-      window.alert('You must log in to leave a comment.');
-
-      // Reset Submit button and cursor style
-      document.getElementById('submit-comment').disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }
 
@@ -487,6 +525,9 @@ function submitEdits() {
 
     // Display error if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your edits did not go through. Please try again soon.');
 
       // Reset menu buttons and cursor style
@@ -500,16 +541,38 @@ function submitEdits() {
     })
 
     .then(function(response) {
-      if (response.ok) {
-        // Reset comment to non-contenteditable
-        comment.contentEditable = 'false';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        // Add '(edited)' to comment timestamp display
-        commentTimestamp.innerHTML = commentTimestamp.innerHTML + ' (edited)'
+        if (response.ok) {
+          // Reset comment to non-contenteditable
+          comment.contentEditable = 'false';
 
-        /* Set pre-editing content data attribute to new content for Cancel
-        button */
-        cancelButton.dataset.content = comment.innerHTML;
+          // Add '(edited)' to comment timestamp display
+          commentTimestamp.innerHTML = commentTimestamp.innerHTML + ' (edited)'
+
+          /* Set pre-editing content data attribute to new content for Cancel
+          button */
+          cancelButton.dataset.content = comment.innerHTML;
+
+          // Reset menu buttons and cursor style
+          submitButton.disabled = false;
+          cancelButton.disabled = false;
+          modifyButton.disabled = false;
+          deleteButton.disabled = false;
+          document.body.style.cursor = '';
+
+          // Hide Submit and Cancel buttons and display Modify button
+          submitButton.style.display = 'none';
+          cancelButton.style.display = 'none';
+          modifyButton.style.display = 'block';
+
+          return;
+        }
+
+        // Display alert if server responded with error
+        window.alert('You must log in to modify a comment.');
 
         // Reset menu buttons and cursor style
         submitButton.disabled = false;
@@ -518,25 +581,8 @@ function submitEdits() {
         deleteButton.disabled = false;
         document.body.style.cursor = '';
 
-        // Hide Submit and Cancel buttons and display Modify button
-        submitButton.style.display = 'none';
-        cancelButton.style.display = 'none';
-        modifyButton.style.display = 'block';
-
         return;
       }
-
-      // Display alert if server responded with error
-      window.alert('You must log in to modify a comment.');
-
-      // Reset menu buttons and cursor style
-      submitButton.disabled = false;
-      cancelButton.disabled = false;
-      modifyButton.disabled = false;
-      deleteButton.disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }
 
@@ -571,24 +617,46 @@ function deleteComment() {
 
       // Display error message if server is down
       .catch(function(error) {
-        window.alert('Your request did not go through. Please try again soon.');
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
+        window.alert('Your request did not go through. Please try again ' +
+          'soon.');
+
         return;
       })
 
       .then(function(response) {
-        if (response.ok) {
-          // Reload post
-          loadPost();
+        if (response) {
+          // Remove server down banner to page (from common.js script)
+          pingServer();
 
-          // Clear comments list
-          document.getElementById('comments-list').innerHTML = '';
+          if (response.ok) {
+            // Reload post
+            loadPost();
 
-          // Reset request query params
-          requestStart = 0;
-          requestEnd = 11;
+            // Clear comments list
+            document.getElementById('comments-list').innerHTML = '';
 
-          // Reload comments list
-          loadComments(postId);
+            // Reset request query params
+            requestStart = 0;
+            requestEnd = 11;
+
+            // Reload comments list
+            loadComments(postId);
+
+            // Reset menu buttons and cursor style
+            submitButton.disabled = false;
+            cancelButton.disabled = false;
+            modifyButton.disabled = false;
+            deleteButton.disabled = false;
+            document.body.style.cursor = '';
+
+            return;
+          }
+
+          // Otherwise, display error message
+          window.alert('You must log in to delete a comment.');
 
           // Reset menu buttons and cursor style
           submitButton.disabled = false;
@@ -599,18 +667,6 @@ function deleteComment() {
 
           return;
         }
-
-        // Otherwise, display error message
-        window.alert('You must log in to delete a comment.');
-
-        // Reset menu buttons and cursor style
-        submitButton.disabled = false;
-        cancelButton.disabled = false;
-        modifyButton.disabled = false;
-        deleteButton.disabled = false;
-        document.body.style.cursor = '';
-
-        return;
       });
     }
 

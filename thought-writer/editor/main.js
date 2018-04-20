@@ -46,15 +46,19 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadPosts();
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
 
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+  loadPosts();
   return;
 }
 
@@ -133,93 +137,103 @@ function loadPosts() {
     })
 
     .then(function(response) {
-      response.json().then(function(posts) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        // Clear posts from cabinet to replace with served posts
-        postsContainer.innerHTML = '';
+        response.json().then(function(posts) {
 
-        if (posts.length != 0) {
+          // Clear posts from cabinet to replace with served posts
+          postsContainer.innerHTML = '';
 
-          /* Assess if there are more than requested posts - 1 (number of loaded
-          posts) on server */
-          if (posts.length > (requestEnd - requestStart - 1)) {
-            morePostsOnServer = true;
-            var loadNumber = requestEnd - requestStart - 1;
-          }
+          if (posts.length != 0) {
 
-          /* If there are not, load all posts sent from server to post area in
-          cabinet */
-          else {
-            morePostsOnServer = false;
-            var loadNumber = posts.length;
-          }
-
-          for (var i = 0; i < loadNumber; i++) {
-            // Create container for post and its components
-            var previousPost = document.createElement('div');
-            previousPost.classList.add('previous-post');
-
-            // Add display class to post if cabinet is open
-            if (cabinetOpen) {
-              previousPost.classList.add('display');
+            /* Assess if there are more than requested posts - 1 (number of
+            loaded posts) on server */
+            if (posts.length > (requestEnd - requestStart - 1)) {
+              morePostsOnServer = true;
+              var loadNumber = requestEnd - requestStart - 1;
             }
 
-            // Set data-postid attribute to use if post is clicked from cabinet
-            previousPost.dataset.postid = posts[i].post_id;
-
-            /* Set data-number attribute to track the post number for displaying
-            more posts later */
-            previousPost.dataset.number = requestStart + i;
-
-            /* Display hover title for post as post title and local timestamp in
-            'MM/DD/YYYY, HH:MM AM/PM' format */
-            previousPost.title = posts[i].title + '  ' +
-              moment(posts[i].created).format('MM/DD/YYYY, LT');
-            previousPost.dataset.public = posts[i].public;
-
-            // Create container with post content
-            var postContent = document.createElement('div');
-            postContent.classList.add('previous-post-content');
-            postContent.innerHTML = posts[i].content;
-            postsContainer.appendChild(previousPost);
-            previousPost.appendChild(postContent);
-
-            // Open post in post editor when user clicks it
-            previousPost.onclick = function() {
-              openPost(this.dataset.postid);
-              return;
+            /* If there are not, load all posts sent from server to post area
+            in cabinet */
+            else {
+              morePostsOnServer = false;
+              var loadNumber = posts.length;
             }
-          }
 
-          // If cabinet is open, display/hide right/left arrows
-          if (cabinetOpen) {
+            for (var i = 0; i < loadNumber; i++) {
+              // Create container for post and its components
+              var previousPost = document.createElement('div');
+              previousPost.classList.add('previous-post');
 
-            /* If first post displayed in cabinet is not post 0 (i.e., there are
-            lower-numbered posts to display), display left navigation arrow */
-            if (postsContainer.getElementsByClassName('previous-post')[0]
-              .dataset.number != 0) {
-                document.getElementById('left-arrow').classList.add('display');
+              // Add display class to post if cabinet is open
+              if (cabinetOpen) {
+                previousPost.classList.add('display');
               }
 
-            // Otherwise, hide left arrow
-            else {
-              document.getElementById('left-arrow').classList.remove('display');
+              /* Set data-postid attribute to use if post is clicked from
+              cabinet */
+              previousPost.dataset.postid = posts[i].post_id;
+
+              /* Set data-number attribute to track the post number for
+              displaying more posts later */
+              previousPost.dataset.number = requestStart + i;
+
+              /* Display hover title for post as post title and local timestamp
+              in 'MM/DD/YYYY, HH:MM AM/PM' format */
+              previousPost.title = posts[i].title + '  ' +
+                moment(posts[i].created).format('MM/DD/YYYY, LT');
+              previousPost.dataset.public = posts[i].public;
+
+              // Create container with post content
+              var postContent = document.createElement('div');
+              postContent.classList.add('previous-post-content');
+              postContent.innerHTML = posts[i].content;
+              postsContainer.appendChild(previousPost);
+              previousPost.appendChild(postContent);
+
+              // Open post in post editor when user clicks it
+              previousPost.onclick = function() {
+                openPost(this.dataset.postid);
+                return;
+              }
             }
 
-            /* If there are more posts on the server, display right navigation
-            arrow */
-            if (morePostsOnServer) {
-              document.getElementById('right-arrow').classList.add('display');
-            }
+            // If cabinet is open, display/hide right/left arrows
+            if (cabinetOpen) {
 
-            // Otherwise, hide right arrow
-            else {
-              document.getElementById('right-arrow').classList
-                .remove('display');
+              /* If first post displayed in cabinet is not post 0 (i.e., there
+              are lower-numbered posts to display), display left navigation
+              arrow */
+              if (postsContainer.getElementsByClassName('previous-post')[0]
+                .dataset.number != 0) {
+                  document.getElementById('left-arrow').classList
+                    .add('display');
+                }
+
+              // Otherwise, hide left arrow
+              else {
+                document.getElementById('left-arrow').classList
+                  .remove('display');
+              }
+
+              /* If there are more posts on the server, display right
+              navigation arrow */
+              if (morePostsOnServer) {
+                document.getElementById('right-arrow').classList
+                  .add('display');
+              }
+
+              // Otherwise, hide right arrow
+              else {
+                document.getElementById('right-arrow').classList
+                  .remove('display');
+              }
             }
           }
-        }
-      });
+        });
+      }
     });
 }
 
@@ -232,37 +246,47 @@ function openPost(postId) {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your request did not go through. Please try again soon.');
+
       return;
     })
 
     .then(function(response) {
-      response.json().then(function(requestedPost) {
-        // Set post title, content, data-timestamp attribute, and public status
-        postTitle.value = requestedPost.title;
-        post.innerHTML = requestedPost.content;
-        post.dataset.postid = requestedPost.post_id;
-        publicInput.checked = requestedPost.public;
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        if (requestedPost.public) {
-          publicCheckbox.classList.add('checked');
-        } else {
-          publicCheckbox.classList.remove('checked');
-        }
+        response.json().then(function(requestedPost) {
+          /* Set post title, content, data-timestamp attribute, and public
+          status */
+          postTitle.value = requestedPost.title;
+          post.innerHTML = requestedPost.content;
+          post.dataset.postid = requestedPost.post_id;
+          publicInput.checked = requestedPost.public;
 
-        // Stop auto-save function (used for in-progress posts)
-        clearInterval(saveInterval);
+          if (requestedPost.public) {
+            publicCheckbox.classList.add('checked');
+          } else {
+            publicCheckbox.classList.remove('checked');
+          }
 
-        // Set viewingPost to true and toggle editing buttons
-        viewingPost = true;
-        toggleButtons();
+          // Stop auto-save function (used for in-progress posts)
+          clearInterval(saveInterval);
 
-        // If post board is flipped to back, flip to initial state
-        if (boardFlipped) {
-          flipBoard();
-        }
+          // Set viewingPost to true and toggle editing buttons
+          viewingPost = true;
+          toggleButtons();
 
-      });
+          // If post board is flipped to back, flip to initial state
+          if (boardFlipped) {
+            flipBoard();
+          }
+
+        });
+      }
     });
 }
 
@@ -445,6 +469,9 @@ function submitPost() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your post did not go through. Please try again soon.');
 
       // Reset menu buttons and cursor style
@@ -456,31 +483,46 @@ function submitPost() {
     })
 
     .then(function(response) {
-      // If post was submitted successfully, clear post and flip board
-      if (response.ok) {
-        response.text().then(function(postId) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          // If cabinet is open, close it to refresh posts
-          if (cabinetOpen) {
-            toggleCabinet();
-          }
+        // If post was submitted successfully, clear post and flip board
+        if (response.ok) {
+          response.text().then(function(postId) {
 
-          // Reload user's posts to cabinet to include newly submitted post
-          loadPosts();
+            // If cabinet is open, close it to refresh posts
+            if (cabinetOpen) {
+              toggleCabinet();
+            }
 
-          /* Set data-postid attribute for Modify Last Post button in case user
-          wants to modify last post */
-          document.getElementById('go-back').dataset.postid = postId;
+            // Reload user's posts to cabinet to include newly submitted post
+            loadPosts();
 
-          // Clear post title and content
-          clearPost();
+            /* Set data-postid attribute for Modify Last Post button in case
+            user wants to modify last post */
+            document.getElementById('go-back').dataset.postid = postId;
 
-          // Save cleared state to localStorage
-          savePost();
+            // Clear post title and content
+            clearPost();
 
-          // Flip to back of post board
-          flipBoard();
-        });
+            // Save cleared state to localStorage
+            savePost();
+
+            // Flip to back of post board
+            flipBoard();
+          });
+
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('You must log in to create a post.');
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
@@ -489,16 +531,6 @@ function submitPost() {
 
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('You must log in to create a post.');
-
-      // Reset menu buttons and cursor style
-      document.getElementById('clear-post').disabled = false;
-      document.getElementById('submit-post').disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }
 
@@ -578,6 +610,9 @@ function modifyPost() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your post did not go through. Please try again soon.');
 
       // Reset menu buttons and cursor style
@@ -589,30 +624,46 @@ function modifyPost() {
     })
 
     .then(function(response) {
-      // If modified post was submitted successfully, clear post and flip board
-      if (response.ok) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        // If cabinet is open, close it to refresh posts
-        if (cabinetOpen) {
-          toggleCabinet();
+        /* If modified post was submitted successfully, clear post and flip
+        board */
+        if (response.ok) {
+
+          // If cabinet is open, close it to refresh posts
+          if (cabinetOpen) {
+            toggleCabinet();
+          }
+
+          // Reload user's posts to cabinet to include newly modified post
+          loadPosts();
+
+          /* Set data-postid attribute for Modify Last Post button in case user
+          wants to modify last post */
+          document.getElementById('go-back').dataset.postid = post.dataset
+            .postid;
+
+          // Clear post title and content
+          clearPost();
+
+          // Set viewingPost to false
+          viewingPost = false;
+
+          // Flip to back of post board
+          flipBoard();
+
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
         }
 
-        // Reload user's posts to cabinet to include newly modified post
-        loadPosts();
-
-        /* Set data-postid attribute for Modify Last Post button in case user
-        wants to modify last post */
-        document.getElementById('go-back').dataset.postid = post.dataset
-          .postid;
-
-        // Clear post title and content
-        clearPost();
-
-        // Set viewingPost to false
-        viewingPost = false;
-
-        // Flip to back of post board
-        flipBoard();
+        // Otherwise, display error message
+        window.alert('You must log in to edit a post.');
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
@@ -621,16 +672,6 @@ function modifyPost() {
 
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('You must log in to edit a post.');
-
-      // Reset menu buttons and cursor style
-      document.getElementById('clear-post').disabled = false;
-      document.getElementById('submit-post').disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }
 
@@ -657,6 +698,9 @@ function deletePost() {
 
       // Display error message if server is down
       .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
         window.alert('Your request did not go through. Please try again soon.');
 
         // Reset menu buttons and cursor style
@@ -668,25 +712,40 @@ function deletePost() {
       })
 
       .then(function(response) {
-        if (response.ok) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-          // If cabinet is open, close it to refresh posts
-          if (cabinetOpen) {
-            toggleCabinet();
+          if (response.ok) {
+
+            // If cabinet is open, close it to refresh posts
+            if (cabinetOpen) {
+              toggleCabinet();
+            }
+
+            // Reload user's posts to cabinet to reflect newly deleted post
+            loadPosts();
+
+            // Clear post title and content
+            clearPost();
+
+            // Set viewingPost to false
+            viewingPost = false;
+
+            // Set postDeleted to true and flip to back of post board
+            postDeleted = true;
+            flipBoard();
+
+            // Reset menu buttons and cursor style
+            document.getElementById('clear-post').disabled = false;
+            document.getElementById('submit-post').disabled = false;
+            document.body.style.cursor = '';
+
+            return;
           }
 
-          // Reload user's posts to cabinet to reflect newly deleted post
-          loadPosts();
-
-          // Clear post title and content
-          clearPost();
-
-          // Set viewingPost to false
-          viewingPost = false;
-
-          // Set postDeleted to true and flip to back of post board
-          postDeleted = true;
-          flipBoard();
+          // Otherwise, display error message
+          window.alert('You must log in to delete a post.');
 
           // Reset menu buttons and cursor style
           document.getElementById('clear-post').disabled = false;
@@ -695,16 +754,6 @@ function deletePost() {
 
           return;
         }
-
-        // Otherwise, display error message
-        window.alert('You must log in to delete a post.');
-
-        // Reset menu buttons and cursor style
-        document.getElementById('clear-post').disabled = false;
-        document.getElementById('submit-post').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
       });
     }
 

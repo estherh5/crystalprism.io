@@ -464,6 +464,9 @@ function postDrawing() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(checkIfLoggedIn);
+
       window.alert('Your drawing did not get posted. Please try again soon.');
 
       // Reset menu buttons and cursor style
@@ -476,11 +479,40 @@ function postDrawing() {
     })
 
     .then(function(response) {
-      /* If drawing was posted successfully, clear drawing from easel and
-      storage items and redirect to gallery page */
-      if (response.status == 201) {
-        clearDrawing();
-        window.location = '../';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        /* If drawing was posted successfully, clear drawing from easel and
+        storage items and redirect to gallery page */
+        if (response.status == 201) {
+          clearDrawing();
+          window.location = '../';
+
+          // Reset menu buttons and cursor style
+          document.getElementById('clear').disabled = false;
+          document.getElementById('post').disabled = false;
+          document.getElementById('download').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // If drawing is not unique, display error message
+        if (response.status == 409) {
+          window.alert('Your drawing must be unique.');
+
+          // Reset menu buttons and cursor style
+          document.getElementById('clear').disabled = false;
+          document.getElementById('post').disabled = false;
+          document.getElementById('download').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // Otherwise, display login error message
+        window.alert('You must log in to post your drawing to the gallery.');
 
         // Reset menu buttons and cursor style
         document.getElementById('clear').disabled = false;
@@ -490,30 +522,6 @@ function postDrawing() {
 
         return;
       }
-
-      // If drawing is not unique, display error message
-      if (response.status == 409) {
-        window.alert('Your drawing must be unique.');
-
-        // Reset menu buttons and cursor style
-        document.getElementById('clear').disabled = false;
-        document.getElementById('post').disabled = false;
-        document.getElementById('download').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
-      }
-
-      // Otherwise, display login error message
-      window.alert('You must log in to post your drawing to the gallery.');
-
-      // Reset menu buttons and cursor style
-      document.getElementById('clear').disabled = false;
-      document.getElementById('post').disabled = false;
-      document.getElementById('download').disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }
 

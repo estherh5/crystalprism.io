@@ -30,7 +30,7 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(checkIfLoggedIn);
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
@@ -38,6 +38,14 @@ window.onload = function() {
   // Resize game to full screen
   resizeGame();
 
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+  loadLeaders();
   return;
 }
 
@@ -51,6 +59,9 @@ function loadLeaders() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       // Clear leaders list
       for (var i = 0; i < leaders.length; i++) {
         leaders[i].innerHTML = '';
@@ -70,33 +81,38 @@ function loadLeaders() {
     })
 
     .then(function(response) {
-      response.json().then(function(leadersList) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        for (var i = 0; i < leadersList.length; i++) {
-          /* Create cells for score and player name in leaders list from
-          server */
-          var scoreCell = document.createElement('td');
-          var playerCell = document.createElement('td');
+        response.json().then(function(leadersList) {
 
-          /* Clear current leader display on game board and replace with new
-          player and score cells for mobile/desktop */
-          leaders[i].innerHTML = '';
-          leaders[i].appendChild(scoreCell);
-          leaders[i].appendChild(playerCell);
+          for (var i = 0; i < leadersList.length; i++) {
+            /* Create cells for score and player name in leaders list from
+            server */
+            var scoreCell = document.createElement('td');
+            var playerCell = document.createElement('td');
 
-          // Display score in score cell
-          scoreCell.innerHTML = leadersList[i].score;
+            /* Clear current leader display on game board and replace with new
+            player and score cells for mobile/desktop */
+            leaders[i].innerHTML = '';
+            leaders[i].appendChild(scoreCell);
+            leaders[i].appendChild(playerCell);
 
-          // Display link to player's user profile in player cell
-          var userLink = document.createElement('a');
-          userLink.href = '../user/?username=' + leadersList[i].username;
-          userLink.innerHTML = leadersList[i].username;
-          playerCell.appendChild(userLink);
+            // Display score in score cell
+            scoreCell.innerHTML = leadersList[i].score;
 
-          // Display game screen
-          document.getElementById('game-screen').classList.remove('hidden');
-        }
-      });
+            // Display link to player's user profile in player cell
+            var userLink = document.createElement('a');
+            userLink.href = '../user/?username=' + leadersList[i].username;
+            userLink.innerHTML = leadersList[i].username;
+            playerCell.appendChild(userLink);
+
+            // Display game screen
+            document.getElementById('game-screen').classList.remove('hidden');
+          }
+        });
+      }
     });
 }
 
@@ -369,7 +385,9 @@ function endGame() {
 
     // Display error message if server is down
     .catch(function(error) {
-      // Display error
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your score could not be saved. Please play again later.');
 
       // Reset menu buttons and cursor style
@@ -381,18 +399,23 @@ function endGame() {
     })
 
     .then(function(response) {
-      if (!response.ok) {
-        window.alert('Your score could not be saved. Please play again ' +
-          'later.');
-        return;
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (!response.ok) {
+          window.alert('Your score could not be saved. Please play again ' +
+            'later.');
+          return;
+        }
+
+        loadLeaders();
+
+        // Reset menu buttons and cursor style
+        document.getElementById('restart').disabled = false;
+        document.getElementById('end').disabled = false;
+        document.body.style.cursor = '';
       }
-
-      loadLeaders();
-
-      // Reset menu buttons and cursor style
-      document.getElementById('restart').disabled = false;
-      document.getElementById('end').disabled = false;
-      document.body.style.cursor = '';
     });
   }
 

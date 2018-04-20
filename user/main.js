@@ -32,23 +32,30 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-    loadPersonalInfo();
-
-    if (drawingsButton.classList.contains('selected')) {
-      loadDrawings();
-    } else if (postsButton.classList.contains('selected')) {
-      loadPosts();
-    } else {
-      loadComments();
-    }
-
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
+
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+
+  loadPersonalInfo();
+
+  if (drawingsButton.classList.contains('selected')) {
+    loadDrawings();
+  }
+  else if (postsButton.classList.contains('selected')) {
+    loadPosts();
+  }
+  else {
+    loadComments();
+  }
 
   return;
 }
@@ -63,16 +70,19 @@ function loadPersonalInfo() {
       document.getElementById('profile-title')
         .innerHTML = 'Could not load page';
       document.title = 'Not found';
+
       return;
     })
 
     .then(function(response) {
       if (response.ok) {
         response.json().then(function(info) {
-          // Set profile username display and page title to requested username
+          /* Set profile username display and page title to requested
+          username */
           document.getElementById('user-link')
             .href = '?username=' + info['username'];
-          document.getElementById('profile-title').innerHTML = info['username'];
+          document.getElementById('profile-title')
+            .innerHTML = info['username'];
           document.title = info['username'];
 
           /* Populate user's about me blurb, name, email address, background
@@ -106,14 +116,16 @@ function loadPersonalInfo() {
           // Update icon background color based on icon color
           updateIconBackground(info['icon_color']);
 
-          // Refresh profile icon rendering to eliminate SVG artifacts in Safari
+          /* Refresh profile icon rendering to eliminate SVG artifacts in
+          Safari */
           document.getElementById('profile-icon').style
             .webkitTransform = 'scale(1)';
 
           /* Convert UTC timestamp from server to local timestamp in
           'MM/DD/YYYY' format */
-          document.getElementById("member-stat").innerHTML = 'Member since ' +
-            moment(info['created']).format('MM/DD/YYYY');
+          document.getElementById("member-stat")
+            .innerHTML = 'Member since ' + moment(info['created'])
+            .format('MM/DD/YYYY');
 
           // Display high scores for Rhythm of Life and Shapes in Rain
           document.getElementById('shapes-stat')
@@ -122,7 +134,8 @@ function loadPersonalInfo() {
           // Display Rhythm lifespan from score
           var sec_num = info['rhythm_high_score'];
           var score_hours = Math.floor(sec_num / 3600);
-          var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
+          var score_minutes = Math
+            .floor((sec_num - (score_hours * 3600)) / 60);
           var score_seconds = sec_num - (score_hours * 3600) -
             (score_minutes * 60);
           var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
@@ -190,164 +203,172 @@ function loadDrawings() {
 
     // Add error message to gallery if server responds with error
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       gallery.innerHTML = 'There was an error loading the user\'s drawings. ' +
         'Please refresh the page.';
       return;
     })
 
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(drawings) {
-          // Clear gallery to load new drawings from server
-          gallery.innerHTML = '';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          if (drawings.length > 0) {
-            /* Assess if there are more than requested drawings - 1 (number of
-            loaded drawings) on server */
-            if (drawings.length > (drawingEnd - drawingStart - 1)) {
-              var moreDrawingsOnServer = true;
-              var drawingLoadNumber = drawingEnd - drawingStart - 1;
-            }
+        if (response.ok) {
+          response.json().then(function(drawings) {
+            // Clear gallery to load new drawings from server
+            gallery.innerHTML = '';
 
-            // If there are not, load all drawings sent from server
-            else {
-              var moreDrawingsOnServer = false;
-              var drawingLoadNumber = drawings.length;
-            }
-
-            for (var i = 0; i < drawingLoadNumber; i++) {
-              // Create container for drawing and its components
-              var drawingContainer = document.createElement('div');
-              drawingContainer.classList.add('drawing-container');
-
-              /* Set data-number attribute to track the drawing number for
-              displaying more drawings later */
-              drawingContainer.dataset.number = drawingStart + i;
-
-              // Create container for drawing title
-              var drawingTitle = document.createElement('div');
-              drawingTitle.classList.add('drawing-title');
-              drawingTitle.innerHTML = drawings[i]['title'];
-
-              // Create drawing image
-              var drawing = document.createElement('img');
-              drawing.classList.add('drawing');
-              drawing.src = drawings[i]['url'];
-              drawing.title = 'View drawing';
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              drawing.dataset.drawing = drawings[i]['drawing_id'];
-
-              /* Create container for drawing artist and number of likes and
-              views */
-              var drawingInfo = document.createElement('div');
-              drawingInfo.classList.add('drawing-info');
-
-              // Create container for number of drawing likes
-              var drawingLikes = document.createElement('div');
-              drawingLikes.classList.add('drawing-likes');
-              drawingLikes.title = 'Likes';
-
-              // Create text to display number of likes
-              var likeText = document.createElement('text');
-              likeText.innerHTML = drawings[i]['like_count'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
-
-              // Set likers to list of users who liked drawing
-              var likers = drawings[i]['likers'];
-
-              // Create drawing views container
-              var drawingViews = document.createElement('div');
-              drawingViews.classList.add('drawing-views');
-              drawingViews.title = 'Views';
-
-              // Create eye icon to display with drawing views
-              var viewsIcon = document.createElement('i');
-              viewsIcon.classList.add('fas');
-              viewsIcon.classList.add('fa-eye');
-
-              // Create text to display number of views
-              var viewText = document.createElement('text');
-              viewText.innerHTML = drawings[i]['views'];
-
-              /* Set data-drawing attribute as drawing id for later
-              identification */
-              viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
-
-              gallery.appendChild(drawingContainer);
-              drawingContainer.appendChild(drawingTitle);
-              drawingContainer.appendChild(drawing);
-              drawingContainer.appendChild(drawingInfo);
-              drawingInfo.appendChild(drawingLikes);
-              drawingLikes.appendChild(likeText);
-              drawingInfo.appendChild(drawingViews);
-              drawingViews.appendChild(viewsIcon);
-              drawingViews.appendChild(viewText);
-
-              /* Update number of views when user clicks drawing title or
-              drawing */
-              drawingTitle.onclick = function() {
-                updateViews(this.nextSibling);
-                return;
+            if (drawings.length > 0) {
+              /* Assess if there are more than requested drawings - 1 (number
+              of loaded drawings) on server */
+              if (drawings.length > (drawingEnd - drawingStart - 1)) {
+                var moreDrawingsOnServer = true;
+                var drawingLoadNumber = drawingEnd - drawingStart - 1;
               }
 
-              drawing.onclick = function() {
-                updateViews(this);
-                return;
+              // If there are not, load all drawings sent from server
+              else {
+                var moreDrawingsOnServer = false;
+                var drawingLoadNumber = drawings.length;
               }
 
-              // Display drawing like hearts
-              displayDrawingLikes(drawings[i]['drawing_id'], likers);
-            }
+              for (var i = 0; i < drawingLoadNumber; i++) {
+                // Create container for drawing and its components
+                var drawingContainer = document.createElement('div');
+                drawingContainer.classList.add('drawing-container');
 
-            /* If first drawing displayed in gallery is not drawing 0 (i.e.,
-            there are lower-numbered drawings to display), display left
-            navigation arrow */
-            if (gallery.getElementsByClassName('drawing-container')[0].dataset
-              .number != 0) {
+                /* Set data-number attribute to track the drawing number for
+                displaying more drawings later */
+                drawingContainer.dataset.number = drawingStart + i;
+
+                // Create container for drawing title
+                var drawingTitle = document.createElement('div');
+                drawingTitle.classList.add('drawing-title');
+                drawingTitle.innerHTML = drawings[i]['title'];
+
+                // Create drawing image
+                var drawing = document.createElement('img');
+                drawing.classList.add('drawing');
+                drawing.src = drawings[i]['url'];
+                drawing.title = 'View drawing';
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                drawing.dataset.drawing = drawings[i]['drawing_id'];
+
+                /* Create container for drawing artist and number of likes and
+                views */
+                var drawingInfo = document.createElement('div');
+                drawingInfo.classList.add('drawing-info');
+
+                // Create container for number of drawing likes
+                var drawingLikes = document.createElement('div');
+                drawingLikes.classList.add('drawing-likes');
+                drawingLikes.title = 'Likes';
+
+                // Create text to display number of likes
+                var likeText = document.createElement('text');
+                likeText.innerHTML = drawings[i]['like_count'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
+
+                // Set likers to list of users who liked drawing
+                var likers = drawings[i]['likers'];
+
+                // Create drawing views container
+                var drawingViews = document.createElement('div');
+                drawingViews.classList.add('drawing-views');
+                drawingViews.title = 'Views';
+
+                // Create eye icon to display with drawing views
+                var viewsIcon = document.createElement('i');
+                viewsIcon.classList.add('fas');
+                viewsIcon.classList.add('fa-eye');
+
+                // Create text to display number of views
+                var viewText = document.createElement('text');
+                viewText.innerHTML = drawings[i]['views'];
+
+                /* Set data-drawing attribute as drawing id for later
+                identification */
+                viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
+
+                gallery.appendChild(drawingContainer);
+                drawingContainer.appendChild(drawingTitle);
+                drawingContainer.appendChild(drawing);
+                drawingContainer.appendChild(drawingInfo);
+                drawingInfo.appendChild(drawingLikes);
+                drawingLikes.appendChild(likeText);
+                drawingInfo.appendChild(drawingViews);
+                drawingViews.appendChild(viewsIcon);
+                drawingViews.appendChild(viewText);
+
+                /* Update number of views when user clicks drawing title or
+                drawing */
+                drawingTitle.onclick = function() {
+                  updateViews(this.nextSibling);
+                  return;
+                }
+
+                drawing.onclick = function() {
+                  updateViews(this);
+                  return;
+                }
+
+                // Display drawing like hearts
+                displayDrawingLikes(drawings[i]['drawing_id'], likers);
+              }
+
+              /* If first drawing displayed in gallery is not drawing 0 (i.e.,
+              there are lower-numbered drawings to display), display left
+              navigation arrow */
+              if (gallery.getElementsByClassName('drawing-container')[0]
+                .dataset.number != 0) {
+                  document.getElementById('drawing-left-arrow').classList
+                  .add('display');
+                }
+
+              // Otherwise, hide left arrow
+              else {
                 document.getElementById('drawing-left-arrow').classList
-                .add('display');
+                  .remove('display');
               }
 
-            // Otherwise, hide left arrow
+              /* If there are more drawings on the server, display right
+              navigation arrow */
+              if (moreDrawingsOnServer) {
+                document.getElementById('drawing-right-arrow').classList
+                  .add('display');
+              }
+
+              // Otherwise, hide right arrow
+              else {
+                document.getElementById('drawing-right-arrow').classList
+                  .remove('display');
+              }
+            }
+
+            // Display message if user has no drawings
             else {
-              document.getElementById('drawing-left-arrow').classList
-                .remove('display');
+              gallery.innerHTML = 'There are no drawings for this user.';
             }
 
-            /* If there are more drawings on the server, display right
-            navigation arrow */
-            if (moreDrawingsOnServer) {
-              document.getElementById('drawing-right-arrow').classList
-                .add('display');
-            }
+          });
 
-            // Otherwise, hide right arrow
-            else {
-              document.getElementById('drawing-right-arrow').classList
-                .remove('display');
-            }
-          }
+          return;
+        }
 
-          // Display message if user has no drawings
-          else {
-            gallery.innerHTML = 'There are no drawings for this user.';
-          }
-
-        });
+        // Add error message to gallery if server responds with error
+        gallery.innerHTML = 'There was an error loading the user\'s ' +
+          'drawings. Please refresh the page.';
 
         return;
       }
-
-      // Add error message to gallery if server responds with error
-      gallery.innerHTML = 'There was an error loading the user\'s drawings. ' +
-        'Please refresh the page.';
-
-      return;
     });
 }
 
@@ -404,26 +425,37 @@ function updateViews(drawing) {
 
     // Display error message if server is down
     .catch(function(error) {
-      window.alert('Your request did not go through. Please try again soon.')
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
+      window.alert('Your request did not go through. Please try again soon.');
+
+      return;
     })
 
     /* If server responds without error, update view count and redirect to
     easel page */
     .then(function(response) {
-      if (response.ok) {
-        var viewText = document
-          .querySelectorAll('[data-drawing="views' + drawing.dataset.drawing +
-          '"]')[0];
-        viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-        window.location = '../canvashare/easel/?drawing=' + drawing.dataset
-          .drawing;
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (response.ok) {
+          var viewText = document
+            .querySelectorAll('[data-drawing="views' + drawing.dataset
+            .drawing + '"]')[0];
+          viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
+          window.location = '../canvashare/easel/?drawing=' + drawing.dataset
+            .drawing;
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('Your request did not go through. Please try again ' +
+          'soon.');
+
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
     });
 }
 
@@ -455,27 +487,36 @@ function updateLikes() {
 
         // Display error message if server is down
         .catch(function(error) {
+          // Add server down banner to page (from common.js script)
+          pingServer(retryFunctions);
+
           window.alert('Your like did not go through. Please try again soon.');
+
           return;
         })
 
         /* If server responds without error, remove heart fill and decrease
         like count user sees */
         .then(function(response) {
-          if (response.ok) {
-            var likeText = heart.nextSibling;
-            var currentLikes = likeText.innerHTML;
-            heart.classList.remove('fas');
-            heart.classList.add('far');
-            delete heart.dataset.drawinglike;
-            likeText.innerHTML = parseInt(currentLikes) - 1;
+          if (response) {
+            // Remove server down banner from page (from common.js script)
+            pingServer();
+
+            if (response.ok) {
+              var likeText = heart.nextSibling;
+              var currentLikes = likeText.innerHTML;
+              heart.classList.remove('fas');
+              heart.classList.add('far');
+              delete heart.dataset.drawinglike;
+              likeText.innerHTML = parseInt(currentLikes) - 1;
+              return;
+            }
+
+            // Otherwise, display error message
+            window.alert('You must log in to like a drawing.');
+
             return;
           }
-
-          // Otherwise, display error message
-          window.alert('You must log in to like a drawing.');
-
-          return;
         });
   }
 
@@ -491,29 +532,38 @@ function updateLikes() {
 
     // Display error message if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       window.alert('Your like did not go through. Please try again soon.');
+
       return;
     })
 
     /* If server responds without error, fill in heart and increase like count
     user sees */
     .then(function(response) {
-      if (response.ok) {
-        response.text().then(function(drawingLikeId) {
-          var likeText = heart.nextSibling;
-          var currentLikes = likeText.innerHTML;
-          likeText.innerHTML = parseInt(currentLikes) + 1;
-          heart.classList.remove('far');
-          heart.classList.add('fas');
-          heart.dataset.drawinglike = drawingLikeId;
-        });
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (response.ok) {
+          response.text().then(function(drawingLikeId) {
+            var likeText = heart.nextSibling;
+            var currentLikes = likeText.innerHTML;
+            likeText.innerHTML = parseInt(currentLikes) + 1;
+            heart.classList.remove('far');
+            heart.classList.add('fas');
+            heart.dataset.drawinglike = drawingLikeId;
+          });
+          return;
+        }
+
+        // Otherwise, display error message
+        window.alert('You must log in to like a drawing.');
+
         return;
       }
-
-      // Otherwise, display error message
-      window.alert('You must log in to like a drawing.');
-
-      return;
     });
 }
 
@@ -525,136 +575,147 @@ function loadPosts() {
 
     // Add error message to post list if server responds with error
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
       postList.innerHTML = 'There was an error loading the user\'s posts. ' +
         'Please refresh the page.';
+
       return;
     })
 
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(posts) {
-          // Clear post area to display new posts from server
-          postList.innerHTML = '';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          if (posts.length > 0) {
-            /* Assess if there are more than requested posts - 1 (number of
-            loaded posts) on server */
-            if (posts.length > (postEnd - postStart - 1)) {
-              var morePostsOnServer = true;
-              var postLoadNumber = postEnd - postStart - 1;
-            }
+        if (response.ok) {
+          response.json().then(function(posts) {
+            // Clear post area to display new posts from server
+            postList.innerHTML = '';
 
-            // If there are not, load all posts sent from server
-            else {
-              var morePostsOnServer = false;
-              var postLoadNumber = posts.length;
-            }
-
-            for (var i = 0; i < postLoadNumber; i++) {
-              // Create container for post and its components
-              var postContainer = document.createElement('div');
-              postContainer.classList.add('post-container');
-
-              /* Set data-number attribute to track the post number for
-              displaying more posts later */
-              postContainer.dataset.number = postStart + i;
-
-              // Create container for post title
-              var postTitle = document.createElement('a');
-              postTitle.classList.add('post-title');
-              postTitle.href = '../thought-writer/post/?post=' + posts[i]
-                .post_id;
-              postTitle.innerHTML = posts[i].title;
-              postTitle.title = 'View post page';
-
-              // Create container for post background
-              var postBoard = document.createElement('div');
-              postBoard.classList.add('post-board');
-
-              // Create container with post content
-              var postContent = document.createElement('div');
-              postContent.classList.add('post-content');
-              postContent.innerHTML = posts[i].content;
-
-              // Create container for post timestamp and comment number
-              var postInfo = document.createElement('div');
-              postInfo.classList.add('post-info');
-
-              // Create container for post timestamp
-              var postTimestamp = document.createElement('div');
-              postTimestamp.classList.add('post-time');
-
-              /* Convert UTC timestamp from server to local timestamp in
-              'MM/DD/YYYY, HH:MM AM/PM' format */
-              postTimestamp.innerHTML = moment(posts[i].created)
-                .format('MM/DD/YYYY, LT');
-
-              // Create container for number of post comments
-              var postComments = document.createElement('a');
-              postComments.classList.add('post-comments');
-              postComments.title = 'View post comments';
-              postComments.href = '../thought-writer/post/?post=' +
-                posts[i].post_id + '#comments';
-
-              if (posts[i].comment_count == 1) {
-                postComments.innerHTML = posts[i].comment_count + ' comment';
-              } else {
-                postComments.innerHTML = posts[i].comment_count + ' comments';
+            if (posts.length > 0) {
+              /* Assess if there are more than requested posts - 1 (number of
+              loaded posts) on server */
+              if (posts.length > (postEnd - postStart - 1)) {
+                var morePostsOnServer = true;
+                var postLoadNumber = postEnd - postStart - 1;
               }
 
-              postList.appendChild(postContainer);
-              postContainer.appendChild(postTitle);
-              postContainer.appendChild(postBoard);
-              postBoard.appendChild(postContent);
-              postContainer.appendChild(postInfo);
-              postInfo.appendChild(postTimestamp);
-              postInfo.appendChild(postComments);
-            }
+              // If there are not, load all posts sent from server
+              else {
+                var morePostsOnServer = false;
+                var postLoadNumber = posts.length;
+              }
 
-            /* If first post displayed in post area is not post 0 (i.e., there
-            are lower-numbered posts to display), display left navigation
-            arrow */
-            if (postList.getElementsByClassName('post-container')[0].dataset
-              .number != 0) {
+              for (var i = 0; i < postLoadNumber; i++) {
+                // Create container for post and its components
+                var postContainer = document.createElement('div');
+                postContainer.classList.add('post-container');
+
+                /* Set data-number attribute to track the post number for
+                displaying more posts later */
+                postContainer.dataset.number = postStart + i;
+
+                // Create container for post title
+                var postTitle = document.createElement('a');
+                postTitle.classList.add('post-title');
+                postTitle.href = '../thought-writer/post/?post=' + posts[i]
+                  .post_id;
+                postTitle.innerHTML = posts[i].title;
+                postTitle.title = 'View post page';
+
+                // Create container for post background
+                var postBoard = document.createElement('div');
+                postBoard.classList.add('post-board');
+
+                // Create container with post content
+                var postContent = document.createElement('div');
+                postContent.classList.add('post-content');
+                postContent.innerHTML = posts[i].content;
+
+                // Create container for post timestamp and comment number
+                var postInfo = document.createElement('div');
+                postInfo.classList.add('post-info');
+
+                // Create container for post timestamp
+                var postTimestamp = document.createElement('div');
+                postTimestamp.classList.add('post-time');
+
+                /* Convert UTC timestamp from server to local timestamp in
+                'MM/DD/YYYY, HH:MM AM/PM' format */
+                postTimestamp.innerHTML = moment(posts[i].created)
+                  .format('MM/DD/YYYY, LT');
+
+                // Create container for number of post comments
+                var postComments = document.createElement('a');
+                postComments.classList.add('post-comments');
+                postComments.title = 'View post comments';
+                postComments.href = '../thought-writer/post/?post=' +
+                  posts[i].post_id + '#comments';
+
+                if (posts[i].comment_count == 1) {
+                  postComments.innerHTML = posts[i].comment_count +
+                    ' comment';
+                } else {
+                  postComments.innerHTML = posts[i].comment_count +
+                    ' comments';
+                }
+
+                postList.appendChild(postContainer);
+                postContainer.appendChild(postTitle);
+                postContainer.appendChild(postBoard);
+                postBoard.appendChild(postContent);
+                postContainer.appendChild(postInfo);
+                postInfo.appendChild(postTimestamp);
+                postInfo.appendChild(postComments);
+              }
+
+              /* If first post displayed in post area is not post 0 (i.e.,
+              there are lower-numbered posts to display), display left
+              navigation arrow */
+              if (postList.getElementsByClassName('post-container')[0].dataset
+                .number != 0) {
+                  document.getElementById('posts-left-arrow').classList
+                    .add('display');
+                }
+
+              // Otherwise, hide left arrow
+              else {
                 document.getElementById('posts-left-arrow').classList
+                  .remove('display');
+              }
+
+              /* If there are more posts on the server, display right
+              navigation arrow */
+              if (morePostsOnServer) {
+                document.getElementById('posts-right-arrow').classList
                   .add('display');
               }
 
-            // Otherwise, hide left arrow
+              // Otherwise, hide right arrow
+              else {
+                document.getElementById('posts-right-arrow').classList
+                  .remove('display');
+              }
+            }
+
+            // Display message if user has no posts
             else {
-              document.getElementById('posts-left-arrow').classList
-                .remove('display');
+              postList.innerHTML = 'There are no posts for this user.';
             }
 
-            /* If there are more posts on the server, display right navigation
-            arrow */
-            if (morePostsOnServer) {
-              document.getElementById('posts-right-arrow').classList
-                .add('display');
-            }
+          });
 
-            // Otherwise, hide right arrow
-            else {
-              document.getElementById('posts-right-arrow').classList
-                .remove('display');
-            }
-          }
+          return;
+        }
 
-          // Display message if user has no posts
-          else {
-            postList.innerHTML = 'There are no posts for this user.';
-          }
-
-        });
+        // Add error message to post list if server responds with error
+        postList.innerHTML = 'There was an error loading the user\'s posts. ' +
+          'Please refresh the page.';
 
         return;
       }
-
-      // Add error message to post list if server responds with error
-      postList.innerHTML = 'There was an error loading the user\'s posts. ' +
-        'Please refresh the page.';
-
-      return;
     });
 }
 
@@ -666,123 +727,132 @@ function loadComments() {
 
       // Add error message to comment list if server responds with error
       .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
         commentList.innerHTML = 'There was an error loading the user\'s ' +
           'comments. Please refresh the page.';
+
         return;
       })
 
       .then(function(response) {
-        if (response.ok) {
-          response.json().then(function(comments) {
-            // Clear comment area to display new comments from server
-            commentList.innerHTML = '';
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-            if (comments.length > 0) {
-              /* Assess if there are more than requested comments - 1 (number
-              of loaded comments) on server */
-              if (comments.length > (commentEnd - commentStart - 1)) {
-                moreCommentsExist = true;
-                var commentsLoadNumber = commentEnd - commentStart - 1;
-              }
+          if (response.ok) {
+            response.json().then(function(comments) {
+              // Clear comment area to display new comments from server
+              commentList.innerHTML = '';
 
-              // If there are not, load all comments sent from server
-              else {
-                moreCommentsExist = false;
-                var commentsLoadNumber = comments.length;
-              }
+              if (comments.length > 0) {
+                /* Assess if there are more than requested comments - 1 (number
+                of loaded comments) on server */
+                if (comments.length > (commentEnd - commentStart - 1)) {
+                  moreCommentsExist = true;
+                  var commentsLoadNumber = commentEnd - commentStart - 1;
+                }
 
-              for (var i = 0; i < commentsLoadNumber; i++) {
-                // Create container for comment and its components
-                var commentContainer = document.createElement('div');
-                commentContainer.classList.add('comment-container');
+                // If there are not, load all comments sent from server
+                else {
+                  moreCommentsExist = false;
+                  var commentsLoadNumber = comments.length;
+                }
 
-                /* Set data-number attribute to track the comment number for
-                displaying more comments later */
-                commentContainer.dataset.number = commentStart + i;
+                for (var i = 0; i < commentsLoadNumber; i++) {
+                  // Create container for comment and its components
+                  var commentContainer = document.createElement('div');
+                  commentContainer.classList.add('comment-container');
 
-                // Create container for comment background
-                var commentBoard = document.createElement('div');
-                commentBoard.classList.add('comment-board');
+                  /* Set data-number attribute to track the comment number for
+                  displaying more comments later */
+                  commentContainer.dataset.number = commentStart + i;
 
-                // Create container with comment content
-                var commentContent = document.createElement('div');
-                commentContent.classList.add('comment-content');
-                commentContent.innerHTML = comments[i].content;
+                  // Create container for comment background
+                  var commentBoard = document.createElement('div');
+                  commentBoard.classList.add('comment-board');
 
-                /* Create container for comment timestamp and link to parent
-                post */
-                var commentInfo = document.createElement('div');
-                commentInfo.classList.add('comment-info');
+                  // Create container with comment content
+                  var commentContent = document.createElement('div');
+                  commentContent.classList.add('comment-content');
+                  commentContent.innerHTML = comments[i].content;
 
-                // Create container for comment timestamp
-                var commentTimestamp = document.createElement('div');
-                commentTimestamp.classList.add('comment-time');
+                  /* Create container for comment timestamp and link to parent
+                  post */
+                  var commentInfo = document.createElement('div');
+                  commentInfo.classList.add('comment-info');
 
-                /* Convert UTC timestamp from server to local timestamp in
-                'MM/DD/YYYY, HH:MM AM/PM' format */
-                commentTimestamp.innerHTML = moment(comments[i].created)
-                  .format('MM/DD/YYYY, LT');
+                  // Create container for comment timestamp
+                  var commentTimestamp = document.createElement('div');
+                  commentTimestamp.classList.add('comment-time');
 
-                // Create container for link to parent post
-                var parentPost = document.createElement('a');
-                parentPost.classList.add('parent-post');
-                parentPost.title = 'View comment on post page';
-                parentPost.href = '../../thought-writer/post/?post=' +
-                  comments[i].post_id + '#comment' + comments[i].comment_id;
-                parentPost.innerHTML = comments[i].title;
+                  /* Convert UTC timestamp from server to local timestamp in
+                  'MM/DD/YYYY, HH:MM AM/PM' format */
+                  commentTimestamp.innerHTML = moment(comments[i].created)
+                    .format('MM/DD/YYYY, LT');
 
-                commentList.appendChild(commentContainer);
-                commentContainer.appendChild(commentBoard);
-                commentBoard.appendChild(commentContent);
-                commentContainer.appendChild(commentInfo);
-                commentInfo.appendChild(commentTimestamp);
-                commentInfo.appendChild(parentPost);
-              }
+                  // Create container for link to parent post
+                  var parentPost = document.createElement('a');
+                  parentPost.classList.add('parent-post');
+                  parentPost.title = 'View comment on post page';
+                  parentPost.href = '../../thought-writer/post/?post=' +
+                    comments[i].post_id + '#comment' + comments[i].comment_id;
+                  parentPost.innerHTML = comments[i].title;
 
-              /* If first comment displayed in post area is not comment 0 (i.e.,
-              there are lower-numbered comments to display), display left
-              navigation arrow */
-              if (commentList.getElementsByClassName('comment-container')[0]
-                .dataset.number != 0) {
+                  commentList.appendChild(commentContainer);
+                  commentContainer.appendChild(commentBoard);
+                  commentBoard.appendChild(commentContent);
+                  commentContainer.appendChild(commentInfo);
+                  commentInfo.appendChild(commentTimestamp);
+                  commentInfo.appendChild(parentPost);
+                }
+
+                /* If first comment displayed in post area is not comment 0
+                (i.e., there are lower-numbered comments to display), display
+                left navigation arrow */
+                if (commentList.getElementsByClassName('comment-container')[0]
+                  .dataset.number != 0) {
+                    document.getElementById('comments-left-arrow').classList
+                      .add('display');
+                  }
+
+                // Otherwise, hide left arrow
+                else {
                   document.getElementById('comments-left-arrow').classList
+                    .remove('display');
+                }
+
+                /* If there are more comments on the server, display right
+                navigation arrow */
+                if (moreCommentsExist) {
+                  document.getElementById('comments-right-arrow').classList
                     .add('display');
                 }
 
-              // Otherwise, hide left arrow
+                // Otherwise, hide right arrow
+                else {
+                  document.getElementById('comments-right-arrow').classList
+                    .remove('display');
+                }
+              }
+
+              // Display message if user has no comments
               else {
-                document.getElementById('comments-left-arrow').classList
-                  .remove('display');
+                commentList.innerHTML = 'There are no comments for this user.';
               }
 
-              /* If there are more comments on the server, display right
-              navigation arrow */
-              if (moreCommentsExist) {
-                document.getElementById('comments-right-arrow').classList
-                  .add('display');
-              }
+            });
 
-              // Otherwise, hide right arrow
-              else {
-                document.getElementById('comments-right-arrow').classList
-                  .remove('display');
-              }
-            }
+            return;
+          }
 
-            // Display message if user has no comments
-            else {
-              commentList.innerHTML = 'There are no comments for this user.';
-            }
-
-          });
+          // Add error message to comment list if server responds with error
+          commentList.innerHTML = 'There was an error loading the user\'s ' +
+            'comments. Please refresh the page.';
 
           return;
         }
-
-        // Add error message to comment list if server responds with error
-        commentList.innerHTML = 'There was an error loading the user\'s ' +
-          'comments. Please refresh the page.';
-
-        return;
       });
 }
 

@@ -764,6 +764,10 @@ h1 {
 }
 
 .nav-circle {
+  cursor: pointer;
+}
+
+.nav-text {
   visibility: hidden;
   dominant-baseline: central;
   font-family: 'Amatic SC', cursive;
@@ -771,9 +775,8 @@ h1 {
   text-anchor: middle;
 }
 
-#menu:hover .nav-circle, #menu.hover .nav-circle {
+#menu:hover .nav-text, #menu.hover .nav-text {
   visibility: visible;
-  cursor: pointer;
 }
 
 #projects-list, #photos-list {

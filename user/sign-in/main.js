@@ -128,6 +128,9 @@ function requestLogin() {
 
     // Display warning if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(checkIfLoggedIn);
+
       window.alert('Your request did not go through. Please try again soon.');
 
       // Reset Submit button and cursor style
@@ -138,49 +141,54 @@ function requestLogin() {
     })
 
     .then(function(response) {
-      /* If server responds with error, display warning that credentials are
-      incorrect */
-      if (response.status != 200) {
-        $(incorrect).modal('show');
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-        // Focus on Okay button to close modal
-        document.getElementById('incorrect-okay').focus();
+        /* If server responds with error, display warning that credentials are
+        incorrect */
+        if (response.status != 200) {
+          $(incorrect).modal('show');
 
-        // Clear username and password inputs
-        usernameInput.value = '';
-        passwordInput.value = '';
+          // Focus on Okay button to close modal
+          document.getElementById('incorrect-okay').focus();
 
-        // Reset Submit button and cursor style
-        document.getElementById('submit').disabled = false;
-        document.body.style.cursor = '';
+          // Clear username and password inputs
+          usernameInput.value = '';
+          passwordInput.value = '';
 
-        return;
-      }
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
 
-      /* Otherwise, save returned token from server and decoded token's payload
-      (username) to localStorage */
-      response.text().then(function(token) {
-        localStorage.removeItem('username');
-        localStorage.setItem('username', decodeURIComponent(atob(token
-          .split('.')[1]))['username']);
-        localStorage.removeItem('token');
-        localStorage.setItem('token', token);
-
-        // Reset Submit button and cursor style
-        document.getElementById('submit').disabled = false;
-        document.body.style.cursor = '';
-
-        // Take user to previous page if stored in sessionStorage
-        if (sessionStorage.getItem('previous-window')) {
-          window.location = sessionStorage.getItem('previous-window');
-          sessionStorage.removeItem('previous-window');
           return;
         }
 
-        // Otherwise, take user to My Account page
-        window.location = '../my-account/';
+        /* Otherwise, save returned token from server and decoded token's
+        payload (username) to localStorage */
+        response.text().then(function(token) {
+          localStorage.removeItem('username');
+          localStorage.setItem('username', decodeURIComponent(atob(token
+            .split('.')[1]))['username']);
+          localStorage.removeItem('token');
+          localStorage.setItem('token', token);
 
-        return;
-      });
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
+
+          // Take user to previous page if stored in sessionStorage
+          if (sessionStorage.getItem('previous-window')) {
+            window.location = sessionStorage.getItem('previous-window');
+            sessionStorage.removeItem('previous-window');
+            return;
+          }
+
+          // Otherwise, take user to My Account page
+          window.location = '../my-account/';
+
+          return;
+        });
+      }
     });
 }

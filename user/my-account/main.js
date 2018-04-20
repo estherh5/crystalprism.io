@@ -2039,6 +2039,10 @@ function editPersonal() {
     checkboxes[i].classList.add('editing');
   }
 
+  // Set placeholder text for password fields
+  passwordInput.placeholder = 'Enter new password here to change it';
+  confirmPassInput.placeholder = 'Enter new password here to change it';
+
   // Set editingPersonal variable to true
   editingPersonal = true;
 
@@ -2272,6 +2276,10 @@ function submitEdits() {
             passwordInput.value = '';
             confirmPassInput.value = '';
 
+            // Reset placeholder text for password fields
+            passwordInput.placeholder = '';
+            confirmPassInput.placeholder = '';
+
             // Set editingPersonal variable to false
             editingPersonal = false;
 
@@ -2378,6 +2386,10 @@ function cancelEdits() {
     checkboxContainers[i].classList.remove('editing');
     checkboxes[i].classList.remove('editing');
   }
+
+  // Reset placeholder text for password fields
+  passwordInput.placeholder = '';
+  confirmPassInput.placeholder = '';
 
   // Set editingPersonal variable to false
   editingPersonal = false;

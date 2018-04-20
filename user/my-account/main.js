@@ -1800,7 +1800,16 @@ function validateUsername() {
 
 
 // Determine if password input has errors when user focuses out of field
-passwordInput.onfocusout = validatePassword;
+passwordInput.onfocusout = function() {
+  validatePassword();
+
+  /* If password and confirm password fields are blank, remove confirm password
+  error if displayed */
+  if (!passwordInput.value && !confirmPassInput.value) {
+    validatePasswordMatch();
+  }
+  return;
+}
 
 function validatePassword() {
   var password = passwordInput.value;

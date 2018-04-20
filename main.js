@@ -164,7 +164,8 @@ document.getElementById('menu').addEventListener('touchstart', function(e) {
 // Set requested page as URL hash when menu circles or buttons are clicked
 for (var i = 0; i < navCircles.length; i++) {
   navCircles[i].addEventListener('click', function() {
-    window.location.hash = this.dataset.page;
+    window.location.hash = this.getElementsByClassName('nav-text')[0]
+      .dataset.page;
     return;
   }, false);
 

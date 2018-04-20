@@ -5,7 +5,7 @@ var signInLink;
 var currentPath = window.location.href.split('/').slice(-2)[0];
 var domain = window.location.origin.split('/').slice(-2)[1];
 var root = window.location.origin;
-var refreshed = false // If Refresh button was clicked for pingServer function
+var repinged = false // If Retry button was clicked for pingServer function
 var scrolled = false // Stores if user scrolled down page with infinite scroll
 var mobile = false; // Used to determine if user is on mobile device or desktop
 
@@ -93,7 +93,7 @@ function createPageFooter() {
 
 
 /* Check if API is online and run optional action function if so (and if
-Refresh button was clicked) */
+Retry button was clicked) */
 function pingServer(action) {
   // Remove server down banner if it is already displayed
   if (header.contains(document.getElementById('banner'))) {
@@ -117,44 +117,48 @@ function pingServer(action) {
 
     // Display error banner if server is down
     .catch(function(error) {
-      var banner = document.createElement('div');
-      banner.id = 'banner';
-      var bannerText = document.createElement('div');
-      bannerText.id = 'banner-text';
-      bannerText.innerHTML = 'Server is offline. Some features and content ' +
-        'may be unavailable. ';
-      banner.appendChild(bannerText);
+      if (!header.contains(document.getElementById('banner'))) {
+        var banner = document.createElement('div');
+        banner.id = 'banner';
+        var bannerText = document.createElement('div');
+        bannerText.id = 'banner-text';
+        bannerText.innerHTML = 'The server could not be reached. Some content ' +
+          'may be unavailable. ';
+        banner.appendChild(bannerText);
 
-      // Display Refresh button to allow user to re-ping the server
-      var refresh = document.createElement('text');
-      refresh.id = 'refresh';
-      refresh.innerHTML = 'Refresh.';
-      refresh.onclick = function() {
-        refreshed = true;
-        pingServer(action);
-        return;
+        // Display Retry button to allow user to re-ping the server
+        var retry = document.createElement('text');
+        retry.id = 'retry';
+        retry.innerHTML = 'Retry.';
+        retry.onclick = function() {
+          repinged = true;
+          pingServer(action);
+          return;
+        }
+        bannerText.appendChild(retry);
+
+        // Add audio container margin to allow space for banner
+        if (document.body.contains(document.getElementById('audio-container'))) {
+          document.getElementById('audio-container').style.marginTop = '20px';
+        }
+
+        // Add Vicarious title link margin to allow space for banner
+        if (currentPath == 'vicarious') {
+          document.getElementById('title-link').style.marginTop = '11px';
+        }
+
+        document.getElementById('header')
+          .insertAdjacentElement('afterbegin', banner);
       }
-      bannerText.appendChild(refresh);
-
-      // Add audio container margin to allow space for banner
-      if (document.body.contains(document.getElementById('audio-container'))) {
-        document.getElementById('audio-container').style.marginTop = '20px';
-      }
-
-      // Add Vicarious title link margin to allow space for banner
-      if (currentPath == 'vicarious') {
-        document.getElementById('title-link').style.marginTop = '11px';
-      }
-
-      document.getElementById('header')
-        .insertAdjacentElement('afterbegin', banner);
     })
 
-    // Run action function if server is online and Refresh button was clicked
+    // Run action function if server is online and Retry button was clicked
     .then(function(response) {
-      if (response.ok && refreshed) {
-        action();
-        refreshed = false;
+      if (response) {
+        if (response.ok && repinged) {
+          action();
+          repinged = false;
+        }
       }
     });
 }

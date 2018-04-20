@@ -176,6 +176,9 @@ function createAccount() {
 
     // Display warning if server is down
     .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(checkIfLoggedIn);
+
       window.alert('Your request did not go through. Please try again soon.');
 
       // Reset Submit button and cursor style
@@ -186,10 +189,67 @@ function createAccount() {
     })
 
     .then(function(response) {
-      /* Display warning that username already exists if server responds with
-      error */
-      if (response.status == 409) {
-        document.getElementById('user-exists').style.display = 'block';
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        /* Display warning that username already exists if server responds with
+        error */
+        if (response.status == 409) {
+          document.getElementById('user-exists').style.display = 'block';
+
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // If account is created successfully, send request to log into account
+        if (response.status == 201) {
+          return fetch(api + '/login', {
+            headers: {
+              'Authorization': 'Basic ' + btoa(username + ':' + password)
+            },
+            method: 'GET',
+          })
+
+            /* If server responds successfully, save username and returned
+            token from server to localStorage */
+            .then(function(response) {
+
+              if (response.status == 200) {
+                response.text().then(function(token) {
+                  localStorage.removeItem('username');
+                  localStorage.setItem('username', username);
+                  localStorage.removeItem('token');
+                  localStorage.setItem('token', token);
+
+                  /* Save request to create account to sessionStorage to
+                  display success modal on next page (My Account page) */
+                  sessionStorage.setItem('account-request', 'create');
+
+                  // Clear username and password inputs
+                  usernameInput.value = '';
+                  passwordInput.value = '';
+                  confirmPassInput.value = '';
+
+                  // Reset Submit button and cursor style
+                  document.getElementById('submit').disabled = false;
+                  document.body.style.cursor = '';
+
+                  // Take user to My Account page
+                  window.location = '../my-account/';
+                });
+              }
+            });
+
+          return;
+        }
+
+        // Otherwise, display warning if server responds with other error
+        window.alert('Your request did not go through. Please try again ' +
+          'soon.');
 
         // Reset Submit button and cursor style
         document.getElementById('submit').disabled = false;
@@ -197,56 +257,5 @@ function createAccount() {
 
         return;
       }
-
-      // If account is created successfully, send request to log into account
-      if (response.status == 201) {
-        return fetch(api + '/login', {
-          headers: {
-            'Authorization': 'Basic ' + btoa(username + ':' + password)
-          },
-          method: 'GET',
-        })
-
-          /* If server responds successfully, save username and returned token
-          from server to localStorage */
-          .then(function(response) {
-
-            if (response.status == 200) {
-              response.text().then(function(token) {
-                localStorage.removeItem('username');
-                localStorage.setItem('username', username);
-                localStorage.removeItem('token');
-                localStorage.setItem('token', token);
-
-                // Save request to create account to sessionStorage to display
-                // success modal on next page (My Account page)
-                sessionStorage.setItem('account-request', 'create');
-
-                // Clear username and password inputs
-                usernameInput.value = '';
-                passwordInput.value = '';
-                confirmPassInput.value = '';
-
-                // Reset Submit button and cursor style
-                document.getElementById('submit').disabled = false;
-                document.body.style.cursor = '';
-
-                // Take user to My Account page
-                window.location = '../my-account/';
-              });
-            }
-          });
-
-        return;
-      }
-
-      // Otherwise, display warning if server responds with other error
-      window.alert('Your request did not go through. Please try again soon.');
-
-      // Reset Submit button and cursor style
-      document.getElementById('submit').disabled = false;
-      document.body.style.cursor = '';
-
-      return;
     });
 }

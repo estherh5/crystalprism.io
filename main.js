@@ -43,31 +43,35 @@ window.onload = function() {
   checkIfLoggedIn();
 
   // Check if Crystal Prism API is online (from common.js script)
-  pingServer(function() {
-    checkIfLoggedIn();
-
-    // Reset request variables and reload photos if user is on Photos page
-    if (selectedPage.id == 'photos-page') {
-      photoRequestStart = 0;
-      photoRequestEnd = 21;
-      loadPhotos();
-    }
-
-    // Reset request variables and reload posts if user is on Ideas page
-    if (selectedPage.id == 'ideas-page') {
-      postRequestStart = 0;
-      postRequestEnd = 11;
-      loadPosts();
-    }
-
-    return;
-  });
+  pingServer(retryFunctions);
 
   // Create page footer (from common.js script)
   createPageFooter();
 
   // Set page theme to night view or Day View
   setTheme();
+
+  return;
+}
+
+
+// Functions to run when Retry button is clicked from server down banner
+function retryFunctions() {
+  checkIfLoggedIn();
+
+  // Reset request variables and reload photos if user is on Photos page
+  if (selectedPage.id == 'photos-page') {
+    photoRequestStart = 0;
+    photoRequestEnd = 21;
+    loadPhotos();
+  }
+
+  // Reset request variables and reload posts if user is on Ideas page
+  if (selectedPage.id == 'ideas-page') {
+    postRequestStart = 0;
+    postRequestEnd = 11;
+    loadPosts();
+  }
 
   return;
 }
@@ -623,6 +627,9 @@ function loadPhotos() {
       displayed (i.e., prevent multiple errors when scrolling to load more
       photos) */
       .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
         if (!photosError || photosError.parentNode != document
           .getElementById('photos-page')) {
             photosError = document.createElement('text');
@@ -635,73 +642,79 @@ function loadPhotos() {
       })
 
       .then(function(response) {
-        if (response.ok) {
-          response.json().then(function(s3Photos) {
-            /* Add photo(s) to Photos page if there is at least one photo sent
-            from server */
-            if (s3Photos.length != 0) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-              // Remove error message from Photos page if it is displayed
-              if (photosError && photosError.parentNode == document
-                .getElementById('photos-page')) {
-                  document.getElementById('photos-page')
-                    .removeChild(photosError);
+          if (response.ok) {
+            response.json().then(function(s3Photos) {
+              /* Add photo(s) to Photos page if there is at least one photo
+              sent from server */
+              if (s3Photos.length != 0) {
+
+                // Remove error message from Photos page if it is displayed
+                if (photosError && photosError.parentNode == document
+                  .getElementById('photos-page')) {
+                    document.getElementById('photos-page')
+                      .removeChild(photosError);
+                  }
+
+                /* Assess if there are more than requested photos - 1 (number
+                of loaded photos) on server */
+                if (s3Photos.length > (photoRequestEnd - photoRequestStart -
+                  1)) {
+                    morePhotosOnServer = true;
+                    var loadNumber = photoRequestEnd - photoRequestStart - 1;
+                  }
+
+                  // If there are not, load all photos sent from server
+                  else {
+                    morePhotosOnServer = false;
+                    var loadNumber = s3Photos.length;
+                  }
+
+                for (var i = 0; i < loadNumber; i++) {
+                  if (s3Photos[i].includes('thumb')) {
+                    // Create containers for photo
+                    var photoContainer = document.createElement('li');
+                    var photoListing = document.createElement('div');
+                    photoListing.classList.add('photo-listing');
+                    photoListing.dataset.displayed = 'false';
+
+                    // Add photo to Photos page
+                    var photo = document.createElement('img');
+                    photo.classList.add('photo');
+                    photo.src = s3Photos[i];
+                    photoContainer.appendChild(photoListing);
+                    photoListing.appendChild(photo);
+                    document.getElementById('photos-list')
+                      .appendChild(photoContainer);
+
+                    // Open photo modal when photo is clicked from Photos page
+                    photoListing.addEventListener('click', function() {
+                      openModal(this, 'photo');
+                        return;
+                      }, false);
+
+                  }
                 }
-
-              /* Assess if there are more than requested photos - 1 (number of
-              loaded photos) on server */
-              if (s3Photos.length > (photoRequestEnd - photoRequestStart - 1)) {
-                morePhotosOnServer = true;
-                var loadNumber = photoRequestEnd - photoRequestStart - 1;
               }
+            });
 
-              // If there are not, load all photos sent from server
-              else {
-                morePhotosOnServer = false;
-                var loadNumber = s3Photos.length;
-              }
-
-              for (var i = 0; i < loadNumber; i++) {
-                if (s3Photos[i].includes('thumb')) {
-                  // Create containers for photo
-                  var photoContainer = document.createElement('li');
-                  var photoListing = document.createElement('div');
-                  photoListing.classList.add('photo-listing');
-                  photoListing.dataset.displayed = 'false';
-
-                  // Add photo to Photos page
-                  var photo = document.createElement('img');
-                  photo.classList.add('photo');
-                  photo.src = s3Photos[i];
-                  photoContainer.appendChild(photoListing);
-                  photoListing.appendChild(photo);
-                  document.getElementById('photos-list')
-                    .appendChild(photoContainer);
-
-                  // Open photo modal when photo is clicked from Photos page
-                  photoListing.addEventListener('click', function() {
-                    openModal(this, 'photo');
-                    return;
-                  }, false);
-
-                }
-              }
-            }
-          });
-
-          return;
-        }
-
-        // Display error message if server returned error
-        if (!photosError || photosError.parentNode != document
-          .getElementById('photos-page')) {
-            photosError = document.createElement('text');
-            photosError.id = 'photos-error';
-            photosError.innerHTML = 'There are no photos right now. ' +
-              'Please check later.';
-            document.getElementById('photos-page').appendChild(photosError);
             return;
           }
+
+          // Display error message if server returned error
+          if (!photosError || photosError.parentNode != document
+            .getElementById('photos-page')) {
+              photosError = document.createElement('text');
+              photosError.id = 'photos-error';
+              photosError.innerHTML = 'There are no photos right now. ' +
+                'Please check later.';
+              document.getElementById('photos-page').appendChild(photosError);
+              return;
+            }
+        }
       });
 }
 
@@ -715,6 +728,9 @@ function loadPosts() {
       displayed (i.e., prevent multiple errors when scrolling to load more
       posts) */
       .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
+
         if (!postsError || postsError.parentNode != document
           .getElementById('ideas-page')) {
             postsError = document.createElement('text');
@@ -726,110 +742,116 @@ function loadPosts() {
           }
 
       }).then(function(response) {
-        if (response.ok) {
-          response.json().then(function(posts) {
-            /* Add post(s) to Ideas page if there is at least one post sent
-            from server */
-            if (posts.length != 0) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-              // Remove error message from Ideas page if it is displayed
-              if (postsError && postsError.parentNode == document
-                .getElementById('ideas-page')) {
-                  document.getElementById('ideas-page').removeChild(postsError);
+          if (response.ok) {
+            response.json().then(function(posts) {
+              /* Add post(s) to Ideas page if there is at least one post sent
+              from server */
+              if (posts.length != 0) {
+
+                // Remove error message from Ideas page if it is displayed
+                if (postsError && postsError.parentNode == document
+                  .getElementById('ideas-page')) {
+                    document.getElementById('ideas-page')
+                      .removeChild(postsError);
+                  }
+
+                /* Assess if there are more than requested posts - 1 (number of
+                loaded posts) on server */
+                if (posts.length > (postRequestEnd - postRequestStart - 1)) {
+                  morePostsOnServer = true;
+                  var loadNumber = postRequestEnd - postRequestStart - 1;
                 }
 
-              /* Assess if there are more than requested posts - 1 (number of
-              loaded posts) on server */
-              if (posts.length > (postRequestEnd - postRequestStart - 1)) {
-                morePostsOnServer = true;
-                var loadNumber = postRequestEnd - postRequestStart - 1;
-              }
-
-              // If there are not, load all posts sent from server
-              else {
-                morePostsOnServer = false;
-                var loadNumber = posts.length;
-              }
-
-              for (var i = 0; i < loadNumber; i++) {
-                // Create table for post header and body rows
-                var post = document.createElement('table');
-                post.classList.add('post');
-
-                /* Create header row to display post title and timestamp in
-                cells */
-                var postHeader = document.createElement('tr');
-                postHeader.classList.add('post-header');
-                var postTitle = document.createElement('td');
-                postTitle.classList.add('post-title');
-                postTitle.innerHTML = posts[i].title;
-                var postTimestamp = document.createElement('td');
-                postTimestamp.classList.add('post-timestamp');
-
-                /* Convert UTC timestamp from server to local timestamp in
-                'MM/DD/YYYY, HH:MM AM/PM' format */
-                postTimestamp.innerHTML = moment(posts[i].created)
-                  .format('MM/DD/YYYY, LT');
-
-                // Create body row with post content in cell
-                var postBody = document.createElement('tr');
-                var postContainer = document.createElement('td');
-                postContainer.classList.add('post-container');
-                postContainer.colSpan = '3';
-                var postContent = document.createElement('div');
-                postContent.classList.add('post-content');
-                postContent.id = posts[i].post_id;
-
-                // Display preview of post if >= 200 characters
-                if (posts[i].content.length >= 200) {
-                  /* Store full text in data-fulltext attribute to load if user
-                  expands preview */
-                  postContent.dataset.fulltext = posts[i].content;
-                  postContent.innerHTML = posts[i].content.slice(0, 200) +
-                    '...';
-                  var toggleTextIcon = document.createElement('i');
-                  toggleTextIcon.classList.add('far');
-                  toggleTextIcon.classList.add('fa-plus-square');
-                  var toggleTextButton = document.createElement('button');
-                  toggleTextButton.classList.add('toggle-full-text');
-                  toggleTextButton.dataset.post = posts[i].post_id;
-                  toggleTextButton.appendChild(toggleTextIcon);
-
-                  // Toggle full post text if user clicks plus/minus icon
-                  toggleTextButton.onclick = toggleFullText;
-                  postContent.appendChild(toggleTextButton);
-                }
-
-                // Display full post otherwise
+                // If there are not, load all posts sent from server
                 else {
-                  postContent.innerHTML = posts[i].content;
+                  morePostsOnServer = false;
+                  var loadNumber = posts.length;
                 }
 
-                // Add post to Ideas page
-                document.getElementById('ideas-page').appendChild(post);
-                post.appendChild(postHeader);
-                postHeader.appendChild(postTitle);
-                postHeader.appendChild(postTimestamp);
-                post.appendChild(postBody);
-                postBody.appendChild(postContainer);
-                postContainer.appendChild(postContent);
+                for (var i = 0; i < loadNumber; i++) {
+                  // Create table for post header and body rows
+                  var post = document.createElement('table');
+                  post.classList.add('post');
+
+                  /* Create header row to display post title and timestamp in
+                  cells */
+                  var postHeader = document.createElement('tr');
+                  postHeader.classList.add('post-header');
+                  var postTitle = document.createElement('td');
+                  postTitle.classList.add('post-title');
+                  postTitle.innerHTML = posts[i].title;
+                  var postTimestamp = document.createElement('td');
+                  postTimestamp.classList.add('post-timestamp');
+
+                  /* Convert UTC timestamp from server to local timestamp in
+                  'MM/DD/YYYY, HH:MM AM/PM' format */
+                  postTimestamp.innerHTML = moment(posts[i].created)
+                    .format('MM/DD/YYYY, LT');
+
+                  // Create body row with post content in cell
+                  var postBody = document.createElement('tr');
+                  var postContainer = document.createElement('td');
+                  postContainer.classList.add('post-container');
+                  postContainer.colSpan = '3';
+                  var postContent = document.createElement('div');
+                  postContent.classList.add('post-content');
+                  postContent.id = posts[i].post_id;
+
+                  // Display preview of post if >= 200 characters
+                  if (posts[i].content.length >= 200) {
+                    /* Store full text in data-fulltext attribute to load if
+                    user expands preview */
+                    postContent.dataset.fulltext = posts[i].content;
+                    postContent.innerHTML = posts[i].content.slice(0, 200) +
+                      '...';
+                    var toggleTextIcon = document.createElement('i');
+                    toggleTextIcon.classList.add('far');
+                    toggleTextIcon.classList.add('fa-plus-square');
+                    var toggleTextButton = document.createElement('button');
+                    toggleTextButton.classList.add('toggle-full-text');
+                    toggleTextButton.dataset.post = posts[i].post_id;
+                    toggleTextButton.appendChild(toggleTextIcon);
+
+                    // Toggle full post text if user clicks plus/minus icon
+                    toggleTextButton.onclick = toggleFullText;
+                    postContent.appendChild(toggleTextButton);
+                  }
+
+                  // Display full post otherwise
+                  else {
+                    postContent.innerHTML = posts[i].content;
+                  }
+
+                  // Add post to Ideas page
+                  document.getElementById('ideas-page').appendChild(post);
+                  post.appendChild(postHeader);
+                  postHeader.appendChild(postTitle);
+                  postHeader.appendChild(postTimestamp);
+                  post.appendChild(postBody);
+                  postBody.appendChild(postContainer);
+                  postContainer.appendChild(postContent);
+                }
               }
-            }
-          });
+            });
 
-          return;
-        }
-
-        // Display error message if server returned error
-        if (!postsError || postsError.parentNode != document
-          .getElementById('ideas-page')) {
-            postsError = document.createElement('text');
-            postsError.id = 'posts-error';
-            postsError.innerHTML = 'There are no posts right now. ' +
-              'Please check later.';
-            document.getElementById('ideas-page').appendChild(postsError);
             return;
           }
+
+          // Display error message if server returned error
+          if (!postsError || postsError.parentNode != document
+            .getElementById('ideas-page')) {
+              postsError = document.createElement('text');
+              postsError.id = 'posts-error';
+              postsError.innerHTML = 'There are no posts right now. ' +
+                'Please check later.';
+              document.getElementById('ideas-page').appendChild(postsError);
+              return;
+            }
+        }
       });
 }
 

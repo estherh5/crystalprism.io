@@ -260,12 +260,15 @@ function openPost(postId) {
         pingServer();
 
         response.json().then(function(requestedPost) {
-          /* Set post title, content, data-timestamp attribute, and public
-          status */
+          // Set post title, content, data-id attribute, and public status
           postTitle.value = requestedPost.title;
           post.innerHTML = requestedPost.content;
           post.dataset.postid = requestedPost.post_id;
           publicInput.checked = requestedPost.public;
+
+          /* Save original post content to check if user makes changes after
+          editing */
+          post.dataset.original = requestedPost.content;
 
           if (requestedPost.public) {
             publicCheckbox.classList.add('checked');
@@ -403,12 +406,13 @@ document.getElementById('clear-post').onclick = function() {
 }
 
 function clearPost() {
-  // Clear post title, content, public checkbox, and data-timestamp attribute
+  // Clear post title, content, public checkbox, and data attributes
   postTitle.value = '';
   post.innerHTML = '';
   publicInput.checked = false;
   publicCheckbox.classList.remove('checked');
   delete post.dataset.postid;
+  delete post.dataset.original;
   return;
 }
 
@@ -537,6 +541,16 @@ function submitPost() {
 
 // Close previous post in post editor
 document.getElementById('close-post').onclick = function() {
+  // Prompt for confirmation to close post if it was edited from original
+  if (post.innerHTML != post.dataset.original) {
+    var confirmDelete = confirm('Are you sure you want to close this post? ' +
+      'Your changes will not be saved unless you click the Modify button.');
+
+    if (!confirmDelete) {
+      return;
+    }
+  }
+
   // Clear post in post editor
   clearPost();
 

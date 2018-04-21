@@ -175,6 +175,11 @@ function assembleEasel(drawingSrc, title) {
   currentPaletteButton = document.getElementsByClassName('palette')[0];
   currentPaletteButton.classList.add('selected');
 
+  // Update drawing's view count after drawing loads
+  if (drawingId) {
+    updateViews();    
+  }
+
   return;
 }
 
@@ -342,6 +347,16 @@ function endBrushStroke(event) {
   drawingCanvas.removeEventListener('stagemousemove', moveBrush);
 
   return;
+}
+
+
+// Update drawing's view count when drawing first loads
+function updateViews(drawingId) {
+  // Send request to server to update view count
+  return fetch(api + '/canvashare/drawing/' + drawingId, {
+    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    method: 'PATCH',
+  });
 }
 
 

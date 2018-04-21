@@ -156,13 +156,11 @@ function loadDrawings() {
                 drawingContainer.classList.add('drawing-container');
 
                 // Create container for drawing title
-                var drawingTitle = document.createElement('div');
+                var drawingTitle = document.createElement('a');
                 drawingTitle.classList.add('drawing-title');
+                drawingTitle.href = 'easel/?drawing=' +
+                  drawings[i]['drawing_id'];
                 drawingTitle.innerHTML = drawings[i]['title'];
-
-                /* Set data-drawing attribute as drawing id for later
-                identification */
-                drawingTitle.dataset.drawing = drawings[i]['drawing_id'];
 
                 // Create drawing image
                 var drawing = document.createElement('img');
@@ -172,6 +170,12 @@ function loadDrawings() {
                 /* Set data-drawing attribute as drawing id for later
                 identification */
                 drawing.dataset.drawing = drawings[i]['drawing_id'];
+
+                // Go to easel page for drawing if user clicks drawing
+                drawing.onclick = function() {
+                  window.location = 'easel/?drawing=' + this.dataset.drawing;
+                  return;
+                }
 
                 /* Create container for drawing artist and number of likes and
                 views */
@@ -208,10 +212,6 @@ function loadDrawings() {
                 var viewText = document.createElement('text');
                 viewText.innerHTML = drawings[i]['views'];
 
-                /* Set data-drawing attribute as drawing id for later
-                identification */
-                viewText.dataset.drawing = 'views' + drawings[i]['drawing_id'];
-
                 // Create container for drawing artist
                 var drawingArtist = document.createElement('div');
                 drawingArtist.classList.add('drawing-artist');
@@ -233,18 +233,6 @@ function loadDrawings() {
                 drawingViews.appendChild(viewText);
                 drawingInfo.appendChild(drawingArtist);
                 drawingArtist.appendChild(artistLink);
-
-                /* Update number of views when user clicks drawing or drawing
-                title */
-                drawing.onclick = function() {
-                  updateViews(this.dataset.drawing);
-                  return;
-                }
-
-                drawingTitle.onclick = function() {
-                  updateViews(this.dataset.drawing);
-                  return;
-                }
 
                 // Display drawing like hearts
                 displayDrawingLikes(drawings[i]['drawing_id'], likers);
@@ -313,49 +301,6 @@ function displayDrawingLikes(drawingId, likers) {
   unlikedHeart.onclick = updateLikes;
 
   return;
-}
-
-
-// Update drawing's view count
-function updateViews(drawingId) {
-  // Send request to server to update view count
-  return fetch(api + '/canvashare/drawing/' + drawingId, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'PATCH',
-  })
-
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        /* If server responds without error, update view count and redirect to
-        easel page */
-        if (response.ok) {
-          var viewText = document.querySelectorAll('[data-drawing="views' +
-            drawingId + '"]')[0];
-          viewText.innerHTML = parseInt(viewText.innerHTML) + 1;
-          window.location = 'easel/?drawing=' + drawingId;
-          return;
-        }
-
-        // Otherwise, display error message
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
-        return;
-      }
-    });
 }
 
 

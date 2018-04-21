@@ -558,10 +558,9 @@ document.getElementById('close-post').onclick = function() {
 document.getElementById('modify-post').onclick = modifyPost;
 
 function modifyPost() {
-  /* If post is blank, warn user that blank post cannot be submitted (excludes
-  empty elements) */
+  // If post is blank, ask if user wants to delete post
   if (!/\S/.test(post.textContent)) {
-    window.alert('Your post must contain text.');
+    deletePost();
     return;
   }
 

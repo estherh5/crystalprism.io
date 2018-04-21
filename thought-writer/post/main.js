@@ -498,10 +498,9 @@ function submitEdits() {
   var deleteButton = document.querySelectorAll('[data-deleteid="' + this
     .dataset.submitid + '"]')[0];
 
-  /* If comment does not contain any non-space characters (excluding empty
-  elements), display warning to user */
+  // If comment is blank, ask if user wants to delete comment
   if (!/\S/.test(comment.textContent)) {
-    window.alert('Your comment cannot be blank.');
+    deleteButton.click();
     return;
   }
 

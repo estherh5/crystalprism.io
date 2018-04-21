@@ -268,25 +268,22 @@ function displayDrawingLikes(drawingId, likers) {
   var likeText = document
     .querySelectorAll('[data-drawing="likes' + drawingId + '"]')[0];
 
-  // Check if user liked drawing if user is logged in
-  if (checkIfLoggedIn()) {
-    /* If current user liked the drawing, display a filled-in red heart in
-    likes container */
-    for (var i = 0; i < likers.length; i++) {
+  /* If current user liked the drawing, display a filled-in red heart in
+  likes container */
+  for (var i = 0; i < likers.length; i++) {
 
-      if (likers[i]['username'] == localStorage.getItem('username')) {
-        var likedHeart = document.createElement('i');
-        likedHeart.classList.add('fas');
-        likedHeart.classList.add('fa-heart');
-        likedHeart.dataset.drawinglike = likers[i]['drawing_like_id'];
-        likedHeart.dataset.drawing = drawingId;
-        likeText.parentNode.insertBefore(likedHeart, likeText);
+    if (likers[i]['username'] == localStorage.getItem('username')) {
+      var likedHeart = document.createElement('i');
+      likedHeart.classList.add('fas');
+      likedHeart.classList.add('fa-heart');
+      likedHeart.dataset.drawinglike = likers[i]['drawing_like_id'];
+      likedHeart.dataset.drawing = drawingId;
+      likeText.parentNode.insertBefore(likedHeart, likeText);
 
-        // Update like count when user clicks heart
-        likedHeart.onclick = updateLikes;
+      // Update like count when user clicks heart
+      likedHeart.onclick = updateLikes;
 
-        return;
-      }
+      return;
     }
   }
 

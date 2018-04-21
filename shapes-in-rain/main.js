@@ -160,6 +160,14 @@ function startGame() {
   // Reset interval for creating random shapes for user to clear from screen
   shapeInterval = setInterval(createRandomShape, 2000);
 
+  // Turn audio back on if user had started playing it last game
+  if (audioStarted) {
+    audioiFrame.playVideo();
+
+    // Set audio icon to on
+    document.getElementById('audio-icon').src = 'images/on.svg';
+  }
+
   started = true;
 
   return;
@@ -316,6 +324,12 @@ document.getElementById('restart').onclick = function() {
 }
 
 function resetGame() {
+  // Stop music player
+  audioiFrame.stopVideo(0);
+
+  // Set audio icon to off
+  document.getElementById('audio-icon').src = 'images/off.svg';
+
   // Clear heart rain and shapes from game
   clearInterval(heartInterval);
   clearInterval(rainInterval);

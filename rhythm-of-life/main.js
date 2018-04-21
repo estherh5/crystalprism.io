@@ -50,8 +50,8 @@ window.onload = function() {
   // Set game settings to starting state
   reset();
 
-  // Display top 5 game leaders
-  displayLeaders();
+  // Load top 5 game leaders
+  loadLeaders();
 
   // Create page header (from common.js script)
   createPageHeader();
@@ -72,7 +72,7 @@ window.onload = function() {
 // Functions to run when Retry button is clicked from server down banner
 function retryFunctions() {
   checkIfLoggedIn();
-  displayLeaders();
+  loadLeaders();
   return;
 }
 
@@ -792,15 +792,15 @@ function storeScore() {
         pingServer();
 
         if (response.ok) {
-          displayLeaders();
+          loadLeaders();
         }
       }
     });
 }
 
 
-// Display top 5 game leaders
-function displayLeaders() {
+// Load top 5 game leaders
+function loadLeaders() {
   // Request top 5 game leaders from server
   return fetch(api + '/rhythm-of-life/scores')
 
@@ -809,31 +809,39 @@ function displayLeaders() {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      if (mobile) {
-        // Clear leaders list
-        for (var i = 0; i < leadersMobile.length; i++) {
-          leadersMobile[i].innerHTML = '';
-        }
-
-        // Display error
-        var errorCell = document.createElement('td');
-        errorCell.id = 'error-cell';
-        errorCell.colSpan = "2";
-        errorCell.innerHTML = 'The leaders list could not be loaded.';
-        leadersMobile[0].appendChild(errorCell);
-      } else {
-        // Clear leaders list
-        for (var i = 0; i < leaders.length; i++) {
-          leaders[i].innerHTML = '';
-        }
-
-        // Display error
-        var errorCell = document.createElement('td');
-        errorCell.id = 'error-cell';
-        errorCell.colSpan = "2";
-        errorCell.innerHTML = 'The leaderboard could not be loaded.';
-        leaders[0].appendChild(errorCell);
+      // Display cached leaders list if it is stored in localStorage
+      if (localStorage.getItem('rhythm-leaders-list')) {
+        displayLeaders(JSON.parse(localStorage
+            .getItem('rhythm-leaders-list')));
       }
+
+      // Otherwise, add error to leaders display
+      else {
+        if (mobile) {
+          // Clear leaders list
+          for (var i = 0; i < leadersMobile.length; i++) {
+            leadersMobile[i].innerHTML = '';
+          }
+
+          // Display error
+          var errorCell = document.createElement('td');
+          errorCell.id = 'error-cell';
+          errorCell.colSpan = "2";
+          errorCell.innerHTML = 'The leaders list could not be loaded.';
+          leadersMobile[0].appendChild(errorCell);
+        } else {
+          // Clear leaders list
+          for (var i = 0; i < leaders.length; i++) {
+            leaders[i].innerHTML = '';
+          }
+
+          // Display error
+          var errorCell = document.createElement('td');
+          errorCell.id = 'error-cell';
+          errorCell.colSpan = "2";
+          errorCell.innerHTML = 'The leaderboard could not be loaded.';
+          leaders[0].appendChild(errorCell);
+        }
 
       return;
     })
@@ -843,49 +851,90 @@ function displayLeaders() {
         // Remove server down banner from page (from common.js script)
         pingServer();
 
-        response.json().then(function(leadersList) {
+        // Display leaders in game screen if server responds without error
+        if (response.ok) {
+          response.json().then(function(leadersList) {
+            displayLeaders(leadersList);
 
-          for (var i = 0; i < leadersList.length; i++) {
-            /* Create cells for lifespan and player name in leaders list from
-            server */
-            var lifespanCell = document.createElement('td');
-            var playerCell = document.createElement('td');
+            // Store leaders in localStorage for offline loading
+            localStorage.setItem('rhythm-leaders-list', JSON
+              .stringify(leadersList));
+          });
 
-            /* Clear current leader display on game board and replace with new
-            player and score cells for mobile/desktop */
-            if (mobile) {
-              leadersMobile[i].innerHTML = '';
-              leadersMobile[i].appendChild(lifespanCell);
-              leadersMobile[i].appendChild(playerCell);
-            } else {
-              leaders[i].innerHTML = '';
-              leaders[i].appendChild(lifespanCell);
-              leaders[i].appendChild(playerCell);
-            }
+          return;
+        }
 
-            // Display lifespan in lifespan cell
-            var sec_num = leadersList[i].score;
-            var score_hours = Math.floor(sec_num / 3600);
-            var score_minutes = Math
-              .floor((sec_num - (score_hours * 3600)) / 60);
-            var score_seconds = sec_num - (score_hours * 3600) -
-              (score_minutes * 60);
-            var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
-              ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
-              .slice(-2);
-
-            lifespanCell.appendChild(document.createTextNode(lifespan_value));
-
-            // Display link to player's user profile in player cell
-            var userLink = document.createElement('a');
-            userLink.href = '../user/?username=' + leadersList[i].username;
-            userLink.appendChild(
-              document.createTextNode(leadersList[i].username));
-            playerCell.appendChild(userLink);
+        // Clear leaders list and display error otherwise
+        if (mobile) {
+          for (var i = 0; i < leadersMobile.length; i++) {
+            leadersMobile[i].innerHTML = '';
           }
-        });
+
+          var errorCell = document.createElement('td');
+          errorCell.id = 'error-cell';
+          errorCell.colSpan = "2";
+          errorCell.innerHTML = 'The leaders list could not be loaded.';
+          leadersMobile[0].appendChild(errorCell);
+        } else {
+          for (var i = 0; i < leaders.length; i++) {
+            leaders[i].innerHTML = '';
+          }
+
+          var errorCell = document.createElement('td');
+          errorCell.id = 'error-cell';
+          errorCell.colSpan = "2";
+          errorCell.innerHTML = 'The leaderboard could not be loaded.';
+          leaders[0].appendChild(errorCell);
+        }
+
+        return;
       }
     });
+}
+
+
+// Display top 5 game leaders from passed leaders list
+function displayLeaders(leadersList) {
+  for (var i = 0; i < leadersList.length; i++) {
+    /* Create cells for lifespan and player name in leaders list from
+    server */
+    var lifespanCell = document.createElement('td');
+    var playerCell = document.createElement('td');
+
+    /* Clear current leader display on game board and replace with new
+    player and score cells for mobile/desktop */
+    if (mobile) {
+      leadersMobile[i].innerHTML = '';
+      leadersMobile[i].appendChild(lifespanCell);
+      leadersMobile[i].appendChild(playerCell);
+    } else {
+      leaders[i].innerHTML = '';
+      leaders[i].appendChild(lifespanCell);
+      leaders[i].appendChild(playerCell);
+    }
+
+    // Display lifespan in lifespan cell
+    var sec_num = leadersList[i].score;
+    var score_hours = Math.floor(sec_num / 3600);
+    var score_minutes = Math
+      .floor((sec_num - (score_hours * 3600)) / 60);
+    var score_seconds = sec_num - (score_hours * 3600) -
+      (score_minutes * 60);
+    var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
+      ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
+      .slice(-2);
+
+    lifespanCell.appendChild(document.createTextNode(lifespan_value));
+
+    // Display link to player's user profile in player cell
+    var userLink = document.createElement('a');
+    userLink.href = '../user/?username=' + leadersList[i].username;
+    userLink.appendChild(
+      document.createTextNode(leadersList[i].username));
+    playerCell.appendChild(userLink);
+  }
+
+  return;
 }
 
 

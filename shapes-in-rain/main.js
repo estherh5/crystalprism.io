@@ -62,20 +62,29 @@ function loadLeaders() {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      // Clear leaders list
-      for (var i = 0; i < leaders.length; i++) {
-        leaders[i].innerHTML = '';
+      // Display cached leaders list if it is stored in localStorage
+      if (localStorage.getItem('shapes-leaders-list')) {
+        displayLeaders(JSON.parse(localStorage
+            .getItem('shapes-leaders-list')));
       }
 
-      // Display error
-      var errorCell = document.createElement('td');
-      errorCell.id = 'error-cell';
-      errorCell.colSpan = "2";
-      errorCell.innerHTML = 'The leaderboard could not be loaded.';
-      leaders[0].appendChild(errorCell);
+      // Otherwise, add error to leaders display
+      else {
+        // Clear leaders list
+        for (var i = 0; i < leaders.length; i++) {
+          leaders[i].innerHTML = '';
+        }
 
-      // Display game screen
-      document.getElementById('game-screen').classList.remove('hidden');
+        // Display error
+        var errorCell = document.createElement('td');
+        errorCell.id = 'error-cell';
+        errorCell.colSpan = "2";
+        errorCell.innerHTML = 'The leaderboard could not be loaded.';
+        leaders[0].appendChild(errorCell);
+
+        // Display game screen
+        document.getElementById('game-screen').classList.remove('hidden');
+      }
 
       return;
     })
@@ -85,35 +94,69 @@ function loadLeaders() {
         // Remove server down banner from page (from common.js script)
         pingServer();
 
-        response.json().then(function(leadersList) {
+        // Display leaders in game screen if server responds without error
+        if (response.ok) {
+          response.json().then(function(leadersList) {
+            displayLeaders(leadersList);
 
-          for (var i = 0; i < leadersList.length; i++) {
-            /* Create cells for score and player name in leaders list from
-            server */
-            var scoreCell = document.createElement('td');
-            var playerCell = document.createElement('td');
+            // Store leaders in localStorage for offline loading
+            localStorage.setItem('shapes-leaders-list', JSON
+              .stringify(leadersList));
+          });
 
-            /* Clear current leader display on game board and replace with new
-            player and score cells for mobile/desktop */
-            leaders[i].innerHTML = '';
-            leaders[i].appendChild(scoreCell);
-            leaders[i].appendChild(playerCell);
+          return;
+        }
 
-            // Display score in score cell
-            scoreCell.innerHTML = leadersList[i].score;
+        // Clear leaders list and display error otherwise
+        for (var i = 0; i < leaders.length; i++) {
+          leaders[i].innerHTML = '';
+        }
 
-            // Display link to player's user profile in player cell
-            var userLink = document.createElement('a');
-            userLink.href = '../user/?username=' + leadersList[i].username;
-            userLink.innerHTML = leadersList[i].username;
-            playerCell.appendChild(userLink);
+        var errorCell = document.createElement('td');
+        errorCell.id = 'error-cell';
+        errorCell.colSpan = "2";
+        errorCell.innerHTML = 'The leaderboard could not be loaded.';
+        leaders[0].appendChild(errorCell);
 
-            // Display game screen
-            document.getElementById('game-screen').classList.remove('hidden');
-          }
-        });
+        // Display game screen
+        document.getElementById('game-screen').classList.remove('hidden');
+
+        return;
       }
     });
+}
+
+
+// Display top 5 game leaders from passed leaders list
+function displayLeaders(leadersList) {
+  var leaders = document.getElementsByClassName('leader');
+
+  for (var i = 0; i < leadersList.length; i++) {
+    /* Create cells for score and player name in leaders list from
+    server */
+    var scoreCell = document.createElement('td');
+    var playerCell = document.createElement('td');
+
+    /* Clear current leader display on game board and replace with new
+    player and score cells for mobile/desktop */
+    leaders[i].innerHTML = '';
+    leaders[i].appendChild(scoreCell);
+    leaders[i].appendChild(playerCell);
+
+    // Display score in score cell
+    scoreCell.innerHTML = leadersList[i].score;
+
+    // Display link to player's user profile in player cell
+    var userLink = document.createElement('a');
+    userLink.href = '../user/?username=' + leadersList[i].username;
+    userLink.innerHTML = leadersList[i].username;
+    playerCell.appendChild(userLink);
+  }
+
+  // Display game screen
+  document.getElementById('game-screen').classList.remove('hidden');
+
+  return;
 }
 
 
@@ -403,6 +446,8 @@ function endGame() {
       pingServer(retryFunctions);
 
       window.alert('Your score could not be saved. Please play again later.');
+
+      loadLeaders();
 
       // Reset menu buttons and cursor style
       document.getElementById('restart').disabled = false;

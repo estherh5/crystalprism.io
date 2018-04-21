@@ -6,6 +6,10 @@
  Web: http://www.labnol.org/?p=26740
 */
 
+var audioiFrame;
+var audioStarted = false; // Stores whether user turned audio on
+
+
 // Define function to run when YouTube video is ready
 function onYouTubeIframeAPIReady() {
   // Add audio icon to webpage
@@ -30,12 +34,12 @@ function onYouTubeIframeAPIReady() {
   audioContainer.onclick = function() {
     audioiFrame.getPlayerState() === YT.PlayerState.PLAYING || audioiFrame
       .getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame
-      .pauseVideo(), audioFunction(!1)) : (audioiFrame.playVideo(),
-      audioFunction(!0));
+      .pauseVideo(), audioFunction(!1), audioStarted = false) : (audioiFrame
+      .playVideo(), audioFunction(!0), audioStarted = true);
   }
 
   // Set attributes of embedded audio player
-  var audioiFrame = new YT.Player('audio-player', {
+  audioiFrame = new YT.Player('audio-player', {
     height: '0',
     width: '0',
     videoId: audioContainer.dataset.video,

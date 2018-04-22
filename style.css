@@ -1067,7 +1067,7 @@ h1 {
   white-space: nowrap;
 }
 
-.about-skills > .skill {
+.about-skills > .skill, .interest {
   display: inline-block;
 }
 

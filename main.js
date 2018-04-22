@@ -20,6 +20,7 @@ var postsError;
 var postRequestStart = 0; // Range start for number of Ideas page posts to request from server
 var postRequestEnd = 11; // Range end for number of Ideas page posts to request from server
 var morePostsOnServer = false;
+var aboutSVGsLoaded = false;
 var parentSections = document.getElementsByClassName('expand-parent');
 var childSections = document.getElementsByClassName('expand-child');
 var sectionDetails = document.getElementsByClassName('subsection-details');
@@ -259,6 +260,20 @@ function togglePage() {
         postRequestEnd = 11;
         document.getElementById('ideas-page').innerHTML = '';
         loadPosts();
+      }
+
+      /* Load section SVGs to About page if user toggles to this page and they
+      aren't loaded yet */
+      if (selectedPage.id == 'about-page') {
+        if (!aboutSVGsLoaded) {
+          for (var i = 0; i < document.getElementsByTagName('object')
+            .length; i++) {
+              var objectSVG = document.getElementsByTagName('object')[i];
+              objectSVG.setAttribute('data', 'images/' + objectSVG.dataset
+                .header + '.svg');
+            }
+          aboutSVGsLoaded = true;
+        }
       }
 
       // Remove bold/color style of button for the previous page

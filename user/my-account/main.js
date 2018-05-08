@@ -39,10 +39,10 @@ var editingPersonal = false; // If user is editing information in Personal menu
 
 // Define global variables for Scores menu
 var displayedScores = []; // Array of displayed scores
-var rhythmScoresStart = 0; // Range start for number of scores to display
-var rhythmScoresEnd = 11; // Range end for number of scores to display
-var shapesScoresStart = 0; // Range start for number of scores to display
-var shapesScoresEnd = 11; // Range end for number of scores to display
+var rhythmRequestStart = 0; // Range start for number of scores to display
+var rhythmRequestEnd = 11; // Range end for number of scores to display
+var shapesRequestStart = 0; // Range start for number of scores to display
+var shapesRequestEnd = 11; // Range end for number of scores to display
 var moreScoresToDisplay = false; // If there are more scores to display in array
 var rhythmLink = document.getElementById('rhythm-link');
 var rhythmHeader = document.getElementById('rhythm-header');
@@ -61,8 +61,8 @@ var shapesDownArrow = document.getElementById('shapes-down-arrow');
 
 
 // Define global variables for Drawings menu
-var drawingStart = 0; // Range start for number of drawings to request/display
-var drawingEnd = 7; // Range end for number of drawings to request/display
+var drawingRequestStart = 0; // Range start for number of drawings to request/display
+var drawingRequestEnd = 7; // Range end for number of drawings to request/display
 var moreDrawingsToDisplay = false; // If there are more drawings to display in array
 var csMainLink = document.getElementById('canvashare-main-link');
 var csErrorLink = document.getElementById('canvashare-link-error');
@@ -80,15 +80,15 @@ var twMainLink = document.getElementById('thought-writer-main-link');
 var twErrorLink = document.getElementById('thought-writer-link-error');
 var twEditorLink = document.getElementById('thought-writer-link-editor');
 var twBoardLink = document.getElementById('thought-writer-link-post-board');
-var postStart = 0; // Range start for number of posts to request/display
-var postEnd = 7; // Range end for number of posts to request/display
-var morePostsExist = false; // If there are more posts to display in array
+var postRequestStart = 0; // Range start for number of posts to request/display
+var postRequestEnd = 7; // Range end for number of posts to request/display
+var morePostsToDisplay = false; // If there are more posts to display in array
 var postList = document.getElementById('post-list');
 var postRightArrow = document.getElementById('posts-right-arrow');
 var postLeftArrow = document.getElementById('posts-left-arrow');
-var commentStart = 0; // Range start for number of comments to request/display
-var commentEnd = 7; // Range end for number of comments to request/display
-var moreCommentsExist = false; // If there are more comments to display in array
+var commentRequestStart = 0; // Range start for number of comments to request/display
+var commentRequestEnd = 7; // Range end for number of comments to request/display
+var moreCommentsToDisplay = false; // If there are more comments to display in array
 var postsButton = document.getElementById('posts');
 var commentsButton = document.getElementById('comments');
 
@@ -208,55 +208,81 @@ function loadPersonalInfo() {
     method: 'GET',
   })
 
+    .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
+      // Display cached user information if it is stored in localStorage
+      if (localStorage.getItem('my-account-personal-info')) {
+        displayPersonalInfo(JSON.parse(localStorage
+          .getItem('my-account-personal-info')));
+      }
+
+      return;
+    })
+
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(info) {
-          /* Fill in user's personal information to Personal menu and stats to
-          Stats menu */
-          aboutInput.value = info['about'];
-          usernameInput.value = info['username'];
-          firstNameInput.value = info['first_name'];
-          lastNameInput.value = info['last_name'];
-          namePublicInput.checked = info['name_public'];
-          emailInput.value = info['email'];
-          emailPublicInput.checked = info['email_public'];
-          backgroundColorPicker.value = info['background_color'];
-          profileBackground.style.backgroundColor = info['background_color'];
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          // Update field font colors based on background color
-          updateFontColors();
-          iconColorPicker.value = info['icon_color'];
-          diamond.style.fill = info['icon_color'];
+        // Display info in Personal menu if server responds without error
+        if (response.ok) {
+          response.json().then(function(info) {
+            displayPersonalInfo(info);
 
-          // Update icon background color based on icon color
-          updateIconBackground();
-
-          /* Convert UTC timestamp from server to local timestamp in
-          'MM/DD/YYYY' format */
-          document.getElementById('member-stat')
-            .innerHTML = moment(info['created']).format('MM/DD/YYYY');
-
-          document.getElementById('rhythm-plays-stat')
-            .innerHTML = info['rhythm_score_count'];
-
-          document.getElementById('shapes-plays-stat')
-            .innerHTML = info['shapes_score_count'];
-
-          document.getElementById('drawings-stat')
-            .innerHTML = info['drawing_count'];
-
-          document.getElementById('liked-stat')
-            .innerHTML = info['drawing_like_count'];
-
-          document.getElementById('posts-stat').innerHTML = info['post_count'];
-
-          document.getElementById('comments-stat')
-            .innerHTML = info['comment_count'];
-        });
-
-        return;
+            // Store info in localStorage for offline loading
+            localStorage.setItem('my-account-personal-info', JSON
+              .stringify(info));
+          });
+        }
       }
     });
+}
+
+
+// Display passed info in Personal and Stats menus
+function displayPersonalInfo(info) {
+  /* Fill in user's personal information to Personal menu and stats to
+  Stats menu */
+  aboutInput.value = info['about'];
+  usernameInput.value = info['username'];
+  firstNameInput.value = info['first_name'];
+  lastNameInput.value = info['last_name'];
+  namePublicInput.checked = info['name_public'];
+  emailInput.value = info['email'];
+  emailPublicInput.checked = info['email_public'];
+  backgroundColorPicker.value = info['background_color'];
+  profileBackground.style.backgroundColor = info['background_color'];
+
+  // Update field font colors based on background color
+  updateFontColors();
+  iconColorPicker.value = info['icon_color'];
+  diamond.style.fill = info['icon_color'];
+
+  // Update icon background color based on icon color
+  updateIconBackground();
+
+  /* Convert UTC timestamp from server to local timestamp in
+  'MM/DD/YYYY' format */
+  document.getElementById('member-stat').innerHTML = moment(info['created'])
+    .format('MM/DD/YYYY');
+
+  document.getElementById('rhythm-plays-stat')
+    .innerHTML = info['rhythm_score_count'];
+
+  document.getElementById('shapes-plays-stat')
+    .innerHTML = info['shapes_score_count'];
+
+  document.getElementById('drawings-stat').innerHTML = info['drawing_count'];
+
+  document.getElementById('liked-stat').innerHTML = info['drawing_like_count'];
+
+  document.getElementById('posts-stat').innerHTML = info['post_count'];
+
+  document.getElementById('comments-stat').innerHTML = info['comment_count'];
+
+  return;
 }
 
 
@@ -267,19 +293,19 @@ function loadScores(game) {
     // Clear score area to replace with requested scores
     rhythmScoreData.innerHTML = '';
 
-    scoresStart = rhythmScoresStart;
-    scoresEnd = rhythmScoresEnd;
+    scoreStart = rhythmRequestStart;
+    scoreEnd = rhythmRequestEnd;
   } else {
     // Clear score area to replace with requested scores
     shapesScoreData.innerHTML = '';
 
-    scoresStart = shapesScoresStart;
-    scoresEnd = shapesScoresEnd;
+    scoreStart = shapesRequestStart;
+    scoreEnd = shapesRequestEnd;
   }
 
   return fetch(api + '/' + game + '/scores/' +
-    localStorage.getItem('username') + '?start=' + scoresStart + '&end=' +
-    scoresEnd, {
+    localStorage.getItem('username') + '?start=' + scoreStart + '&end=' +
+    scoreEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -289,14 +315,25 @@ function loadScores(game) {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      rhythmLink.classList.add('hidden');
-      rhythmHeader.classList.add('hidden');
-      rhythmNoScores.classList.add('hidden');
-      rhythmError.classList.remove('hidden');
-      shapesLink.classList.add('hidden');
-      shapesHeader.classList.add('hidden');
-      shapesNoScores.classList.add('hidden');
-      shapesError.classList.remove('hidden');
+      // Display cached scores if they are stored in localStorage
+      if (localStorage.getItem('my-account-' + game + '-scores')) {
+        displayScores(JSON.parse(localStorage
+          .getItem('my-account-' + game + '-scores'))
+          .slice(scoreStart, scoreEnd), game);
+      }
+
+      // Otherwise, display error message
+      else {
+        rhythmLink.classList.add('hidden');
+        rhythmHeader.classList.add('hidden');
+        rhythmNoScores.classList.add('hidden');
+        rhythmError.classList.remove('hidden');
+        shapesLink.classList.add('hidden');
+        shapesHeader.classList.add('hidden');
+        shapesNoScores.classList.add('hidden');
+        shapesError.classList.remove('hidden');
+      }
+
       return;
     })
 
@@ -305,10 +342,33 @@ function loadScores(game) {
         // Remove server down banner from page (from common.js script)
         pingServer();
 
+        // Display scores in scores area if server responds without error
         if (response.ok) {
           response.json().then(function(scores) {
-            // Display scores in scores area
             displayScores(scores, game);
+
+            /* Remove locally stored scores if this is the initial request
+            to replace with latest scores from server */
+            if (requestStart == 0) {
+              localStorage.removeItem('my-account-' + game + '-scores');
+              var localScores = [];
+            }
+
+            // Otherwise, get locally stored scores list
+            else {
+              var localScores = JSON.parse(localStorage
+                .getItem('my-account-' + game + '-scores'));
+            }
+
+            /* Add each score to locally stored scores list based on
+            scoreStart and scoreEnd values */
+            for (var i = 0; i < scores.length; i++) {
+              localScores[scoreStart + i] = scores[i];
+            }
+
+            // Store scores in localStorage for offline loading
+            localStorage.setItem('my-account-' + game + '-scores', JSON
+              .stringify(localScores));
           });
           return;
         }
@@ -345,9 +405,9 @@ function displayScores(scores, game) {
 
     /* Otherwise, set displayed scores as scores array sliced to requested
     number of scores */
-    displayedScores = scores.slice(rhythmScoresStart, rhythmScoresEnd);
-    var scoresStart = rhythmScoresStart;
-    var scoresEnd = rhythmScoresEnd;
+    displayedScores = scores.slice(rhythmRequestStart, rhythmRequestEnd);
+    var scoreStart = rhythmRequestStart;
+    var scoreEnd = rhythmRequestEnd;
 
     /* Unhide Scores menu header for Rhythm of Life scores and hide error and
     no score banners */
@@ -375,9 +435,9 @@ function displayScores(scores, game) {
 
     /* Otherwise, set displayed scores as scores array sliced to requested
     number of scores */
-    displayedScores = scores.slice(shapesScoresStart, shapesScoresEnd);
-    var scoresStart = shapesScoresStart;
-    var scoresEnd = shapesScoresEnd;
+    displayedScores = scores.slice(shapesRequestStart, shapesRequestEnd);
+    var scoreStart = shapesRequestStart;
+    var scoreEnd = shapesRequestEnd;
 
     /* Unhide Scores menu header for Shapes in Rain scores and hide error and
     no score banners */
@@ -395,18 +455,18 @@ function displayScores(scores, game) {
   sliced scores - 1 (number of displayed scores) in array */
   if (displayedScores.length != 0) {
 
-    if (displayedScores.length > (scoresEnd - scoresStart - 1)) {
+    if (displayedScores.length > (scoreEnd - scoreStart - 1)) {
       moreScoresToDisplay = true;
-      var scoreLoadNumber = scoresEnd - scoresStart - 1;
+      var loadNumber = scoreEnd - scoreStart - 1;
     }
 
     // If there are not, load all scores in array
     else {
       moreScoresToDisplay = false;
-      var scoreLoadNumber = displayedScores.length;
+      var loadNumber = displayedScores.length;
     }
 
-    for (var i = 0; i < scoreLoadNumber; i++) {
+    for (var i = 0; i < loadNumber; i++) {
       // Create row for score data
       var scoreRow = document.createElement('div');
       scoreRow.classList.add('row');
@@ -417,7 +477,7 @@ function displayScores(scores, game) {
 
       /* Set data-number attribute to track the score number for displaying
       more scores later */
-      scoreRow.dataset.number = scoresStart + i;
+      scoreRow.dataset.number = scoreStart + i;
 
       // Add button to delete score
       var deleteScoreButton = document.createElement('button');
@@ -535,23 +595,34 @@ function displayScores(scores, game) {
 user-created drawings or 'drawing-likes/user' for drawings the user liked) */
 function loadDrawings(type) {
   return fetch(api + '/canvashare/' + type + '/' +
-    localStorage.getItem('username') + '?start=' + drawingStart + '&end=' +
-    drawingEnd)
+    localStorage.getItem('username') + '?start=' + drawingRequestStart +
+    '&end=' + drawingRequestEnd)
 
       // If server is down, clear drawing area and hide navigation arrows
       .catch(function(error) {
         // Add server down banner to page (from common.js script)
         pingServer(retryFunctions);
 
-        gallery.innerHTML = '';
-        drawingLeftArrow.classList.remove('display');
-        drawingRightArrow.classList.remove('display');
+        // Display cached drawings if they are stored in localStorage
+        if (localStorage.getItem('my-account-' + type)) {
+          displayDrawings(type, JSON.parse(localStorage
+            .getItem('my-account-' + type))
+            .slice(drawingRequestStart, drawingRequestEnd));
+        }
 
-        // Display error banner with CanvaShare link
-        csErrorLink.classList.remove('hidden');
-        csMainLink.classList.add('hidden');
-        csDrawLink.classList.add('hidden');
-        csLikeLink.classList.add('hidden');
+        // Otherwise, display error message
+        else {
+          gallery.innerHTML = '';
+          drawingLeftArrow.classList.remove('display');
+          drawingRightArrow.classList.remove('display');
+
+          // Display error banner with CanvaShare link
+          csErrorLink.classList.remove('hidden');
+          csMainLink.classList.add('hidden');
+          csDrawLink.classList.add('hidden');
+          csLikeLink.classList.add('hidden');
+        }
+
         return;
       })
 
@@ -560,10 +631,33 @@ function loadDrawings(type) {
           // Remove server down banner from page (from common.js script)
           pingServer();
 
+          // Display drawings in drawing area if server responds without error
           if (response.ok) {
             response.json().then(function(drawings) {
-              // Display drawings in drawing area
               displayDrawings(type, drawings);
+
+              /* Remove locally stored drawings if this is the initial request
+              to replace with latest drawings from server */
+              if (requestStart == 0) {
+                localStorage.removeItem('my-account-' + type);
+                var localDrawings = [];
+              }
+
+              // Otherwise, get locally stored drawings list
+              else {
+                var localDrawings = JSON.parse(localStorage
+                  .getItem('my-account-' + type));
+              }
+
+              /* Add each drawing to locally stored drawings list based on
+              drawingRequestStart and drawingRequestEnd values */
+              for (var i = 0; i < drawings.length; i++) {
+                localDrawings[drawingRequestStart + i] = drawings[i];
+              }
+
+              // Store drawings in localStorage for offline loading
+              localStorage.setItem('my-account-' + type, JSON
+                .stringify(localDrawings));
             });
             return;
           }
@@ -586,7 +680,7 @@ function loadDrawings(type) {
 }
 
 
-/* Display passed array of drawings in drawing area,  specifying type
+/* Display passed array of drawings in drawing area, specifying type
 ('drawings' for user-created drawings or 'drawing-likes/user' for drawings the
 user liked) */
 function displayDrawings(type, drawings) {
@@ -629,25 +723,25 @@ function displayDrawings(type, drawings) {
 
   /* Assess if there are more than requested drawings - 1 (number of loaded
   drawings) in array */
-  if (drawings.length > (drawingEnd - drawingStart - 1)) {
+  if (drawings.length > (drawingRequestEnd - drawingRequestStart - 1)) {
     moreDrawingsToDisplay = true;
-    var drawingsLoadNumber = 6;
+    var loadNumber = 6;
   }
 
   // If there are not, load all drawings sent from server
   else {
     moreDrawingsToDisplay = false;
-    var drawingsLoadNumber = drawings.length;
+    var loadNumber = drawings.length;
   }
 
-  for (var i = 0; i < drawingsLoadNumber; i++) {
+  for (var i = 0; i < loadNumber; i++) {
     // Create container for drawing and its components
     var drawingContainer = document.createElement('div');
     drawingContainer.classList.add('drawing-container');
 
     /* Set data-number attribute to track the drawing number for displaying
     more drawings later */
-    drawingContainer.dataset.number = drawingStart + i;
+    drawingContainer.dataset.number = drawingRequestStart + i;
 
     // Add button to delete drawing if displaying user's drawings
     if (type == 'drawings') {
@@ -956,8 +1050,8 @@ function updateLikes() {
 // Load user's posts from server
 function loadPosts() {
   return fetch(api + '/thought-writer/posts/' +
-    localStorage.getItem('username') + '?start=' +
-    postStart + '&end=' + postEnd, {
+    localStorage.getItem('username') + '?start=' + postRequestStart + '&end=' +
+    postRequestEnd, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
       method: 'GET',
     })
@@ -967,15 +1061,38 @@ function loadPosts() {
         // Add server down banner to page (from common.js script)
         pingServer(retryFunctions);
 
-        postList.innerHTML = '';
-        postLeftArrow.classList.remove('display');
-        postRightArrow.classList.remove('display');
+        // Display cached posts if they are stored in localStorage
+        if (localStorage.getItem('my-account-posts')) {
+          var posts = JSON.parse(localStorage.getItem('my-account-posts'));
 
-        // Display error banner with Thought Writer link
-        twErrorLink.classList.remove('hidden');
-        twMainLink.classList.add('hidden');
-        twEditorLink.classList.add('hidden');
-        twBoardLink.classList.add('hidden');
+          /* Assess if there are more than requested posts - 1 (number of
+          loaded posts) */
+          if (posts.length > (postRequestEnd - 1)) {
+            morePostsToDisplay = true;
+            var loadNumber = postRequestEnd - 1;
+          }
+
+          // If there are not, display all posts
+          else {
+            morePostsToDisplay = false;
+            var loadNumber = posts.length;
+          }
+
+          displayPosts(posts.slice(postRequestStart, loadNumber));
+        }
+
+        // Otherwise, display error message
+        else {
+          postList.innerHTML = '';
+          postLeftArrow.classList.remove('display');
+          postRightArrow.classList.remove('display');
+
+          // Display error banner with Thought Writer link
+          twErrorLink.classList.remove('hidden');
+          twMainLink.classList.add('hidden');
+          twEditorLink.classList.add('hidden');
+          twBoardLink.classList.add('hidden');
+        }
 
         return;
       })
@@ -1004,163 +1121,43 @@ function loadPosts() {
                 return;
               }
 
-              // Otherwise, clear post area to display new posts from server
-              postList.innerHTML = '';
-
-              // Hide Thought Writer error links and display main link
-              twMainLink.classList.remove('hidden');
-              twErrorLink.classList.add('hidden');
-              twEditorLink.classList.add('hidden');
-              twBoardLink.classList.add('hidden');
-
               /* Assess if there are more than requested posts - 1 (number of
               loaded posts) on server */
-              if (posts.length > (postEnd - postStart - 1)) {
-                morePostsExist = true;
-                var postsLoadNumber = postEnd - postStart - 1;
+              if (posts.length > (postRequestEnd - postRequestStart - 1)) {
+                morePostsToDisplay = true;
+                var loadNumber = postRequestEnd - postRequestStart - 1;
               }
 
-              // If there are not, load all posts sent from server
+              // If there are not, display all posts sent from server
               else {
-                morePostsExist = false;
-                var postsLoadNumber = posts.length;
+                morePostsToDisplay = false;
+                var loadNumber = posts.length;
               }
 
-              for (var i = 0; i < postsLoadNumber; i++) {
-                // Create container for post and its components
-                var postContainer = document.createElement('div');
-                postContainer.classList.add('post-container');
+              displayPosts(posts.slice(0, loadNumber));
 
-                /* Set data-number attribute to track the post number for
-                displaying more posts later */
-                postContainer.dataset.number = postStart + i;
-
-                // Add button to delete post
-                var deletePostButton = document.createElement('button');
-                deletePostButton.classList.add('delete-button');
-                deletePostButton.title = 'Delete post';
-                deletePostButton.innerHTML = 'X';
-                deletePostButton.type = 'button';
-                deletePostButton.dataset.toggle = 'modal';
-                deletePostButton.dataset.target = '#confirm-delete-content';
-                deletePostButton.dataset.postid = posts[i].post_id;
-
-                /* Set confirmation modal title and content deletion function
-                to run upon confirmation when delete button is clicked */
-                deletePostButton.onclick = function() {
-                  document.getElementById('modal-title-content')
-                    .innerHTML = 'Are you sure you want to delete this post?';
-
-                  document.getElementById('confirm-delete-content-button')
-                    .dataset.contentid = this.dataset.postid;
-
-                  document.getElementById('confirm-delete-content-button')
-                    .onclick = function() {
-                      deleteContent('thought-writer/post',
-                      this.dataset.contentid, loadPosts);
-                      return;
-                    }
-
-                  return;
-                }
-
-                // Create container for post title
-                var postTitle = document.createElement('div');
-                postTitle.classList.add('post-title');
-                postTitle.innerHTML = posts[i].title;
-                postTitle.title = 'Edit post';
-
-                /* Set data-postid attribute to save in sessionStorage when
-                clicked */
-                postTitle.dataset.postid = posts[i].post_id;
-
-                /* Set sessionStorage post-id item when post title is clicked
-                and go to editor page */
-                postTitle.onclick = function() {
-                  sessionStorage.setItem('post-id', this.dataset.postid);
-                  window.location = '../../thought-writer/editor/';
-                  return;
-                }
-
-                // Create container for post background
-                var postBoard = document.createElement('div');
-                postBoard.classList.add('post-board');
-
-                // Create container with post content
-                var postContent = document.createElement('div');
-                postContent.classList.add('post-content');
-                postContent.innerHTML = posts[i].content;
-
-                // Create container for post timestamp and comment number
-                var postInfo = document.createElement('div');
-                postInfo.classList.add('post-info');
-
-                // Create container for post timestamp
-                var postTimestamp = document.createElement('div');
-                postTimestamp.classList.add('post-time');
-
-                /* Convert UTC timestamp from server to local timestamp in
-                'MM/DD/YYYY, HH:MM AM/PM' format */
-                postTimestamp.innerHTML = moment(posts[i].created)
-                  .format('MM/DD/YYYY, LT');
-
-                /* Create container for number of post comments if post is
-                public */
-                if (posts[i].public) {
-                  var postComments = document.createElement('a');
-                  postComments.classList.add('post-comments');
-                  postComments.title = 'View post comments';
-                  postComments.href = '../../thought-writer/post/?post=' +
-                    posts[i].post_id + '#comments';
-
-                  if (posts[i].comment_count == 1) {
-                    postComments.innerHTML = posts[i].comment_count +
-                      ' comment';
-                  } else {
-                    postComments.innerHTML = posts[i].comment_count +
-                      ' comments';
-                  }
-                }
-
-                // Otherwise, display post as private
-                else {
-                  var postComments = document.createElement('div');
-                  postComments.innerHTML = 'Private post';
-                }
-
-                postList.appendChild(postContainer);
-                postContainer.appendChild(deletePostButton);
-                postContainer.appendChild(postTitle);
-                postContainer.appendChild(postBoard);
-                postBoard.appendChild(postContent);
-                postContainer.appendChild(postInfo);
-                postInfo.appendChild(postTimestamp);
-                postInfo.appendChild(postComments);
+              /* Remove locally stored posts if this is the initial request
+              to replace with latest posts from server */
+              if (requestStart == 0) {
+                localStorage.removeItem('my-account-posts');
+                var localPosts = [];
               }
 
-              /* If first post displayed in post area is not post 0 (i.e.,
-              there are lower-numbered posts to display), display left
-              navigation arrow */
-              if (postList.getElementsByClassName('post-container')[0].dataset
-                .number != 0) {
-                  postLeftArrow.classList.add('display');
-                }
-
-              // Otherwise, hide left arrow
+              // Otherwise, get locally stored posts list
               else {
-                postLeftArrow.classList.remove('display');
+                var localPosts = JSON.parse(localStorage
+                  .getItem('my-account-posts'));
               }
 
-              /* If there are more posts on the server, display right
-              navigation arrow */
-              if (morePostsExist) {
-                postRightArrow.classList.add('display');
+              /* Add each post to locally stored posts list based on
+              postRequestStart and postRequestEnd values */
+              for (var i = 0; i < posts.length; i++) {
+                localPosts[postRequestStart + i] = posts[i];
               }
 
-              // Otherwise, hide right arrow
-              else {
-                postRightArrow.classList.remove('display');
-              }
+              // Store posts in localStorage for offline loading
+              localStorage.setItem('my-account-posts', JSON
+                .stringify(localPosts));
             });
 
             return;
@@ -1184,26 +1181,195 @@ function loadPosts() {
 }
 
 
+// Display passed posts in Posts menu
+function displayPosts(posts) {
+  // Clear post area to display passed posts
+  postList.innerHTML = '';
+
+  // Hide Thought Writer error links and display main link
+  twMainLink.classList.remove('hidden');
+  twErrorLink.classList.add('hidden');
+  twEditorLink.classList.add('hidden');
+  twBoardLink.classList.add('hidden');
+
+  for (var i = 0; i < posts.length; i++) {
+    // Create container for post and its components
+    var postContainer = document.createElement('div');
+    postContainer.classList.add('post-container');
+
+    /* Set data-number attribute to track the post number for displaying more
+    posts later */
+    postContainer.dataset.number = postRequestStart + i;
+
+    // Add button to delete post
+    var deletePostButton = document.createElement('button');
+    deletePostButton.classList.add('delete-button');
+    deletePostButton.title = 'Delete post';
+    deletePostButton.innerHTML = 'X';
+    deletePostButton.type = 'button';
+    deletePostButton.dataset.toggle = 'modal';
+    deletePostButton.dataset.target = '#confirm-delete-content';
+    deletePostButton.dataset.postid = posts[i].post_id;
+
+    /* Set confirmation modal title and content deletion function to run upon
+    confirmation when delete button is clicked */
+    deletePostButton.onclick = function() {
+      document.getElementById('modal-title-content')
+        .innerHTML = 'Are you sure you want to delete this post?';
+
+      document.getElementById('confirm-delete-content-button').dataset
+        .contentid = this.dataset.postid;
+
+      document.getElementById('confirm-delete-content-button')
+        .onclick = function() {
+          deleteContent('thought-writer/post',
+          this.dataset.contentid, loadPosts);
+          return;
+        }
+
+      return;
+    }
+
+    // Create container for post title
+    var postTitle = document.createElement('div');
+    postTitle.classList.add('post-title');
+    postTitle.innerHTML = posts[i].title;
+    postTitle.title = 'Edit post';
+
+    // Set data-postid attribute to save in sessionStorage when clicked
+    postTitle.dataset.postid = posts[i].post_id;
+
+    /* Set sessionStorage post-id item when post title is clicked and go to
+    editor page */
+    postTitle.onclick = function() {
+      sessionStorage.setItem('post-id', this.dataset.postid);
+      window.location = '../../thought-writer/editor/';
+      return;
+    }
+
+    // Create container for post background
+    var postBoard = document.createElement('div');
+    postBoard.classList.add('post-board');
+
+    // Create container with post content
+    var postContent = document.createElement('div');
+    postContent.classList.add('post-content');
+    postContent.innerHTML = posts[i].content;
+
+    // Create container for post timestamp and comment number
+    var postInfo = document.createElement('div');
+    postInfo.classList.add('post-info');
+
+    // Create container for post timestamp
+    var postTimestamp = document.createElement('div');
+    postTimestamp.classList.add('post-time');
+
+    /* Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+    HH:MM AM/PM' format */
+    postTimestamp.innerHTML = moment(posts[i].created)
+      .format('MM/DD/YYYY, LT');
+
+    // Create container for number of post comments if post is public
+    if (posts[i].public) {
+      var postComments = document.createElement('a');
+      postComments.classList.add('post-comments');
+      postComments.title = 'View post comments';
+      postComments.href = '../../thought-writer/post/?post=' +
+        posts[i].post_id + '#comments';
+
+      if (posts[i].comment_count == 1) {
+        postComments.innerHTML = posts[i].comment_count + ' comment';
+      } else {
+        postComments.innerHTML = posts[i].comment_count + ' comments';
+      }
+    }
+
+    // Otherwise, display post as private
+    else {
+      var postComments = document.createElement('div');
+      postComments.innerHTML = 'Private post';
+    }
+
+    postList.appendChild(postContainer);
+    postContainer.appendChild(deletePostButton);
+    postContainer.appendChild(postTitle);
+    postContainer.appendChild(postBoard);
+    postBoard.appendChild(postContent);
+    postContainer.appendChild(postInfo);
+    postInfo.appendChild(postTimestamp);
+    postInfo.appendChild(postComments);
+  }
+
+  /* If first post displayed in post area is not post 0 (i.e., there are
+  lower-numbered posts to display), display left navigation arrow */
+  if (postList.getElementsByClassName('post-container')[0].dataset
+    .number != 0) {
+      postLeftArrow.classList.add('display');
+    }
+
+  // Otherwise, hide left arrow
+  else {
+    postLeftArrow.classList.remove('display');
+  }
+
+  // If there are more posts on the server, display right navigation arrow
+  if (morePostsToDisplay) {
+    postRightArrow.classList.add('display');
+  }
+
+  // Otherwise, hide right arrow
+  else {
+    postRightArrow.classList.remove('display');
+  }
+
+  return;
+}
+
+
 // Load user's comments from server
 function loadComments() {
   return fetch(api + '/thought-writer/comments/user/' +
-    localStorage.getItem('username') + '?start=' + commentStart + '&end=' +
-    commentEnd)
+    localStorage.getItem('username') + '?start=' + commentRequestStart +
+    '&end=' + commentRequestEnd)
 
       // If server is down, clear post area and hide navigation arrows
       .catch(function(error) {
         // Add server down banner to page (from common.js script)
         pingServer(retryFunctions);
 
-        postList.innerHTML = '';
-        postLeftArrow.classList.remove('display');
-        postRightArrow.classList.remove('display');
+        // Display cached comments if they are stored in localStorage
+        if (localStorage.getItem('my-account-comments')) {
+          var comments = JSON.parse(localStorage
+            .getItem('my-account-comments'));
 
-        // Display error banner with Thought Writer link
-        twErrorLink.classList.remove('hidden');
-        twMainLink.classList.add('hidden');
-        twEditorLink.classList.add('hidden');
-        twBoardLink.classList.add('hidden');
+          /* Assess if there are more than requested comments - 1 (number of
+          displayed comments) */
+          if (comments.length > (commentRequestEnd - 1)) {
+            moreCommentsToDisplay = true;
+            var loadNumber = commentRequestEnd - 1;
+          }
+
+          // If there are not, display all comments
+          else {
+            moreCommentsToDisplay = false;
+            var loadNumber = comments.length;
+          }
+
+          displayComments(comments.slice(commentRequestStart, loadNumber));
+        }
+
+        // Otherwise, display error message
+        else {
+          postList.innerHTML = '';
+          postLeftArrow.classList.remove('display');
+          postRightArrow.classList.remove('display');
+
+          // Display error banner with Thought Writer link
+          twErrorLink.classList.remove('hidden');
+          twMainLink.classList.add('hidden');
+          twEditorLink.classList.add('hidden');
+          twBoardLink.classList.add('hidden');
+        }
 
         return;
       })
@@ -1232,130 +1398,44 @@ function loadComments() {
                 return;
               }
 
-              // Otherwise, clear post area to display new comments from server
-              postList.innerHTML = '';
-
-              // Hide Thought Writer error links and display main link
-              twMainLink.classList.remove('hidden');
-              twErrorLink.classList.add('hidden');
-              twEditorLink.classList.add('hidden');
-              twBoardLink.classList.add('hidden');
-
               /* Assess if there are more than requested comments - 1 (number
-              of loaded comments) on server */
-              if (comments.length > (commentEnd - commentStart - 1)) {
-                moreCommentsExist = true;
-                var commentsLoadNumber = commentEnd - commentStart - 1;
-              }
-
-              // If there are not, load all comments sent from server
-              else {
-                moreCommentsExist = false;
-                var commentsLoadNumber = comments.length;
-              }
-
-              for (var i = 0; i < commentsLoadNumber; i++) {
-                // Create container for comment and its components
-                var commentContainer = document.createElement('div');
-                commentContainer.classList.add('comment-container');
-
-                /* Set data-number attribute to track the comment number for
-                displaying more comments later */
-                commentContainer.dataset.number = commentStart + i;
-
-                // Create container for comment background
-                var commentBoard = document.createElement('div');
-                commentBoard.classList.add('comment-board');
-
-                // Add button to delete comment
-                var deleteCommentButton = document.createElement('button');
-                deleteCommentButton.classList.add('delete-button');
-                deleteCommentButton.title = 'Delete comment';
-                deleteCommentButton.innerHTML = 'X';
-                deleteCommentButton.type = 'button';
-                deleteCommentButton.dataset.toggle = 'modal';
-                deleteCommentButton.dataset.target = '#confirm-delete-content';
-                deleteCommentButton.dataset.commentid = comments[i].comment_id;
-
-                /* Set confirmation modal title and content deletion function
-                to run upon confirmation when delete button is clicked */
-                deleteCommentButton.onclick = function() {
-                  document.getElementById('modal-title-content')
-                    .innerHTML = 'Are you sure you want to delete this ' +
-                    'comment?';
-
-                  document.getElementById('confirm-delete-content-button')
-                    .dataset.contentid = this.dataset.commentid;
-
-                  document.getElementById('confirm-delete-content-button')
-                    .onclick = function() {
-                      deleteContent('thought-writer/comment',
-                      this.dataset.contentid, loadComments);
-                      return;
-                    }
-
-                  return;
+              of displayed comments) on server */
+              if (comments.length > (commentRequestEnd - commentRequestStart -
+                1)) {
+                  moreCommentsToDisplay = true;
+                  var loadNumber = commentRequestEnd - commentRequestStart - 1;
                 }
 
-                // Create container with comment content
-                var commentContent = document.createElement('div');
-                commentContent.classList.add('comment-content');
-                commentContent.innerHTML = comments[i].content;
-
-                /* Create container for comment timestamp and link to parent
-                post */
-                var commentInfo = document.createElement('div');
-                commentInfo.classList.add('comment-info');
-
-                // Create container for comment timestamp
-                var commentTimestamp = document.createElement('div');
-                commentTimestamp.classList.add('comment-time');
-
-                /* Convert UTC timestamp from server to local timestamp in
-                'MM/DD/YYYY, HH:MM AM/PM' format */
-                commentTimestamp.innerHTML = moment(comments[i].created)
-                  .format('MM/DD/YYYY, LT');
-
-                // Create container for link to parent post
-                var parentPost = document.createElement('a');
-                parentPost.classList.add('parent-post');
-                parentPost.title = 'View comment on post page';
-                parentPost.href = '../../thought-writer/post/?post=' +
-                  comments[i].post_id + '#comment' + comments[i].comment_id;
-                parentPost.innerHTML = comments[i].title;
-
-                postList.appendChild(commentContainer);
-                commentContainer.appendChild(commentBoard);
-                commentBoard.appendChild(deleteCommentButton);
-                commentBoard.appendChild(commentContent);
-                commentContainer.appendChild(commentInfo);
-                commentInfo.appendChild(commentTimestamp);
-                commentInfo.appendChild(parentPost);
-              }
-
-              /* If first comment displayed in post area is not comment 0
-              (i.e., there are lower-numbered comments to display), display
-              left navigation arrow */
-              if (postList.getElementsByClassName('comment-container')[0]
-                .dataset.number != 0) {
-                  postLeftArrow.classList.add('display');
-                }
-
-              // Otherwise, hide left arrow
+              // If there are not, display all comments sent from server
               else {
-                postLeftArrow.classList.remove('display');
+                moreCommentsToDisplay = false;
+                var loadNumber = comments.length;
               }
 
-              /* If there are more comments on the server, display right
-              navigation arrow */
-              if (moreCommentsExist) {
-                postRightArrow.classList.add('display');
+              displayComments(comments.slice(0, loadNumber));
+
+              /* Remove locally stored comments if this is the initial request
+              to replace with latest comments from server */
+              if (requestStart == 0) {
+                localStorage.removeItem('my-account-comments');
+                var localComments = [];
               }
 
-              // Otherwise, hide right arrow
+              // Otherwise, get locally stored comments list
               else {
-                postRightArrow.classList.remove('display');
+                var localComments = JSON.parse(localStorage
+                  .getItem('my-account-comments'));
               }
+
+              /* Add each comment to locally stored comments list based on
+              commentRequestStart and commentRequestEnd values */
+              for (var i = 0; i < comments.length; i++) {
+                localComments[commentRequestStart + i] = comments[i];
+              }
+
+              // Store comments in localStorage for offline loading
+              localStorage.setItem('my-account-comments', JSON
+                .stringify(localComments));
             });
 
             return;
@@ -1376,6 +1456,120 @@ function loadComments() {
           return;
         }
       });
+}
+
+
+// Display passed comments in Posts menu
+function displayComments(comments) {
+  // Clear post area to display new comments from server
+  postList.innerHTML = '';
+
+  // Hide Thought Writer error links and display main link
+  twMainLink.classList.remove('hidden');
+  twErrorLink.classList.add('hidden');
+  twEditorLink.classList.add('hidden');
+  twBoardLink.classList.add('hidden');
+
+  for (var i = 0; i < comments.length; i++) {
+    // Create container for comment and its components
+    var commentContainer = document.createElement('div');
+    commentContainer.classList.add('comment-container');
+
+    /* Set data-number attribute to track the comment number for displaying
+    more comments later */
+    commentContainer.dataset.number = commentRequestStart + i;
+
+    // Create container for comment background
+    var commentBoard = document.createElement('div');
+    commentBoard.classList.add('comment-board');
+
+    // Add button to delete comment
+    var deleteCommentButton = document.createElement('button');
+    deleteCommentButton.classList.add('delete-button');
+    deleteCommentButton.title = 'Delete comment';
+    deleteCommentButton.innerHTML = 'X';
+    deleteCommentButton.type = 'button';
+    deleteCommentButton.dataset.toggle = 'modal';
+    deleteCommentButton.dataset.target = '#confirm-delete-content';
+    deleteCommentButton.dataset.commentid = comments[i].comment_id;
+
+    /* Set confirmation modal title and content deletion function to run upon
+    confirmation when delete button is clicked */
+    deleteCommentButton.onclick = function() {
+      document.getElementById('modal-title-content')
+        .innerHTML = 'Are you sure you want to delete this comment?';
+
+      document.getElementById('confirm-delete-content-button')
+        .dataset.contentid = this.dataset.commentid;
+
+      document.getElementById('confirm-delete-content-button')
+        .onclick = function() {
+          deleteContent('thought-writer/comment',
+          this.dataset.contentid, loadComments);
+          return;
+        }
+
+      return;
+    }
+
+    // Create container with comment content
+    var commentContent = document.createElement('div');
+    commentContent.classList.add('comment-content');
+    commentContent.innerHTML = comments[i].content;
+
+    // Create container for comment timestamp and link to parent post
+    var commentInfo = document.createElement('div');
+    commentInfo.classList.add('comment-info');
+
+    // Create container for comment timestamp
+    var commentTimestamp = document.createElement('div');
+    commentTimestamp.classList.add('comment-time');
+
+    /* Convert UTC timestamp from server to local timestamp in 'MM/DD/YYYY,
+    HH:MM AM/PM' format */
+    commentTimestamp.innerHTML = moment(comments[i].created)
+      .format('MM/DD/YYYY, LT');
+
+    // Create container for link to parent post
+    var parentPost = document.createElement('a');
+    parentPost.classList.add('parent-post');
+    parentPost.title = 'View comment on post page';
+    parentPost.href = '../../thought-writer/post/?post=' +
+      comments[i].post_id + '#comment' + comments[i].comment_id;
+    parentPost.innerHTML = comments[i].title;
+
+    postList.appendChild(commentContainer);
+    commentContainer.appendChild(commentBoard);
+    commentBoard.appendChild(deleteCommentButton);
+    commentBoard.appendChild(commentContent);
+    commentContainer.appendChild(commentInfo);
+    commentInfo.appendChild(commentTimestamp);
+    commentInfo.appendChild(parentPost);
+  }
+
+  /* If first comment displayed in post area is not comment 0 (i.e., there are
+  lower-numbered comments to display), display left navigation arrow */
+  if (postList.getElementsByClassName('comment-container')[0]
+    .dataset.number != 0) {
+      postLeftArrow.classList.add('display');
+    }
+
+  // Otherwise, hide left arrow
+  else {
+    postLeftArrow.classList.remove('display');
+  }
+
+  // If there are more comments on the server, display right navigation arrow
+  if (moreCommentsToDisplay) {
+    postRightArrow.classList.add('display');
+  }
+
+  // Otherwise, hide right arrow
+  else {
+    postRightArrow.classList.remove('display');
+  }
+
+  return;
 }
 
 
@@ -1407,10 +1601,11 @@ $('#navbar li a[href^="#"]').on('click', function(e) {
 
 /* Flip menu from front to back view and vice versa when front menus and back
 buttons are clicked respectively */
-for (var i = 0; i < document.getElementsByClassName('front-menu').length; i++) {
-  document.getElementsByClassName('front-menu')[i].addEventListener('click',
-    flipMenu, false);
-}
+for (var i = 0; i < document.getElementsByClassName('front-menu')
+  .length; i++) {
+    document.getElementsByClassName('front-menu')[i].addEventListener('click',
+      flipMenu, false);
+  }
 
 for (var i = 0; i < document.getElementsByClassName('back-button')
   .length; i++) {
@@ -1439,8 +1634,8 @@ function flipMenu() {
 Scores menu */
 rhythmUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    rhythmScoresStart = rhythmScoresStart - 10;
-    rhythmScoresEnd = rhythmScoresEnd - 10;
+    rhythmRequestStart = rhythmRequestStart - 10;
+    rhythmRequestEnd = rhythmRequestEnd - 10;
     loadScores('rhythm-of-life');
   }
 
@@ -1452,8 +1647,8 @@ rhythmUpArrow.onclick = function() {
 in Scores menu */
 rhythmDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    rhythmScoresStart = rhythmScoresStart + 10;
-    rhythmScoresEnd = rhythmScoresEnd + 10;
+    rhythmRequestStart = rhythmRequestStart + 10;
+    rhythmRequestEnd = rhythmRequestEnd + 10;
     loadScores('rhythm-of-life');
   }
 
@@ -1465,8 +1660,8 @@ rhythmDownArrow.onclick = function() {
 Scores menu */
 shapesUpArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    shapesScoresStart = shapesScoresStart - 10;
-    shapesScoresEnd = shapesScoresEnd - 10;
+    shapesRequestStart = shapesRequestStart - 10;
+    shapesRequestEnd = shapesRequestEnd - 10;
     loadScores('shapes-in-rain');
   }
 
@@ -1478,8 +1673,8 @@ shapesUpArrow.onclick = function() {
 in Scores menu */
 shapesDownArrow.onclick = function() {
   if (this.classList.contains('display')) {
-    shapesScoresStart = shapesScoresStart + 10;
-    shapesScoresEnd = shapesScoresEnd + 10;
+    shapesRequestStart = shapesRequestStart + 10;
+    shapesRequestEnd = shapesRequestEnd + 10;
     loadScores('shapes-in-rain');
   }
 
@@ -1494,15 +1689,15 @@ drawingLeftArrow.onclick = function() {
     /* If user is on Mine view in Drawings menu, request lower-numbered user
     drawings from server */
     if (mine.classList.contains('selected')) {
-      drawingStart = drawingStart - 6;
-      drawingEnd = drawingEnd - 6;
+      drawingRequestStart = drawingRequestStart - 6;
+      drawingRequestEnd = drawingRequestEnd - 6;
       loadDrawings('drawings');
       return;
     }
 
     // Otherwise, request lower-numbered drawings the user liked
-    drawingStart = drawingStart - 6;
-    drawingEnd = drawingEnd - 6;
+    drawingRequestStart = drawingRequestStart - 6;
+    drawingRequestEnd = drawingRequestEnd - 6;
     loadDrawings('drawing-likes/user');
   }
 
@@ -1517,15 +1712,15 @@ drawingRightArrow.onclick = function() {
     /* If user is on Mine view in Drawings menu, request higher-numbered user
     drawings from server */
     if (mine.classList.contains('selected')) {
-      drawingStart = drawingStart + 6;
-      drawingEnd = drawingEnd + 6;
+      drawingRequestStart = drawingRequestStart + 6;
+      drawingRequestEnd = drawingRequestEnd + 6;
       loadDrawings('drawings');
       return;
     }
 
     // Otherwise, request higher-numbered drawings the user liked
-    drawingStart = drawingStart + 6;
-    drawingEnd = drawingEnd + 6;
+    drawingRequestStart = drawingRequestStart + 6;
+    drawingRequestEnd = drawingRequestEnd + 6;
     loadDrawings('drawing-likes/user');
   }
 
@@ -1541,15 +1736,15 @@ postLeftArrow.onclick = function() {
     /* If user is on Posts view in Posts menu, request lower-numbered posts
     from server */
     if (postsButton.classList.contains('selected')) {
-      postStart = postStart - 6;
-      postEnd = postEnd - 6;
+      postRequestStart = postRequestStart - 6;
+      postRequestEnd = postRequestEnd - 6;
       loadPosts();
       return;
     }
 
     // Otherwise, request lower-numbered comments
-    commentStart = commentStart - 6;
-    commentEnd = commentEnd - 6;
+    commentRequestStart = commentRequestStart - 6;
+    commentRequestEnd = commentRequestEnd - 6;
     loadComments();
   }
 
@@ -1565,15 +1760,15 @@ postRightArrow.onclick = function() {
     /* If user is on Posts view in Posts menu, request higher-numbered posts
     from server */
     if (postsButton.classList.contains('selected')) {
-      postStart = postStart + 6;
-      postEnd = postEnd + 6;
+      postRequestStart = postRequestStart + 6;
+      postRequestEnd = postRequestEnd + 6;
       loadPosts();
       return;
     }
 
     // Otherwise, request higher-numbered comments
-    commentStart = commentStart + 6;
-    commentEnd = commentEnd + 6;
+    commentRequestStart = commentRequestStart + 6;
+    commentRequestEnd = commentRequestEnd + 6;
     loadComments();
   }
 
@@ -1587,8 +1782,8 @@ liked.onclick = toggleDrawings;
 
 function toggleDrawings() {
   // Set drawing request numbers to starting numbers
-  drawingStart = 0;
-  drawingEnd = 7;
+  drawingRequestStart = 0;
+  drawingRequestEnd = 7;
 
   /* If the Liked button is clicked, set the button as selected and request
   liked drawings from server */
@@ -1616,10 +1811,10 @@ commentsButton.onclick = togglePosts;
 
 function togglePosts() {
   // Set post/comment request numbers to starting numbers
-  postStart = 0;
-  postEnd = 7;
-  commentStart = 0;
-  commentEnd = 7;
+  postRequestStart = 0;
+  postRequestEnd = 7;
+  commentRequestStart = 0;
+  commentRequestEnd = 7;
 
   /* If the Comments button is clicked, set the button as selected and request
   comments from server */
@@ -1698,13 +1893,14 @@ profileBackground.onclick = function(e) {
 // Click hidden color picker input when profile rows are clicked
 for (var i = 0; i < profileBackground.getElementsByClassName('row')
   .length; i++) {
-    profileBackground.getElementsByClassName('row')[i].addEventListener('click',
-      function(e) {
-        if (e.target == this && !backgroundColorPicker.disabled) {
-          backgroundColorPicker.jscolor.show();
-        }
-        return;
-      }, false);
+    profileBackground.getElementsByClassName('row')[i]
+      .addEventListener('click',
+        function(e) {
+          if (e.target == this && !backgroundColorPicker.disabled) {
+            backgroundColorPicker.jscolor.show();
+          }
+          return;
+        }, false);
   }
 
 

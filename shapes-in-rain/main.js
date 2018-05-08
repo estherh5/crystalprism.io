@@ -65,7 +65,7 @@ function loadLeaders() {
       // Display cached leaders list if it is stored in localStorage
       if (localStorage.getItem('shapes-leaders-list')) {
         displayLeaders(JSON.parse(localStorage
-            .getItem('shapes-leaders-list')));
+          .getItem('shapes-leaders-list')));
       }
 
       // Otherwise, add error to leaders display

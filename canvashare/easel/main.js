@@ -95,12 +95,51 @@ window.onload = function() {
 function loadDrawing() {
   return fetch(api + '/canvashare/drawing/' + drawingId)
 
+    // Display error message if server is down
+    .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(checkIfLoggedIn);
+
+      // Display cached drawing if it is stored in localStorage
+      if (localStorage.getItem('drawing-' + drawingId)) {
+        assembleEasel(JSON.parse(localStorage
+          .getItem('drawing-' + drawingId)).url, '');
+      }
+
+      // Otherwise, display error message
+      else {
+        window.alert('The drawing could not be loaded. Please try again ' +
+          'soon.');
+      }
+
+      return;
+    })
+
     .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(drawing) {
-          // Load initial drawing with URL from server
-          assembleEasel(drawing.url, '');
-        });
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        // Display drawing if server responds without error
+        if (response.ok) {
+          response.json().then(function(drawing) {
+            // Load initial drawing with URL from server
+            assembleEasel(drawing.url, '');
+
+            // Store drawing in localStorage for offline loading
+            localStorage.setItem('drawing-' + drawingId, JSON
+              .stringify(drawing));
+          });
+        }
+
+        // Otherwise, display error message
+        else {
+          window.alert('The drawing could not be loaded. Please try again ' +
+            'soon.');
+
+          // Remove localStorage item
+          localStorage.removeItem('drawing-' + drawingId);
+        }
       }
     });
 }

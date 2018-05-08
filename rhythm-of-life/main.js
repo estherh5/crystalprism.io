@@ -851,7 +851,7 @@ function loadLeaders() {
       // Display cached leaders list if it is stored in localStorage
       if (localStorage.getItem('rhythm-leaders-list')) {
         displayLeaders(JSON.parse(localStorage
-            .getItem('rhythm-leaders-list')));
+          .getItem('rhythm-leaders-list')));
       }
 
       // Otherwise, add error to leaders display

@@ -1,7 +1,7 @@
 // Define global variables
 var requestStart = 0; // Range start for number of posts to request from server
 var requestEnd = 11; // Range end for number of posts to request from server
-var morePostsOnServer = false;
+var morePostsToDisplay = false;
 var postsContainer = document.getElementById('posts-container');
 var postTitle = document.getElementById('post-title');
 var post = document.getElementById('post-content');
@@ -27,7 +27,7 @@ window.onload = function() {
   /* If user has post stored in sessionStorage (by clicking post from My
   Account page), request post from server */
   if (sessionStorage.getItem('post-id')) {
-    openPost(sessionStorage.getItem('post-id'));
+    loadPost(sessionStorage.getItem('post-id'));
     /* Clear sessionStorage item to allow user to open another previous post
     (i.e., from cabinet) */
     sessionStorage.removeItem('post-id');
@@ -136,120 +136,30 @@ function loadPosts() {
       method: 'GET',
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        response.json().then(function(posts) {
-
-          // Clear posts from cabinet to replace with served posts
-          postsContainer.innerHTML = '';
-
-          if (posts.length != 0) {
-
-            /* Assess if there are more than requested posts - 1 (number of
-            loaded posts) on server */
-            if (posts.length > (requestEnd - requestStart - 1)) {
-              morePostsOnServer = true;
-              var loadNumber = requestEnd - requestStart - 1;
-            }
-
-            /* If there are not, load all posts sent from server to post area
-            in cabinet */
-            else {
-              morePostsOnServer = false;
-              var loadNumber = posts.length;
-            }
-
-            for (var i = 0; i < loadNumber; i++) {
-              // Create container for post and its components
-              var previousPost = document.createElement('div');
-              previousPost.classList.add('previous-post');
-
-              // Add display class to post if cabinet is open
-              if (cabinetOpen) {
-                previousPost.classList.add('display');
-              }
-
-              /* Set data-postid attribute to use if post is clicked from
-              cabinet */
-              previousPost.dataset.postid = posts[i].post_id;
-
-              /* Set data-number attribute to track the post number for
-              displaying more posts later */
-              previousPost.dataset.number = requestStart + i;
-
-              /* Display hover title for post as post title and local timestamp
-              in 'MM/DD/YYYY, HH:MM AM/PM' format */
-              previousPost.title = posts[i].title + '  ' +
-                moment(posts[i].created).format('MM/DD/YYYY, LT');
-              previousPost.dataset.public = posts[i].public;
-
-              // Create container with post content
-              var postContent = document.createElement('div');
-              postContent.classList.add('previous-post-content');
-              postContent.innerHTML = posts[i].content;
-              postsContainer.appendChild(previousPost);
-              previousPost.appendChild(postContent);
-
-              // Open post in post editor when user clicks it
-              previousPost.onclick = function() {
-                openPost(this.dataset.postid);
-                return;
-              }
-            }
-
-            // If cabinet is open, display/hide right/left arrows
-            if (cabinetOpen) {
-
-              /* If first post displayed in cabinet is not post 0 (i.e., there
-              are lower-numbered posts to display), display left navigation
-              arrow */
-              if (postsContainer.getElementsByClassName('previous-post')[0]
-                .dataset.number != 0) {
-                  document.getElementById('left-arrow').classList
-                    .add('display');
-                }
-
-              // Otherwise, hide left arrow
-              else {
-                document.getElementById('left-arrow').classList
-                  .remove('display');
-              }
-
-              /* If there are more posts on the server, display right
-              navigation arrow */
-              if (morePostsOnServer) {
-                document.getElementById('right-arrow').classList
-                  .add('display');
-              }
-
-              // Otherwise, hide right arrow
-              else {
-                document.getElementById('right-arrow').classList
-                  .remove('display');
-              }
-            }
-          }
-        });
-      }
-    });
-}
-
-
-// Open post that has passed post id in editor
-function openPost(postId) {
-  return fetch(api + '/thought-writer/post/' + postId, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    })
-
-    // Display error message if server is down
     .catch(function(error) {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      window.alert('Your request did not go through. Please try again soon.');
+      // Display cached posts if they are stored in localStorage
+      if (localStorage.getItem('thought-writer-personal-posts')) {
+        var posts = JSON.parse(localStorage
+          .getItem('thought-writer-personal-posts')));
+
+        /* Assess if there are more than requested posts - 1 (number of
+        loaded posts) */
+        if (posts.length > (requestEnd - 1)) {
+          morePostsToDisplay = true;
+          var loadNumber = requestEnd - 1;
+        }
+
+        // If there are not, load all posts to post area in cabinet
+        else {
+          morePostsToDisplay = false;
+          var loadNumber = posts.length;
+        }
+
+        displayPosts(posts.slice(requestStart, loadNumber));
+      }
 
       return;
     })
@@ -259,38 +169,205 @@ function openPost(postId) {
         // Remove server down banner from page (from common.js script)
         pingServer();
 
-        response.json().then(function(requestedPost) {
-          // Set post title, content, data-id attribute, and public status
-          postTitle.value = requestedPost.title;
-          post.innerHTML = requestedPost.content;
-          post.dataset.postid = requestedPost.post_id;
-          publicInput.checked = requestedPost.public;
+        response.json().then(function(posts) {
+          // Display posts in cabinet if at least one is sent from server
+          if (posts.length != 0) {
 
-          /* Save original post content to check if user makes changes after
-          editing */
-          post.dataset.original = requestedPost.content;
+            /* Assess if there are more than requested posts - 1 (number of
+            loaded posts) on server */
+            if (posts.length > (requestEnd - requestStart - 1)) {
+              morePostsToDisplay = true;
+              var loadNumber = requestEnd - requestStart - 1;
+            }
 
-          if (requestedPost.public) {
-            publicCheckbox.classList.add('checked');
-          } else {
-            publicCheckbox.classList.remove('checked');
+            /* If there are not, load all posts sent from server to post area
+            in cabinet */
+            else {
+              morePostsToDisplay = false;
+              var loadNumber = posts.length;
+            }
+
+            displayPosts(posts.slice(0, loadNumber));
+
+            /* Remove locally stored posts if this is the initial request
+            to replace with latest posts from server */
+            if (requestStart == 0) {
+              localStorage.removeItem('thought-writer-personal-posts');
+              var localPosts = [];
+            }
+
+            // Otherwise, get locally stored posts list
+            else {
+              var localPosts = JSON.parse(localStorage
+                .getItem('thought-writer-personal-posts'));
+            }
+
+            /* Add each post to locally stored posts list based on requestStart
+            and requestEnd values */
+            for (var i = 0; i < posts.length; i++) {
+              localPosts[requestStart + i] = posts[i];
+            }
+
+            // Store posts in localStorage for offline loading
+            localStorage.setItem('thought-writer-personal-posts', JSON
+              .stringify(localPosts));
           }
-
-          // Stop auto-save function (used for in-progress posts)
-          clearInterval(saveInterval);
-
-          // Set viewingPost to true and toggle editing buttons
-          viewingPost = true;
-          toggleButtons();
-
-          // If post board is flipped to back, flip to initial state
-          if (boardFlipped) {
-            flipBoard();
-          }
-
         });
       }
     });
+}
+
+
+// Display passed posts in cabinet
+function displayPosts(posts) {
+  // Clear posts from cabinet to replace with passed posts
+  postsContainer.innerHTML = '';
+
+  for (var i = 0; i < posts.length; i++) {
+    // Create container for post and its components
+    var previousPost = document.createElement('div');
+    previousPost.classList.add('previous-post');
+
+    // Add display class to post if cabinet is open
+    if (cabinetOpen) {
+      previousPost.classList.add('display');
+    }
+
+    /* Set data-postid attribute to use if post is clicked from
+    cabinet */
+    previousPost.dataset.postid = posts[i].post_id;
+
+    /* Set data-number attribute to track the post number for
+    displaying more posts later */
+    previousPost.dataset.number = requestStart + i;
+
+    /* Display hover title for post as post title and local timestamp
+    in 'MM/DD/YYYY, HH:MM AM/PM' format */
+    previousPost.title = posts[i].title + '  ' + moment(posts[i].created)
+      .format('MM/DD/YYYY, LT');
+    previousPost.dataset.public = posts[i].public;
+
+    // Create container with post content
+    var postContent = document.createElement('div');
+    postContent.classList.add('previous-post-content');
+    postContent.innerHTML = posts[i].content;
+    postsContainer.appendChild(previousPost);
+    previousPost.appendChild(postContent);
+
+    // Load post when user clicks it in cabinet
+    previousPost.onclick = function() {
+      loadPost(this.dataset.postid);
+      return;
+    }
+  }
+
+  // If cabinet is open, display/hide right/left arrows
+  if (cabinetOpen) {
+
+    /* If first post displayed in cabinet is not post 0 (i.e., there
+    are lower-numbered posts to display), display left navigation
+    arrow */
+    if (postsContainer.getElementsByClassName('previous-post')[0]
+      .dataset.number != 0) {
+        document.getElementById('left-arrow').classList.add('display');
+      }
+
+    // Otherwise, hide left arrow
+    else {
+      document.getElementById('left-arrow').classList.remove('display');
+    }
+
+    /* If there are more posts on the server, display right
+    navigation arrow */
+    if (morePostsToDisplay) {
+      document.getElementById('right-arrow').classList.add('display');
+    }
+
+    // Otherwise, hide right arrow
+    else {
+      document.getElementById('right-arrow').classList.remove('display');
+    }
+  }
+
+  return;
+}
+
+
+// Load post that has passed post id
+function loadPost(postId) {
+  return fetch(api + '/thought-writer/post/' + postId, {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    })
+
+    // Display error message if server is down
+    .catch(function(error) {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+
+
+      // Display cached post if it is stored in localStorage
+      if (localStorage.getItem('thought-writer-personal-post-'  + postId)) {
+        displayPost(JSON.parse(localStorage
+          .getItem('thought-writer-personal-post-'  + postId)));
+      }
+
+      // Otherwise, display error message
+      else {
+        window.alert('The post could not be loaded. Please try again soon.');
+      }
+
+      return;
+    })
+
+    .then(function(response) {
+      if (response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        // Display post in editor
+        response.json().then(function(requestedPost) {
+          displayPost(requestedPost);
+
+          // Store post in localStorage for offline loading
+          localStorage.setItem('thought-writer-personal-post-'  + postId, JSON
+            .stringify(requestedPost));
+        });
+      }
+    });
+}
+
+
+// Display passed post in post editor
+function displayPost(postToEdit) {
+  // Set post title, content, data-id attribute, and public status
+  postTitle.value = postToEdit.title;
+  post.innerHTML = postToEdit.content;
+  post.dataset.postid = postToEdit.post_id;
+  publicInput.checked = postToEdit.public;
+
+  /* Save original post content to check if user makes changes after
+  editing */
+  post.dataset.original = postToEdit.content;
+
+  if (postToEdit.public) {
+    publicCheckbox.classList.add('checked');
+  } else {
+    publicCheckbox.classList.remove('checked');
+  }
+
+  // Stop auto-save function (used for in-progress posts)
+  clearInterval(saveInterval);
+
+  // Set viewingPost to true and toggle editing buttons
+  viewingPost = true;
+  toggleButtons();
+
+  // If post board is flipped to back, flip to initial state
+  if (boardFlipped) {
+    flipBoard();
+  }
+
+  return;
 }
 
 
@@ -889,10 +966,10 @@ document.getElementById('go-board').onclick = function() {
 }
 
 
-/* Open last post when user clicks Modify Last Post button from back of post
+/* Load last post when user clicks Modify Last Post button from back of post
 board */
 document.getElementById('go-back').onclick = function() {
-  openPost(this.dataset.postid);
+  loadPost(this.dataset.postid);
   return;
 }
 
@@ -961,7 +1038,7 @@ function toggleCabinet() {
   }
 
   // If there are more posts on server, display right navigation arrow
-  if (morePostsOnServer) {
+  if (morePostsToDisplay) {
     document.getElementById('right-arrow').classList.add('display');
   }
 

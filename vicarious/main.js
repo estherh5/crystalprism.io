@@ -63,6 +63,12 @@ function storeImages() {
         document.getElementById('error-okay').focus();
         return;
       });
+
+      // Use cached images if they are stored in localStorage
+      if (localStorage.getItem('vicarious-images')) {
+        allImages = JSON.parse(localStorage.getItem('vicarious-images')));
+      }
+
       return;
     })
 
@@ -90,8 +96,11 @@ function storeImages() {
 
             if (i == info['data']['children'].length - 1) {
               /* If this is the last object from the Reddit data and the "after"
-              value is null, return */
+              value is null, store images in localStorage */
               if (!after) {
+                localStorage.setItem('vicarious-images', JSON
+                  .stringify(allImages));
+
                 return;
               }
 

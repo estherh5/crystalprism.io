@@ -177,7 +177,7 @@ function assembleEasel(drawingSrc, title) {
 
   // Update drawing's view count after drawing loads
   if (drawingId) {
-    updateViews();    
+    updateViews();
   }
 
   return;
@@ -351,7 +351,7 @@ function endBrushStroke(event) {
 
 
 // Update drawing's view count when drawing first loads
-function updateViews(drawingId) {
+function updateViews() {
   // Send request to server to update view count
   return fetch(api + '/canvashare/drawing/' + drawingId, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},

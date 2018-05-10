@@ -387,6 +387,11 @@ function resetGame() {
   game.classList.add('hidden');
   score.classList.add('hidden');
 
+  // Reset menu buttons and cursor style
+  document.getElementById('restart').disabled = false;
+  document.getElementById('end').disabled = false;
+  document.body.style.cursor = '';
+
   started = false;
 
   return;
@@ -425,9 +430,6 @@ function endGame() {
   document.getElementById('end').disabled = true;
   document.body.style.cursor = 'wait';
 
-  // Reset game to starting state
-  resetGame();
-
   // If user is logged in, send score to server and display leaders
   if (localStorage.getItem('username')) {
     var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
@@ -449,10 +451,7 @@ function endGame() {
 
       loadLeaders();
 
-      // Reset menu buttons and cursor style
-      document.getElementById('restart').disabled = false;
-      document.getElementById('end').disabled = false;
-      document.body.style.cursor = '';
+      resetGame();
 
       return;
     })
@@ -470,10 +469,7 @@ function endGame() {
 
         loadLeaders();
 
-        // Reset menu buttons and cursor style
-        document.getElementById('restart').disabled = false;
-        document.getElementById('end').disabled = false;
-        document.body.style.cursor = '';
+        resetGame();
       }
     });
   }
@@ -481,10 +477,7 @@ function endGame() {
   else {
     loadLeaders();
 
-    // Reset menu buttons and cursor style
-    document.getElementById('restart').disabled = false;
-    document.getElementById('end').disabled = false;
-    document.body.style.cursor = '';
+    resetGame();
   }
 
   return;

@@ -33,6 +33,71 @@
       <div id="project-modal-body" class="modal-body">
         <button id="project-close" class="close hidden">&times;</button>
 
+        <!-- Hacker News Stats overview -->
+        <div id="hn-stats-overview" class="project-overview">
+          <a class="modal-project-title" href="hn-stats/">
+            <img class="project-icon-large" src="images/hn-stats-icon.png">
+            <h2>Hacker News Stats</h2>
+          </a>
+          <!-- Hacker News Stats repo -->
+          <a class="github-repo" href="https://github.com/estherh5/estherh5.github.io/tree/master/hn-stats" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fab fa-github" aria-hidden="true"></i>
+            <text>GitHub Repository: April 2018 - Present</text>
+          </a>
+          <!-- Hacker News Stats skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fab fa-html5" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-css3" aria-hidden="true"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-javascript-plain"></i>
+              <text class="text-small">&nbsp;JavaScript</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;Python</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fontello-icon icon-flask">&#xe803;</i>
+              <text class="text-small">&nbsp;Flask</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-amazonwebservices-original"></i>
+              <text class="text-small">&nbsp;AWS/EC2</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-amazonwebservices-original"></i>
+              <text class="text-small">&nbsp;AWS/RDS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-heroku-original"></i>
+              <text class="text-small">&nbsp;Heroku</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-postgresql-plain"></i>
+              <text class="text-small">&nbsp;PostgreSQL</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;SQLAlchemy</text>
+            </div>
+          </div>
+          <!-- Hacker News Stats video -->
+          <div class="video-container" data-project="hn-stats">
+            <video id="hn-stats-video" type="video/mp4" preload="metadata" data-project="hn-stats"></video>
+            <i id="hn-stats-control" class="fas fa-play" aria-hidden="true"></i>
+          </div>
+          <!-- Hacker News Stats description -->
+          <text>
+            Hacker News Stats is a display of statistics from data scraped from Y Combinator's news site, <a href="http://news.ycombinator.com/">Hacker News</a>. I use <a href="http://docs.python-requests.org/en/master/">Requests</a>, <a href="https://www.crummy.com/software/BeautifulSoup/bs4/doc/">Beautiful Soup</a>, and <a href="https://docs.python.org/3/library/asyncio.html">asyncio</a> libraries to acquire and parse the first three pages of posts from the main Hacker News feed asynchronously. I then store the data in an Amazon RDS instance of PostgreSQL and serve it through a series of API endpoints that return statistics based on time period (e.g., `/api/hacker_news/stats/hour/average_comment_count` returns the average comment count for posts in the past hour, `/api/hacker_news/stats/week/top_website` returns the most common websites that articles were posted from). The Stats page displays various <a href="https://www.highcharts.com/">Highcharts</a> visualizations of the scraped data, including a pie chart that shows a breakdown of the different types of posts, a word cloud of the most common words used in post comments (excluding stop words), and a bubble chart of the top five users who posted the most comments (with each bubble's width reflecting their total words used). Buttons at the top of the Stats page allow the user to toggle between different time periods of data (e.g., past hour, past day, past week).
+          </text>
+        </div>
+
         <!-- User accounts overview -->
         <div id="user-overview" class="project-overview">
           <a class="modal-project-title" href="user/create-account/">
@@ -573,6 +638,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- Hacker News Stats image and icon -->
+            <li>
+              <div class="project-listing" data-project="hn-stats" data-displayed="false">
+                <img class="project-image" src="images/hn-stats.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img class="project-icon" src="images/hn-stats-icon.png">
+                  </div>
+                </span>
+                <span class="project-title">Hacker News Stats</span>
+              </div>
+            </li>
             <!-- User accounts image and icon -->
             <li>
               <div class="project-listing" data-project="user" data-displayed="false">
@@ -774,6 +851,10 @@
                     </div>
                     <div class="skill">
                       <i class="small-icon devicon-amazonwebservices-original"></i>
+                      <text class="text-small">AWS/RDS</text>
+                    </div>
+                    <div class="skill">
+                      <i class="small-icon devicon-amazonwebservices-original"></i>
                       <text class="text-small">AWS/S3</text>
                     </div>
                     <div class="skill">
@@ -791,6 +872,10 @@
                     <div class="skill">
                       <i class="small-icon devicon-postgresql-plain"></i>
                       <text class="text-small">PostgreSQL</text>
+                    </div>
+                    <div class="skill">
+                      <i class="small-icon fab fa-python"></i>
+                      <text class="text-small">SQLAlchemy</text>
                     </div>
                   </div>
                 </div>

@@ -2161,9 +2161,9 @@ function checkPassword() {
 
 // Submit requested edits to user's personal information to server
 function submitEdits() {
-  /* Disable Submit and Cancel buttons and set cursor style to waiting until
+  /* Disable Save and Cancel buttons and set cursor style to waiting until
   server request goes through */
-  submitButton.disabled = true;
+  saveButton.disabled = true;
   cancelButton.disabled = true;
   document.body.style.cursor = 'wait';
 
@@ -2201,8 +2201,8 @@ function submitEdits() {
 
       window.alert('Your request did not go through. Please try again soon.');
 
-      // Reset Submit and Cancel buttons and cursor style
-      submitButton.disabled = false;
+      // Reset Save and Cancel buttons and cursor style
+      saveButton.disabled = false;
       cancelButton.disabled = false;
       document.body.style.cursor = '';
 
@@ -2228,8 +2228,8 @@ function submitEdits() {
             }
           });
 
-          // Reset Submit and Cancel buttons and cursor style
-          submitButton.disabled = false;
+          // Reset Save and Cancel buttons and cursor style
+          saveButton.disabled = false;
           cancelButton.disabled = false;
           document.body.style.cursor = '';
 
@@ -2295,8 +2295,8 @@ function submitEdits() {
 
           });
 
-          // Reset Submit and Cancel buttons and cursor style
-          submitButton.disabled = false;
+          // Reset Save and Cancel buttons and cursor style
+          saveButton.disabled = false;
           cancelButton.disabled = false;
           document.body.style.cursor = '';
 
@@ -2307,8 +2307,8 @@ function submitEdits() {
         window.alert('Your request did not go through. Please try again ' +
           'soon.');
 
-        // Reset Submit and Cancel buttons and cursor style
-        submitButton.disabled = false;
+        // Reset Save and Cancel buttons and cursor style
+        saveButton.disabled = false;
         cancelButton.disabled = false;
         document.body.style.cursor = '';
 

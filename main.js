@@ -738,6 +738,20 @@ function loadPhotos() {
                   }
                 }
               }
+
+              // Display message if no photos are sent from server
+              else {
+                if (!photosError || photosError.parentNode != document
+                  .getElementById('photos-page')) {
+                    photosError = document.createElement('text');
+                    photosError.id = 'photos-error';
+                    photosError.innerHTML = 'There are no photos right now. ' +
+                      'Please check later.';
+                    document.getElementById('photos-page')
+                      .appendChild(photosError);
+                    return;
+                  }
+              }
             });
 
             return;
@@ -748,8 +762,8 @@ function loadPhotos() {
             .getElementById('photos-page')) {
               photosError = document.createElement('text');
               photosError.id = 'photos-error';
-              photosError.innerHTML = 'There are no photos right now. ' +
-                'Please check later.';
+              photosError.innerHTML = 'There was an error loading the ' +
+                'photos. Please refresh the page.';
               document.getElementById('photos-page').appendChild(photosError);
               return;
             }
@@ -875,6 +889,19 @@ function loadPosts() {
                   postContainer.appendChild(postContent);
                 }
               }
+
+              // Display message if no posts are sent from server
+              else {
+                if (!postsError || postsError.parentNode != document
+                  .getElementById('ideas-page')) {
+                    postsError = document.createElement('text');
+                    postsError.id = 'posts-error';
+                    postsError.innerHTML = 'There are no posts right now. ' +
+                      'Please check later.';
+                    document.getElementById('ideas-page').appendChild(postsError);
+                    return;
+                  }
+              }
             });
 
             return;
@@ -885,8 +912,8 @@ function loadPosts() {
             .getElementById('ideas-page')) {
               postsError = document.createElement('text');
               postsError.id = 'posts-error';
-              postsError.innerHTML = 'There are no posts right now. ' +
-                'Please check later.';
+              postsError.innerHTML = 'There was an error loading the Ideas ' +
+                'posts. Please refresh the page.';
               document.getElementById('ideas-page').appendChild(postsError);
               return;
             }

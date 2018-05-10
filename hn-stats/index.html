@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <meta name="description" content="View statistics for YCombinator's Hacker News website, including the most-commented articles, the users who post the most comments, and more.">
+    <meta name="keywords" content="hacker news,ycombinator,statistics,articles,comments">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
+
+    <!-- Highcharts scripts -->
+    <script src="https://code.highcharts.com/highcharts.js"></script>
+    <script src="https://code.highcharts.com/modules/wordcloud.js"></script>
+    <script src="https://code.highcharts.com/highcharts-more.js"></script>
+
+    <!-- Google Fonts and project stylesheets -->
+    <link href="https://fonts.googleapis.com/css?family=Cutive+Mono|Lekton|Rajdhani" rel="stylesheet">
+    <link href="../common.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
+
+    <!-- Google Analytics script to track page views -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+      ga('create', 'UA-91236421-1', 'auto');
+      ga('send', 'pageview');
+    </script>
+
+    <title>Hacker News Statsboard</title>
+  </head>
+  <body>
+    <!-- Page title link -->
+    <a id="title" href=".">Hacker News Statsboard</a>
+
+    <!-- Main dashboard table -->
+    <table id="main-table" border="0" cellpadding="0" cellspacing="0">
+      <tbody>
+        <!-- Spacer row -->
+        <tr id="top-spacer"></tr>
+
+        <!-- Table header -->
+        <tr id="header-row">
+
+          <td id="header-cell">
+
+            <!-- Toggle stats buttons -->
+            <div id="buttons">
+              <button id="hour" class="selected">past hour</button> | <button id="day">past day</button> | <button id="week">past week</button> | <button id="all">all time</button>
+            </div>
+
+          </td>
+
+          <!-- Colorful divider tables -->
+          <td id="header-bottom-spacer">
+
+            <table width="100%" cellspacing="0" cellpadding="1">
+              <tbody>
+                <tr>
+                  <td id="divider-one"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="100%" cellspacing="0" cellpadding="1">
+              <tbody>
+                <tr>
+                  <td id="divider-two"></td>
+                </tr>
+              </tbody>
+            </table>
+
+            <table width="100%" cellspacing="0" cellpadding="1">
+              <tbody>
+                <tr>
+                  <td id="divider-three"></td>
+                </tr>
+              </tbody>
+            </table>
+          </td>
+        </tr>
+
+        <!-- Extra margin for top of table -->
+        <tr id="table-top-margin"></tr>
+
+        <!-- Stats container row -->
+        <tr id="inner-table-row">
+          <td>
+            <table id="inner-table" border="0" cellpadding="0" cellspacing="0">
+              <tbody>
+                <tr class="stat-row">
+
+                  <!-- Pie chart of post types breakdown -->
+                  <td class="stat-cell">
+                    <div id="post-types-pie" class="chart-container"></div>
+                  </td>
+
+                  <!-- Bar chart of posts with highest comment counts -->
+                  <td class="stat-cell">
+                    <div id="comment-count-bar" class="chart-container"></div>
+                  </td>
+
+                  <!-- Bubble chart of users with highest comment counts -->
+                  <td class="stat-cell">
+                    <div id="user-comment-bubble" class="chart-container"></div>
+                  </td>
+
+                  <!-- Word cloud of highest frequency words in comments -->
+                  <td class="stat-cell">
+                    <div id="comment-word-cloud" class="chart-container"></div>
+                  </td>
+
+                </tr>
+
+                <!-- Extra space at bottom of table before divider -->
+                <tr id="bottom-spacer"></tr>
+
+              </tbody>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td>
+
+            <!-- Colorful bottom table divider -->
+            <table width="100%" cellspacing="0" cellpadding="1">
+              <tbody>
+                <tr>
+                  <td id="divider-four"></td>
+                </tr>
+              </tbody>
+            </table>
+
+          </td>
+        </tr>
+
+      </tbody>
+    </table>
+
+    <!-- Fetch polyfill script -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+
+    <!-- Main and common JS scripts -->
+    <script src="../common.js"></script>
+    <script src="main.js"></script>
+
+  </body>
+</html>

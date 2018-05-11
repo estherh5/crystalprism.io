@@ -205,7 +205,7 @@ function loadDrawings() {
 
                 // Create eye icon to display with drawing views
                 var viewsIcon = document.createElement('i');
-                viewsIcon.classList.add('fas');
+                viewsIcon.classList.add('far');
                 viewsIcon.classList.add('fa-eye');
 
                 // Create text to display number of views

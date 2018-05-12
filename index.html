@@ -90,7 +90,7 @@
           </div>
           <!-- User accounts description -->
           <text>
-            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for their profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings).
+            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for their profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings). User data is stored in a PostgreSQL RDBMS and accessed via <a href="https://github.com/estherh5/api.crystalprism.io">RESTful API endpoints</a>.
           </text>
         </div>
 
@@ -302,7 +302,7 @@
           </div>
           <!-- CanvaShare description -->
           <text>
-            <a href="canvashare/">CanvaShare</a> is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use <a href="http://snapsvg.io" rel="noopener noreferrer" target="_blank">Snap.svg</a> for canvas and object manipulation, as well as <a href="http://www.createjs.com/easeljs" rel="noopener noreferrer" target="_blank">EaselJS</a> for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
+            <a href="canvashare/">CanvaShare</a> is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use <a href="http://snapsvg.io" rel="noopener noreferrer" target="_blank">Snap.svg</a> for canvas and object manipulation, as well as <a href="http://www.createjs.com/easeljs" rel="noopener noreferrer" target="_blank">EaselJS</a> for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. A server-side image perception algorithm assesses the drawing's uniqueness before storing it on an Amazon S3 bucket and posting it to the main gallery page to ensure each user is generating unique content as they iterate on others' drawings. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
           </text>
         </div>
 
@@ -684,7 +684,7 @@
         <div id="about-page" class="page hidden fade">
           <!-- About me overview -->
           <div id="about-me">
-            Self-taught web developer specializing in front-end design and back-end server management. Strives for clear, efficient code and making innovative designs a reality. Strong background in software implementation, project management and customer relations.
+            Self-taught web developer specializing in front-end design and back-end server and database management. Strives for clear, efficient code and making innovative, human-centered designs a reality. Strong background in software implementation, project management and customer relations.
           </div>
           <table>
             <!-- Contact & Profiles section -->
@@ -807,6 +807,10 @@
                       <text class="text-small">Photoshop</text>
                     </div>
                     <div class="skill">
+                      <i class="small-icon devicon-illustrator-plain"></i>
+                      <text class="text-small">Illustrator</text>
+                    </div>
+                    <div class="skill">
                       <i class="small-icon devicon-windows8-original"></i>
                       <text class="text-small">Microsoft Office</text>
                     </div>
@@ -844,6 +848,8 @@
                   <div class="subsection-description">Freelance web developer for local businesses and personal projects</div>
                   <text class="bullet">Create open-source <a id="projects-page-link" class="within-info-link" data-page="projects-page">projects</a> to explore interactive designs with secure API integration</text>
                   <text class="bullet">Designed and implemented <a class="within-info-link" href="https://nobugsphilly.com" rel="noopener noreferrer" target="_blank">website</a> for NoBugs! pest control supply business, including logo creation, SSL/TLS setup, and digital marketing</text>
+                  <text class="bullet">Implemented JWT authentication flow for user security that includes generating and verifying secure user tokens</text>
+                  <text class="bullet">Set up file locking operations with fcntl.flock to handle race conditions for accessing user data, later replacing the file-based system with a RDBMS to optimize data storage and queries</text>
                 </div>
                 <br>
                 <!-- Epic position -->
@@ -1001,6 +1007,10 @@
               </td>
               <td class="section-content">
                 <div class="interest">
+                  <i class="small-icon fas fa-chart-bar" aria-hidden="true"></i>
+                  <text class="text-small">Data Analytics</text>
+                </div>
+                <div class="interest">
                   <i class="small-icon fas fa-users" aria-hidden="true"></i>
                   <text class="text-small">Behavioral science</text>
                 </div>
@@ -1011,6 +1021,10 @@
                 <div class="interest">
                   <i class="small-icon far fa-gem" aria-hidden="true"></i>
                   <text class="text-small">Design</text>
+                </div>
+                <div class="interest">
+                  <i class="small-icon fas fa-medkit" aria-hidden="true"></i>
+                  <text class="text-small">Global Health</text>
                 </div>
                 <div class="interest">
                   <i class="small-icon ionicons ion-earth" aria-hidden="true"></i>

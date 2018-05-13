@@ -108,10 +108,8 @@ function loadDrawing() {
 
 // Set up drawing space with passed drawing source and title
 function assembleEasel(drawingSrc, title) {
-  /* Create new image as initial starting drawing and set CORS requests as
-  anonymous (no credentials required to display image) */
+  // Create new image as initial drawing
   initialDrawing = new Image();
-  initialDrawing.crossOrigin = 'Anonymous';
 
   // Set initial drawing title to passed title
   drawingTitle.value = title;

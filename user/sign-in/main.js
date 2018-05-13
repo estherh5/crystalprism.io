@@ -168,8 +168,8 @@ function requestLogin() {
         payload (username) to localStorage */
         response.text().then(function(token) {
           localStorage.removeItem('username');
-          localStorage.setItem('username', decodeURIComponent(atob(token
-            .split('.')[1]))['username']);
+          var payload = JSON.parse(atob(token.split('.')[1]));
+          localStorage.setItem('username', payload['username']);
           localStorage.removeItem('token');
           localStorage.setItem('token', token);
 

@@ -1040,7 +1040,7 @@ h1 {
   -webkit-user-select: text;
 }
 
-.contact > a > .text-small, .contact > .text-small, .education > a > .subsection-location {
+.contact-link > .text-small, .education > a > .subsection-location {
   margin-left: 0px;
   color: #7fd13b;
   font-weight: bold;
@@ -1048,8 +1048,12 @@ h1 {
   cursor: pointer;
 }
 
-.contact > a:hover > .text-small, .education > a:hover > .subsection-location {
+.contact-link:hover > .text-small, .education > a:hover > .subsection-location {
   color: #808080;
+}
+
+.contact-link {
+  display: inline-block;
 }
 
 .skill-group {

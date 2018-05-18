@@ -797,8 +797,8 @@ function displayDrawings(type, drawings) {
 
     // Go to easel page for drawing if user clicks drawing
     drawing.onclick = function() {
-      window.location = '../../canvashare/easel/?drawing=' + drawing
-        .dataset.drawing;
+      window.location = '../../canvashare/easel/?drawing=' + this.dataset
+        .drawing;
       return;
     }
 

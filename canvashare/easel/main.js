@@ -156,7 +156,7 @@ function assembleEasel(drawingSrc, title) {
   drawingTitle.value = title;
 
   // Set drawing source to passed drawing source
-  initialDrawing.src = drawingSrc;
+  initialDrawing.src = drawingSrc + '?=' + new Date().getTime();
 
   // Add initial drawing to HTML canvas
   canvasContext = document.getElementById('canvas').getContext('2d');

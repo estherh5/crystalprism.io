@@ -736,7 +736,7 @@ function loadPhotos() {
 
                 /* Remove locally stored photos if this is the initial request
                 to replace with latest photos from server */
-                if (requestStart == 0) {
+                if (photoRequestStart == 0) {
                   localStorage.removeItem('homepage-photos');
                   var localPhotos = [];
                 }
@@ -900,7 +900,7 @@ function loadPosts() {
 
                 /* Remove locally stored posts if this is the initial request
                 to replace with latest posts from server */
-                if (requestStart == 0) {
+                if (postRequestStart == 0) {
                   localStorage.removeItem('homepage-ideas');
                   var localPosts = [];
                 }

@@ -277,7 +277,7 @@ function loadDrawings() {
 
               /* Remove locally stored drawings if this is the initial request
               to replace with latest drawings from server */
-              if (requestStart == 0) {
+              if (drawingStart == 0) {
                 localStorage.removeItem(username + '-profile-drawings');
                 var localDrawings = [];
               }
@@ -289,7 +289,7 @@ function loadDrawings() {
               }
 
               /* Add each drawing to locally stored drawings list based on
-              requestStart and requestEnd values */
+              drawingStart and drawingEnd values */
               for (var i = 0; i < drawings.length; i++) {
                 localDrawings[drawingStart + i] = drawings[i];
               }
@@ -645,7 +645,7 @@ function loadPosts() {
 
               /* Remove locally stored posts if this is the initial request
               to replace with latest posts from server */
-              if (requestStart == 0) {
+              if (postStart == 0) {
                 localStorage.removeItem(username + '-profile-posts');
                 var localPosts = [];
               }
@@ -657,7 +657,7 @@ function loadPosts() {
               }
 
               /* Add each post to locally stored posts list based on
-              requestStart and requestEnd values */
+              postStart and postEnd values */
               for (var i = 0; i < posts.length; i++) {
                 localPosts[postStart + i] = posts[i];
               }
@@ -845,7 +845,7 @@ function loadComments() {
 
                 /* Remove locally stored comments if this is the initial request
                 to replace with latest comments from server */
-                if (requestStart == 0) {
+                if (commentStart == 0) {
                   localStorage.removeItem(username + '-profile-comments');
                   var localComments = [];
                 }
@@ -857,7 +857,7 @@ function loadComments() {
                 }
 
                 /* Add each comment to locally stored comments list based on
-                requestStart and requestEnd values */
+                commentStart and commentEnd values */
                 for (var i = 0; i < comments.length; i++) {
                   localComments[commentStart + i] = comments[i];
                 }

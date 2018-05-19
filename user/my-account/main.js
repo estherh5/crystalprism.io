@@ -349,7 +349,7 @@ function loadScores(game) {
 
             /* Remove locally stored scores if this is the initial request
             to replace with latest scores from server */
-            if (requestStart == 0) {
+            if (scoreStart == 0) {
               localStorage.removeItem('my-account-' + game + '-scores');
               var localScores = [];
             }
@@ -638,7 +638,7 @@ function loadDrawings(type) {
 
               /* Remove locally stored drawings if this is the initial request
               to replace with latest drawings from server */
-              if (requestStart == 0) {
+              if (drawingRequestStart == 0) {
                 localStorage.removeItem('my-account-' + type);
                 var localDrawings = [];
               }
@@ -1138,7 +1138,7 @@ function loadPosts() {
 
               /* Remove locally stored posts if this is the initial request
               to replace with latest posts from server */
-              if (requestStart == 0) {
+              if (postRequestStart == 0) {
                 localStorage.removeItem('my-account-posts');
                 var localPosts = [];
               }
@@ -1416,7 +1416,7 @@ function loadComments() {
 
               /* Remove locally stored comments if this is the initial request
               to replace with latest comments from server */
-              if (requestStart == 0) {
+              if (commentRequestStart == 0) {
                 localStorage.removeItem('my-account-comments');
                 var localComments = [];
               }

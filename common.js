@@ -74,16 +74,10 @@ function createPageFooter() {
   var copyright = document.createElement('div');
   copyright.innerHTML = '&copy; 2018 Crystal Prism';
 
-  // Create contact information display
-  var contact = document.createElement('div');
-  contact.innerHTML = 'Email <a href="mailto:admin@crystalprism.io">' +
-    'admin@crystalprism.io</a> with any questions or concerns.';
-
-  // Create footer to contain copyright and contact information
+  // Create footer to contain copyright information
   var footer = document.createElement('div');
   footer.id = 'footer';
   footer.appendChild(copyright);
-  footer.appendChild(contact);
 
   // Insert footer at end of body element
   document.body.insertAdjacentElement('beforeend', footer);

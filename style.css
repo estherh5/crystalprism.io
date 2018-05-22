@@ -1425,7 +1425,7 @@ h1 {
     margin-bottom: 25px;
   }
 
-  #nav-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, #theme-container, #account-menu {
+  #nav-buttons, .expand-all, .fa-chevron-right, .fa-chevron-down, #theme-container, #banner, #account-menu, #footer {
     display: none !important;
   }
 

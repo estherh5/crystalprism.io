@@ -758,10 +758,11 @@ function loadPhotos() {
                   .stringify(localPhotos));
               }
 
-              // Display message if no photos are sent from server
+              /* Display message if no photos are sent from server on initial
+              load */
               else {
-                if (!photosError || photosError.parentNode != document
-                  .getElementById('photos-page')) {
+                if (photoRequestStart == 0 && (!photosError || photosError
+                  .parentNode != document.getElementById('photos-page'))) {
                     photosError = document.createElement('text');
                     photosError.id = 'photos-error';
                     photosError.innerHTML = 'There are no photos right now. ' +
@@ -922,15 +923,17 @@ function loadPosts() {
                   .stringify(localPosts));
               }
 
-              // Display message if no posts are sent from server
+              /* Display message if no posts are sent from server on initial
+              load */
               else {
-                if (!postsError || postsError.parentNode != document
-                  .getElementById('ideas-page')) {
+                if (postRequestStart == 0 && (!postsError || postsError
+                  .parentNode != document.getElementById('ideas-page'))) {
                     postsError = document.createElement('text');
                     postsError.id = 'posts-error';
                     postsError.innerHTML = 'There are no posts right now. ' +
                       'Please check later.';
-                    document.getElementById('ideas-page').appendChild(postsError);
+                    document.getElementById('ideas-page')
+                      .appendChild(postsError);
                     return;
                   }
               }

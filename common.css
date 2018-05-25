@@ -20,11 +20,10 @@
   -ms-flex-direction: column;
   flex-direction: column;
   font-family: 'Rajdhani', sans-serif;
-  z-index: 1;
+  z-index: 3;
 }
 
 #banner {
-  margin-bottom: 10px;
   background-color: #ffd105;
   font-size: 12px;
   font-style: italic;
@@ -49,9 +48,9 @@
   justify-content: space-between;
 }
 
-#homepage-link {
+#site-menu-icon-container {
   width: 50px;
-  margin-top: 5px;
+  margin-top: 7px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -68,10 +67,10 @@
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  color: #000000;
+  cursor: pointer;
 }
 
-#homepage-icon {
+#site-menu-icon {
   height: 30px;
   left: 0px;
   opacity: 0.7;
@@ -79,9 +78,74 @@
   z-index: 10;
 }
 
-#homepage-link:hover #homepage-icon {
+#site-menu-icon-container:hover #site-menu-icon {
   opacity: 1;
   filter: grayscale(0);
+}
+
+#site-menu {
+  position: fixed;
+  width: 130px;
+  padding-bottom: 6px;
+  padding-left: 6px;
+  box-shadow: 1px 1px 1px #989898;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  background-color: #ffffff;
+  opacity: 0;
+  transition: all 0.5s;
+  z-index: 3;
+}
+
+#site-menu.closed {
+  opacity: 0 !important;
+  visibility: hidden;
+  transition: all 0.5s;
+}
+
+#site-menu.opened {
+  opacity: 1 !important;
+  transition: all 0.5s;
+}
+
+#site-menu-spacer-row {
+  height: 44px;
+}
+
+.site-menu-row {
+  height: 19px;
+  opacity: 0.5;
+  cursor: pointer;
+}
+
+.site-menu-row:hover {
+  opacity: 1;
+}
+
+.site-menu-image-cell {
+  width: 18px;
+}
+
+.site-menu-image {
+  height: 12px;
+  filter: grayscale(1);
+}
+
+.site-menu-row:hover .site-menu-image {
+  filter: grayscale(0);
+}
+
+.site-menu-text {
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 12px;
+  color: #000000 !important;
 }
 
 #account-menu {
@@ -120,7 +184,23 @@
 }
 
 @media only screen and (min-width: 768px) {
-  #account-menu {
+  #site-menu {
+    width: 150px;
+  }
+
+  .site-menu-text, #account-menu {
     font-size: 14px;
+  }
+
+  .site-menu-row {
+    height: 23px;
+  }
+
+  .site-menu-image-cell {
+    width: 22px;
+  }
+
+  .site-menu-image {
+    height: 15px;
   }
 }

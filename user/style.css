@@ -54,16 +54,11 @@ a:focus {
   flex: 1;
 }
 
-#profile-info {
-  position: fixed;
-  margin-top: 23px;
-  transition: all 0.3s;
-  z-index: 2;
-}
-
 #profile-icon-row {
   min-height: fit-content;
-  z-index: 2;
+  width: fit-content;
+  margin-top: 23px;
+  z-index: 4;
 }
 
 #profile-icon {
@@ -81,6 +76,13 @@ a:focus {
   height: 40px;
   margin-top: 5px;
   fill: #ffffff;
+}
+
+#profile-info {
+  position: fixed;
+  margin-top: 97px;
+  transition: all 0.3s;
+  z-index: 2;
 }
 
 #user-link-row {
@@ -1261,7 +1263,7 @@ label.editing {
   }
 
   #profile-info {
-    margin-top: 14px;
+    margin-top: 118px;
   }
 
   #profile-title {

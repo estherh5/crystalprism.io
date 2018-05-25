@@ -127,7 +127,6 @@ function addNightView() {
   // Set sky icon to a sun shape for day view setting
   skyIcon.classList.remove('ion-ios-moon-outline');
   skyIcon.classList.add('ion-ios-sunny');
-  themeText.innerHTML = 'Day View';
   sessionStorage.setItem('theme', 'night');
 
   return;
@@ -141,7 +140,6 @@ function removeNightView() {
   // Set sky icon to a moon shape for night view setting
   skyIcon.classList.remove('ion-ios-sunny');
   skyIcon.classList.add('ion-ios-moon-outline');
-  themeText.innerHTML = 'Night View';
   sessionStorage.setItem('theme', 'day');
 
   return;

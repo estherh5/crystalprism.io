@@ -28,6 +28,7 @@ window.onload = function() {
   Account page), request post from server */
   if (sessionStorage.getItem('post-id')) {
     loadPost(sessionStorage.getItem('post-id'));
+
     /* Clear sessionStorage item to allow user to open another previous post
     (i.e., from cabinet) */
     sessionStorage.removeItem('post-id');
@@ -143,7 +144,7 @@ function loadPosts() {
       // Display cached posts if they are stored in localStorage
       if (localStorage.getItem('thought-writer-personal-posts')) {
         var posts = JSON.parse(localStorage
-          .getItem('thought-writer-personal-posts')));
+          .getItem('thought-writer-personal-posts'));
 
         /* Assess if there are more than requested posts - 1 (number of
         loaded posts) */

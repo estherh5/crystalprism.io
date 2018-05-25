@@ -28,80 +28,77 @@ function createPageHeader() {
   header.appendChild(headerContainer);
 
   // Create project navigation menu if current page is not homepage
-  if (currentPath != domain) {
-    // Create site menu icon
-    var iconContainer = document.createElement('div');
-    iconContainer.id = 'site-menu-icon-container';
+  var iconContainer = document.createElement('div');
+  iconContainer.id = 'site-menu-icon-container';
 
-    var menuIcon = document.createElement('img');
-    menuIcon.id = 'site-menu-icon';
-    menuIcon.title = 'Site menu';
-    menuIcon.src = root + '/images/site-menu-icon-shadow.svg';
+  var menuIcon = document.createElement('img');
+  menuIcon.id = 'site-menu-icon';
+  menuIcon.title = 'Site menu';
+  menuIcon.src = root + '/images/site-menu-icon-shadow.svg';
 
-    headerContainer.appendChild(iconContainer);
-    iconContainer.appendChild(menuIcon);
+  headerContainer.appendChild(iconContainer);
+  iconContainer.appendChild(menuIcon);
 
-    // Create site menu table
-    var siteMenu = document.createElement('table');
-    siteMenu.id = 'site-menu';
-    siteMenu.classList.add('closed');
+  // Create site menu table
+  var siteMenu = document.createElement('table');
+  siteMenu.id = 'site-menu';
+  siteMenu.classList.add('closed');
 
-    var siteMenuSpacer = document.createElement('tr');
-    siteMenuSpacer.id = 'site-menu-spacer-row';
+  var siteMenuSpacer = document.createElement('tr');
+  siteMenuSpacer.id = 'site-menu-spacer-row';
 
-    headerContainer.appendChild(siteMenu);
-    siteMenu.appendChild(siteMenuSpacer);
+  headerContainer.appendChild(siteMenu);
+  siteMenu.appendChild(siteMenuSpacer);
 
-    // Create menu rows with icons and links to each project
-    var projectFolders = ['', 'timespace/', 'shapes-in-rain/',
-      'rhythm-of-life/', 'canvashare/', 'thought-writer/', 'vicarious/',
-      'hn-stats/', ''];
+  // Create menu rows with icons and links to each project
+  var projectFolders = ['', 'timespace/', 'shapes-in-rain/',
+    'rhythm-of-life/', 'canvashare/', 'thought-writer/', 'vicarious/',
+    'hn-stats/', ''];
 
-    var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
-      'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
-      'Hacker News Stats', 'Account'];
+  var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
+    'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
+    'Hacker News Stats', 'Account'];
 
-    var projectLinks = ['', 'timespace/', 'shapes-in-rain/', 'rhythm-of-life/',
-      'canvashare/', 'thought-writer/', 'vicarious/', 'hn-stats/',
-      'user/sign-in'];
+  var projectLinks = ['', 'timespace/', 'shapes-in-rain/', 'rhythm-of-life/',
+    'canvashare/', 'thought-writer/', 'vicarious/', 'hn-stats/',
+    'user/sign-in'];
 
-    for (var i = 0; i < projectFolders.length; i++) {
-      var menuRow = document.createElement('tr');
-      menuRow.classList.add('site-menu-row');
-      menuRow.dataset.project = projectLinks[i];
+  for (var i = 0; i < projectFolders.length; i++) {
+    var menuRow = document.createElement('tr');
+    menuRow.classList.add('site-menu-row');
+    menuRow.dataset.project = projectLinks[i];
 
-      menuRow.addEventListener('click', function() {
-        window.location = root + '/' + this.dataset.project;
-        return;
-      }, false);
+    menuRow.addEventListener('click', function() {
+      window.location = root + '/' + this.dataset.project;
+      return;
+    }, false);
 
-      var menuImageCell = document.createElement('td');
-      menuImageCell.classList.add('site-menu-image-cell');
+    var menuImageCell = document.createElement('td');
+    menuImageCell.classList.add('site-menu-image-cell');
 
-      var menuImage = document.createElement('img');
-      menuImage.classList.add('site-menu-image');
-      menuImage.src = root + '/' + projectFolders[i] + 'favicon.ico';
+    var menuImage = document.createElement('img');
+    menuImage.classList.add('site-menu-image');
+    menuImage.src = root + '/' + projectFolders[i] + 'favicon.ico';
 
-      var menuTextCell = document.createElement('td');
-      menuTextCell.classList.add('site-menu-text-cell');
+    var menuTextCell = document.createElement('td');
+    menuTextCell.classList.add('site-menu-text-cell');
 
-      var menuText = document.createElement('div');
-      menuText.classList.add('site-menu-text');
-      menuText.innerHTML = projectTitles[i];
+    var menuText = document.createElement('div');
+    menuText.classList.add('site-menu-text');
+    menuText.innerHTML = projectTitles[i];
 
-      menuRow.appendChild(menuImageCell);
-      menuImageCell.appendChild(menuImage);
-      menuRow.appendChild(menuTextCell);
-      menuTextCell.appendChild(menuText);
-      siteMenu.appendChild(menuRow);
-    }
-
-    // Toggle site menu when user clicks menu icon
-    menuIcon.onmousedown = toggleSiteMenu;
+    menuRow.appendChild(menuImageCell);
+    menuImageCell.appendChild(menuImage);
+    menuRow.appendChild(menuTextCell);
+    menuTextCell.appendChild(menuText);
+    siteMenu.appendChild(menuRow);
   }
 
-  // Otherwise, add theme container to header on homepage
-  else {
+  // Toggle site menu when user clicks menu icon
+  menuIcon.onmousedown = toggleSiteMenu;
+
+  // Add theme container to header on homepage
+  if (currentPath == domain) {
     headerContainer.appendChild(document.getElementById('theme-container'));
   }
 
@@ -193,8 +190,10 @@ function pingServer(action) {
         bannerText.appendChild(retry);
 
         // Add audio container margin to allow space for banner
-        if (document.body.contains(document.getElementById('audio-container'))) {
-          document.getElementById('audio-container').style.marginTop = '20px';
+        if (document.body.contains(document
+          .getElementById('audio-container'))) {
+            document.getElementById('audio-container').style
+              .marginTop = '20px';
         }
 
         // Add Vicarious title link margin to allow space for banner
@@ -386,6 +385,11 @@ function toggleSiteMenu() {
     document.getElementById('site-menu-icon')
       .src = root + '/images/site-menu-icon-shadow.svg';
 
+    // Set theme container color back to initial on homepage so it is visible
+    if (currentPath == domain) {
+      document.getElementById('theme-container').style.color = 'inherit';
+    }
+
     siteMenuOpen = false;
 
     return;
@@ -398,6 +402,11 @@ function toggleSiteMenu() {
   // Set menu icon to non-shadow version
   document.getElementById('site-menu-icon')
     .src = root + '/images/site-menu-icon.svg';
+
+  // Set theme container color to black on homepage so it is visible
+  if (currentPath == domain) {
+    document.getElementById('theme-container').style.color = '#000000';
+  }
 
   siteMenuOpen = true;
 

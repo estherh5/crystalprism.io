@@ -42,6 +42,10 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
+  // Add page title to header row for visibility
+  document.getElementById('header').appendChild(
+    document.getElementById('title-container'));
+
   // Check if user is logged in (from common.js script)
   checkIfLoggedIn();
 

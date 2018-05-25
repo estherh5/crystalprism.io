@@ -468,11 +468,10 @@ video {
 }
 
 #theme-container {
-  height: 50px;
-  width: 70px;
-  top: 0px;
-  left: 0px;
-  margin-top: 5px;
+  position: absolute;
+  height: 37px;
+  left: 53px;
+  margin-top: 4px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -494,36 +493,17 @@ video {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
+  opacity: 0.3;
   cursor: pointer;
   z-index: 10;
 }
 
 #theme-container:hover {
-  color: #808080 !important;
+  opacity: 1;
 }
 
 #sky-icon {
-  height: 20px;
-  margin: auto;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  font-size: 27px;
-  opacity: 0.7;
-}
-
-#theme-text {
-  width: 100%;
-  padding: 0px;
-  margin: auto;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  z-index: 10;
+  font-size: 36px;
 }
 
 #front-page-link {
@@ -1186,19 +1166,6 @@ h1 {
   .text-small {
     margin-right: 15px;
     font-size: 15px;
-  }
-
-  #theme-container {
-    width: 75px;
-  }
-
-  #sky-icon {
-    height: 30px;
-    font-size: 32px;
-  }
-
-  #theme-text {
-    font-size: 14px;
   }
 
   #front-page-link {

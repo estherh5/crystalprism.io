@@ -47,7 +47,7 @@ a:focus, button:focus {
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
   align-self: center;
-  z-index: 2;
+  z-index: 4;
 }
 
 #audio-icon {

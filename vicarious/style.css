@@ -118,7 +118,7 @@ button:disabled, button:hover:disabled {
   width: fit-content;
   align-self: center;
   cursor: pointer;
-  z-index: 1;
+  z-index: 4;
 }
 
 #title-link:hover {

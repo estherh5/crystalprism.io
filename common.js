@@ -8,6 +8,7 @@ var root = window.location.origin;
 var repinged = false // If Retry button was clicked for pingServer function
 var scrolled = false // Stores if user scrolled down page with infinite scroll
 var mobile = false; // Used to determine if user is on mobile device or desktop
+var siteMenuOpen = false; // Stores if site menu is open or closed
 
 
 // Determine API endpoint based on window location
@@ -18,7 +19,7 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 
-// Create header to contain homepage link and account menu
+// Create header with navigation and account menus
 function createPageHeader() {
   var header = document.createElement('div');
   header.id = 'header';
@@ -26,17 +27,77 @@ function createPageHeader() {
   headerContainer.id = 'header-container';
   header.appendChild(headerContainer);
 
-  /* Create link to homepage that has diamond icon if current page is not
-  homepage */
+  // Create project navigation menu if current page is not homepage
   if (currentPath != domain) {
-    var homepageLink = document.createElement('a');
-    homepageLink.href = root;
-    homepageLink.id = 'homepage-link';
-    var homepageIcon = document.createElement('img');
-    homepageIcon.id = 'homepage-icon';
-    homepageIcon.src = root + '/images/homepage.png';
-    headerContainer.appendChild(homepageLink);
-    homepageLink.appendChild(homepageIcon);
+    // Create site menu icon
+    var iconContainer = document.createElement('div');
+    iconContainer.id = 'site-menu-icon-container';
+
+    var menuIcon = document.createElement('img');
+    menuIcon.id = 'site-menu-icon';
+    menuIcon.title = 'Site menu';
+    menuIcon.src = root + '/images/site-menu-icon-shadow.svg';
+
+    headerContainer.appendChild(iconContainer);
+    iconContainer.appendChild(menuIcon);
+
+    // Create site menu table
+    var siteMenu = document.createElement('table');
+    siteMenu.id = 'site-menu';
+    siteMenu.classList.add('closed');
+
+    var siteMenuSpacer = document.createElement('tr');
+    siteMenuSpacer.id = 'site-menu-spacer-row';
+
+    headerContainer.appendChild(siteMenu);
+    siteMenu.appendChild(siteMenuSpacer);
+
+    // Create menu rows with icons and links to each project
+    var projectFolders = ['', 'timespace/', 'shapes-in-rain/',
+      'rhythm-of-life/', 'canvashare/', 'thought-writer/', 'vicarious/',
+      'hn-stats/', ''];
+
+    var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
+      'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
+      'Hacker News Stats', 'Account'];
+
+    var projectLinks = ['', 'timespace/', 'shapes-in-rain/', 'rhythm-of-life/',
+      'canvashare/', 'thought-writer/', 'vicarious/', 'hn-stats/',
+      'user/sign-in'];
+
+    for (var i = 0; i < projectFolders.length; i++) {
+      var menuRow = document.createElement('tr');
+      menuRow.classList.add('site-menu-row');
+      menuRow.dataset.project = projectLinks[i];
+
+      menuRow.addEventListener('click', function() {
+        window.location = root + '/' + this.dataset.project;
+        return;
+      }, false);
+
+      var menuImageCell = document.createElement('td');
+      menuImageCell.classList.add('site-menu-image-cell');
+
+      var menuImage = document.createElement('img');
+      menuImage.classList.add('site-menu-image');
+      menuImage.src = root + '/' + projectFolders[i] + 'favicon.ico';
+
+      var menuTextCell = document.createElement('td');
+      menuTextCell.classList.add('site-menu-text-cell');
+
+      var menuText = document.createElement('div');
+      menuText.classList.add('site-menu-text');
+      menuText.innerHTML = projectTitles[i];
+
+      menuRow.appendChild(menuImageCell);
+      menuImageCell.appendChild(menuImage);
+      menuRow.appendChild(menuTextCell);
+      menuTextCell.appendChild(menuText);
+      siteMenu.appendChild(menuRow);
+    }
+
+    // Toggle site menu when user clicks menu icon
+    menuIcon.onmousedown = toggleSiteMenu;
   }
 
   // Otherwise, add theme container to header on homepage
@@ -116,8 +177,8 @@ function pingServer(action) {
         banner.id = 'banner';
         var bannerText = document.createElement('div');
         bannerText.id = 'banner-text';
-        bannerText.innerHTML = 'The server could not be reached. Some content ' +
-          'may be unavailable. ';
+        bannerText.innerHTML = 'The server could not be reached. Some ' +
+          'content may be unavailable. ';
         banner.appendChild(bannerText);
 
         // Display Retry button to allow user to re-ping the server
@@ -310,3 +371,47 @@ function assessMobile() {
 
   return;
 }
+
+
+// Open/close site menu
+function toggleSiteMenu() {
+  var siteMenu = document.getElementById('site-menu');
+
+  // Close menu if it is open
+  if (siteMenuOpen) {
+    siteMenu.classList.remove('opened');
+    siteMenu.classList.add('closed');
+
+    // Set menu icon back to shadow version
+    document.getElementById('site-menu-icon')
+      .src = root + '/images/site-menu-icon-shadow.svg';
+
+    siteMenuOpen = false;
+
+    return;
+  }
+
+  // Otherwise, open menu
+  siteMenu.classList.remove('closed');
+  siteMenu.classList.add('opened');
+
+  // Set menu icon to non-shadow version
+  document.getElementById('site-menu-icon')
+    .src = root + '/images/site-menu-icon.svg';
+
+  siteMenuOpen = true;
+
+  return;
+}
+
+
+// Close site menu when user clicks outside of it
+window.addEventListener('click', function(e) {
+  if (siteMenuOpen && e.target != document.getElementById('site-menu-icon') &&
+    !document.getElementById('site-menu').contains(e.target)) {
+      toggleSiteMenu();
+    }
+
+  return;
+
+}, false);

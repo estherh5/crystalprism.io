@@ -341,7 +341,7 @@ a:focus, button:focus {
   bottom: -150px !important;
 }
 
-.visible {
+#menu.visible {
   opacity: 1 !important;
   transform: translateY(-65px) !important;
   transition: all 0.7s;

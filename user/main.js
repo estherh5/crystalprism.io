@@ -224,7 +224,7 @@ function loadDrawings() {
       // Display cached drawings if they are stored in localStorage
       if (localStorage.getItem(username + '-profile-drawings')) {
         var drawings = JSON.parse(localStorage
-          .getItem(username + '-profile-drawings')));
+          .getItem(username + '-profile-drawings'));
 
         /* Assess if there are more than requested drawings - 1 (number
         of loaded drawings) */
@@ -793,7 +793,7 @@ function loadComments() {
         // Display cached comments if they are stored in localStorage
         if (localStorage.getItem(username + '-profile-comments')) {
           var comments = JSON.parse(localStorage
-            .getItem(username + '-profile-comments')));
+            .getItem(username + '-profile-comments'));
 
           /* Assess if there are more than requested comments - 1 (number
           of displayed comments) */

@@ -66,7 +66,7 @@ function storeImages() {
 
       // Use cached images if they are stored in localStorage
       if (localStorage.getItem('vicarious-images')) {
-        allImages = JSON.parse(localStorage.getItem('vicarious-images')));
+        allImages = JSON.parse(localStorage.getItem('vicarious-images'));
       }
 
       return;

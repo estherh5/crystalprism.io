@@ -89,13 +89,13 @@ function loadPost() {
         if (response.ok) {
           response.json().then(function(post) {
             displayPost(post);
+
+            // Store post in localStorage for offline loading
+            localStorage.setItem('thought-writer-post-' + postId, JSON
+              .stringify(post));
+
+            return;
           });
-
-          // Store post in localStorage for offline loading
-          localStorage.setItem('thought-writer-post-' + postId, JSON
-            .stringify(post));
-
-          return;
         }
 
         // Display error message if server responds with error

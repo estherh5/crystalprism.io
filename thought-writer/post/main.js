@@ -319,7 +319,7 @@ function loadComments(postId) {
               /* Add each comment to locally stored comments list based on
               requestStart and requestEnd values */
               for (var i = 0; i < comments.length; i++) {
-                localComments[requestStart + i] = drawings[i];
+                localComments[requestStart + i] = comments[i];
               }
 
               // Store comments in localStorage for offline loading

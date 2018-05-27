@@ -151,6 +151,12 @@ a:focus {
   text-align: center;
 }
 
+#gallery-row .content-display, #post-list-row .content-display, #comment-list-row .content-display {
+  height: 100%;
+  max-height: 55vh;
+  overflow: scroll;
+}
+
 .drawing-container {
   position: relative;
   display: -webkit-box;
@@ -1128,6 +1134,10 @@ label.editing {
 @media only screen and (min-width: 576px) {
   .content-display {
     max-width: 500px;
+  }
+
+  #gallery-row .content-display, #post-list-row .content-display, #comment-list-row .content-display {
+    overflow: unset;
   }
 
   button {

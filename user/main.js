@@ -273,7 +273,7 @@ function loadDrawings() {
                 var loadNumber = drawings.length;
               }
 
-              displayDrawings(drawings.slice(drawingStart, loadNumber));
+              displayDrawings(drawings.slice(0, loadNumber));
 
               /* Remove locally stored drawings if this is the initial request
               to replace with latest drawings from server */

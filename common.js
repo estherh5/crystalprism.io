@@ -51,25 +51,29 @@ function createPageHeader() {
   siteMenu.appendChild(siteMenuSpacer);
 
   // Create menu rows with icons and links to each project
-  var projectFolders = ['', 'timespace/', 'shapes-in-rain/',
-    'rhythm-of-life/', 'canvashare/', 'thought-writer/', 'vicarious/',
-    'hn-stats/', ''];
+  var projectFolders = [root + '/', root + '/timespace/',
+    root + '/shapes-in-rain/', root + '/rhythm-of-life/',
+    root + '/canvashare/', root + '/thought-writer/',
+    root + '/vicarious/', 'https://hn-stats.crystalprism.io/images/',
+    root + '/'];
 
   var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Account'];
 
-  var projectLinks = ['', 'timespace/', 'shapes-in-rain/', 'rhythm-of-life/',
-    'canvashare/', 'thought-writer/', 'vicarious/', 'hn-stats/',
-    'user/sign-in'];
+  var projectLinks = [root + '/', root + '/timespace/',
+    root + '/shapes-in-rain/', root + '/rhythm-of-life/',
+    root + '/canvashare/', root + '/thought-writer/',
+    root + '/vicarious/', 'https://hn-stats.crystalprism.io/',
+    root + '/user/sign-in/'];
 
   for (var i = 0; i < projectFolders.length; i++) {
     var menuRow = document.createElement('tr');
     menuRow.classList.add('site-menu-row');
-    menuRow.dataset.project = projectLinks[i];
+    menuRow.dataset.link = projectLinks[i];
 
     menuRow.addEventListener('click', function() {
-      window.location = root + '/' + this.dataset.project;
+      window.location = this.dataset.link;
       return;
     }, false);
 
@@ -78,7 +82,7 @@ function createPageHeader() {
 
     var menuImage = document.createElement('img');
     menuImage.classList.add('site-menu-image');
-    menuImage.src = root + '/' + projectFolders[i] + 'favicon.ico';
+    menuImage.src = projectFolders[i] + 'favicon.ico';
 
     var menuTextCell = document.createElement('td');
     menuTextCell.classList.add('site-menu-text-cell');

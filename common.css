@@ -120,13 +120,19 @@
 }
 
 .site-menu-row {
-  height: 19px;
+  height: 20px;
   opacity: 0.5;
   cursor: pointer;
 }
 
 .site-menu-row:hover {
   opacity: 1;
+}
+
+.site-menu-row td {
+  padding-top: 0px;
+  padding-bottom: 0px;
+  line-height: 1;
 }
 
 .site-menu-image-cell {

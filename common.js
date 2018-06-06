@@ -51,26 +51,30 @@ function createPageHeader() {
   siteMenu.appendChild(siteMenuSpacer);
 
   // Create menu rows with icons and links to each project
-  var projectFolders = [root + '/', root + '/timespace/',
-    root + '/shapes-in-rain/', root + '/rhythm-of-life/',
-    root + '/canvashare/', root + '/thought-writer/',
-    root + '/vicarious/', 'https://hn-stats.crystalprism.io/images/',
-    root + '/'];
+  var projectLinks = ['/', '/timespace/', '/shapes-in-rain/',
+    '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
+    'https://hn-stats.crystalprism.io/', '/'];
+
+  // Add domain root to each link unless it is already provided
+  projectLinks.map(function(folder) {
+    if (!folder.includes('https')) {
+      return root + '/' + folder;
+    }
+  });
 
   var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Account'];
 
-  var projectLinks = [root + '/', root + '/timespace/',
-    root + '/shapes-in-rain/', root + '/rhythm-of-life/',
-    root + '/canvashare/', root + '/thought-writer/',
-    root + '/vicarious/', 'https://hn-stats.crystalprism.io/',
-    root + '/user/sign-in/'];
-
-  for (var i = 0; i < projectFolders.length; i++) {
+  for (var i = 0; i < projectLinks.length; i++) {
     var menuRow = document.createElement('tr');
     menuRow.classList.add('site-menu-row');
-    menuRow.dataset.link = projectLinks[i];
+
+    if (i == projectLinks.length - 1) {
+      menuRow.dataset.link = projectLinks[i] + 'user/sign-in/';
+    } else {
+      menuRow.dataset.link = projectLinks[i];
+    }
 
     menuRow.addEventListener('click', function() {
       window.location = this.dataset.link;
@@ -82,7 +86,7 @@ function createPageHeader() {
 
     var menuImage = document.createElement('img');
     menuImage.classList.add('site-menu-image');
-    menuImage.src = projectFolders[i] + 'favicon.ico';
+    menuImage.src = projectLinks[i] + 'favicon.ico';
 
     var menuTextCell = document.createElement('td');
     menuTextCell.classList.add('site-menu-text-cell');

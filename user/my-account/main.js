@@ -28,7 +28,7 @@ var checkboxContainers = document.getElementsByTagName('label');
 var checkboxes = document.getElementsByClassName('public');
 var userDrawings = []; // Array of drawings created by user
 var likedDrawings = []; // Array of drawings liked by user
-var deleteButton = document.getElementById('delete');
+var accountButtons = document.getElementsByClassName('account-button');
 var editButton = document.getElementById('edit');
 var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('cancel');
@@ -203,7 +203,7 @@ function confirmCreation() {
 
 // Load user's personal information from server
 function loadPersonalInfo() {
-  return fetch(api + '/user', {
+  return fetch(api + '/user/' + localStorage.getItem('username'), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'GET',
   })
@@ -1836,12 +1836,23 @@ function togglePosts() {
 
 // Define Personal menu functions
 
+// Suspend account when user confirms suspension in modal
+document.getElementById('confirm-suspend-account-button')
+  .addEventListener('click', function() {
+    deleteAccount();
+    return;
+  }, false);
+
 // Delete account when user confirms deletion in modal
 document.getElementById('confirm-delete-account-button')
-  .onclick = deleteAccount;
+  .addEventListener('click', function() {
+    deleteAccount('data/');
+    return;
+  }, false);
 
-function deleteAccount() {
-  return fetch(api + '/user', {
+// Delete account, including user's data if specified ('/data')
+function deleteAccount(data) {
+  return fetch(api + '/user/' + data + localStorage.getItem('username'), {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'DELETE',
@@ -1927,18 +1938,24 @@ function updateFontColors() {
   var b = parseInt(rgb[3], 16);
 
   /* If user is editing information in Personal menu, only change color of
-  title elements for inputs and Delete Account button */
+  title elements for inputs and account buttons */
   if (editingPersonal) {
     if (r + g + b > 382) {
+      for (var i = 0; i < accountButtons.length; i++) {
+        accountButtons[i].classList.remove('light');
+        accountButtons[i].classList.add('dark');
+      }
+
       profileBackground.classList.remove('light');
-      deleteButton.classList.remove('light');
       profileBackground.classList.add('dark');
-      deleteButton.classList.add('dark');
     } else {
+      for (var i = 0; i < accountButtons.length; i++) {
+        accountButtons[i].classList.remove('dark');
+        accountButtons[i].classList.add('light');
+      }
+
       profileBackground.classList.remove('dark');
-      deleteButton.classList.remove('dark');
       profileBackground.classList.add('light');
-      deleteButton.classList.add('light');
     }
 
     return;
@@ -1946,15 +1963,18 @@ function updateFontColors() {
 
   // Otherwise, change color of all elements in Personal menu
   if (r + g + b > 382) {
+    for (var i = 0; i < accountButtons.length; i++) {
+      accountButtons[i].classList.remove('light');
+      accountButtons[i].classList.add('dark');
+    }
+
     profileBackground.classList.remove('light');
-    deleteButton.classList.remove('light');
     profileBackground.classList.add('dark');
-    deleteButton.classList.add('dark');
 
     for (var i = 0; i < document.getElementsByClassName('form-control')
       .length; i++) {
-      document.getElementsByClassName('form-control')[i].classList
-        .remove('light');
+        document.getElementsByClassName('form-control')[i].classList
+          .remove('light');
         document.getElementsByClassName('form-control')[i].classList
           .add('dark');
       }
@@ -1962,10 +1982,13 @@ function updateFontColors() {
   }
 
   else {
+    for (var i = 0; i < accountButtons.length; i++) {
+      accountButtons[i].classList.remove('dark');
+      accountButtons[i].classList.add('light');
+    }
+
     profileBackground.classList.remove('dark');
-    deleteButton.classList.remove('dark');
     profileBackground.classList.add('light');
-    deleteButton.classList.add('light');
 
     for (var i = 0; i < document.getElementsByClassName('form-control')
       .length; i++) {
@@ -2383,7 +2406,7 @@ function submitEdits() {
     'username': usernameInput.value
   });
 
-  return fetch(api + '/user', {
+  return fetch(api + '/user/' + localStorage.getItem('username'), {
     headers: {'Content-Type': 'application/json',
       'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',

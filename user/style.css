@@ -720,28 +720,41 @@ input:focus, button:focus {
   color: #ffffff;
 }
 
-#delete {
+#account-buttons {
   position: absolute;
   top: 0px;
   right: 0px;
-  background-color: rgba(0, 0, 0, 0);
-  font-size: 9px;
-  transform: none;
 }
 
-#delete:active {
+.account-button {
+  border: none !important;
+  box-shadow: none !important;
+  background-color: rgba(0, 0, 0, 0);
+  font-size: 9px;
+  text-align: right;
+  transform: none !important;
+  transition: none !important;
+}
+
+.account-button:active {
   box-shadow: none;
   background-color: rgba(0, 0, 0, 0);
 }
 
-#delete:hover {
+.account-button:hover {
+  background-color: rgba(0, 0, 0, 0);
+  color: #808080;
   transform: none;
+}
+
+.account-button:focus {
+  outline: none !important;
+  background-color: rgba(0, 0, 0, 0);
   color: #808080;
 }
 
-#delete:focus {
-  outline: none !important;
-  color: #808080;
+.account-button:hover.light, .account-button:focus.light {
+  color: #cacaca;
 }
 
 #profile-icon-container {
@@ -1183,7 +1196,7 @@ label.editing {
     max-width: 600px;
   }
 
-  #delete {
+  .account-button {
     font-size: 12px;
   }
 

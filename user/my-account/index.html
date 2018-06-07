@@ -48,6 +48,27 @@
       </div>
     </div>
 
+    <!-- Confirm account suspension modal -->
+    <div id="confirm-suspend-account" class="modal" data-keyboard="true" tabindex="-1">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h3 class="modal-title">Are you sure you want to suspend your account?</h3>
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            This action will inactivate your account so you can no longer log in. Your drawings, posts, comments, and scores will still be available to other users. You can reinstate your account in the future by contacting an admin.
+          </div>
+          <div class="modal-footer">
+            <button type="button" data-dismiss="modal">No</button>
+            <button id="confirm-suspend-account-button" type="button" data-dismiss="modal">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Confirm account deletion modal -->
     <div id="confirm-delete-account" class="modal" data-keyboard="true" tabindex="-1">
       <div class="modal-dialog" role="document">
@@ -57,6 +78,9 @@
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
+          </div>
+          <div class="modal-body">
+            This action will permanently delete your account and all of your data (including drawings, posts, comments, and scores). This action cannot be undone.
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal">No</button>
@@ -140,10 +164,16 @@
 
               <!-- Clickable profile background -->
               <div id="profile-background" class="container-fluid d-flex flex-column align-items-center justify-content-center">
-
-                <!-- Delete Account button -->
-                <button id="delete" type="button" data-toggle="modal" data-target="#confirm-delete-account">Delete Account</button>
                 <input id="background-color-picker" class="jscolor {onFineChange:'updateBgColor(this)'}" disabled>
+
+                <div id="account-buttons" class="d-flex flex-column justify-content-center">
+                  <!-- Suspend Account button -->
+                  <button id="suspend" class="account-button" type="button" data-toggle="modal" data-target="#confirm-suspend-account" title="Suspend your account. This action will inactivate your account so you can no longer log in. Your drawings, posts, comments, and scores will still be available to other users. You can reinstate your account in the future by contacting an admin.">Suspend Account</button>
+
+                  <!-- Delete Account button -->
+                  <button id="delete" class="account-button" type="button" data-toggle="modal" data-target="#confirm-delete-account" title="Delete your account. This action will permanently delete your account and all of your data (including drawings, posts, comments, and scores). This action cannot be undone.">Delete Account</button>
+                </div>
+
                 <!-- Profile icon -->
                 <div id="profile-icon-container" class="row my-row d-flex align-items-center justify-content-center">
                   <div id="profile-icon" class="d-flex align-items-center justify-content-center">

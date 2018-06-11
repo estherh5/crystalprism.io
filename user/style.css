@@ -458,6 +458,10 @@ button:focus {
   font-size: 18px;
 }
 
+.modal-body {
+  font-size: 14px;
+}
+
 .close {
   position: absolute;
   top: 5px;
@@ -549,6 +553,22 @@ input:focus, button:focus {
 
 #verify-password-input {
   font-size: 15px;
+}
+
+#zip-container {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+}
+
+#zip-container a {
+  margin-left: 8px;
+  font-size: 20px;
 }
 
 #success {

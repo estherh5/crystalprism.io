@@ -261,7 +261,7 @@
           </div>
           <!-- User accounts description -->
           <text>
-            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for his/her profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings). User data is stored in a PostgreSQL RDBMS and accessed via <a href="https://github.com/estherh5/api.crystalprism.io">RESTful API endpoints</a>.
+            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts and comments. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for his/her profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings). User data is stored in a PostgreSQL RDBMS and accessed via <a href="https://github.com/estherh5/api.crystalprism.io">RESTful API endpoints</a>. Users can download all of their data at any time from the <a href="user/my-account/">My Account page</a> in a zip file, which contains HTML files for their drawings, posts, and comments, rendered with <a href="http://jinja.pocoo.org/docs/2.10/" rel="noopener noreferrer" target="_blank">Jinja2</a>. To ensure user data is unreadable to everyone except for the user (including server admins), I used Python's <a href="https://docs.python.org/3.6/library/tempfile.html" rel="noopener noreferrer" target="_blank">tempfile</a> library to generate a temporary zip file that is immediately deleted from the back-end server as soon as it is delivered to the user.
           </text>
         </div>
 
@@ -1301,8 +1301,8 @@
                   <text class="text-small">Behavioral science</text>
                 </div>
                 <div class="interest">
-                  <i class="small-icon fas fa-camera"></i>
-                  <text class="text-small">Photography</text>
+                  <i class="small-icon fas fa-lock"></i>
+                  <text class="text-small">Data privacy</text>
                 </div>
                 <div class="interest">
                   <i class="small-icon fas fa-drafting-compass"></i>
@@ -1311,6 +1311,10 @@
                 <div class="interest">
                   <i class="small-icon fas fa-medkit"></i>
                   <text class="text-small">Healthcare</text>
+                </div>
+                <div class="interest">
+                  <i class="small-icon fas fa-camera"></i>
+                  <text class="text-small">Photography</text>
                 </div>
                 <div class="interest">
                   <i class="small-icon ionicons ion-earth"></i>

@@ -818,7 +818,7 @@ input:focus, button:focus {
   resize: none !important;
   background-color: rgba(0, 0, 0, 0) !important;
   font-family: 'Pompiere', cursive !important;
-  line-height: 1 !important;
+  line-height: 1.5 !important;
   cursor: default !important;
   user-select: none !important;
   -webkit-user-select: none !important;

@@ -455,6 +455,7 @@ button:hover:disabled, button:disabled {
 .comment-container {
   width: 73vw;
   max-width: 384px;
+  margin-bottom: 50px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -495,12 +496,10 @@ button:hover:disabled, button:disabled {
 
 .comment-timestamp {
   width: 55%;
-  margin-bottom: 50px;
 }
 
 .button-container {
   width: 45%;
-  margin-bottom: 50px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -520,6 +519,11 @@ button:hover:disabled, button:disabled {
 
 .submit-button, .cancel-button {
   display: none;
+}
+
+.error {
+  margin-top: 5px;
+  color: #ff0000;
 }
 
 #editor-container {

@@ -305,11 +305,10 @@ function loadPost(postId) {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-
       // Display cached post if it is stored in localStorage
-      if (localStorage.getItem('thought-writer-personal-post-'  + postId)) {
+      if (localStorage.getItem('thought-writer-personal-post-' + postId)) {
         displayPost(JSON.parse(localStorage
-          .getItem('thought-writer-personal-post-'  + postId)));
+          .getItem('thought-writer-personal-post-' + postId)));
       }
 
       // Otherwise, display error message
@@ -329,8 +328,9 @@ function loadPost(postId) {
         response.json().then(function(requestedPost) {
           displayPost(requestedPost);
 
-          // Store post in localStorage for offline loading
-          localStorage.setItem('thought-writer-personal-post-'  + postId, JSON
+          /* Store post in localStorage for offline loading and checking for
+          edits */
+          localStorage.setItem('thought-writer-personal-post-' + postId, JSON
             .stringify(requestedPost));
         });
       }
@@ -666,6 +666,8 @@ document.getElementById('close-post').onclick = function() {
 document.getElementById('modify-post').onclick = modifyPost;
 
 function modifyPost() {
+  var postId = post.dataset.postid;
+
   // If post is blank, ask if user wants to delete post
   if (!/\S/.test(post.textContent)) {
     deletePost();
@@ -698,6 +700,21 @@ function modifyPost() {
     return;
   }
 
+  // Display error message if user made no changes to post
+  var previousPost = JSON.parse(localStorage
+    .getItem('thought-writer-personal-post-' + postId));
+
+  var previousPostTitle = previousPost.title;
+  var previousPostContent = previousPost.content;
+  var previousPostPublic = previousPost.public;
+
+  if (previousPostTitle == postTitle.value &&
+    previousPostContent == post.innerHTML &&
+    previousPostPublic == publicInput.checked) {
+      window.alert('You did not make any changes to your post.');
+      return;
+  }
+
   // Otherwise, submit modified post to server
   var data = JSON.stringify({'title': postTitle.value,
     'content': post.innerHTML, 'public': publicInput.checked});
@@ -708,7 +725,7 @@ function modifyPost() {
   document.getElementById('submit-post').disabled = true;
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
+  return fetch(api + '/thought-writer/post/' + postId, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -769,7 +786,19 @@ function modifyPost() {
           return;
         }
 
-        // Otherwise, display error message
+        // Display error message if user made no changes
+        else if (response.status == 409) {
+          window.alert('You did not make any changes to your post.');
+
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // Otherwise, display login error message
         window.alert('You must log in to edit a post.');
 
         // Reset menu buttons and cursor style

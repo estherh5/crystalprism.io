@@ -517,12 +517,12 @@ function submitComment() {
 
 // Enter edit mode for comment when Modify button is clicked
 function modifyComment() {
-  var comment = document.querySelectorAll('[data-id="' + this.dataset
-    .modifyid + '"]')[0];
-  var submitButton = document.querySelectorAll('[data-submitid="' + this
-    .dataset.modifyid + '"]')[0];
-  var cancelButton = document.querySelectorAll('[data-cancelid="' + this
-    .dataset.modifyid + '"]')[0];
+  var commentId = this.dataset.modifyid;
+  var comment = document.querySelectorAll('[data-id="' + commentId + '"]')[0];
+  var submitButton = document.querySelectorAll('[data-submitid="' +
+    commentId + '"]')[0];
+  var cancelButton = document.querySelectorAll('[data-cancelid="' +
+    commentId + '"]')[0];
 
   // Make comment contenteditable
   comment.contentEditable = 'true';
@@ -542,12 +542,18 @@ function modifyComment() {
 
 // Cancel edits for comment when Cancel button is clicked
 function cancelEdits() {
-  var comment = document.querySelectorAll('[data-id="' + this.dataset
-    .cancelid + '"]')[0];
-  var submitButton = document.querySelectorAll('[data-submitid="' + this
-    .dataset.cancelid + '"]')[0];
-  var modifyButton = document.querySelectorAll('[data-modifyid="' + this
-    .dataset.cancelid + '"]')[0];
+  var commentId = this.dataset.cancelid;
+  var commentContainer = document.getElementById('comment' + commentId);
+  var comment = document.querySelectorAll('[data-id="' + commentId + '"]')[0];
+  var submitButton = document.querySelectorAll('[data-submitid="' +
+    commentId + '"]')[0];
+  var modifyButton = document.querySelectorAll('[data-modifyid="' +
+    commentId + '"]')[0];
+
+  // Remove error message if displayed
+  if (document.getElementById('error' + commentId)) {
+    commentContainer.removeChild(document.getElementById('error' + commentId));
+  }
 
   // Reset comment to non-contenteditable
   comment.contentEditable = 'false';
@@ -567,21 +573,47 @@ function cancelEdits() {
 
 // Submit edits for comment when Submit button is clicked
 function submitEdits() {
-  var comment = document.querySelectorAll('[data-id="' + this.dataset
-    .submitid + '"]')[0];
-  var commentTimestamp = comment.parentNode
+  var commentId = this.dataset.submitid;
+  var comment = document.querySelectorAll('[data-id="' + commentId + '"]')[0];
+  var commentContainer = document.getElementById('comment' + commentId);
+  var commentTimestamp = commentContainer
     .getElementsByClassName('comment-timestamp')[0];
   var submitButton = this;
-  var cancelButton = document.querySelectorAll('[data-cancelid="' + this
-    .dataset.submitid + '"]')[0];
-  var modifyButton = document.querySelectorAll('[data-modifyid="' + this
-    .dataset.submitid + '"]')[0];
-  var deleteButton = document.querySelectorAll('[data-deleteid="' + this
-    .dataset.submitid + '"]')[0];
+  var cancelButton = document.querySelectorAll('[data-cancelid="' +
+    commentId + '"]')[0];
+  var modifyButton = document.querySelectorAll('[data-modifyid="' +
+    commentId + '"]')[0];
+  var deleteButton = document.querySelectorAll('[data-deleteid="' +
+    commentId + '"]')[0];
+
+  // Remove error message if displayed
+  if (document.getElementById('error' + commentId)) {
+    commentContainer.removeChild(document.getElementById('error' + commentId));
+  }
 
   // If comment is blank, ask if user wants to delete comment
   if (!/\S/.test(comment.textContent)) {
     deleteButton.click();
+    return;
+  }
+
+  // Display error message if user made no changes to comment
+  var previousComments = JSON.parse(localStorage
+    .getItem('thought-writer-comments-post-' + postId));
+
+  for (var i = 0; i < previousComments.length; i++) {
+    if (previousComments[i].comment_id == commentId) {
+      var previousCommentContent = previousComments[i].content;
+    }
+  }
+
+  if (previousCommentContent == comment.innerHTML) {
+    var error = document.createElement('div');
+    error.id = 'error' + commentId;
+    error.classList.add('error');
+    error.innerHTML = 'You did not make any changes to your comment.';
+
+    commentContainer.appendChild(error);
     return;
   }
 
@@ -596,7 +628,7 @@ function submitEdits() {
   deleteButton.disabled = true;
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/thought-writer/comment/' + this.dataset.submitid, {
+  return fetch(api + '/thought-writer/comment/' + commentId, {
     headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
       'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -629,8 +661,12 @@ function submitEdits() {
           // Reset comment to non-contenteditable
           comment.contentEditable = 'false';
 
-          // Add '(edited)' to comment timestamp display
-          commentTimestamp.innerHTML = commentTimestamp.innerHTML + ' (edited)'
+          /* Add '(edited)' to comment timestamp display if it is not already
+          there */
+          if (commentTimestamp.innerHTML.indexOf('edited') == -1) {
+            commentTimestamp.innerHTML = commentTimestamp.innerHTML +
+              ' (edited)';
+          }
 
           /* Set pre-editing content data attribute to new content for Cancel
           button */
@@ -651,7 +687,26 @@ function submitEdits() {
           return;
         }
 
-        // Display alert if server responded with error
+        // Display error message if user made no changes
+        else if (response.status == 409) {
+          var error = document.createElement('div');
+          error.id = 'error' + commentId;
+          error.classList.add('error');
+          error.innerHTML = 'You did not make any changes to your comment.';
+
+          commentContainer.appendChild(error);
+
+          // Reset menu buttons and cursor style
+          submitButton.disabled = false;
+          cancelButton.disabled = false;
+          modifyButton.disabled = false;
+          deleteButton.disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
+        // Otherwise, display login error message
         window.alert('You must log in to modify a comment.');
 
         // Reset menu buttons and cursor style
@@ -672,14 +727,14 @@ function deleteComment() {
   var confirmDelete = confirm('Are you sure you want to delete this comment?');
 
   if (confirmDelete == true) {
-
+    var commentId = this.dataset.deleteid;
     var deleteButton = this;
-    var submitButton = document.querySelectorAll('[data-submitid="' + this
-      .dataset.deleteid + '"]')[0];
-    var cancelButton = document.querySelectorAll('[data-cancelid="' + this
-      .dataset.deleteid + '"]')[0];
-    var modifyButton = document.querySelectorAll('[data-modifyid="' + this
-      .dataset.deleteid + '"]')[0];
+    var submitButton = document.querySelectorAll('[data-submitid="' +
+      commentId + '"]')[0];
+    var cancelButton = document.querySelectorAll('[data-cancelid="' +
+      commentId + '"]')[0];
+    var modifyButton = document.querySelectorAll('[data-modifyid="' +
+      commentId + '"]')[0];
 
     /* Disable menu buttons and set cursor style to waiting until server
     request goes through */
@@ -689,7 +744,7 @@ function deleteComment() {
     modifyButton.disabled = true;
     document.body.style.cursor = 'wait';
 
-    return fetch(api + '/thought-writer/comment/' + this.dataset.deleteid, {
+    return fetch(api + '/thought-writer/comment/' + commentId, {
       headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
         'Content-Type': 'application/json'},
       method: 'DELETE',

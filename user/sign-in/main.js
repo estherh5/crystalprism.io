@@ -136,8 +136,6 @@ function requestLogin() {
       // Reset Submit button and cursor style
       document.getElementById('submit').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -160,34 +158,33 @@ function requestLogin() {
           // Reset Submit button and cursor style
           document.getElementById('submit').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         /* Otherwise, save returned token from server and decoded token's
         payload (username) to localStorage */
-        response.text().then(function(token) {
-          localStorage.removeItem('username');
-          var payload = JSON.parse(atob(token.split('.')[1]));
-          localStorage.setItem('username', payload['username']);
-          localStorage.removeItem('token');
-          localStorage.setItem('token', token);
+        else {
+          response.text().then(function(token) {
+            localStorage.removeItem('username');
+            var payload = JSON.parse(atob(token.split('.')[1]));
+            localStorage.setItem('username', payload['username']);
+            localStorage.removeItem('token');
+            localStorage.setItem('token', token);
 
-          // Reset Submit button and cursor style
-          document.getElementById('submit').disabled = false;
-          document.body.style.cursor = '';
+            // Reset Submit button and cursor style
+            document.getElementById('submit').disabled = false;
+            document.body.style.cursor = '';
 
-          // Take user to previous page if stored in sessionStorage
-          if (sessionStorage.getItem('previous-window')) {
-            window.location = sessionStorage.getItem('previous-window');
-            sessionStorage.removeItem('previous-window');
-            return;
+            // Take user to previous page if stored in sessionStorage
+            if (sessionStorage.getItem('previous-window')) {
+              window.location = sessionStorage.getItem('previous-window');
+              sessionStorage.removeItem('previous-window');
+            }
+
+            // Otherwise, take user to My Account page
+            else {
+              window.location = '../my-account/';
+            }
           }
-
-          // Otherwise, take user to My Account page
-          window.location = '../my-account/';
-
-          return;
         });
       }
     });

@@ -217,8 +217,6 @@ function loadPersonalInfo() {
         displayPersonalInfo(JSON.parse(localStorage
           .getItem('my-account-personal-info')));
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -333,8 +331,6 @@ function loadScores(game) {
         shapesNoScores.classList.add('hidden');
         shapesError.classList.remove('hidden');
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -370,20 +366,19 @@ function loadScores(game) {
             localStorage.setItem('my-account-' + game + '-scores', JSON
               .stringify(localScores));
           });
-          return;
         }
 
         // If server responds with error, display error banners in Scores menu
-        rhythmLink.classList.add('hidden');
-        rhythmHeader.classList.add('hidden');
-        rhythmNoScores.classList.add('hidden');
-        rhythmError.classList.remove('hidden');
-        shapesLink.classList.add('hidden');
-        shapesHeader.classList.add('hidden');
-        shapesNoScores.classList.add('hidden');
-        shapesError.classList.remove('hidden');
-
-        return;
+        else {
+          rhythmLink.classList.add('hidden');
+          rhythmHeader.classList.add('hidden');
+          rhythmNoScores.classList.add('hidden');
+          rhythmError.classList.remove('hidden');
+          shapesLink.classList.add('hidden');
+          shapesHeader.classList.add('hidden');
+          shapesNoScores.classList.add('hidden');
+          shapesError.classList.remove('hidden');
+        }
       }
     });
 }
@@ -622,8 +617,6 @@ function loadDrawings(type) {
           csDrawLink.classList.add('hidden');
           csLikeLink.classList.add('hidden');
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -659,22 +652,21 @@ function loadDrawings(type) {
               localStorage.setItem('my-account-' + type, JSON
                 .stringify(localDrawings));
             });
-            return;
           }
 
           /* Otherwise, if server responds with error, clear drawing area and
           hide navigation arrows */
-          gallery.innerHTML = '';
-          drawingLeftArrow.classList.remove('display');
-          drawingRightArrow.classList.remove('display');
+          else {
+            gallery.innerHTML = '';
+            drawingLeftArrow.classList.remove('display');
+            drawingRightArrow.classList.remove('display');
 
-          // Display error banner with CanvaShare link
-          csErrorLink.classList.remove('hidden');
-          csMainLink.classList.add('hidden');
-          csDrawLink.classList.add('hidden');
-          csLikeLink.classList.add('hidden');
-
-          return;
+            // Display error banner with CanvaShare link
+            csErrorLink.classList.remove('hidden');
+            csMainLink.classList.add('hidden');
+            csDrawLink.classList.add('hidden');
+            csLikeLink.classList.add('hidden');
+          }
         }
       });
 }
@@ -962,8 +954,6 @@ function updateLikes() {
           pingServer(retryFunctions);
 
           window.alert('Your like did not go through. Please try again soon.');
-
-          return;
         })
 
         /* If server responds without error, remove heart fill and decrease
@@ -985,13 +975,12 @@ function updateLikes() {
                 // Reload personal information to update user stats
                 loadPersonalInfo();
               });
-              return;
             }
 
             // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
+            else {
+              window.alert('You must log in to like a drawing.');
+            }
           }
         });
   }
@@ -1012,8 +1001,6 @@ function updateLikes() {
       pingServer(retryFunctions);
 
       window.alert('Your like did not go through. Please try again soon.');
-
-      return;
     })
 
     /* If server responds without error, fill in heart and increase like count
@@ -1035,13 +1022,12 @@ function updateLikes() {
             // Reload personal information to update user stats
             loadPersonalInfo();
           });
-          return;
         }
 
         // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        else {
+          window.alert('You must log in to like a drawing.');
+        }
       }
     });
 }
@@ -1093,8 +1079,6 @@ function loadPosts() {
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -1117,65 +1101,63 @@ function loadPosts() {
                 twErrorLink.classList.add('hidden');
                 twBoardLink.classList.add('hidden');
                 twEditorLink.classList.remove('hidden');
-
-                return;
               }
 
-              /* Assess if there are more than requested posts - 1 (number of
-              loaded posts) on server */
-              if (posts.length > (postRequestEnd - postRequestStart - 1)) {
-                morePostsToDisplay = true;
-                var loadNumber = postRequestEnd - postRequestStart - 1;
-              }
-
-              // If there are not, display all posts sent from server
               else {
-                morePostsToDisplay = false;
-                var loadNumber = posts.length;
+                /* Assess if there are more than requested posts - 1 (number of
+                loaded posts) on server */
+                if (posts.length > (postRequestEnd - postRequestStart - 1)) {
+                  morePostsToDisplay = true;
+                  var loadNumber = postRequestEnd - postRequestStart - 1;
+                }
+
+                // If there are not, display all posts sent from server
+                else {
+                  morePostsToDisplay = false;
+                  var loadNumber = posts.length;
+                }
+
+                displayPosts(posts.slice(0, loadNumber));
+
+                /* Remove locally stored posts if this is the initial request
+                to replace with latest posts from server */
+                if (postRequestStart == 0) {
+                  localStorage.removeItem('my-account-posts');
+                  var localPosts = [];
+                }
+
+                // Otherwise, get locally stored posts list
+                else {
+                  var localPosts = JSON.parse(localStorage
+                    .getItem('my-account-posts'));
+                }
+
+                /* Add each post to locally stored posts list based on
+                postRequestStart and postRequestEnd values */
+                for (var i = 0; i < posts.length; i++) {
+                  localPosts[postRequestStart + i] = posts[i];
+                }
+
+                // Store posts in localStorage for offline loading
+                localStorage.setItem('my-account-posts', JSON
+                  .stringify(localPosts));
               }
-
-              displayPosts(posts.slice(0, loadNumber));
-
-              /* Remove locally stored posts if this is the initial request
-              to replace with latest posts from server */
-              if (postRequestStart == 0) {
-                localStorage.removeItem('my-account-posts');
-                var localPosts = [];
-              }
-
-              // Otherwise, get locally stored posts list
-              else {
-                var localPosts = JSON.parse(localStorage
-                  .getItem('my-account-posts'));
-              }
-
-              /* Add each post to locally stored posts list based on
-              postRequestStart and postRequestEnd values */
-              for (var i = 0; i < posts.length; i++) {
-                localPosts[postRequestStart + i] = posts[i];
-              }
-
-              // Store posts in localStorage for offline loading
-              localStorage.setItem('my-account-posts', JSON
-                .stringify(localPosts));
             });
-
-            return;
           }
 
           /* Otherwise, if server responds with other error, clear post area
           and hide navigation arrows */
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
+          else {
+            postList.innerHTML = '';
+            postLeftArrow.classList.remove('display');
+            postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
-          twErrorLink.classList.remove('hidden');
-          twMainLink.classList.add('hidden');
-          twEditorLink.classList.add('hidden');
-          twBoardLink.classList.add('hidden');
-
-          return;
+            // Display error banner with Thought Writer link
+            twErrorLink.classList.remove('hidden');
+            twMainLink.classList.add('hidden');
+            twEditorLink.classList.add('hidden');
+            twBoardLink.classList.add('hidden');
+          }
         }
       });
 }
@@ -1370,8 +1352,6 @@ function loadComments() {
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -1394,66 +1374,65 @@ function loadComments() {
                 twMainLink.classList.add('hidden');
                 twEditorLink.classList.add('hidden');
                 twBoardLink.classList.remove('hidden');
-
-                return;
               }
 
               /* Assess if there are more than requested comments - 1 (number
               of displayed comments) on server */
-              if (comments.length > (commentRequestEnd - commentRequestStart -
-                1)) {
-                  moreCommentsToDisplay = true;
-                  var loadNumber = commentRequestEnd - commentRequestStart - 1;
+              else {
+                if (comments.length > (commentRequestEnd -
+                  commentRequestStart - 1)) {
+                    moreCommentsToDisplay = true;
+                    var loadNumber = commentRequestEnd - commentRequestStart -
+                      1;
+                  }
+
+                // If there are not, display all comments sent from server
+                else {
+                  moreCommentsToDisplay = false;
+                  var loadNumber = comments.length;
                 }
 
-              // If there are not, display all comments sent from server
-              else {
-                moreCommentsToDisplay = false;
-                var loadNumber = comments.length;
+                displayComments(comments.slice(0, loadNumber));
+
+                /* Remove locally stored comments if this is the initial request
+                to replace with latest comments from server */
+                if (commentRequestStart == 0) {
+                  localStorage.removeItem('my-account-comments');
+                  var localComments = [];
+                }
+
+                // Otherwise, get locally stored comments list
+                else {
+                  var localComments = JSON.parse(localStorage
+                    .getItem('my-account-comments'));
+                }
+
+                /* Add each comment to locally stored comments list based on
+                commentRequestStart and commentRequestEnd values */
+                for (var i = 0; i < comments.length; i++) {
+                  localComments[commentRequestStart + i] = comments[i];
+                }
+
+                // Store comments in localStorage for offline loading
+                localStorage.setItem('my-account-comments', JSON
+                  .stringify(localComments));
               }
-
-              displayComments(comments.slice(0, loadNumber));
-
-              /* Remove locally stored comments if this is the initial request
-              to replace with latest comments from server */
-              if (commentRequestStart == 0) {
-                localStorage.removeItem('my-account-comments');
-                var localComments = [];
-              }
-
-              // Otherwise, get locally stored comments list
-              else {
-                var localComments = JSON.parse(localStorage
-                  .getItem('my-account-comments'));
-              }
-
-              /* Add each comment to locally stored comments list based on
-              commentRequestStart and commentRequestEnd values */
-              for (var i = 0; i < comments.length; i++) {
-                localComments[commentRequestStart + i] = comments[i];
-              }
-
-              // Store comments in localStorage for offline loading
-              localStorage.setItem('my-account-comments', JSON
-                .stringify(localComments));
             });
-
-            return;
           }
 
           /* Otherwise, if server responds with other error, clear post area
           and hide navigation arrows */
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
+          else {
+            postList.innerHTML = '';
+            postLeftArrow.classList.remove('display');
+            postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
-          twMainLink.classList.add('hidden');
-          twErrorLink.classList.remove('hidden');
-          twEditorLink.classList.add('hidden');
-          twBoardLink.classList.add('hidden');
-
-          return;
+            // Display error banner with Thought Writer link
+            twMainLink.classList.add('hidden');
+            twErrorLink.classList.remove('hidden');
+            twEditorLink.classList.add('hidden');
+            twBoardLink.classList.add('hidden');
+          }
         }
       });
 }
@@ -1864,8 +1843,6 @@ function deleteAccount(data) {
       pingServer(retryFunctions);
 
       window.alert('Your request did not go through. Please try again soon.');
-
-      return;
     })
 
     .then(function(response) {
@@ -1878,14 +1855,13 @@ function deleteAccount(data) {
         if (response.ok) {
           sessionStorage.setItem('account-request', 'delete');
           window.location.href = '../create-account/';
-          return;
         }
 
         // Otherwise, display warning if server responds with error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
-        return;
+        else {
+          window.alert('Your request did not go through. Please try again ' +
+            'soon.');
+        }
       }
     });
 }
@@ -1916,8 +1892,6 @@ function downloadData() {
       document.getElementById('zip-container')
         .innerHTML = 'Your data could not be downloaded at this time. Please' +
           ' try again soon.';
-
-      return;
     })
 
     .then(function(response) {
@@ -2418,8 +2392,6 @@ function checkPassword() {
       pingServer(retryFunctions);
 
       window.alert('Your request did not go through. Please try again soon.');
-
-      return;
     })
 
     .then(function(response) {
@@ -2434,20 +2406,18 @@ function checkPassword() {
             .innerHTML = 'Password incorrect. Please try again:';
           $(verify).modal('show');
           verifyPassInput.focus();
-          return;
         }
 
         // If server responds successfully, submit edits to server
-        if (response.status == 200) {
+        else if (response.status == 200) {
           submitEdits();
-          return;
         }
 
         // Otherwise, display warning if server responds with other error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
-        return;
+        else {
+          window.alert('Your request did not go through. Please try again ' +
+            'soon.');
+        }
       }
     });
 }
@@ -2499,8 +2469,6 @@ function submitEdits() {
       saveButton.disabled = false;
       cancelButton.disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -2526,11 +2494,9 @@ function submitEdits() {
           saveButton.disabled = false;
           cancelButton.disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
-        if (response.status == 200) {
+        else if (response.status == 200) {
           /* If response is successful, update localStorage username and token
           and profile link (in case user updated username) */
           response.text().then(function(token) {
@@ -2586,27 +2552,24 @@ function submitEdits() {
 
             // Update field font colors based on background color
             updateFontColors();
-
           });
 
           // Reset Save and Cancel buttons and cursor style
           saveButton.disabled = false;
           cancelButton.disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Otherwise, display warning if server responds with other error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
+        else {
+          window.alert('Your request did not go through. Please try again ' +
+            'soon.');
 
-        // Reset Save and Cancel buttons and cursor style
-        saveButton.disabled = false;
-        cancelButton.disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset Save and Cancel buttons and cursor style
+          saveButton.disabled = false;
+          cancelButton.disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }
@@ -2740,8 +2703,6 @@ function deleteContent(contentType, contentId, afterFunction) {
       document.body.style.cursor = '';
 
       window.alert('Your request did not go through. Please try again soon.');
-
-      return;
     })
 
     .then(function(response) {
@@ -2762,22 +2723,21 @@ function deleteContent(contentType, contentId, afterFunction) {
 
           afterFunction();
           loadPersonalInfo();
-          return;
         }
 
         // Otherwise, display warning if server responds with error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
+        else {
+          window.alert('Your request did not go through. Please try again ' +
+            'soon.');
 
-        // Reset Delete buttons and cursor style
-        for (var i = 0; i < document.getElementsByClassName('delete-button')
-          .length; i++) {
-            document.getElementsByClassName('delete-button')[i]
-              .disabled = false;
+          // Reset Delete buttons and cursor style
+          for (var i = 0; i < document.getElementsByClassName('delete-button')
+            .length; i++) {
+              document.getElementsByClassName('delete-button')[i]
+                .disabled = false;
+            }
+          document.body.style.cursor = '';
         }
-        document.body.style.cursor = '';
-
-        return;
       }
     });
 }

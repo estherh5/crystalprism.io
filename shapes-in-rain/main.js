@@ -85,8 +85,6 @@ function loadLeaders() {
         // Display game screen
         document.getElementById('game-screen').classList.remove('hidden');
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -103,25 +101,23 @@ function loadLeaders() {
             localStorage.setItem('shapes-leaders-list', JSON
               .stringify(leadersList));
           });
-
-          return;
         }
 
-        // Clear leaders list and display error otherwise
-        for (var i = 0; i < leaders.length; i++) {
-          leaders[i].innerHTML = '';
+        else {
+          // Clear leaders list and display error otherwise
+          for (var i = 0; i < leaders.length; i++) {
+            leaders[i].innerHTML = '';
+          }
+
+          var errorCell = document.createElement('td');
+          errorCell.id = 'error-cell';
+          errorCell.colSpan = "2";
+          errorCell.innerHTML = 'The leaderboard could not be loaded.';
+          leaders[0].appendChild(errorCell);
+
+          // Display game screen
+          document.getElementById('game-screen').classList.remove('hidden');
         }
-
-        var errorCell = document.createElement('td');
-        errorCell.id = 'error-cell';
-        errorCell.colSpan = "2";
-        errorCell.innerHTML = 'The leaderboard could not be loaded.';
-        leaders[0].appendChild(errorCell);
-
-        // Display game screen
-        document.getElementById('game-screen').classList.remove('hidden');
-
-        return;
       }
     });
 }
@@ -442,36 +438,35 @@ function endGame() {
       body: data,
     })
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+      // Display error message if server is down
+      .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
 
-      window.alert('Your score could not be saved. Please play again later.');
-
-      loadLeaders();
-
-      resetGame();
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        if (!response.ok) {
-          window.alert('Your score could not be saved. Please play again ' +
-            'later.');
-          return;
-        }
+        window.alert('Your score could not be saved. Please play again later.');
 
         loadLeaders();
 
         resetGame();
-      }
-    });
+      })
+
+      .then(function(response) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
+
+          if (!response.ok) {
+            window.alert('Your score could not be saved. Please play again ' +
+              'later.');
+          }
+
+          else {
+            loadLeaders();
+
+            resetGame();            
+          }
+        }
+      });
   }
 
   else {

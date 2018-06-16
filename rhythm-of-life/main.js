@@ -820,8 +820,6 @@ function storeScore() {
       pingServer(retryFunctions);
 
       window.alert('Your score could not be saved. Please play again later.');
-
-      return;
     })
 
     // Display updated top 5 game leaders if server receives score successfully
@@ -882,8 +880,6 @@ function loadLeaders() {
           leaders[0].appendChild(errorCell);
         }
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -900,34 +896,32 @@ function loadLeaders() {
             localStorage.setItem('rhythm-leaders-list', JSON
               .stringify(leadersList));
           });
-
-          return;
         }
 
         // Clear leaders list and display error otherwise
-        if (mobile) {
-          for (var i = 0; i < leadersMobile.length; i++) {
-            leadersMobile[i].innerHTML = '';
-          }
+        else {
+          if (mobile) {
+            for (var i = 0; i < leadersMobile.length; i++) {
+              leadersMobile[i].innerHTML = '';
+            }
 
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
-          errorCell.innerHTML = 'The leaders list could not be loaded.';
-          leadersMobile[0].appendChild(errorCell);
-        } else {
-          for (var i = 0; i < leaders.length; i++) {
-            leaders[i].innerHTML = '';
-          }
+            var errorCell = document.createElement('td');
+            errorCell.id = 'error-cell';
+            errorCell.colSpan = "2";
+            errorCell.innerHTML = 'The leaders list could not be loaded.';
+            leadersMobile[0].appendChild(errorCell);
+          } else {
+            for (var i = 0; i < leaders.length; i++) {
+              leaders[i].innerHTML = '';
+            }
 
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
-          errorCell.innerHTML = 'The leaderboard could not be loaded.';
-          leaders[0].appendChild(errorCell);
+            var errorCell = document.createElement('td');
+            errorCell.id = 'error-cell';
+            errorCell.colSpan = "2";
+            errorCell.innerHTML = 'The leaderboard could not be loaded.';
+            leaders[0].appendChild(errorCell);
+          }
         }
-
-        return;
       }
     });
 }

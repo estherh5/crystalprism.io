@@ -282,6 +282,7 @@ function togglePage() {
         selectedButton = document.getElementById((window.location.hash)
           .split('#')[1] + '-button');
       }
+
       // If hash is blank, set selected button as first nav button
       else {
         selectedButton = navButtons[0];
@@ -604,7 +605,6 @@ window.addEventListener('keydown', function(e) {
           document.getElementById(document
             .getElementsByClassName('modal-background')[i].id.split('-')[0] +
             '-next').click();
-          return;
         }
 
       // Click previous button when modal is open and left arrow is clicked
@@ -614,7 +614,6 @@ window.addEventListener('keydown', function(e) {
           document.getElementById(document
             .getElementsByClassName('modal-background')[i].id.split('-')[0] +
             '-previous').click();
-          return;
         }
 
       // Close modal when modal is open and escape key is clicked
@@ -623,14 +622,14 @@ window.addEventListener('keydown', function(e) {
           e.preventDefault();
           closeModal(document.getElementsByClassName('modal-background')[i].id
             .split('-')[0]);
-          return;
         }
 
       else if (document.getElementsByClassName('modal-background')[i].classList
         .contains('open') && e.keyCode == 32) {
           e.preventDefault();
 
-          // Click next button when photo modal is open and space key is clicked
+          /* Click next button when photo modal is open and space key is
+          clicked */
           if (document.getElementsByClassName('modal-background')[i]
             .id == 'photo-modal-background') {
               document.getElementById(document
@@ -639,15 +638,14 @@ window.addEventListener('keydown', function(e) {
               return;
             }
 
-          /* Click displayed video to toggle video play state when project modal
-          is open and space key is clicked */
+          /* Click displayed video to toggle video play state when project
+          modal is open and space key is clicked */
           for (var j = 0; j < projectOverviews.length; j++) {
             if (projectOverviews[j].classList.contains('open')) {
               projectOverviews[j].getElementsByClassName('video-container')[0]
                 .click();
             }
           }
-          return;
         }
     }
 
@@ -695,8 +693,6 @@ function loadPhotos() {
               'Please refresh the page.';
             document.getElementById('photos-page').appendChild(photosError);
           }
-
-        return;
       })
 
       .then(function(response) {
@@ -767,24 +763,23 @@ function loadPhotos() {
                       'Please check later.';
                     document.getElementById('photos-page')
                       .appendChild(photosError);
-                    return;
                   }
               }
             });
-
-            return;
           }
 
           // Display error message if server returned error
-          if (!photosError || photosError.parentNode != document
-            .getElementById('photos-page')) {
-              photosError = document.createElement('text');
-              photosError.id = 'photos-error';
-              photosError.innerHTML = 'There was an error loading the ' +
-                'photos. Please refresh the page.';
-              document.getElementById('photos-page').appendChild(photosError);
-              return;
-            }
+          else {
+            if (!photosError || photosError.parentNode != document
+              .getElementById('photos-page')) {
+                photosError = document.createElement('text');
+                photosError.id = 'photos-error';
+                photosError.innerHTML = 'There was an error loading the ' +
+                  'photos. Please refresh the page.';
+                document.getElementById('photos-page')
+                  .appendChild(photosError);
+              }
+          }
         }
       });
 }
@@ -861,8 +856,6 @@ function loadPosts() {
               'posts. Please refresh the page.';
             document.getElementById('ideas-page').appendChild(postsError);
           }
-
-        return;
       })
 
       .then(function(response) {
@@ -932,24 +925,22 @@ function loadPosts() {
                       'Please check later.';
                     document.getElementById('ideas-page')
                       .appendChild(postsError);
-                    return;
                   }
               }
             });
-
-            return;
           }
 
           // Display error message if server returned error
-          if (!postsError || postsError.parentNode != document
-            .getElementById('ideas-page')) {
-              postsError = document.createElement('text');
-              postsError.id = 'posts-error';
-              postsError.innerHTML = 'There was an error loading the Ideas ' +
-                'posts. Please refresh the page.';
-              document.getElementById('ideas-page').appendChild(postsError);
-              return;
-            }
+          else {
+            if (!postsError || postsError.parentNode != document
+              .getElementById('ideas-page')) {
+                postsError = document.createElement('text');
+                postsError.id = 'posts-error';
+                postsError.innerHTML = 'There was an error loading the Ideas' +
+                  ' posts. Please refresh the page.';
+                document.getElementById('ideas-page').appendChild(postsError);
+              }
+          }
         }
       });
 }
@@ -1186,12 +1177,11 @@ function toggleSection() {
           parentSections[this.dataset.parent].dataset.expanded = 'true';
           parentSections[this.dataset.parent].getElementsByTagName('text')[0]
             .innerHTML = 'Collapse All';
-          return;
         }
 
       /* If child subsection is now collapsed from above logic, change the
       parent section to collapsed state if it's not already in that state */
-      if (this.dataset.expanded == 'false' && this.classList
+      else if (this.dataset.expanded == 'false' && this.classList
         .contains('expand-child') && parentSections[this.dataset.parent]
         .dataset.expanded == 'true') {
           parentSections[this.dataset.parent].getElementsByTagName('span')[0]
@@ -1201,11 +1191,10 @@ function toggleSection() {
           parentSections[this.dataset.parent].dataset.expanded = 'false';
           parentSections[this.dataset.parent].getElementsByTagName('text')[0]
             .innerHTML = 'Expand All';
-          return;
         }
-
-      return;
     }
+
+  return;
 }
 
 

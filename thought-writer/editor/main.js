@@ -108,6 +108,7 @@ function toggleButtons() {
     document.getElementById('close-post').style.display = 'inline-block';
     document.getElementById('modify-post').style.display = 'inline-block';
     document.getElementById('delete-post').style.display = 'inline-block';
+
     return;
   }
 
@@ -137,85 +138,83 @@ function loadPosts() {
       method: 'GET',
     })
 
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+      .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
 
-      // Display cached posts if they are stored in localStorage
-      if (localStorage.getItem('thought-writer-personal-posts')) {
-        var posts = JSON.parse(localStorage
-          .getItem('thought-writer-personal-posts'));
+        // Display cached posts if they are stored in localStorage
+        if (localStorage.getItem('thought-writer-personal-posts')) {
+          var posts = JSON.parse(localStorage
+            .getItem('thought-writer-personal-posts'));
 
-        /* Assess if there are more than requested posts - 1 (number of
-        loaded posts) */
-        if (posts.length > (requestEnd - 1)) {
-          morePostsToDisplay = true;
-          var loadNumber = requestEnd - 1;
-        }
-
-        // If there are not, load all posts to post area in cabinet
-        else {
-          morePostsToDisplay = false;
-          var loadNumber = posts.length;
-        }
-
-        displayPosts(posts.slice(requestStart, loadNumber));
-      }
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        response.json().then(function(posts) {
-          // Display posts in cabinet if at least one is sent from server
-          if (posts.length != 0) {
-
-            /* Assess if there are more than requested posts - 1 (number of
-            loaded posts) on server */
-            if (posts.length > (requestEnd - requestStart - 1)) {
-              morePostsToDisplay = true;
-              var loadNumber = requestEnd - requestStart - 1;
-            }
-
-            /* If there are not, load all posts sent from server to post area
-            in cabinet */
-            else {
-              morePostsToDisplay = false;
-              var loadNumber = posts.length;
-            }
-
-            displayPosts(posts.slice(0, loadNumber));
-
-            /* Remove locally stored posts if this is the initial request
-            to replace with latest posts from server */
-            if (requestStart == 0) {
-              localStorage.removeItem('thought-writer-personal-posts');
-              var localPosts = [];
-            }
-
-            // Otherwise, get locally stored posts list
-            else {
-              var localPosts = JSON.parse(localStorage
-                .getItem('thought-writer-personal-posts'));
-            }
-
-            /* Add each post to locally stored posts list based on requestStart
-            and requestEnd values */
-            for (var i = 0; i < posts.length; i++) {
-              localPosts[requestStart + i] = posts[i];
-            }
-
-            // Store posts in localStorage for offline loading
-            localStorage.setItem('thought-writer-personal-posts', JSON
-              .stringify(localPosts));
+          /* Assess if there are more than requested posts - 1 (number of
+          loaded posts) */
+          if (posts.length > (requestEnd - 1)) {
+            morePostsToDisplay = true;
+            var loadNumber = requestEnd - 1;
           }
-        });
-      }
-    });
+
+          // If there are not, load all posts to post area in cabinet
+          else {
+            morePostsToDisplay = false;
+            var loadNumber = posts.length;
+          }
+
+          displayPosts(posts.slice(requestStart, loadNumber));
+        }
+      })
+
+      .then(function(response) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
+
+          response.json().then(function(posts) {
+            // Display posts in cabinet if at least one is sent from server
+            if (posts.length != 0) {
+
+              /* Assess if there are more than requested posts - 1 (number of
+              loaded posts) on server */
+              if (posts.length > (requestEnd - requestStart - 1)) {
+                morePostsToDisplay = true;
+                var loadNumber = requestEnd - requestStart - 1;
+              }
+
+              /* If there are not, load all posts sent from server to post area
+              in cabinet */
+              else {
+                morePostsToDisplay = false;
+                var loadNumber = posts.length;
+              }
+
+              displayPosts(posts.slice(0, loadNumber));
+
+              /* Remove locally stored posts if this is the initial request
+              to replace with latest posts from server */
+              if (requestStart == 0) {
+                localStorage.removeItem('thought-writer-personal-posts');
+                var localPosts = [];
+              }
+
+              // Otherwise, get locally stored posts list
+              else {
+                var localPosts = JSON.parse(localStorage
+                  .getItem('thought-writer-personal-posts'));
+              }
+
+              /* Add each post to locally stored posts list based on
+              requestStart and requestEnd values */
+              for (var i = 0; i < posts.length; i++) {
+                localPosts[requestStart + i] = posts[i];
+              }
+
+              // Store posts in localStorage for offline loading
+              localStorage.setItem('thought-writer-personal-posts', JSON
+                .stringify(localPosts));
+            }
+          });
+        }
+      });
 }
 
 
@@ -315,8 +314,6 @@ function loadPost(postId) {
       else {
         window.alert('The post could not be loaded. Please try again soon.');
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -576,8 +573,6 @@ function submitPost() {
       document.getElementById('clear-post').disabled = false;
       document.getElementById('submit-post').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -615,19 +610,17 @@ function submitPost() {
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Otherwise, display error message
-        window.alert('You must log in to create a post.');
+        else {
+          window.alert('You must log in to create a post.');
 
-        // Reset menu buttons and cursor style
-        document.getElementById('clear-post').disabled = false;
-        document.getElementById('submit-post').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }
@@ -743,8 +736,6 @@ function modifyPost() {
       document.getElementById('clear-post').disabled = false;
       document.getElementById('submit-post').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -782,8 +773,6 @@ function modifyPost() {
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Display error message if user made no changes
@@ -794,19 +783,17 @@ function modifyPost() {
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Otherwise, display login error message
-        window.alert('You must log in to edit a post.');
+        else {
+          window.alert('You must log in to edit a post.');
 
-        // Reset menu buttons and cursor style
-        document.getElementById('clear-post').disabled = false;
-        document.getElementById('submit-post').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset menu buttons and cursor style
+          document.getElementById('clear-post').disabled = false;
+          document.getElementById('submit-post').disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }
@@ -843,8 +830,6 @@ function deletePost() {
         document.getElementById('clear-post').disabled = false;
         document.getElementById('submit-post').disabled = false;
         document.body.style.cursor = '';
-
-        return;
       })
 
       .then(function(response) {
@@ -876,24 +861,22 @@ function deletePost() {
             document.getElementById('clear-post').disabled = false;
             document.getElementById('submit-post').disabled = false;
             document.body.style.cursor = '';
-
-            return;
           }
 
           // Otherwise, display error message
-          window.alert('You must log in to delete a post.');
+          else {
+            window.alert('You must log in to delete a post.');
 
-          // Reset menu buttons and cursor style
-          document.getElementById('clear-post').disabled = false;
-          document.getElementById('submit-post').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
+            // Reset menu buttons and cursor style
+            document.getElementById('clear-post').disabled = false;
+            document.getElementById('submit-post').disabled = false;
+            document.body.style.cursor = '';
+          }
         }
       });
     }
 
-    return;
+  return;
 }
 
 

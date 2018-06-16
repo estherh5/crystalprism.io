@@ -27,6 +27,7 @@ function onYouTubeIframeAPIReady() {
   function audioFunction(playing) {
     var image = playing ? 'on.svg' : 'off.svg';
     audioIcon.src = 'images/' + image;
+    return;
   }
 
   /* Play or pause video when audio control is clicked and change icon
@@ -36,6 +37,8 @@ function onYouTubeIframeAPIReady() {
       .getPlayerState() === YT.PlayerState.BUFFERING ? (audioiFrame
       .pauseVideo(), audioFunction(!1), audioStarted = false) : (audioiFrame
       .playVideo(), audioFunction(!0), audioStarted = true);
+
+    return;
   }
 
   // Set attributes of embedded audio player
@@ -52,10 +55,14 @@ function onYouTubeIframeAPIReady() {
       onReady: function() {
         audioiFrame.setPlaybackQuality('small'),
         audioFunction(audioiFrame.getPlayerState() !== YT.PlayerState.CUED);
+        return;
       },
       onStateChange: function(audioContainer) {
         audioContainer.data === YT.PlayerState.ENDED && audioFunction(!1);
+        return;
       }
     }
   });
+
+  return;
 }

@@ -27,7 +27,7 @@ function createPageHeader() {
   headerContainer.id = 'header-container';
   header.appendChild(headerContainer);
 
-  // Create project navigation menu if current page is not homepage
+  // Create project navigation menu
   var iconContainer = document.createElement('div');
   iconContainer.id = 'site-menu-icon-container';
 
@@ -53,11 +53,12 @@ function createPageHeader() {
   // Create menu rows with icons and links to each project
   var projectLinks = ['/', '/timespace/', '/shapes-in-rain/',
     '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
-    'https://hn-stats.crystalprism.io/', '/'];
+    'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
+    '/'];
 
   var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
-    'Hacker News Stats', 'Account'];
+    'Hacker News Stats', 'Pause', 'Account'];
 
   for (var i = 0; i < projectLinks.length; i++) {
     var menuRow = document.createElement('tr');

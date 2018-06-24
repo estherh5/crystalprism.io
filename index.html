@@ -33,6 +33,71 @@
       <div id="project-modal-body" class="modal-body">
         <button id="project-close" class="close hidden">&times;</button>
 
+        <!-- Pause overview -->
+        <div id="pause-overview" class="project-overview">
+          <a class="modal-project-title" href="https://pause.crystalprism.io">
+            <img class="project-icon-large" src="images/pause-icon.png">
+            <h2>Pause</h2>
+          </a>
+          <!-- Pause repo -->
+          <a class="github-repo" href="https://github.com/estherh5/pause/tree/master" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fab fa-github"></i>
+            <text>GitHub Repository: June 2018 - Present</text>
+          </a>
+          <!-- Pause skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fab fa-html5"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-css3"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-javascript-plain"></i>
+              <text class="text-small">&nbsp;JavaScript</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-react"></i>
+              <text class="text-small">&nbsp;React</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;Python</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fontello-icon icon-flask">&#xe803;</i>
+              <text class="text-small">&nbsp;Flask</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fas fa-cloud"></i>
+              <text class="text-small">&nbsp;GCP/App Engine</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fas fa-cloud"></i>
+              <text class="text-small">&nbsp;GCP/Cloud SQL</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-postgresql-plain"></i>
+              <text class="text-small">&nbsp;PostgreSQL</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;SQLAlchemy</text>
+            </div>
+          </div>
+          <!-- Pause video -->
+          <div class="video-container" data-project="pause">
+            <video id="pause-video" type="video/mp4" preload="metadata" data-project="pause"></video>
+            <i id="pause-control" class="fas fa-play"></i>
+          </div>
+          <!-- Pause description -->
+          <text>
+            Pause is a <a href="https://reactjs.org/">React</a> web app that allows you to plan your day, week or month and visually display each day's breakdown of 24 hours in a chart generated with <a href="http://jerairrest.github.io/react-chartjs-2/">React-ChartJS-2</a>. You can enter any activities you would like in a table, including the activity name and the number of hours you would like to dedicate to that activity. Each chart updates dynamically whenever you add, delete, or update an activity. You can toggle between different chart types (pie, bar, radar, doughnut) to visualize your data in different ways. Chart color palettes are generated randomly with a modified version of <a href="https://github.com/Fooidge/PleaseJS">PleaseJS</a>. A table beneath the chart calculates how many hours you will spend on each activity weekly, monthly, and yearly, as well as how many hours you will spend on each activity in your remaining lifespan based on your current age and your specified ending age. If you are not sure which activities to start with, you can click one of the starter buttons to display activities for common lifestyles. You can store your activities using an <a href="https://github.com/estherh5/pause_api">API</a>, which generates a unique external identifier that you can use to access your activities in a URL (i.e., "https://pause.crystalprism.io/<external_id>"), allowing you to revisit them and share them with others.
+          </text>
+        </div>
+
         <!-- Hacker News Stats overview -->
         <div id="hn-stats-overview" class="project-overview">
           <a class="modal-project-title" href="https://hn-stats.crystalprism.io">
@@ -633,6 +698,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- Pause image and icon -->
+            <li>
+              <div class="project-listing" data-project="pause" data-displayed="false">
+                <img class="project-image" src="images/pause.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img id="pause-icon" class="project-icon" src="images/pause-icon.png">
+                  </div>
+                </span>
+                <span class="project-title">Pause</span>
+              </div>
+            </li>
             <!-- Hacker News Stats image and icon -->
             <li>
               <div class="project-listing" data-project="hn-stats" data-displayed="false">
@@ -828,6 +905,10 @@
                       <text class="text-small">JavaScript</text>
                     </div>
                     <div class="skill">
+                      <i class="small-icon fab fa-react"></i>
+                      <text class="text-small">React</text>
+                    </div>
+                    <div class="skill">
                       <i class="small-icon devicon-bootstrap-plain"></i>
                       <text class="text-small">Bootstrap</text>
                     </div>
@@ -860,6 +941,14 @@
                     <div class="skill">
                       <i class="small-icon devicon-amazonwebservices-original"></i>
                       <text class="text-small">Boto3</text>
+                    </div>
+                    <div class="skill">
+                      <i class="small-icon fas fa-cloud"></i>
+                      <text class="text-small">&nbsp;GCP/App Engine</text>
+                    </div>
+                    <div class="skill">
+                      <i class="small-icon fas fa-cloud"></i>
+                      <text class="text-small">&nbsp;GCP/Cloud SQL</text>
                     </div>
                     <div class="skill">
                       <i class="small-icon fab fa-linux"></i>

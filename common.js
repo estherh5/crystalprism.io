@@ -55,13 +55,6 @@ function createPageHeader() {
     '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
     'https://hn-stats.crystalprism.io/', '/'];
 
-  // Add domain root to each link unless it is already provided
-  projectLinks.map(function(folder) {
-    if (!folder.includes('https')) {
-      return root + '/' + folder;
-    }
-  });
-
   var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Account'];

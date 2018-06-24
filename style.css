@@ -845,6 +845,10 @@ h1 {
   transition: all 0.3s;
 }
 
+#pause-icon {
+  left: 42%;
+}
+
 #projects-list li:hover .project-icon {
   transform: translateY(0px);
   -webkit-transform: translateY(0px);
@@ -1121,7 +1125,7 @@ h1 {
   }
 
   .modal-project-title h2 {
-    font-size: 40px;
+    font-size: 50px;
   }
 
   .github-repo {

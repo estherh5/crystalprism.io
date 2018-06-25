@@ -65,7 +65,11 @@ function createPageHeader() {
     menuRow.classList.add('site-menu-row');
 
     if (i == projectLinks.length - 1) {
-      menuRow.dataset.link = projectLinks[i] + 'user/sign-in/';
+      if (localStorage.getItem('token')) {
+        menuRow.dataset.link = projectLinks[i] + 'user/my-account/';
+      } else {
+        menuRow.dataset.link = projectLinks[i] + 'user/sign-in/';
+      }
     } else {
       menuRow.dataset.link = projectLinks[i];
     }

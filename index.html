@@ -33,6 +33,47 @@
       <div id="project-modal-body" class="modal-body">
         <button id="project-close" class="close hidden">&times;</button>
 
+        <!-- Marian overview -->
+        <div id="marian-overview" class="project-overview">
+          <a class="modal-project-title" href="https://marian.crystalprism.io">
+            <img class="project-icon-large" src="images/marian-icon.png">
+            <h2>Marian</h2>
+          </a>
+          <!-- Marian repo -->
+          <a class="github-repo" href="https://github.com/estherh5/marian/tree/master" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fab fa-github"></i>
+            <text>GitHub Repository: July 2018 - Present</text>
+          </a>
+          <!-- Marian skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fab fa-html5"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-css3"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-typescript-plain"></i>
+              <text class="text-small">&nbsp;TypeScript</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-angular"></i>
+              <text class="text-small">&nbsp;Angular</text>
+            </div>
+          </div>
+          <!-- Marian video -->
+          <div class="video-container" data-project="marian">
+            <video id="marian-video" type="video/mp4" preload="metadata" data-project="marian"></video>
+            <i id="marian-control" class="fas fa-play"></i>
+          </div>
+          <!-- Marian description -->
+          <text>
+            <a href="https://marian.crystalprism.io/">Marian</a> is an <a href="https://angular.io/" rel="noopener noreferrer" target="_blank">Angular</a> web app that allows you to visualize real-time stock data, generate a graph of net equity for each stock in your portfolio, and read the latest market and stock news. Marian is a counterpart to <a href="https://robinhood.com/" rel="noopener noreferrer" target="_blank">Robinhood</a> and also stands on its own, as users can enter share data for each stock in their portfolio to see how it contributes to their net equity over time. Marian displays up to 20 years' worth of data for each stock, as it uses <a href="https://www.alphavantage.co/" rel="noopener noreferrer" target="_blank">Alpha Vantage</a>'s global stocks API. It also gets real-time stock prices, company information, and market news from <a href="https://iextrading.com/developer/" rel="noopener noreferrer" target="_blank">IEX</a>'s API. Marian's graphs are built from the <a href="https://www.amcharts.com/" rel="noopener noreferrer" target="_blank">amCharts</a> library, and its search bar is powered by <a href="https://www.algolia.com/" rel="noopener noreferrer" target="_blank">Algolia</a>.
+          </text>
+        </div>
+
         <!-- Pause overview -->
         <div id="pause-overview" class="project-overview">
           <a class="modal-project-title" href="https://pause.crystalprism.io">
@@ -714,6 +755,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- Marian image and icon -->
+            <li>
+              <div class="project-listing" data-project="marian" data-displayed="false">
+                <img class="project-image" src="images/marian.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img id="marian-icon" class="project-icon" src="images/marian-icon.png">
+                  </div>
+                </span>
+                <span class="project-title">Marian</span>
+              </div>
+            </li>
             <!-- Pause image and icon -->
             <li>
               <div class="project-listing" data-project="pause" data-displayed="false">
@@ -925,8 +978,16 @@
                       <text class="text-small">JavaScript</text>
                     </div>
                     <div class="skill">
+                      <i class="small-icon devicon-typescript-plain"></i>
+                      <text class="text-small">&nbsp;TypeScript</text>
+                    </div>
+                    <div class="skill">
                       <i class="small-icon fab fa-react"></i>
                       <text class="text-small">React</text>
+                    </div>
+                    <div class="skill">
+                      <i class="small-icon fab fa-angular"></i>
+                      <text class="text-small">&nbsp;Angular</text>
                     </div>
                     <div class="skill">
                       <i class="small-icon devicon-bootstrap-plain"></i>

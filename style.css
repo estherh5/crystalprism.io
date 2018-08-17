@@ -845,6 +845,10 @@ h1 {
   transition: all 0.3s;
 }
 
+#marian-icon {
+  left: 45%;
+}
+
 #pause-icon {
   left: 42%;
 }

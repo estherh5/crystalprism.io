@@ -175,14 +175,6 @@ for (var i = 0; i < navCircles.length; i++) {
 }
 
 
-/* Set Projects page as URL hash when Projects page link is clicked from
-About page */
-document.getElementById('projects-page-link').onclick = function() {
-  window.location.hash = this.dataset.page;
-  return;
-}
-
-
 /* Display requested page when window's URL hash changes (when navigating pages
 in SPA) and track via Google Analytics */
 window.onhashchange = function() {

@@ -1903,56 +1903,57 @@ document.getElementById('download-data')
   }, false);
 
 function downloadData() {
-  return fetch(api + '/user/data/' + localStorage.getItem('username'), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
-    method: 'GET',
-  })
-
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Add error message to zip modal
-      document.getElementById('zip-container')
-        .innerHTML = 'Your data could not be downloaded at this time. Please' +
-          ' try again soon.';
-
-      return;
+  return fetch(api + '/user/data/' + localStorage.getItem('username') +
+    '?preventCache=' + new Date().getTime(), {
+      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      method: 'GET',
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
 
-        // Download zip file if server responds without error
-        if (response.ok) {
-          response.blob().then(function(file) {
-            // Create anchor tag with link to zip file
-            var fileLink = document.createElement('a');
-            fileLink.innerHTML = '<i class="far fa-file-archive"></i>';
-
-            var url = window.URL.createObjectURL(file);
-            fileLink.href = url;
-            fileLink.download = localStorage.getItem('username') + '.zip';
-
-            // Add link to modal
-            document.getElementById('zip-container')
-              .innerHTML = 'Click here to download your data: ';
-            document.getElementById('zip-container').appendChild(fileLink);
-
-            document.getElementById('zip-button').innerHTML = 'Close';
-          });
-        }
-      }
-
-      else {
         // Add error message to zip modal
         document.getElementById('zip-container')
           .innerHTML = 'Your data could not be downloaded at this time. ' +
             'Please try again soon.';
-      }
-    });
+
+        return;
+      })
+
+      .then(function(response) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
+
+          // Download zip file if server responds without error
+          if (response.ok) {
+            response.blob().then(function(file) {
+              // Create anchor tag with link to zip file
+              var fileLink = document.createElement('a');
+              fileLink.innerHTML = '<i class="far fa-file-archive"></i>';
+
+              var url = window.URL.createObjectURL(file);
+              fileLink.href = url;
+              fileLink.download = localStorage.getItem('username') + '.zip';
+
+              // Add link to modal
+              document.getElementById('zip-container')
+                .innerHTML = 'Click here to download your data: ';
+              document.getElementById('zip-container').appendChild(fileLink);
+
+              document.getElementById('zip-button').innerHTML = 'Close';
+            });
+          }
+        }
+
+        else {
+          // Add error message to zip modal
+          document.getElementById('zip-container')
+            .innerHTML = 'Your data could not be downloaded at this time. ' +
+              'Please try again soon.';
+        }
+      });
 }
 
 // Reset zip modal text when modal is closed

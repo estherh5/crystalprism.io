@@ -80,8 +80,6 @@ function loadPosts() {
             'board. Please refresh the page.';
           postBoard.appendChild(errorMessage);
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -143,20 +141,18 @@ function loadPosts() {
                 morePostsToDisplay = false;
               }
             });
-
-            return;
           }
 
           // Display error message if the server sends an error
-          if (!errorMessage || errorMessage.parentNode != postBoard) {
-            errorMessage = document.createElement('text');
-            errorMessage.id = 'error-message';
-            errorMessage.innerHTML = 'There are no posts on the post board. ' +
-              'Click the yellow paper icon to create one.';
-            postBoard.appendChild(errorMessage);
+          else {
+            if (!errorMessage || errorMessage.parentNode != postBoard) {
+              errorMessage = document.createElement('text');
+              errorMessage.id = 'error-message';
+              errorMessage.innerHTML = 'There are no posts on the post board' +
+                '. Click the yellow paper icon to create one.';
+              postBoard.appendChild(errorMessage);
+            }
           }
-
-          return;
         }
       });
 }

@@ -68,8 +68,6 @@ function storeImages() {
       if (localStorage.getItem('vicarious-images')) {
         allImages = JSON.parse(localStorage.getItem('vicarious-images'));
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -110,18 +108,16 @@ function storeImages() {
             }
           }
         });
-
-        return;
       }
 
       // Display error modal if server throws error
-      $(error).modal('show');
-      $(error).on('shown.bs.modal', function () {
-        document.getElementById('error-okay').focus();
-        return;
-      });
-
-      return;
+      else {
+        $(error).modal('show');
+        $(error).on('shown.bs.modal', function () {
+          document.getElementById('error-okay').focus();
+          return;
+        });
+      }
     });
 }
 

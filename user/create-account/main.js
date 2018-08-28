@@ -184,8 +184,6 @@ function createAccount() {
       // Reset Submit button and cursor style
       document.getElementById('submit').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -201,12 +199,10 @@ function createAccount() {
           // Reset Submit button and cursor style
           document.getElementById('submit').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // If account is created successfully, send request to log into account
-        if (response.status == 201) {
+        else if (response.status == 201) {
           return fetch(api + '/login', {
             headers: {
               'Authorization': 'Basic ' + btoa(username + ':' + password)
@@ -243,19 +239,17 @@ function createAccount() {
                 });
               }
             });
-
-          return;
         }
 
         // Otherwise, display warning if server responds with other error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
+        else {
+          window.alert('Your request did not go through. Please try again ' +
+            'soon.');
 
-        // Reset Submit button and cursor style
-        document.getElementById('submit').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }

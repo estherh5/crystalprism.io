@@ -107,124 +107,122 @@ function loadDrawings() {
   return fetch(api + '/canvashare/drawings?start=' + requestStart + '&end=' +
     requestEnd)
 
-    /* Display error message if server is down and error isn't already
-    displayed (i.e., prevent multiple errors when scrolling to load more
-    drawings) */
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+      /* Display error message if server is down and error isn't already
+      displayed (i.e., prevent multiple errors when scrolling to load more
+      drawings) */
+      .catch(function(error) {
+        // Add server down banner to page (from common.js script)
+        pingServer(retryFunctions);
 
-      // Display cached drawings if they are stored in localStorage
-      if (localStorage.getItem('canvashare-gallery-drawings')) {
-        var drawings = JSON.parse(localStorage
-          .getItem('canvashare-gallery-drawings'));
+        // Display cached drawings if they are stored in localStorage
+        if (localStorage.getItem('canvashare-gallery-drawings')) {
+          var drawings = JSON.parse(localStorage
+            .getItem('canvashare-gallery-drawings'));
 
-        /* Assess if there are more than requested drawings - 1 (number
-        of drawings that will be displayed in gallery) */
-        if (drawings.length > (requestEnd - 1)) {
-          moreDrawingsToDisplay = true;
-          var loadNumber = requestEnd - 1;
+          /* Assess if there are more than requested drawings - 1 (number
+          of drawings that will be displayed in gallery) */
+          if (drawings.length > (requestEnd - 1)) {
+            moreDrawingsToDisplay = true;
+            var loadNumber = requestEnd - 1;
+          }
+
+          // If there are not, display all drawings
+          else {
+            moreDrawingsToDisplay = false;
+            var loadNumber = drawings.length;
+          }
+
+          displayDrawings(drawings.slice(requestStart, loadNumber));
         }
 
-        // If there are not, display all drawings
-        else {
-          moreDrawingsToDisplay = false;
-          var loadNumber = drawings.length;
-        }
-
-        displayDrawings(drawings.slice(requestStart, loadNumber));
-      }
-
-      // Otherwise, display error message
-      else if (!errorMessage || errorMessage.parentNode != gallery) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the gallery. ' +
-          'Please refresh the page.';
-        gallery.appendChild(errorMessage);
-      }
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display drawings in gallery if server responds without error
-        if (response.ok) {
-          response.json().then(function(drawings) {
-            if (drawings.length != 0) {
-
-              // Remove error message from gallery if it is displayed
-              if (errorMessage && errorMessage.parentNode == gallery) {
-                gallery.removeChild(errorMessage);
-              }
-
-              /* Assess if there are more than requested drawings - 1 (number
-              of drawings that will be displayed in gallery) on server */
-              if (drawings.length > (requestEnd - requestStart - 1)) {
-                moreDrawingsToDisplay = true;
-                var loadNumber = requestEnd - requestStart - 1;
-              }
-
-              // If there are not, display all drawings sent from server
-              else {
-                moreDrawingsToDisplay = false;
-                var loadNumber = drawings.length;
-              }
-
-              displayDrawings(drawings.slice(0, loadNumber));
-
-              /* Remove locally stored drawings if this is the initial request
-              to replace with latest drawings from server */
-              if (requestStart == 0) {
-                localStorage.removeItem('canvashare-gallery-drawings');
-                var localDrawings = [];
-              }
-
-              // Otherwise, get locally stored drawings list
-              else {
-                var localDrawings = JSON.parse(localStorage
-                  .getItem('canvashare-gallery-drawings'));
-              }
-
-              /* Add each drawing to locally stored drawings list based on
-              requestStart and requestEnd values */
-              for (var i = 0; i < drawings.length; i++) {
-                localDrawings[requestStart + i] = drawings[i];
-              }
-
-              // Store drawings in localStorage for offline loading
-              localStorage.setItem('canvashare-gallery-drawings', JSON
-                .stringify(localDrawings));
-            }
-
-            // If there are no drawings sent from server, set variable to false
-            else {
-              moreDrawingsToDisplay = false;
-            }
-
-          });
-          return;
-        }
-
-        // Display error message if the server sends an error
-        if (!errorMessage || errorMessage.parentNode != gallery) {
+        // Otherwise, display error message
+        else if (!errorMessage || errorMessage.parentNode != gallery) {
           errorMessage = document.createElement('text');
           errorMessage.id = 'error-message';
           errorMessage.innerHTML = 'There was an error loading the gallery. ' +
             'Please refresh the page.';
           gallery.appendChild(errorMessage);
         }
+      })
 
-        // Remove localStorage item
-        localStorage.removeItem('canvashare-gallery-drawings');
+      .then(function(response) {
+        if (response) {
+          // Remove server down banner from page (from common.js script)
+          pingServer();
 
-        return;
-      }
-    });
+          // Display drawings in gallery if server responds without error
+          if (response.ok) {
+            response.json().then(function(drawings) {
+              if (drawings.length != 0) {
+
+                // Remove error message from gallery if it is displayed
+                if (errorMessage && errorMessage.parentNode == gallery) {
+                  gallery.removeChild(errorMessage);
+                }
+
+                /* Assess if there are more than requested drawings - 1 (number
+                of drawings that will be displayed in gallery) on server */
+                if (drawings.length > (requestEnd - requestStart - 1)) {
+                  moreDrawingsToDisplay = true;
+                  var loadNumber = requestEnd - requestStart - 1;
+                }
+
+                // If there are not, display all drawings sent from server
+                else {
+                  moreDrawingsToDisplay = false;
+                  var loadNumber = drawings.length;
+                }
+
+                displayDrawings(drawings.slice(0, loadNumber));
+
+                /* Remove locally stored drawings if this is the initial
+                request to replace with latest drawings from server */
+                if (requestStart == 0) {
+                  localStorage.removeItem('canvashare-gallery-drawings');
+                  var localDrawings = [];
+                }
+
+                // Otherwise, get locally stored drawings list
+                else {
+                  var localDrawings = JSON.parse(localStorage
+                    .getItem('canvashare-gallery-drawings'));
+                }
+
+                /* Add each drawing to locally stored drawings list based on
+                requestStart and requestEnd values */
+                for (var i = 0; i < drawings.length; i++) {
+                  localDrawings[requestStart + i] = drawings[i];
+                }
+
+                // Store drawings in localStorage for offline loading
+                localStorage.setItem('canvashare-gallery-drawings', JSON
+                  .stringify(localDrawings));
+              }
+
+              /* If there are no drawings sent from server, set variable to
+              false */
+              else {
+                moreDrawingsToDisplay = false;
+              }
+
+            });
+          }
+
+          // Display error message if the server sends an error
+          else {
+            if (!errorMessage || errorMessage.parentNode != gallery) {
+              errorMessage = document.createElement('text');
+              errorMessage.id = 'error-message';
+              errorMessage.innerHTML = 'There was an error loading the gallery' +
+                '. Please refresh the page.';
+              gallery.appendChild(errorMessage);
+            }
+
+            // Remove localStorage item
+            localStorage.removeItem('canvashare-gallery-drawings');
+          }
+        }
+      });
 }
 
 
@@ -387,8 +385,6 @@ function updateLikes() {
           pingServer(retryFunctions);
 
           window.alert('Your like did not go through. Please try again soon.');
-
-          return;
         })
 
         .then(function(response) {
@@ -405,13 +401,12 @@ function updateLikes() {
               heart.classList.add('far');
               delete heart.dataset.drawinglike;
               likeText.innerHTML = parseInt(currentLikes) - 1;
-              return;
             }
 
             // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
+            else {
+              window.alert('You must log in to like a drawing.');
+            }
           }
         });
   }
@@ -432,8 +427,6 @@ function updateLikes() {
       pingServer(retryFunctions);
 
       window.alert('Your like did not go through. Please try again soon.');
-
-      return;
     })
 
     .then(function(response) {
@@ -452,13 +445,12 @@ function updateLikes() {
             heart.classList.add('fas');
             heart.dataset.drawinglike = drawingLikeId;
           });
-          return;
         }
 
         // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        else {
+          window.alert('You must log in to like a drawing.');
+        }
       }
     });
 }

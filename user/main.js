@@ -81,8 +81,6 @@ function loadPersonalInfo() {
           .innerHTML = 'Could not load page';
         document.title = 'Not found';
       }
-
-      return;
     })
 
     // Display user's information on profile if server responds without error
@@ -94,16 +92,14 @@ function loadPersonalInfo() {
           // Store info in localStorage for offline loading
           localStorage.setItem(username + 'profile', JSON.stringify(info));
         });
-
-        return;
       }
 
       // Display error if server responds with error
-      document.getElementById('profile-title')
-        .innerHTML = 'User does not exist';
-      document.title = 'Not found';
-
-      return;
+      else {
+        document.getElementById('profile-title')
+          .innerHTML = 'User does not exist';
+        document.title = 'Not found';
+      }
     });
 }
 
@@ -182,7 +178,6 @@ function updateIconBackground(iconColor) {
 
   if (r + g + b > 670) {
     document.getElementById('profile-icon').style.backgroundColor = '#000000';
-    return;
   } else {
     document.getElementById('profile-icon').style.backgroundColor = '#ffffff';
   }
@@ -246,8 +241,6 @@ function loadDrawings() {
         gallery.innerHTML = 'There was an error loading the user\'s ' +
           'drawings. Please refresh the page.';
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -305,15 +298,13 @@ function loadDrawings() {
             }
 
           });
-
-          return;
         }
 
         // Add error message to gallery if server responds with error
-        gallery.innerHTML = 'There was an error loading the user\'s ' +
-          'drawings. Please refresh the page.';
-
-        return;
+        else {
+          gallery.innerHTML = 'There was an error loading the user\'s ' +
+            'drawings. Please refresh the page.';
+        }
       }
     });
 }
@@ -503,8 +494,6 @@ function updateLikes() {
           pingServer(retryFunctions);
 
           window.alert('Your like did not go through. Please try again soon.');
-
-          return;
         })
 
         /* If server responds without error, remove heart fill and decrease
@@ -525,9 +514,9 @@ function updateLikes() {
             }
 
             // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
+            else {
+              window.alert('You must log in to like a drawing.');
+            }
           }
         });
   }
@@ -548,8 +537,6 @@ function updateLikes() {
       pingServer(retryFunctions);
 
       window.alert('Your like did not go through. Please try again soon.');
-
-      return;
     })
 
     /* If server responds without error, fill in heart and increase like count
@@ -568,13 +555,12 @@ function updateLikes() {
             heart.classList.add('fas');
             heart.dataset.drawinglike = drawingLikeId;
           });
-          return;
         }
 
         // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        else {
+          window.alert('You must log in to like a drawing.');
+        }
       }
     });
 }
@@ -615,8 +601,6 @@ function loadPosts() {
         postList.innerHTML = 'There was an error loading the user\'s posts. ' +
           'Please refresh the page.';
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -673,15 +657,13 @@ function loadPosts() {
             }
 
           });
-
-          return;
         }
 
         // Add error message to post list if server responds with error
-        postList.innerHTML = 'There was an error loading the user\'s posts. ' +
-          'Please refresh the page.';
-
-        return;
+        else {
+          postList.innerHTML = 'There was an error loading the user\'s posts' +
+            '. Please refresh the page.';
+        }
       }
     });
 }
@@ -816,8 +798,6 @@ function loadComments() {
           commentList.innerHTML = 'There was an error loading the user\'s ' +
             'comments. Please refresh the page.';
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -873,15 +853,13 @@ function loadComments() {
               }
 
             });
-
-            return;
           }
 
           // Add error message to comment list if server responds with error
-          commentList.innerHTML = 'There was an error loading the user\'s ' +
-            'comments. Please refresh the page.';
-
-          return;
+          else {
+            commentList.innerHTML = 'There was an error loading the user\'s ' +
+              'comments. Please refresh the page.';
+          }
         }
       });
 }

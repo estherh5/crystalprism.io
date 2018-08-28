@@ -111,8 +111,6 @@ function loadDrawing() {
         window.alert('The drawing could not be loaded. Please try again ' +
           'soon.');
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -528,8 +526,6 @@ function postDrawing() {
       document.getElementById('post').disabled = false;
       document.getElementById('download').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -548,12 +544,10 @@ function postDrawing() {
           document.getElementById('post').disabled = false;
           document.getElementById('download').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // If drawing is not unique, display error message
-        if (response.status == 409) {
+        else if (response.status == 409) {
           window.alert('Your drawing must be unique.');
 
           // Reset menu buttons and cursor style
@@ -561,20 +555,18 @@ function postDrawing() {
           document.getElementById('post').disabled = false;
           document.getElementById('download').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Otherwise, display login error message
-        window.alert('You must log in to post your drawing to the gallery.');
+        else {
+          window.alert('You must log in to post your drawing to the gallery.');
 
-        // Reset menu buttons and cursor style
-        document.getElementById('clear').disabled = false;
-        document.getElementById('post').disabled = false;
-        document.getElementById('download').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset menu buttons and cursor style
+          document.getElementById('clear').disabled = false;
+          document.getElementById('post').disabled = false;
+          document.getElementById('download').disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }

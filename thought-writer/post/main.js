@@ -76,8 +76,6 @@ function loadPost() {
         postBackground.innerHTML = '';
         postBackground.appendChild(errorMessage);
       }
-
-      return;
     })
 
     .then(function(response) {
@@ -93,23 +91,21 @@ function loadPost() {
             // Store post in localStorage for offline loading
             localStorage.setItem('thought-writer-post-' + postId, JSON
               .stringify(post));
-
-            return;
           });
         }
 
         // Display error message if server responds with error
-        if (!errorMessage || errorMessage.parentNode != postBackground) {
-          errorMessage = document.createElement('text');
-          errorMessage.id = 'error-message';
-          errorMessage.innerHTML = 'There was an error loading the post. ' +
-            'Please refresh the page.';
+        else {
+          if (!errorMessage || errorMessage.parentNode != postBackground) {
+            errorMessage = document.createElement('text');
+            errorMessage.id = 'error-message';
+            errorMessage.innerHTML = 'There was an error loading the post. ' +
+              'Please refresh the page.';
 
-          // Clear post and append error message
-          postBackground.innerHTML = '';
-          postBackground.appendChild(errorMessage);
-
-          return;
+            // Clear post and append error message
+            postBackground.innerHTML = '';
+            postBackground.appendChild(errorMessage);
+          }
         }
       }
     });
@@ -212,8 +208,6 @@ function deletePost() {
         document.getElementById('edit').disabled = false;
         document.getElementById('delete').disabled = false;
         document.body.style.cursor = '';
-
-        return;
       })
 
       .then(function(response) {
@@ -228,24 +222,22 @@ function deletePost() {
             document.body.style.cursor = '';
 
             window.location = '../';
-
-            return;
           }
 
           // Otherwise, display error message
-          window.alert('You must log in to delete a post.');
+          else {
+            window.alert('You must log in to delete a post.');
 
-          // Reset menu buttons and cursor style
-          document.getElementById('edit').disabled = false;
-          document.getElementById('delete').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
+            // Reset menu buttons and cursor style
+            document.getElementById('edit').disabled = false;
+            document.getElementById('delete').disabled = false;
+            document.body.style.cursor = '';
+          }
         }
       });
     }
 
-    return;
+  return;
 }
 
 
@@ -275,8 +267,6 @@ function loadComments(postId) {
 
           displayComments(comments.slice(requestStart, loadNumber));
         }
-
-        return;
       })
 
       .then(function(response) {
@@ -327,7 +317,6 @@ function loadComments(postId) {
                 JSON.stringify(localComments));
             });
           }
-          return;
         }
       });
 }
@@ -469,8 +458,6 @@ function submitComment() {
       // Reset Submit button and cursor style
       document.getElementById('submit-comment').disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -498,18 +485,16 @@ function submitComment() {
           // Reset Submit button and cursor style
           document.getElementById('submit-comment').disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Display alert if server responded with error
-        window.alert('You must log in to leave a comment.');
+        else {
+          window.alert('You must log in to leave a comment.');
 
-        // Reset Submit button and cursor style
-        document.getElementById('submit-comment').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset Submit button and cursor style
+          document.getElementById('submit-comment').disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }
@@ -648,8 +633,6 @@ function submitEdits() {
       modifyButton.disabled = false;
       deleteButton.disabled = false;
       document.body.style.cursor = '';
-
-      return;
     })
 
     .then(function(response) {
@@ -683,8 +666,6 @@ function submitEdits() {
           submitButton.style.display = 'none';
           cancelButton.style.display = 'none';
           modifyButton.style.display = 'block';
-
-          return;
         }
 
         // Display error message if user made no changes
@@ -702,21 +683,19 @@ function submitEdits() {
           modifyButton.disabled = false;
           deleteButton.disabled = false;
           document.body.style.cursor = '';
-
-          return;
         }
 
         // Otherwise, display login error message
-        window.alert('You must log in to modify a comment.');
+        else {
+          window.alert('You must log in to modify a comment.');
 
-        // Reset menu buttons and cursor style
-        submitButton.disabled = false;
-        cancelButton.disabled = false;
-        modifyButton.disabled = false;
-        deleteButton.disabled = false;
-        document.body.style.cursor = '';
-
-        return;
+          // Reset menu buttons and cursor style
+          submitButton.disabled = false;
+          cancelButton.disabled = false;
+          modifyButton.disabled = false;
+          deleteButton.disabled = false;
+          document.body.style.cursor = '';
+        }
       }
     });
 }
@@ -757,8 +736,6 @@ function deleteComment() {
 
         window.alert('Your request did not go through. Please try again ' +
           'soon.');
-
-        return;
       })
 
       .then(function(response) {
@@ -786,26 +763,22 @@ function deleteComment() {
             modifyButton.disabled = false;
             deleteButton.disabled = false;
             document.body.style.cursor = '';
-
-            return;
           }
 
           // Otherwise, display error message
-          window.alert('You must log in to delete a comment.');
+          else {
+            window.alert('You must log in to delete a comment.');
 
-          // Reset menu buttons and cursor style
-          submitButton.disabled = false;
-          cancelButton.disabled = false;
-          modifyButton.disabled = false;
-          deleteButton.disabled = false;
-          document.body.style.cursor = '';
-
-          return;
+            // Reset menu buttons and cursor style
+            submitButton.disabled = false;
+            cancelButton.disabled = false;
+            modifyButton.disabled = false;
+            deleteButton.disabled = false;
+            document.body.style.cursor = '';
+          }
         }
       });
     }
-
-    return;
 }
 
 

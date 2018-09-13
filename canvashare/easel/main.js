@@ -155,8 +155,13 @@ function assembleEasel(drawingSrc, title) {
   // Set initial drawing title to passed title
   drawingTitle.value = title;
 
-  // Set drawing source to passed drawing source
-  initialDrawing.src = drawingSrc + '?=' + new Date().getTime();
+  /* Set drawing source to passed drawing source, including unique identifier
+  at the end of URL (for non-locally-stored images) to prevent CORS block */
+  if (drawingSrc.includes('https://')) {
+    initialDrawing.src = drawingSrc + '?=' + new Date().getTime();
+  } else {
+    initialDrawing.src = drawingSrc;
+  }
 
   // Add initial drawing to HTML canvas
   canvasContext = document.getElementById('canvas').getContext('2d');

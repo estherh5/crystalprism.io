@@ -11,7 +11,7 @@ html, body {
   -webkit-flex-direction: column;
   -ms-flex-direction: column;
   flex-direction: column;
-  background-image: url('https://www.walldevil.com/wallpapers/a33/cloud-sea-rain.jpg');
+  background-image: url('https://s3.us-east-2.amazonaws.com/crystalprism/images/shapes+background.png');
   background-size: cover;
   color: #ffffff;
   user-select: none;

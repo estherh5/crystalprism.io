@@ -949,6 +949,7 @@ input {
   #title {
     top: 10px;
     font-size: 70px;
+    z-index: 4;
   }
 
   #post-board {

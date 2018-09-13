@@ -1383,6 +1383,7 @@ label.editing {
 
   #title {
     font-size: 54px !important;
+    z-index: 4;
   }
 
   .banner {

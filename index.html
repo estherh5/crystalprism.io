@@ -33,6 +33,67 @@
       <div id="project-modal-body" class="modal-body">
         <button id="project-close" class="close hidden">&times;</button>
 
+        <!-- Vroom overview -->
+        <div id="vroom-overview" class="project-overview">
+          <a class="modal-project-title" href="https://vroom.crystalprism.io">
+            <img class="project-icon-large" src="images/vroom-icon.png">
+            <h2>Vroom</h2>
+          </a>
+          <!-- Vroom repo -->
+          <a class="github-repo" href="https://github.com/estherh5/vroom/tree/master" rel="noopener noreferrer" target="_blank">
+            <i class="small-icon fab fa-github"></i>
+            <text>GitHub Repository: September 2018 - Present</text>
+          </a>
+          <!-- Vroom skills -->
+          <div class="project-skills">
+            <div class="skill">
+              <i class="small-icon fab fa-react"></i>
+              <text class="text-small">&nbsp;React</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-javascript-plain"></i>
+              <text class="text-small">&nbsp;JavaScript</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-css3"></i>
+              <text class="text-small">&nbsp;CSS</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fab fa-html5"></i>
+              <text class="text-small">&nbsp;HTML5</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;Python</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon fontello-icon icon-flask">&#xe803;</i>
+              <text class="text-small">&nbsp;Flask</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-heroku-original"></i>
+              <text class="text-small">&nbsp;Heroku</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon devicon-postgresql-plain"></i>
+              <text class="text-small">&nbsp;PostgreSQL</text>
+            </div>
+            <div class="skill">
+              <i class="small-icon ionicons ion-social-python"></i>
+              <text class="text-small">&nbsp;SQLAlchemy</text>
+            </div>
+          </div>
+          <!-- Vroom video -->
+          <div class="video-container" data-project="vroom">
+            <video id="vroom-video" type="video/mp4" preload="metadata" data-project="vroom"></video>
+            <i id="vroom-control" class="fas fa-play"></i>
+          </div>
+          <!-- Vroom description -->
+          <text>
+            <a href="https://vroom.crystalprism.io/">Vroom</a> is a <a href="https://reactjs.org/" rel="noopener noreferrer" target="_blank">React</a> web app that makes renting a car quick and easy. Vroom displays an interactive portal where you can search for a location and dates/times to pick up and drop off your rental car, then select a rental car from different rental companies, and lastly confirm your booking and see a map of how to get to your intended pick-up location. Vroom uses <a href="https://github.com/ubilabs/react-geosuggest/" rel="noopener noreferrer" target="_blank">React Geosuggest</a> to suggest Google Maps locations as you search for your pick-up and drop-off cities, as well as <a href="https://github.com/airbnb/react-dates/" rel="noopener noreferrer" target="_blank">Airbnb's react-dates</a> to provide a calendar-based date range selector. Car rental data is acquired via <a href="https://sandbox.amadeus.com/travel-innovation-sandbox/apis/get/cars/search-circle/" rel="noopener noreferrer" target="_blank">Amadeus' Car Rental Geosearch API</a>. When you confirm your booking, your information gets sent to a <a href="https://github.com/estherh5/vroom_api/" rel="noopener noreferrer" target="_blank">RESTful API</a> that stores your data in a PostgreSQL database and returns a unique confirmation code for your booking.
+          </text>
+        </div>
+
         <!-- Marian overview -->
         <div id="marian-overview" class="project-overview">
           <a class="modal-project-title" href="https://marian.crystalprism.io">
@@ -735,6 +796,18 @@
         <!-- Projects page -->
         <div id="projects-page" class="page hidden fade">
           <ul id="projects-list">
+            <!-- Vroom image and icon -->
+            <li>
+              <div class="project-listing" data-project="vroom" data-displayed="false">
+                <img class="project-image" src="images/vroom.png">
+                <span class="project-overlay">
+                  <div class="project-preview">
+                    <img id="vroom-icon" class="project-icon" src="images/vroom-icon.png">
+                  </div>
+                </span>
+                <span class="project-title">Vroom</span>
+              </div>
+            </li>
             <!-- Marian image and icon -->
             <li>
               <div class="project-listing" data-project="marian" data-displayed="false">

@@ -54,11 +54,11 @@ function createPageHeader() {
   var projectLinks = ['/', '/timespace/', '/shapes-in-rain/',
     '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
     'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
-    'https://marian.crystalprism.io/', '/'];
+    'https://marian.crystalprism.io/', 'https://vroom.crystalprism.io/', '/'];
 
   var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
-    'Hacker News Stats', 'Pause', 'Marian', 'Account'];
+    'Hacker News Stats', 'Pause', 'Marian', 'Vroom', 'Account'];
 
   for (var i = 0; i < projectLinks.length; i++) {
     var menuRow = document.createElement('tr');

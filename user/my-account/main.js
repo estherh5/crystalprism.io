@@ -856,7 +856,7 @@ function displayDrawings(type, drawings) {
       // Create link to artist's profile
       var artistLink = document.createElement('a');
       artistLink.href = '../../user/?username=' + drawings[i]['artist_name'];
-      artistLink.innerHTML = drawings[i].username;
+      artistLink.innerHTML = drawings[i]['artist_name'];
       drawingInfo.appendChild(drawingArtist);
       drawingArtist.appendChild(artistLink);
     }

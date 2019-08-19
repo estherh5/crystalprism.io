@@ -136,7 +136,8 @@ function createPageHeader() {
 function createPageFooter() {
   // Create copyright display
   var copyright = document.createElement('div');
-  copyright.innerHTML = '&copy; 2018 <a href="' + root + '">Crystal Prism</a>';
+  copyright.innerHTML = '&copy; Copyright 2017-' + new Date().getFullYear() +
+    ' <a href="' + root + '">Crystal Prism</a>';
 
   // Create footer to contain copyright information
   var footer = document.createElement('div');

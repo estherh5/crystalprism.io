@@ -3,7 +3,6 @@ var drawingId = window.location.search.split('drawing=')[1];
 var drawingTitle = document.getElementById('drawing-title');
 var blankCanvas;
 var canvasContext;
-var initialDrawing; // Starting drawing on canvas
 var drawingCanvas;
 var stroke = 10; // Set size of drawing dot on canvas
 var startPoint; // Starting point for user's drawing movement on the canvas
@@ -149,7 +148,7 @@ function loadDrawing() {
 function assembleEasel(drawingSrc, title) {
   /* Create new image as initial starting drawing and set CORS requests as
   anonymous (no credentials required to display image) */
-  initialDrawing = new Image();
+  var initialDrawing = new Image();
   initialDrawing.crossOrigin = 'Anonymous';
 
   // Set initial drawing title to passed title
@@ -447,11 +446,8 @@ function clearDrawing() {
   // Clear drawing canvas
   drawingCanvas.clear();
 
-  // Set initial drawing source as blank white canvas
-  initialDrawing.src = document.getElementById('blank').src;
-
-  // Add initial drawing to main canvas
-  canvasContext.drawImage(initialDrawing, 0, 0);
+  // Add blank white drawing to main canvas
+  canvasContext.drawImage(document.getElementById('blank'), 0, 0);
 
   // Set title to default
   drawingTitle.value = '';

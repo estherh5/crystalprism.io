@@ -183,7 +183,7 @@ a:hover, button:hover {
 
 .project-overview a {
   font-weight: bold;
-  color: #1ebfe8;
+  color: #1ebfe8 !important;
   transform: scale(1);
   -webkit-transform: scale(1);
   transition: all 0.4s;
@@ -193,6 +193,10 @@ a:hover, button:hover {
   color: #808080;
   transform: scale(1.1);
   -webkit-transform: scale(1.1);
+}
+
+.project-overview a > .small-icon {
+  color: #1ebfe8 !important;
 }
 
 .modal-project-title {

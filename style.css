@@ -1,11 +1,12 @@
 /* Fontello-generated icon font for company logos */
 @font-face {
   font-family: 'logos';
-  src: url('./fontello-logo-font/logos.eot?88409861');
-  src: url('./fontello-logo-font/logos.eot?88409861#iefix') format('embedded-opentype'),
-       url('./fontello-logo-font/logos.woff?88409861') format('woff'),
-       url('./fontello-logo-font/logos.ttf?88409861') format('truetype'),
-       url('./fontello-logo-font/logos.svg?88409861#logos') format('svg');
+  src: url('./fontello-logo-font/logos.eot?33511355');
+  src: url('./fontello-logo-font/logos.eot?33511355#iefix') format('embedded-opentype'),
+       url('./fontello-logo-font/logos.woff2?33511355') format('woff2'),
+       url('./fontello-logo-font/logos.woff?33511355') format('woff'),
+       url('./fontello-logo-font/logos.ttf?33511355') format('truetype'),
+       url('./fontello-logo-font/logos.svg?33511355#fontello') format('svg');
   font-weight: normal;
   font-style: normal;
 }
@@ -277,9 +278,17 @@ a:hover, button:hover {
   font-family: 'logos';
   font-style: normal;
   display: inline-block;
+  text-decoration: inherit;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-variant: normal;
+  text-transform: none;
+  speak: never;
 }
+
+.icon-epic:before { content: '\e800'; } /* '' */
+.icon-codewars:before { content: '\e801'; } /* '' */
+.icon-looker:before { content: '\e802'; } /* '' */
 
 .night-view text {
   fill: #ffffff;

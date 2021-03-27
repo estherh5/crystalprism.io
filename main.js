@@ -179,8 +179,10 @@ for (var i = 0; i < navCircles.length; i++) {
 in SPA) and track via Google Analytics */
 window.onhashchange = function() {
   // Set Google Analytics page to [page URL]/[hash string]
-  ga('set', 'page', '/' + (window.location.hash.split('#')[1]));
-  ga('send', 'pageview');
+  if (window.ga && ga.create) {
+    ga('set', 'page', '/' + (window.location.hash.split('#')[1]));
+    ga('send', 'pageview');
+  }
 
   // Display requested page
   togglePage();

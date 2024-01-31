@@ -13,7 +13,7 @@ var siteMenuOpen = false; // Stores if site menu is open or closed
 
 // Determine API endpoint based on window location
 if (window.location.hostname == 'crystalprism.io') {
-  var api = 'https://crystalprism.herokuapp.com/api';
+  var api = 'https://crystalprism-02e7666703b7.herokuapp.com/api';
 } else {
   var api = 'http://localhost:5000/api';
 }

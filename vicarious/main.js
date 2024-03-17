@@ -52,7 +52,7 @@ window.onload = function() {
 // Store all travel images from Reddit's API in an array
 function storeImages() {
   // Retrieve 100 images from Reddit's Travel subreddit
-  return fetch('https://www.reddit.com/r/travel.json?limit=100&after=' + after)
+  return fetch('https://www.reddit.com/r/travelphotos.json?limit=1000&after=' + after)
 
     // Display error modal if server is down
     .catch(function(error) {
@@ -253,19 +253,24 @@ function findImages(input) {
 
 // Display images found in findImages function
 function displayImages() {
-  for (var i = 0; i < imageURLs.length; i++) {
-    displayedImages[i].src = imageURLs[i];
-    displayedImages[i].dataset.number = i;
-    displayedImages[i].classList.remove('cleared');
+  for (var i = 0; i < 5; i++) {
+    if (imageURLs[i]) {
+      displayedImages[i].src = imageURLs[i];
+      displayedImages[i].dataset.number = i;
+      displayedImages[i].classList.remove('hidden');
+      displayedImages[i].classList.remove('cleared');
 
-    // Open carousel to specified image when clicked
-    displayedImages[i].addEventListener('click', function() {
-      openCarousel(this.dataset.number);
-    }, false);
+      // Open carousel to specified image when clicked
+      displayedImages[i].addEventListener('click', function() {
+        openCarousel(this.dataset.number);
+      }, false);
 
-    // Display link to image's Reddit post as title for image
-    displayedImageTitles[i].href = imageTitleLinks[i];
-    displayedImageTitles[i].innerHTML = imageTitleTexts[i];
+      // Display link to image's Reddit post as title for image
+      displayedImageTitles[i].href = imageTitleLinks[i];
+      displayedImageTitles[i].innerHTML = imageTitleTexts[i];
+    } else {
+      displayedImages[i].classList.add('hidden');
+    }
   }
 
   // Reset Submit button and cursor style

@@ -3,6 +3,8 @@ var startScreenDesktop = document.getElementById('start-screen-desktop');
 var startScreenMobile = document.getElementById('start-screen-mobile');
 var pauseScreenDesktop = document.getElementById('pause-screen-desktop');
 var pauseScreenMobile = document.getElementById('pause-screen-mobile');
+var pauseButton = document.getElementById('pause');
+var restartButton = document.getElementById('restart');
 var learnScreen = document.getElementById('learn-more-screen');
 var leaderScreen = document.getElementById('leader-screen');
 var gameOverScreen = document.getElementById('game-over-screen');
@@ -171,14 +173,20 @@ function reset() {
   // Hide Pause screen and unhide Start screen for mobile/desktop
   if (mobile) {
     pauseScreenMobile.style.visibility = 'hidden';
+    pauseScreenDesktop.style.visibility = 'hidden';
     startScreenMobile.style.visibility = 'visible';
   } else {
     pauseScreenDesktop.style.visibility = 'hidden';
+    pauseScreenMobile.style.visibility = 'hidden';
     startScreenDesktop.style.visibility = 'visible';
   }
 
   // Set Pause button text to starting state of Pause
   document.getElementById('pause').innerHTML = 'Pause';
+
+  // Hide game control buttons
+  pauseButton.classList.add('hidden');
+  restartButton.classList.add('hidden');
 
   // Stop heartbeat sound and reset heartbeat rate
   heartbeat.stop();
@@ -227,24 +235,28 @@ function pause() {
 
 // Resume game loop
 function resume() {
-  // Hide Start screen, Pause screen, and Leaders screen for mobile/desktop
+  // Hide Start and Pause screens for mobile/desktop
   if (mobile) {
     startScreenMobile.style.visibility = 'hidden';
     pauseScreenMobile.style.visibility = 'hidden';
-    leaderScreen.style.visibility = 'hidden';
   } else {
     startScreenDesktop.style.visibility = 'hidden';
     pauseScreenDesktop.style.visibility = 'hidden';
   }
 
-  // Hide Learn More screen
+  // Hide Learn More and Leaders screens
   learnScreen.style.visibility = 'hidden';
+  leaderScreen.style.visibility = 'hidden';
 
   // Start heartbeat sound
   heartbeat.play();
 
   // Set Pause button text to Pause
   document.getElementById('pause').innerHTML = 'Pause';
+
+  // Unhide game control buttons
+  pauseButton.classList.remove('hidden');
+  restartButton.classList.remove('hidden');
 
   return;
 }
@@ -447,7 +459,7 @@ document.body.onkeydown = function(e) {
   }
 
   // Pause game if user clicked 'p' key in non-paused game state
-  else if (e.keyCode == '80' && !paused()) {
+  else if (e.keyCode == 80 && !paused()) {
     e.preventDefault();
 
     /* Do nothing if screen is too small or if game is over or hasn't started
@@ -463,12 +475,12 @@ document.body.onkeydown = function(e) {
   }
 
   // Resume game if user clicked 'r' key in paused game state
-  else if (e.keyCode == '82' && paused()) {
+  else if (e.keyCode == 82 && paused()) {
     e.preventDefault();
 
     /* Do nothing if screen is too small or if game is over or hasn't started
     yet */
-    if (largeEnoughScreen() || gameOver() || readyToStart()) {
+    if (!largeEnoughScreen() || gameOver() || readyToStart()) {
       return;
     }
 
@@ -479,14 +491,14 @@ document.body.onkeydown = function(e) {
   }
 
   // Start game over if user clicked 's' key
-  else if (e.keyCode == '83') {
+  else if (e.keyCode == 83) {
     e.preventDefault();
     reset();
     return;
   }
 
   // Toggle Learn More screen if user clicked 'l' key
-  else if (e.keyCode == '76') {
+  else if (e.keyCode == 76) {
     e.preventDefault();
     toggleLearnScreen();
     return;
@@ -792,6 +804,9 @@ function setHeartAttr() {
     // Display Game Over screen
     gameOverScreen.style.visibility = 'visible';
 
+    // Hide game control buttons
+    pauseButton.classList.add('hidden');
+
     // Stop heartbeat sound
     heartbeat.stop();
   }
@@ -865,7 +880,7 @@ function loadLeaders() {
           // Display error
           var errorCell = document.createElement('td');
           errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
+          errorCell.colSpan = '2';
           errorCell.innerHTML = 'The leaders list could not be loaded.';
           leadersMobile[0].appendChild(errorCell);
         } else {
@@ -877,7 +892,7 @@ function loadLeaders() {
           // Display error
           var errorCell = document.createElement('td');
           errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
+          errorCell.colSpan = '2';
           errorCell.innerHTML = 'The leaderboard could not be loaded.';
           leaders[0].appendChild(errorCell);
         }
@@ -912,7 +927,7 @@ function loadLeaders() {
 
           var errorCell = document.createElement('td');
           errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
+          errorCell.colSpan = '2';
           errorCell.innerHTML = 'The leaders list could not be loaded.';
           leadersMobile[0].appendChild(errorCell);
         } else {
@@ -922,7 +937,7 @@ function loadLeaders() {
 
           var errorCell = document.createElement('td');
           errorCell.id = 'error-cell';
-          errorCell.colSpan = "2";
+          errorCell.colSpan = '2';
           errorCell.innerHTML = 'The leaderboard could not be loaded.';
           leaders[0].appendChild(errorCell);
         }
@@ -991,10 +1006,10 @@ function toggleLearnScreen() {
   screen is showing at a time for mobile/desktop */
   if (mobile) {
     pauseScreenMobile.style.visibility = 'hidden';
-    leaderScreen.style.visibility = 'hidden';
   } else {
     pauseScreenDesktop.style.visibility = 'hidden';
   }
+  leaderScreen.style.visibility = 'hidden';
 
   /* Hide Learn More screen if game hasn't started yet or is over and Learn
   More screen is currently visible */

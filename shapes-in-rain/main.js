@@ -1,6 +1,7 @@
 // Define global variables
 var game = document.getElementById('game');
 var score = document.getElementById('score');
+var controls = document.getElementById('controls');
 var shapeObjects = document.getElementsByClassName('shape');
 var shapes = []; // Array to store SVG shapes
 var started = false; // Stores whether game has started or not
@@ -192,8 +193,9 @@ function startGame() {
   // Hide game screen
   document.getElementById('game-screen').classList.add('hidden');
 
-  // Unhide game and score
+  // Unhide game, controls and score
   game.classList.remove('hidden');
+  controls.classList.remove('hidden');
   score.classList.remove('hidden');
 
   // Reset intervals for creating hearts that move down screen like rain
@@ -383,8 +385,9 @@ function resetGame() {
   // Reset score to 0
   score.innerHTML = 'Score: 0';
 
-  // Hide game and score
+  // Hide game, controls and score
   game.classList.add('hidden');
+  controls.classList.add('hidden');
   score.classList.add('hidden');
 
   // Reset menu buttons and cursor style

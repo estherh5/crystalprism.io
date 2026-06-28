@@ -1,1452 +1,2038 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Crystal Prism is Esther Hoffman's portfolio of front-end and back-end web development projects.">
-    <meta name="keywords" content="Esther Hoffman,Crystal Prism,web development,web design,freelance,portfolio,front-end,back-end">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-    <!-- Google Fonts, Ionicons, Devicon, Font Awesome, and project stylesheets -->
-    <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Poiret+One|Rajdhani|Scope+One|Shrikhand" rel="stylesheet">
-    <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.10.1/devicon.min.css" rel="stylesheet">
-    <link href="https://use.fontawesome.com/releases/v5.1.0/css/all.css" integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous" rel="stylesheet">
-    <link href="common.css" rel="stylesheet">
-    <link href="style.css" rel="stylesheet">
+<head>
+  <meta charset="UTF-8">
+  <meta name="description"
+    content="Crystal Prism is Esther Hoffman's portfolio of front-end and back-end web development projects.">
+  <meta name="keywords"
+    content="Esther Hoffman,Crystal Prism,web development,web design,freelance,portfolio,front-end,back-end">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
 
-    <!-- Google Analytics script to track page views -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-91236421-1"></script>
-    <script src="ga.js"></script>
+  <!-- Google Fonts, Ionicons, Devicon, Font Awesome, and project stylesheets -->
+  <link href="https://fonts.googleapis.com/css?family=Amatic+SC|Poiret+One|Rajdhani|Scope+One|Shrikhand"
+    rel="stylesheet">
+  <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/gh/devicons/devicon@v2.10.1/devicon.min.css" rel="stylesheet">
+  <link href="https://use.fontawesome.com/releases/v5.1.0/css/all.css"
+    integrity="sha384-lKuwvrZot6UHsBSfcMvOkWwlCMgc0TaWr+30HWe3a4ltaBwTZhyTEggF5tJv8tbt" crossorigin="anonymous"
+    rel="stylesheet">
+  <link href="common.css" rel="stylesheet">
+  <link href="style.css" rel="stylesheet">
 
-    <title>Esther Hoffman</title>
-  </head>
-  <body>
-    <!-- Modal that displays project overviews from Projects page -->
-    <div id="project-modal-background" class="modal-background hidden">
-      <div id="project-modal-body" class="modal-body">
-        <button id="project-close" class="close hidden">&times;</button>
+  <!-- Google Analytics script to track page views -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-91236421-1"></script>
+  <script src="ga.js"></script>
 
-        <!-- Vroom overview -->
-        <div id="vroom-overview" class="project-overview">
-          <a class="modal-project-title" href="https://vroom.crystalprism.io/">
-            <img class="project-icon-large" src="images/vroom-icon.png">
-            <h2>Vroom</h2>
-          </a>
-          <!-- Vroom repo -->
-          <a class="github-repo" href="https://github.com/estherh5/vroom/tree/master/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: September 2018 - Present</text>
-          </a>
-          <!-- Vroom skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-react"></i>
-              <text class="text-small">&nbsp;React</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-javascript-plain"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-heroku-original"></i>
-              <text class="text-small">&nbsp;Heroku</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;SQLAlchemy</text>
-            </div>
+  <title>Esther Hoffman</title>
+</head>
+
+<body>
+  <!-- Modal that displays project overviews from Projects page -->
+  <div id="project-modal-background" class="modal-background hidden">
+    <div id="project-modal-body" class="modal-body">
+      <button id="project-close" class="close hidden">&times;</button>
+
+      <!-- Methods overview -->
+      <div id="methods-overview" class="project-overview">
+        <a class="modal-project-title" href="https://methods.crystalprism.io/">
+          <img class="project-icon-large" src="images/methods-icon.png">
+          <h2>Methods</h2>
+        </a>
+        <!-- Methods repo -->
+        <a class="github-repo" href="https://github.com/estherh5/methods/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jun 2026 - Present</text>
+        </a>
+        <!-- Methods skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
           </div>
-          <!-- Vroom video -->
-          <div class="video-container" data-project="vroom">
-            <video id="vroom-video" type="video/mp4" preload="metadata" data-project="vroom"></video>
-            <i id="vroom-control" class="fas fa-play"></i>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
           </div>
-          <!-- Vroom description -->
-          <text>
-            <a href="https://vroom.crystalprism.io/">Vroom</a> is a <a href="https://reactjs.org/" rel="noopener noreferrer" target="_blank">React</a> web app that makes renting a car quick and easy. Vroom displays an interactive portal where you can search for a location and dates/times to pick up and drop off your rental car, then select a rental car from different rental companies, and lastly confirm your booking and see a map of how to get to your intended pick-up location. Vroom uses <a href="https://github.com/ubilabs/react-geosuggest/" rel="noopener noreferrer" target="_blank">React Geosuggest</a> to suggest Google Maps locations as you search for your pick-up and drop-off cities, as well as <a href="https://github.com/airbnb/react-dates/" rel="noopener noreferrer" target="_blank">Airbnb's react-dates</a> to provide a calendar-based date range selector. Car rental data is acquired via <a href="https://rapidapi.com/DataCrawler/api/booking-com15/" rel="noopener noreferrer" target="_blank">RapidAPI's Car Rental API</a>. When you confirm your booking, your information gets sent to a <a href="https://github.com/estherh5/vroom_api/" rel="noopener noreferrer" target="_blank">RESTful API</a> that stores your data in a PostgreSQL database and returns a unique confirmation code for your booking.
-          </text>
+          <div class="skill">
+            <i class="small-icon fas fa-bolt"></i>
+            <text class="text-small">&nbsp;Vite</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
         </div>
-
-        <!-- Marian overview -->
-        <div id="marian-overview" class="project-overview">
-          <a class="modal-project-title" href="https://marian.crystalprism.io/">
-            <img class="project-icon-large" src="images/marian-icon.png">
-            <h2>Marian</h2>
-          </a>
-          <!-- Marian repo -->
-          <a class="github-repo" href="https://github.com/estherh5/marian/tree/master/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: July 2018 - Present</text>
-          </a>
-          <!-- Marian skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-angular"></i>
-              <text class="text-small">&nbsp;Angular</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-typescript-plain"></i>
-              <text class="text-small">&nbsp;TypeScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-          </div>
-          <!-- Marian video -->
-          <div class="video-container" data-project="marian">
-            <video id="marian-video" type="video/mp4" preload="metadata" data-project="marian"></video>
-            <i id="marian-control" class="fas fa-play"></i>
-          </div>
-          <!-- Marian description -->
-          <text>
-            <a href="https://marian.crystalprism.io/">Marian</a> is an <a href="https://angular.io/" rel="noopener noreferrer" target="_blank">Angular</a> web app that allows you to visualize real-time stock data, generate a graph of net equity for each stock in your portfolio, and read the latest market and stock news. Marian is a counterpart to <a href="https://robinhood.com/" rel="noopener noreferrer" target="_blank">Robinhood</a> and also stands on its own, as users can enter share data for each stock in their portfolio to see how it contributes to their net equity over time. Marian displays up to 20 years' worth of data for each stock, , as well as company information, using <a href="https://www.alphavantage.co/" rel="noopener noreferrer" target="_blank">Alpha Vantage</a>'s global stocks API. It also gets real-time stock prices and market news from <a href="https://finnhub.io/" rel="noopener noreferrer" target="_blank">Finnhub</a>'s API. Marian's graphs are built from the <a href="https://www.amcharts.com/" rel="noopener noreferrer" target="_blank">amCharts</a> library, and its search bar is powered by <a href="https://www.algolia.com/" rel="noopener noreferrer" target="_blank">Algolia</a>.
-          </text>
+        <!-- Methods video -->
+        <div class="video-container" data-project="methods">
+          <video id="methods-video" type="video/mp4" preload="metadata" data-project="methods"></video>
+          <i id="methods-control" class="fas fa-play"></i>
         </div>
-
-        <!-- Pause overview -->
-        <div id="pause-overview" class="project-overview">
-          <a class="modal-project-title" href="https://pause.crystalprism.io/">
-            <img class="project-icon-large" src="images/pause-icon.png">
-            <h2>Pause</h2>
-          </a>
-          <!-- Pause repo -->
-          <a class="github-repo" href="https://github.com/estherh5/pause/tree/master/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: June 2018 - Present</text>
-          </a>
-          <!-- Pause skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-react"></i>
-              <text class="text-small">&nbsp;React</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-javascript-plain"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-heroku-original"></i>
-              <text class="text-small">&nbsp;Heroku</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;SQLAlchemy</text>
-            </div>
-          </div>
-          <!-- Pause video -->
-          <div class="video-container" data-project="pause">
-            <video id="pause-video" type="video/mp4" preload="metadata" data-project="pause"></video>
-            <i id="pause-control" class="fas fa-play"></i>
-          </div>
-          <!-- Pause description -->
-          <text>
-            <a href="https://pause.crystalprism.io/">Pause</a> is a <a href="https://reactjs.org/" rel="noopener noreferrer" target="_blank">React</a> web app that allows you to plan your day, week or month and visually display each day's breakdown of 24 hours in a chart generated with <a href="https://jerairrest.github.io/react-chartjs-2/" rel="noopener noreferrer" target="_blank">React-ChartJS-2</a>. You can enter any activities you would like in a table, including the activity name and the number of hours you would like to dedicate to that activity. Each chart updates dynamically whenever you add, delete, or update an activity. You can toggle between different chart types (pie, bar, radar, doughnut) to visualize your data in different ways. Chart color palettes are generated randomly with a modified version of <a href="https://github.com/Fooidge/PleaseJS/" rel="noopener noreferrer" target="_blank">PleaseJS</a>. A table beneath the chart calculates how many hours you will spend on each activity weekly, monthly, and yearly, as well as how many hours you will spend on each activity in your remaining lifespan based on your current age and your specified ending age. If you are not sure which activities to start with, you can click one of the starter buttons to display activities for common lifestyles. You can store your activities using an <a href="https://github.com/estherh5/pause_api/" rel="noopener noreferrer" target="_blank">API</a>, which generates a unique external identifier that you can use to access your activities in a URL (i.e., "https://pause.crystalprism.io/&#60;external_id&#62;"), allowing you to revisit them and share them with others.
-          </text>
-        </div>
-
-        <!-- Hacker News Stats overview -->
-        <div id="hn-stats-overview" class="project-overview">
-          <a class="modal-project-title" href="https://hn-stats.crystalprism.io/">
-            <img class="project-icon-large" src="images/hn-stats-icon.png">
-            <h2>Hacker News Stats</h2>
-          </a>
-          <!-- Hacker News Stats repo -->
-          <a class="github-repo" href="https://github.com/estherh5/hacker_news_stats/tree/master/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: April 2018 - Present</text>
-          </a>
-          <!-- Hacker News Stats skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon devicon-javascript-plain"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-sass"></i>
-              <text class="text-small">&nbsp;Sass</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (RDS)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-heroku-original"></i>
-              <text class="text-small">&nbsp;Heroku</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon ionicons ion-social-python"></i>
-              <text class="text-small">&nbsp;SQLAlchemy</text>
-            </div>
-          </div>
-          <!-- Hacker News Stats video -->
-          <div class="video-container" data-project="hn-stats">
-            <video id="hn-stats-video" type="video/mp4" preload="metadata" data-project="hn-stats"></video>
-            <i id="hn-stats-control" class="fas fa-play"></i>
-          </div>
-          <!-- Hacker News Stats description -->
-          <text>
-            <a href="https://hn-stats.crystalprism.io/">Hacker News Stats</a> is a display of statistics from data scraped from Y Combinator's news site, <a href="https://news.ycombinator.com/" rel="noopener noreferrer" target="_blank">Hacker News</a>. I use <a href="http://docs.python-requests.org/en/master/">Requests</a>, <a href="https://www.crummy.com/software/BeautifulSoup/" rel="noopener noreferrer" target="_blank">Beautiful Soup</a>, and <a href="https://docs.python.org/3/library/asyncio.html" rel="noopener noreferrer" target="_blank">asyncio</a> libraries to acquire and parse the first three pages of posts from the main Hacker News feed asynchronously. I then store the data in an Amazon RDS instance of PostgreSQL and serve it through a series of API endpoints that return statistics based on time period (e.g., `/api/hacker_news/stats/hour/average_comment_count` returns the average comment count for posts in the past hour, `/api/hacker_news/stats/week/top_website` returns the most common websites that articles were posted from). The Stats page displays various <a href="https://www.highcharts.com/" rel="noopener noreferrer" target="_blank">Highcharts</a> visualizations of the scraped data, including a pie chart that shows a breakdown of the different types of posts, a word cloud of the most common words used in post comments (excluding stop words), and a bubble chart of the top five users who posted the most comments (with each bubble's width reflecting their total words used). Buttons at the top of the Stats page allow the user to toggle between different time periods of data (e.g., past hour, past day, past week).
-          </text>
-        </div>
-
-        <!-- User accounts overview -->
-        <div id="user-overview" class="project-overview">
-          <a class="modal-project-title" href="user/create-account/">
-            <img class="project-icon-large" src="images/homepage.png">
-            <h2>User Accounts</h2>
-          </a>
-          <!-- User accounts repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/user/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Sept 2017 - Present</text>
-          </a>
-          <!-- User accounts skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (EC2)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-linux"></i>
-              <text class="text-small">&nbsp;Linux</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-apache-plain"></i>
-              <text class="text-small">&nbsp;Apache</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-          </div>
-          <!-- User accounts video -->
-          <div class="video-container" data-project="user">
-            <video id="user-video" type="video/mp4" preload="metadata" data-project="user"></video>
-            <i id="user-control" class="fas fa-play"></i>
-          </div>
-          <!-- User accounts description -->
-          <text>
-            Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts and comments. Each user has a personal profile that others can visit to see the work the user has created on the website. Users can also update their personal information and view member statistics (e.g., number of drawings created) on the My Account page. I used Bootstrap to stylize each page of the user account experience (<a href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the diamond logo that each user can change the color of for his/her profile. I aimed to make the My Account page minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts, Drawings). User data is stored in a PostgreSQL RDBMS and accessed via <a href="https://github.com/estherh5/api.crystalprism.io/">RESTful API endpoints</a>. Users can download all of their data at any time from the <a href="user/my-account/">My Account page</a> in a zip file, which contains HTML files for their drawings, posts, and comments, rendered with <a href="http://jinja.pocoo.org/" rel="noopener noreferrer" target="_blank">Jinja2</a>. To ensure user data is unreadable to everyone except for the user (including server admins), I used Python's <a href="https://docs.python.org/3.6/library/tempfile.html" rel="noopener noreferrer" target="_blank">tempfile</a> library to generate a temporary zip file that is immediately deleted from the back-end server as soon as it is delivered to the user.
-          </text>
-        </div>
-
-        <!-- NoBugs! overview -->
-        <div id="nobugs-overview" class="project-overview">
-          <a class="modal-project-title" href="https://nobugsphilly.com/">
-            <img class="project-icon-large" src="images/nobugs-icon.png">
-            <h2>NoBugs!</h2>
-          </a>
-          <!-- NoBugs! repo -->
-          <a class="github-repo" href="https://github.com/estherh5/nobugs/tree/master/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Aug 2017 - Present</text>
-          </a>
-          <!-- NoBugs! skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-bootstrap-plain"></i>
-              <text class="text-small">&nbsp;Bootstrap</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fas fa-cloud"></i>
-              <text class="text-small">&nbsp;GCP (App Engine)</text>
-            </div>
-          </div>
-          <!-- NoBugs! video -->
-          <div class="video-container" data-project="nobugs">
-            <video id="nobugs-video" type="video/mp4" preload="metadata" data-project="nobugs"></video>
-            <i id="nobugs-control" class="fa fa-play"></i>
-          </div>
-          <!-- NoBugs! description -->
-          <text>
-            <a href="https://nobugsphilly.com/">NoBugs!</a> is a small, family-owned pest control supply company in Philadelphia, PA. The owners have largely kept their business off of the internet, advertising through paper and word of mouth, so they requested a professional, minimally designed website to help them advertise online and generate more business from a wider audience. The website tells the story of NoBugs!'s history and shares relevant product, seminar and contact information with viewers, with family photos for a personal touch. Visitors can sign up for the business mailing list on each page of the site, and their email addresses get stored on a Google Sheets spreadsheet that the owners use to keep track of their customer base via the <a href="https://developers.google.com/sheets/api/" rel="noopener noreferrer" target="_blank">Google Sheets API</a>.
-          </text>
-        </div>
-
-        <!-- Vicarious overview -->
-        <div id="vicarious-overview" class="project-overview">
-          <a class="modal-project-title" href="vicarious/">
-            <img class="project-icon-large" src="images/vicarious-icon.png">
-            <h2>Vicarious</h2>
-          </a>
-          <!-- Vicarious repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/vicarious/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Aug 2017 - Present</text>
-          </a>
-          <!-- Vicarious skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-bootstrap-plain"></i>
-              <text class="text-small">&nbsp;Bootstrap</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-          </div>
-          <!-- Vicarious video -->
-          <div class="video-container" data-project="vicarious">
-            <video id="vicarious-video" type="video/mp4" preload="metadata" data-project="vicarious"></video>
-            <i id="vicarious-control" class="fa fa-play"></i>
-          </div>
-          <!-- Vicarious description -->
-          <text>
-            <a href="vicarious/">Vicarious</a> is a travel photo hub that allows users to search for a place they want to visit and pull up the latest images of that place that are posted on <a href="https://www.reddit.com/r/travel/" rel="noopener noreferrer" target="_blank">Reddit's Travel subreddit</a>. I used Bootstrap to design the layout of the project and fetch to request post and image data from Reddit's API. I often daydream about traveling and like to look through pictures for inspiration for future trips (even if I don't end up taking those trips), so I created this project to facilitate my vicarious habits.
-          </text>
-        </div>
-
-        <!-- Thought Writer overview -->
-        <div id="thought-writer-overview" class="project-overview">
-          <a class="modal-project-title" href="thought-writer/">
-            <img class="project-icon-large" src="images/thought-writer-icon.png">
-            <h2>Thought Writer</h2>
-          </a>
-          <!-- Thought Writer repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/thought-writer/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Aug 2017 - Present</text>
-          </a>
-          <!-- Thought Writer skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (EC2)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-linux"></i>
-              <text class="text-small">&nbsp;Linux</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-apache-plain"></i>
-              <text class="text-small">&nbsp;Apache</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-          </div>
-          <!-- Thought Writer video -->
-          <div class="video-container" data-project="thought-writer">
-            <video id="thought-writer-video" type="video/mp4" preload="metadata" data-project="thought-writer"></video>
-            <i id="thought-writer-control" class="fa fa-play dark"></i>
-          </div>
-          <!-- Thought Writer description -->
-          <text>
-            <a href="thought-writer/">Thought Writer</a> is a community post board for users to post short ideas for others to read and comment on. Posts are created through a What-You-See-Is-What-You-Get (WYSIWYG) text editor that allows users to save their posts to the public board and/or save their own private posts if they have a registered account. I originally created this text editor as a personal diary for the Ideas page, to document thoughts on programming, design, and life in general, then decided to make it communal as a public board for users to tack up ideas on. The name derives from a combination of "thought book" (an old diary I used to keep) and "typewriter."
-          </text>
-        </div>
-
-        <!-- CanvaShare overview -->
-        <div id="canvashare-overview" class="project-overview">
-          <a class="modal-project-title" href="canvashare/">
-            <img class="project-icon-large" src="images/canvashare-icon.png">
-            <h2>CanvaShare</h2>
-          </a>
-          <!-- CanvaShare repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/canvashare/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Mar 2017 - Present</text>
-          </a>
-          <!-- CanvaShare skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (EC2, S3, Boto3)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-linux"></i>
-              <text class="text-small">&nbsp;Linux</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-apache-plain"></i>
-              <text class="text-small">&nbsp;Apache</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-          </div>
-          <!-- CanvaShare video -->
-          <div class="video-container" data-project="canvashare">
-            <video id="canvashare-video" type="video/mp4" preload="metadata" data-project="canvashare"></video>
-            <i id="canvashare-control" class="fa fa-play dark"></i>
-          </div>
-          <!-- CanvaShare description -->
-          <text>
-            <a href="canvashare/">CanvaShare</a> is a community drawing gallery that lets users create drawings and share them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a drawing to make it their own. I use <a href="http://snapsvg.io/" rel="noopener noreferrer" target="_blank">Snap.svg</a> for canvas and object manipulation, as well as <a href="https://www.createjs.com/easeljs/" rel="noopener noreferrer" target="_blank">EaselJS</a> for canvas drawing functions. If users have a registered account, their drawings are saved to their public profile page for others to see and like. A server-side image perception algorithm assesses the drawing's uniqueness before storing it on an Amazon S3 bucket and posting it to the main gallery page to ensure each user is generating unique content as they iterate on others' drawings. Drawing lets me express myself in a way that words often cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the community.
-          </text>
-        </div>
-
-        <!-- Rhythm of Life overview -->
-        <div id="rhythm-of-life-overview" class="project-overview">
-          <a class="modal-project-title" href="rhythm-of-life/">
-            <img class="project-icon-large" src="images/rhythm-of-life-icon.png">
-            <h2>Rhythm of Life</h2>
-          </a>
-          <!-- Rhythm of Life repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/rhythm-of-life/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Feb 2017 - Present</text>
-          </a>
-          <!-- Rhythm of Life skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (EC2)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-linux"></i>
-              <text class="text-small">&nbsp;Linux</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-apache-plain"></i>
-              <text class="text-small">&nbsp;Apache</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-          </div>
-          <!-- Rhythm of Life video -->
-          <div class="video-container" data-project="rhythm-of-life">
-            <video id="rhythm-of-life-video" type="video/mp4" preload="metadata" data-project="rhythm-of-life"></video>
-            <i id="rhythm-of-life-control" class="fa fa-play dark"></i>
-          </div>
-          <!-- Rhythm of Life description -->
-          <text>
-            <a href="rhythm-of-life/">Rhythm of Life</a> is an educational take on the classic game Snake. Users direct a moving heart across a game board to seek blood pressure relievers and avoid stressors that follow the heart to maintain a low blood pressure. As the heart collides with stressors, the blood pressure increases and the heart's and stressors' speed increases. The game ends when the blood pressure has reached hypertensive levels, and the user's lifespan is saved to a leaderboard on a server. The game board displays information about blood pressure stressors and relievers, with links to heart health sources like WebMD and the American Heart Association. I use <a href="http://snapsvg.io/" rel="noopener noreferrer" target="_blank">Snap.svg</a> to ease canvas and object manipulation, as well as <a href="https://howlerjs.com/" rel="noopener noreferrer" target="_blank">Howler</a> to control the background heartbeat sound.
-          </text>
-        </div>
-
-        <!-- Shapes in Rain overview -->
-        <div id="shapes-in-rain-overview" class="project-overview">
-          <a class="modal-project-title" href="shapes-in-rain/">
-            <img class="project-icon-large" src="images/shapes-in-rain-icon.png">
-            <h2>Shapes in Rain</h2>
-          </a>
-          <!-- Shapes in Rain repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/shapes-in-rain/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Jan 2017 - Present</text>
-          </a>
-          <!-- Shapes in Rain skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-python"></i>
-              <text class="text-small">&nbsp;Python</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-flask-original"></i>
-              <text class="text-small">&nbsp;Flask</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-amazonwebservices-original"></i>
-              <text class="text-small">&nbsp;AWS (EC2)</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-linux"></i>
-              <text class="text-small">&nbsp;Linux</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-apache-plain"></i>
-              <text class="text-small">&nbsp;Apache</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon devicon-postgresql-plain"></i>
-              <text class="text-small">&nbsp;PostgreSQL</text>
-            </div>
-          </div>
-          <!-- Shapes in Rain video -->
-          <div class="video-container" data-project="shapes-in-rain">
-            <video id="shapes-in-rain-video" type="video/mp4" preload="metadata" data-project="shapes-in-rain"></video>
-            <i id="shapes-in-rain-control" class="fa fa-play"></i>
-          </div>
-          <!-- Shapes in Rain description -->
-          <text>
-            <a href="shapes-in-rain/">Shapes in Rain</a> is a game in which random shapes appear periodically on the page for a user to clear with a click. Hearts rain down the screen and light piano music plays in the background to create a peaceful scene for users to clear their minds as they clear the shapes from the page. The rain and shapes clear on their own after a certain time interval to optimize system performance. Users' scores are saved to a server when they end the game if they have a registered account.
-          </text>
-        </div>
-
-        <!-- Timespace overview -->
-        <div id="timespace-overview" class="project-overview">
-          <a class="modal-project-title" href="timespace/">
-            <img class="project-icon-large" src="images/timespace-icon.png">
-            <h2>Timespace</h2>
-          </a>
-          <!-- Timespace repo -->
-          <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/master/timespace/" rel="noopener noreferrer" target="_blank">
-            <i class="small-icon fab fa-github"></i>
-            <text>GitHub Repository: Jan 2017 - Present</text>
-          </a>
-          <!-- Timespace skills -->
-          <div class="project-skills">
-            <div class="skill">
-              <i class="small-icon fab fa-js-square"></i>
-              <text class="text-small">&nbsp;JavaScript</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-css3"></i>
-              <text class="text-small">&nbsp;CSS</text>
-            </div>
-            <div class="skill">
-              <i class="small-icon fab fa-html5"></i>
-              <text class="text-small">&nbsp;HTML5</text>
-            </div>
-          </div>
-          <!-- Timespace video -->
-          <div class="video-container" data-project="timespace">
-            <video id="timespace-video" type="video/mp4" preload="metadata" data-project="timespace"></video>
-            <i id="timespace-control" class="fa fa-play"></i>
-          </div>
-          <!-- Timespace description -->
-          <text>
-            <a href="timespace/">Timespace</a> is a clock that depicts the movement of time with circles that change color and location on the page based on the current time. The clock displays a quote from T. S. Eliot and plays the sound of Saturn's rings in the background, meant to elicit peaceful reflection on the conception and passage of time. This is the first web project I developed.
-          </text>
-        </div>
-
-        <!-- Modal controls -->
-        <button id="project-previous" class="control previous hidden">
-          <span>&#60;</span>
-        </button>
-        <button id="project-next" class="control next hidden">
-          <span>&#62;</span>
-        </button>
-
+        <!-- Methods description -->
+        <text>
+          <a href="https://methods.crystalprism.io/">Methods</a> is a private, password-gated lab notebook for
+          documenting sourdough bakes and fermentation experiments. Users record recipes &mdash; formulas, instructions,
+          and references &mdash; and keep detailed observation timelines noting temperature, humidity, daily progress,
+          and step-by-step photos. The interface borrows the aesthetic of a scientific lab notebook, with graph-paper
+          backgrounds, specimen-label cards, and an observation log rendered as a ruler of tick marks. It is built as a
+          full-stack TypeScript app pairing a <a href="https://vitejs.dev/" rel="noopener noreferrer"
+            target="_blank">Vite</a> + React frontend with serverless Vercel Functions, using <a
+            href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a
+            href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database, Vercel
+          Blob for photo storage, and encrypted iron-session cookies for authentication.
+        </text>
       </div>
-    </div>
-
-    <!-- Modal that displays photos from Photos page -->
-    <div id="photo-modal-background" class="modal-background hidden">
-      <div id="photo-modal-body" class="modal-body">
-        <button id="photo-close" class="close hidden">&times;</button>
-
-        <!-- Image tag for larger photo to display -->
-        <img id="larger-photo">
-
-        <!-- Modal controls -->
-        <button id="photo-previous" class="control previous hidden">
-          <span>&#60;</span>
-        </button>
-        <button id="photo-next" class="control next hidden">
-          <span>&#62;</span>
-        </button>
-
+      <!-- GiftMe overview -->
+      <div id="giftme-overview" class="project-overview">
+        <a class="modal-project-title" href="https://giftme.crystalprism.io/">
+          <img class="project-icon-large" src="images/giftme-icon.png">
+          <h2>GiftMe</h2>
+        </a>
+        <!-- GiftMe repo -->
+        <a class="github-repo" href="https://github.com/estherh5/giftme/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jun 2026 - Present</text>
+        </a>
+        <!-- GiftMe skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-lock"></i>
+            <text class="text-small">&nbsp;Auth.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- GiftMe video -->
+        <div class="video-container" data-project="giftme">
+          <video id="giftme-video" type="video/mp4" preload="metadata" data-project="giftme"></video>
+          <i id="giftme-control" class="fas fa-play"></i>
+        </div>
+        <!-- GiftMe description -->
+        <text>
+          <a href="https://giftme.crystalprism.io/">GiftMe</a> is a web app for tracking the gifts you've given,
+          received, and want &mdash; organized by person and occasion. Users can log gifts with dates, prices, photos,
+          and notes, filter and search across people and events, and share read-only wishlist links so others can see
+          what they're hoping for. It is built with <a href="https://nextjs.org/" rel="noopener noreferrer"
+            target="_blank">Next.js</a> and React in TypeScript, with <a href="https://authjs.dev/"
+            rel="noopener noreferrer" target="_blank">Auth.js</a> handling email/password accounts, <a
+            href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> managing a Turso
+          (libSQL) database, and Vercel Blob storing uploaded gift photos.
+        </text>
       </div>
+      <!-- Passage overview -->
+      <div id="passage-overview" class="project-overview">
+        <a class="modal-project-title" href="https://passage.crystalprism.io/">
+          <img class="project-icon-large" src="images/passage-icon.png">
+          <h2>Passage</h2>
+        </a>
+        <!-- Passage repo -->
+        <a class="github-repo" href="https://github.com/estherh5/passage/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jun 2026 - Present</text>
+        </a>
+        <!-- Passage skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;Tailwind CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-map-marker-alt"></i>
+            <text class="text-small">&nbsp;MapLibre GL</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Passage video -->
+        <div class="video-container" data-project="passage">
+          <video id="passage-video" type="video/mp4" preload="metadata" data-project="passage"></video>
+          <i id="passage-control" class="fas fa-play"></i>
+        </div>
+        <!-- Passage description -->
+        <text>
+          <a href="https://passage.crystalprism.io/">Passage</a> is a travel logbook and trip planner that unites the
+          two halves of a journey &mdash; planning and remembering &mdash; into a single chronological record per trip.
+          Before traveling, companions can collaborate on day-by-day itineraries, lodging, transport, and packing lists;
+          afterward, uploaded photos auto-organize by EXIF date and location and pin to an interactive map. It handles
+          both multi-day trips and one-off hangouts, with a warm, editorial design that favors personal keepsakes over
+          transactional density. Passage is built with Next.js, React, and Tailwind CSS, using NextAuth for Google
+          sign-in, Drizzle ORM over a Turso (libSQL) database, <a href="https://maplibre.org/" rel="noopener noreferrer"
+            target="_blank">MapLibre GL</a> for mapping, the Google Places API for geocoding, and Vercel Blob for photo
+          storage.
+        </text>
+      </div>
+      <!-- Restock overview -->
+      <div id="restock-overview" class="project-overview">
+        <a class="modal-project-title" href="https://restock.crystalprism.io/">
+          <img class="project-icon-large" src="images/restock-icon.png">
+          <h2>Restock</h2>
+        </a>
+        <!-- Restock repo -->
+        <a class="github-repo" href="https://github.com/estherh5/restock/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jun 2026 - Present</text>
+        </a>
+        <!-- Restock skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-lock"></i>
+            <text class="text-small">&nbsp;Auth.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Restock video -->
+        <div class="video-container" data-project="restock">
+          <video id="restock-video" type="video/mp4" preload="metadata" data-project="restock"></video>
+          <i id="restock-control" class="fas fa-play"></i>
+        </div>
+        <!-- Restock description -->
+        <text>
+          <a href="https://restock.crystalprism.io/">Restock</a> is a household inventory tracker for the consumables
+          you buy on repeat &mdash; paper goods, pantry staples, and toiletries. Quick +/&minus; controls keep current
+          counts up to date, per-item reorder thresholds flag what's running low, and timestamped usage history powers
+          predicted run-out dates so you reorder before you run out. Households can invite members by email to manage a
+          shared inventory together, and the app cross-references Amazon Subscribe &amp; Save deliveries to avoid
+          double-ordering. It is built with Next.js and React in TypeScript, using Auth.js with Google OAuth, Drizzle
+          ORM over a Turso (libSQL) database, <a href="https://resend.com/" rel="noopener noreferrer"
+            target="_blank">Resend</a> for invitation emails, and Vercel Blob for item photos.
+        </text>
+      </div>
+      <!-- i dream of neon overview -->
+      <div id="idreamofneon-overview" class="project-overview">
+        <a class="modal-project-title" href="https://idreamofneon.com/">
+          <img class="project-icon-large" src="images/idreamofneon-icon.png">
+          <h2>i dream of neon</h2>
+        </a>
+        <!-- i dream of neon repo -->
+        <a class="github-repo" href="https://github.com/estherh5/idreamofneon/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jun 2026 - Present</text>
+        </a>
+        <!-- i dream of neon skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;Tailwind CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- i dream of neon video -->
+        <div class="video-container" data-project="idreamofneon">
+          <video id="idreamofneon-video" type="video/mp4" preload="metadata" data-project="idreamofneon"></video>
+          <i id="idreamofneon-control" class="fas fa-play"></i>
+        </div>
+        <!-- i dream of neon description -->
+        <text>
+          <a href="https://idreamofneon.com/">i dream of neon</a> is a neon-soaked dream journal that runs privately on
+          your own machine &mdash; every entry stays local behind a single password unless you choose to deploy it.
+          Users write down their dreams each morning in markdown, browse them in a glowing atmospheric feed, record
+          audio straight from the microphone, and attach YouTube links for songs that linger after waking. A standout
+          feature is a seamless Apple Notes import pipeline that syncs dreams jotted on an iPhone through iCloud into
+          the app, with optional automatic daily syncing via a macOS LaunchAgent. It is built with Next.js, React, and
+          Tailwind CSS, using Drizzle ORM over a libSQL/Turso database, <a
+            href="https://github.com/remarkjs/react-markdown" rel="noopener noreferrer"
+            target="_blank">react-markdown</a> for rendering, the <a href="https://compromise.cool/"
+            rel="noopener noreferrer" target="_blank">compromise</a> NLP library for text analysis, and encrypted
+          iron-session authentication.
+        </text>
+      </div>
+      <!-- Vroom overview -->
+      <div id="vroom-overview" class="project-overview">
+        <a class="modal-project-title" href="https://vroom.crystalprism.io/">
+          <img class="project-icon-large" src="images/vroom-icon.png">
+          <h2>Vroom</h2>
+        </a>
+        <!-- Vroom repo -->
+        <a class="github-repo" href="https://github.com/estherh5/vroom/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: September 2018 - Present</text>
+        </a>
+        <!-- Vroom skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-javascript-plain"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-heroku-original"></i>
+            <text class="text-small">&nbsp;Heroku</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;SQLAlchemy</text>
+          </div>
+        </div>
+        <!-- Vroom video -->
+        <div class="video-container" data-project="vroom">
+          <video id="vroom-video" type="video/mp4" preload="metadata" data-project="vroom"></video>
+          <i id="vroom-control" class="fas fa-play"></i>
+        </div>
+        <!-- Vroom description -->
+        <text>
+          <a href="https://vroom.crystalprism.io/">Vroom</a> is a <a href="https://reactjs.org/"
+            rel="noopener noreferrer" target="_blank">React</a> web app that makes renting a car quick and easy. Vroom
+          displays an interactive portal where you can search for a location and dates/times to pick up and drop off
+          your rental car, then select a rental car from different rental companies, and lastly confirm your booking and
+          see a map of how to get to your intended pick-up location. Vroom uses <a
+            href="https://github.com/ubilabs/react-geosuggest/" rel="noopener noreferrer" target="_blank">React
+            Geosuggest</a> to suggest Google Maps locations as you search for your pick-up and drop-off cities, as well
+          as <a href="https://github.com/airbnb/react-dates/" rel="noopener noreferrer" target="_blank">Airbnb's
+            react-dates</a> to provide a calendar-based date range selector. Car rental data is acquired via <a
+            href="https://rapidapi.com/DataCrawler/api/booking-com15/" rel="noopener noreferrer"
+            target="_blank">RapidAPI's Car Rental API</a>. When you confirm your booking, your information gets sent to
+          a <a href="https://github.com/estherh5/vroom_api/" rel="noopener noreferrer" target="_blank">RESTful API</a>
+          that stores your data in a PostgreSQL database and returns a unique confirmation code for your booking.
+        </text>
+      </div>
+
+      <!-- Marian overview -->
+      <div id="marian-overview" class="project-overview">
+        <a class="modal-project-title" href="https://marian.crystalprism.io/">
+          <img class="project-icon-large" src="images/marian-icon.png">
+          <h2>Marian</h2>
+        </a>
+        <!-- Marian repo -->
+        <a class="github-repo" href="https://github.com/estherh5/marian/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: July 2018 - Present</text>
+        </a>
+        <!-- Marian skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-angular"></i>
+            <text class="text-small">&nbsp;Angular</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Marian video -->
+        <div class="video-container" data-project="marian">
+          <video id="marian-video" type="video/mp4" preload="metadata" data-project="marian"></video>
+          <i id="marian-control" class="fas fa-play"></i>
+        </div>
+        <!-- Marian description -->
+        <text>
+          <a href="https://marian.crystalprism.io/">Marian</a> is an <a href="https://angular.io/"
+            rel="noopener noreferrer" target="_blank">Angular</a> web app that allows you to visualize real-time stock
+          data, generate a graph of net equity for each stock in your portfolio, and read the latest market and stock
+          news. Marian is a counterpart to <a href="https://robinhood.com/" rel="noopener noreferrer"
+            target="_blank">Robinhood</a> and also stands on its own, as users can enter share data for each stock in
+          their portfolio to see how it contributes to their net equity over time. Marian displays up to 20 years' worth
+          of data for each stock, , as well as company information, using <a href="https://www.alphavantage.co/"
+            rel="noopener noreferrer" target="_blank">Alpha Vantage</a>'s global stocks API. It also gets real-time
+          stock prices and market news from <a href="https://finnhub.io/" rel="noopener noreferrer"
+            target="_blank">Finnhub</a>'s API. Marian's graphs are built from the <a href="https://www.amcharts.com/"
+            rel="noopener noreferrer" target="_blank">amCharts</a> library, and its search bar is powered by <a
+            href="https://www.algolia.com/" rel="noopener noreferrer" target="_blank">Algolia</a>.
+        </text>
+      </div>
+
+      <!-- Pause overview -->
+      <div id="pause-overview" class="project-overview">
+        <a class="modal-project-title" href="https://pause.crystalprism.io/">
+          <img class="project-icon-large" src="images/pause-icon.png">
+          <h2>Pause</h2>
+        </a>
+        <!-- Pause repo -->
+        <a class="github-repo" href="https://github.com/estherh5/pause/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: June 2018 - Present</text>
+        </a>
+        <!-- Pause skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-javascript-plain"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-heroku-original"></i>
+            <text class="text-small">&nbsp;Heroku</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;SQLAlchemy</text>
+          </div>
+        </div>
+        <!-- Pause video -->
+        <div class="video-container" data-project="pause">
+          <video id="pause-video" type="video/mp4" preload="metadata" data-project="pause"></video>
+          <i id="pause-control" class="fas fa-play"></i>
+        </div>
+        <!-- Pause description -->
+        <text>
+          <a href="https://pause.crystalprism.io/">Pause</a> is a <a href="https://reactjs.org/"
+            rel="noopener noreferrer" target="_blank">React</a> web app that allows you to plan your day, week or month
+          and visually display each day's breakdown of 24 hours in a chart generated with <a
+            href="https://jerairrest.github.io/react-chartjs-2/" rel="noopener noreferrer"
+            target="_blank">React-ChartJS-2</a>. You can enter any activities you would like in a table, including the
+          activity name and the number of hours you would like to dedicate to that activity. Each chart updates
+          dynamically whenever you add, delete, or update an activity. You can toggle between different chart types
+          (pie, bar, radar, doughnut) to visualize your data in different ways. Chart color palettes are generated
+          randomly with a modified version of <a href="https://github.com/Fooidge/PleaseJS/" rel="noopener noreferrer"
+            target="_blank">PleaseJS</a>. A table beneath the chart calculates how many hours you will spend on each
+          activity weekly, monthly, and yearly, as well as how many hours you will spend on each activity in your
+          remaining lifespan based on your current age and your specified ending age. If you are not sure which
+          activities to start with, you can click one of the starter buttons to display activities for common
+          lifestyles. You can store your activities using an <a href="https://github.com/estherh5/pause_api/"
+            rel="noopener noreferrer" target="_blank">API</a>, which generates a unique external identifier that you can
+          use to access your activities in a URL (i.e., "https://pause.crystalprism.io/&#60;external_id&#62;"), allowing
+          you to revisit them and share them with others.
+        </text>
+      </div>
+
+      <!-- Hacker News Stats overview -->
+      <div id="hn-stats-overview" class="project-overview">
+        <a class="modal-project-title" href="https://hn-stats.crystalprism.io/">
+          <img class="project-icon-large" src="images/hn-stats-icon.png">
+          <h2>Hacker News Stats</h2>
+        </a>
+        <!-- Hacker News Stats repo -->
+        <a class="github-repo" href="https://github.com/estherh5/hacker_news_stats/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: April 2018 - Present</text>
+        </a>
+        <!-- Hacker News Stats skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-javascript-plain"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-sass"></i>
+            <text class="text-small">&nbsp;Sass</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (RDS)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-heroku-original"></i>
+            <text class="text-small">&nbsp;Heroku</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon ionicons ion-social-python"></i>
+            <text class="text-small">&nbsp;SQLAlchemy</text>
+          </div>
+        </div>
+        <!-- Hacker News Stats video -->
+        <div class="video-container" data-project="hn-stats">
+          <video id="hn-stats-video" type="video/mp4" preload="metadata" data-project="hn-stats"></video>
+          <i id="hn-stats-control" class="fas fa-play"></i>
+        </div>
+        <!-- Hacker News Stats description -->
+        <text>
+          <a href="https://hn-stats.crystalprism.io/">Hacker News Stats</a> is a display of statistics from data scraped
+          from Y Combinator's news site, <a href="https://news.ycombinator.com/" rel="noopener noreferrer"
+            target="_blank">Hacker News</a>. I use <a href="http://docs.python-requests.org/en/master/">Requests</a>, <a
+            href="https://www.crummy.com/software/BeautifulSoup/" rel="noopener noreferrer" target="_blank">Beautiful
+            Soup</a>, and <a href="https://docs.python.org/3/library/asyncio.html" rel="noopener noreferrer"
+            target="_blank">asyncio</a> libraries to acquire and parse the first three pages of posts from the main
+          Hacker News feed asynchronously. I then store the data in an Amazon RDS instance of PostgreSQL and serve it
+          through a series of API endpoints that return statistics based on time period (e.g.,
+          `/api/hacker_news/stats/hour/average_comment_count` returns the average comment count for posts in the past
+          hour, `/api/hacker_news/stats/week/top_website` returns the most common websites that articles were posted
+          from). The Stats page displays various <a href="https://www.highcharts.com/" rel="noopener noreferrer"
+            target="_blank">Highcharts</a> visualizations of the scraped data, including a pie chart that shows a
+          breakdown of the different types of posts, a word cloud of the most common words used in post comments
+          (excluding stop words), and a bubble chart of the top five users who posted the most comments (with each
+          bubble's width reflecting their total words used). Buttons at the top of the Stats page allow the user to
+          toggle between different time periods of data (e.g., past hour, past day, past week).
+        </text>
+      </div>
+
+      <!-- User accounts overview -->
+      <div id="user-overview" class="project-overview">
+        <a class="modal-project-title" href="user/create-account/">
+          <img class="project-icon-large" src="images/homepage.png">
+          <h2>User Accounts</h2>
+        </a>
+        <!-- User accounts repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/user/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Sept 2017 - Present</text>
+        </a>
+        <!-- User accounts skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (EC2)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-linux"></i>
+            <text class="text-small">&nbsp;Linux</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-apache-plain"></i>
+            <text class="text-small">&nbsp;Apache</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+        </div>
+        <!-- User accounts video -->
+        <div class="video-container" data-project="user">
+          <video id="user-video" type="video/mp4" preload="metadata" data-project="user"></video>
+          <i id="user-control" class="fas fa-play"></i>
+        </div>
+        <!-- User accounts description -->
+        <text>
+          Users who want to join the Crystal Prism community can create an account to store their Shapes in Rain and
+          Rhythm of Life scores, their CanvaShare drawings, and their Thought Writer posts and comments. Each user has a
+          personal profile that others can visit to see the work the user has created on the website. Users can also
+          update their personal information and view member statistics (e.g., number of drawings created) on the My
+          Account page. I used Bootstrap to stylize each page of the user account experience (<a
+            href="user/create-account/">Create Account page</a>, <a href="user/sign-in/">Sign In page</a>, <a
+            href="user/my-account/">My Account page</a>, and <a href="user/?username=admin">Profile page</a>. I used the
+          Google font <i>Sail</i> for titles on the user account pages to create a bold, luxurious look to match the
+          diamond logo that each user can change the color of for his/her profile. I aimed to make the My Account page
+          minimal and clean by only revealing content when users click the desired content menu (e.g., Scores, Posts,
+          Drawings). User data is stored in a PostgreSQL RDBMS and accessed via <a
+            href="https://github.com/estherh5/api.crystalprism.io/">RESTful API endpoints</a>. Users can download all of
+          their data at any time from the <a href="user/my-account/">My Account page</a> in a zip file, which contains
+          HTML files for their drawings, posts, and comments, rendered with <a href="http://jinja.pocoo.org/"
+            rel="noopener noreferrer" target="_blank">Jinja2</a>. To ensure user data is unreadable to everyone except
+          for the user (including server admins), I used Python's <a
+            href="https://docs.python.org/3.6/library/tempfile.html" rel="noopener noreferrer"
+            target="_blank">tempfile</a> library to generate a temporary zip file that is immediately deleted from the
+          back-end server as soon as it is delivered to the user.
+        </text>
+      </div>
+
+      <!-- NoBugs! overview -->
+      <div id="nobugs-overview" class="project-overview">
+        <a class="modal-project-title" href="https://nobugsphilly.com/">
+          <img class="project-icon-large" src="images/nobugs-icon.png">
+          <h2>NoBugs!</h2>
+        </a>
+        <!-- NoBugs! repo -->
+        <a class="github-repo" href="https://github.com/estherh5/nobugs/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Aug 2017 - Present</text>
+        </a>
+        <!-- NoBugs! skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-bootstrap-plain"></i>
+            <text class="text-small">&nbsp;Bootstrap</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;GCP (App Engine)</text>
+          </div>
+        </div>
+        <!-- NoBugs! video -->
+        <div class="video-container" data-project="nobugs">
+          <video id="nobugs-video" type="video/mp4" preload="metadata" data-project="nobugs"></video>
+          <i id="nobugs-control" class="fa fa-play"></i>
+        </div>
+        <!-- NoBugs! description -->
+        <text>
+          <a href="https://nobugsphilly.com/">NoBugs!</a> is a small, family-owned pest control supply company in
+          Philadelphia, PA. The owners have largely kept their business off of the internet, advertising through paper
+          and word of mouth, so they requested a professional, minimally designed website to help them advertise online
+          and generate more business from a wider audience. The website tells the story of NoBugs!'s history and shares
+          relevant product, seminar and contact information with viewers, with family photos for a personal touch.
+          Visitors can sign up for the business mailing list on each page of the site, and their email addresses get
+          stored on a Google Sheets spreadsheet that the owners use to keep track of their customer base via the <a
+            href="https://developers.google.com/sheets/api/" rel="noopener noreferrer" target="_blank">Google Sheets
+            API</a>.
+        </text>
+      </div>
+
+      <!-- Vicarious overview -->
+      <div id="vicarious-overview" class="project-overview">
+        <a class="modal-project-title" href="vicarious/">
+          <img class="project-icon-large" src="images/vicarious-icon.png">
+          <h2>Vicarious</h2>
+        </a>
+        <!-- Vicarious repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/vicarious/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Aug 2017 - Present</text>
+        </a>
+        <!-- Vicarious skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-bootstrap-plain"></i>
+            <text class="text-small">&nbsp;Bootstrap</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Vicarious video -->
+        <div class="video-container" data-project="vicarious">
+          <video id="vicarious-video" type="video/mp4" preload="metadata" data-project="vicarious"></video>
+          <i id="vicarious-control" class="fa fa-play"></i>
+        </div>
+        <!-- Vicarious description -->
+        <text>
+          <a href="vicarious/">Vicarious</a> is a travel photo hub that allows users to search for a place they want to
+          visit and pull up the latest images of that place that are posted on <a
+            href="https://www.reddit.com/r/travel/" rel="noopener noreferrer" target="_blank">Reddit's Travel
+            subreddit</a>. I used Bootstrap to design the layout of the project and fetch to request post and image data
+          from Reddit's API. I often daydream about traveling and like to look through pictures for inspiration for
+          future trips (even if I don't end up taking those trips), so I created this project to facilitate my vicarious
+          habits.
+        </text>
+      </div>
+
+      <!-- Thought Writer overview -->
+      <div id="thought-writer-overview" class="project-overview">
+        <a class="modal-project-title" href="thought-writer/">
+          <img class="project-icon-large" src="images/thought-writer-icon.png">
+          <h2>Thought Writer</h2>
+        </a>
+        <!-- Thought Writer repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/thought-writer/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Aug 2017 - Present</text>
+        </a>
+        <!-- Thought Writer skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (EC2)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-linux"></i>
+            <text class="text-small">&nbsp;Linux</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-apache-plain"></i>
+            <text class="text-small">&nbsp;Apache</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+        </div>
+        <!-- Thought Writer video -->
+        <div class="video-container" data-project="thought-writer">
+          <video id="thought-writer-video" type="video/mp4" preload="metadata" data-project="thought-writer"></video>
+          <i id="thought-writer-control" class="fa fa-play dark"></i>
+        </div>
+        <!-- Thought Writer description -->
+        <text>
+          <a href="thought-writer/">Thought Writer</a> is a community post board for users to post short ideas for
+          others to read and comment on. Posts are created through a What-You-See-Is-What-You-Get (WYSIWYG) text editor
+          that allows users to save their posts to the public board and/or save their own private posts if they have a
+          registered account. I originally created this text editor as a personal diary for the Ideas page, to document
+          thoughts on programming, design, and life in general, then decided to make it communal as a public board for
+          users to tack up ideas on. The name derives from a combination of "thought book" (an old diary I used to keep)
+          and "typewriter."
+        </text>
+      </div>
+
+      <!-- CanvaShare overview -->
+      <div id="canvashare-overview" class="project-overview">
+        <a class="modal-project-title" href="canvashare/">
+          <img class="project-icon-large" src="images/canvashare-icon.png">
+          <h2>CanvaShare</h2>
+        </a>
+        <!-- CanvaShare repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/canvashare/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Mar 2017 - Present</text>
+        </a>
+        <!-- CanvaShare skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (EC2, S3, Boto3)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-linux"></i>
+            <text class="text-small">&nbsp;Linux</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-apache-plain"></i>
+            <text class="text-small">&nbsp;Apache</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+        </div>
+        <!-- CanvaShare video -->
+        <div class="video-container" data-project="canvashare">
+          <video id="canvashare-video" type="video/mp4" preload="metadata" data-project="canvashare"></video>
+          <i id="canvashare-control" class="fa fa-play dark"></i>
+        </div>
+        <!-- CanvaShare description -->
+        <text>
+          <a href="canvashare/">CanvaShare</a> is a community drawing gallery that lets users create drawings and share
+          them on a public gallery. From the gallery, users can like and view others' drawings and can iterate on a
+          drawing to make it their own. I use <a href="http://snapsvg.io/" rel="noopener noreferrer"
+            target="_blank">Snap.svg</a> for canvas and object manipulation, as well as <a
+            href="https://www.createjs.com/easeljs/" rel="noopener noreferrer" target="_blank">EaselJS</a> for canvas
+          drawing functions. If users have a registered account, their drawings are saved to their public profile page
+          for others to see and like. A server-side image perception algorithm assesses the drawing's uniqueness before
+          storing it on an Amazon S3 bucket and posting it to the main gallery page to ensure each user is generating
+          unique content as they iterate on others' drawings. Drawing lets me express myself in a way that words often
+          cannot, so I created this project to allow others to do the same, sharing and gleaning inspiration from the
+          community.
+        </text>
+      </div>
+
+      <!-- Rhythm of Life overview -->
+      <div id="rhythm-of-life-overview" class="project-overview">
+        <a class="modal-project-title" href="rhythm-of-life/">
+          <img class="project-icon-large" src="images/rhythm-of-life-icon.png">
+          <h2>Rhythm of Life</h2>
+        </a>
+        <!-- Rhythm of Life repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/rhythm-of-life/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Feb 2017 - Present</text>
+        </a>
+        <!-- Rhythm of Life skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (EC2)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-linux"></i>
+            <text class="text-small">&nbsp;Linux</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-apache-plain"></i>
+            <text class="text-small">&nbsp;Apache</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+        </div>
+        <!-- Rhythm of Life video -->
+        <div class="video-container" data-project="rhythm-of-life">
+          <video id="rhythm-of-life-video" type="video/mp4" preload="metadata" data-project="rhythm-of-life"></video>
+          <i id="rhythm-of-life-control" class="fa fa-play dark"></i>
+        </div>
+        <!-- Rhythm of Life description -->
+        <text>
+          <a href="rhythm-of-life/">Rhythm of Life</a> is an educational take on the classic game Snake. Users direct a
+          moving heart across a game board to seek blood pressure relievers and avoid stressors that follow the heart to
+          maintain a low blood pressure. As the heart collides with stressors, the blood pressure increases and the
+          heart's and stressors' speed increases. The game ends when the blood pressure has reached hypertensive levels,
+          and the user's lifespan is saved to a leaderboard on a server. The game board displays information about blood
+          pressure stressors and relievers, with links to heart health sources like WebMD and the American Heart
+          Association. I use <a href="http://snapsvg.io/" rel="noopener noreferrer" target="_blank">Snap.svg</a> to ease
+          canvas and object manipulation, as well as <a href="https://howlerjs.com/" rel="noopener noreferrer"
+            target="_blank">Howler</a> to control the background heartbeat sound.
+        </text>
+      </div>
+
+      <!-- Shapes in Rain overview -->
+      <div id="shapes-in-rain-overview" class="project-overview">
+        <a class="modal-project-title" href="shapes-in-rain/">
+          <img class="project-icon-large" src="images/shapes-in-rain-icon.png">
+          <h2>Shapes in Rain</h2>
+        </a>
+        <!-- Shapes in Rain repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/shapes-in-rain/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jan 2017 - Present</text>
+        </a>
+        <!-- Shapes in Rain skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-python"></i>
+            <text class="text-small">&nbsp;Python</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-flask-original"></i>
+            <text class="text-small">&nbsp;Flask</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-amazonwebservices-original"></i>
+            <text class="text-small">&nbsp;AWS (EC2)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-linux"></i>
+            <text class="text-small">&nbsp;Linux</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-apache-plain"></i>
+            <text class="text-small">&nbsp;Apache</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-postgresql-plain"></i>
+            <text class="text-small">&nbsp;PostgreSQL</text>
+          </div>
+        </div>
+        <!-- Shapes in Rain video -->
+        <div class="video-container" data-project="shapes-in-rain">
+          <video id="shapes-in-rain-video" type="video/mp4" preload="metadata" data-project="shapes-in-rain"></video>
+          <i id="shapes-in-rain-control" class="fa fa-play"></i>
+        </div>
+        <!-- Shapes in Rain description -->
+        <text>
+          <a href="shapes-in-rain/">Shapes in Rain</a> is a game in which random shapes appear periodically on the page
+          for a user to clear with a click. Hearts rain down the screen and light piano music plays in the background to
+          create a peaceful scene for users to clear their minds as they clear the shapes from the page. The rain and
+          shapes clear on their own after a certain time interval to optimize system performance. Users' scores are
+          saved to a server when they end the game if they have a registered account.
+        </text>
+      </div>
+
+      <!-- Timespace overview -->
+      <div id="timespace-overview" class="project-overview">
+        <a class="modal-project-title" href="timespace/">
+          <img class="project-icon-large" src="images/timespace-icon.png">
+          <h2>Timespace</h2>
+        </a>
+        <!-- Timespace repo -->
+        <a class="github-repo" href="https://github.com/estherh5/crystalprism.io/tree/main/timespace/"
+          rel="noopener noreferrer" target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Jan 2017 - Present</text>
+        </a>
+        <!-- Timespace skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon fab fa-js-square"></i>
+            <text class="text-small">&nbsp;JavaScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Timespace video -->
+        <div class="video-container" data-project="timespace">
+          <video id="timespace-video" type="video/mp4" preload="metadata" data-project="timespace"></video>
+          <i id="timespace-control" class="fa fa-play"></i>
+        </div>
+        <!-- Timespace description -->
+        <text>
+          <a href="timespace/">Timespace</a> is a clock that depicts the movement of time with circles that change color
+          and location on the page based on the current time. The clock displays a quote from T. S. Eliot and plays the
+          sound of Saturn's rings in the background, meant to elicit peaceful reflection on the conception and passage
+          of time. This is the first web project I developed.
+        </text>
+      </div>
+
+      <!-- Modal controls -->
+      <button id="project-previous" class="control previous hidden">
+        <span>&#60;</span>
+      </button>
+      <button id="project-next" class="control next hidden">
+        <span>&#62;</span>
+      </button>
+
     </div>
+  </div>
 
-    <!-- Day/night theme changer -->
-    <div id="theme-container" title="Toggle night/day view">
-      <i id="sky-icon" class="ionicons ion-ios-moon-outline"></i>
+  <!-- Modal that displays photos from Photos page -->
+  <div id="photo-modal-background" class="modal-background hidden">
+    <div id="photo-modal-body" class="modal-body">
+      <button id="photo-close" class="close hidden">&times;</button>
+
+      <!-- Image tag for larger photo to display -->
+      <img id="larger-photo">
+
+      <!-- Modal controls -->
+      <button id="photo-previous" class="control previous hidden">
+        <span>&#60;</span>
+      </button>
+      <button id="photo-next" class="control next hidden">
+        <span>&#62;</span>
+      </button>
+
     </div>
+  </div>
 
-    <!-- Homepage link -->
-    <a id="front-page-link" href=".">
-      <img id="front-page-icon" class="hidden" src="images/homepage.png">
-      <h1>Esther Hoffman</h1>
-    </a>
+  <!-- Day/night theme changer -->
+  <div id="theme-container" title="Toggle night/day view">
+    <i id="sky-icon" class="ionicons ion-ios-moon-outline"></i>
+  </div>
 
-    <!-- Page menu buttons -->
-    <div id="nav-buttons" class="hidden">
-      <button id="projects-page-button" class="selected nav-button" data-page="projects-page">Projects</button>
-      <button id="photos-page-button" class="nav-button" data-page="photos-page">Photos</button>
-      <button id="ideas-page-button" class="nav-button" data-page="ideas-page">Ideas</button>
-      <button id="about-page-button" class="nav-button" data-page="about-page">About</button>
-    </div>
+  <!-- Homepage link -->
+  <a id="front-page-link" href=".">
+    <img id="front-page-icon" class="hidden" src="images/homepage.png">
+    <h1>Esther Hoffman</h1>
+  </a>
 
-    <!-- Main container for individual pages -->
-    <div id="pages-container">
-      <div id="pages">
+  <!-- Page menu buttons -->
+  <div id="nav-buttons" class="hidden">
+    <button id="projects-page-button" class="selected nav-button" data-page="projects-page">Projects</button>
+    <button id="photos-page-button" class="nav-button" data-page="photos-page">Photos</button>
+    <button id="ideas-page-button" class="nav-button" data-page="ideas-page">Ideas</button>
+    <button id="about-page-button" class="nav-button" data-page="about-page">About</button>
+  </div>
 
-        <!-- Splash page that displays on load -->
-        <div id="splash-page" class="page hidden">
-          <div id="menu">
-            <!-- Diamond SVG -->
-            <svg id="diamond-large" class="menu-shape" xmlns="https://www.w3.org/2000/svg/" viewBox="5 15 90 70">
-              <g fill="white">
-                <path stroke="black" stroke-width="0.5" d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z"/>
+  <!-- Main container for individual pages -->
+  <div id="pages-container">
+    <div id="pages">
+
+      <!-- Splash page that displays on load -->
+      <div id="splash-page" class="page hidden">
+        <div id="menu">
+          <!-- Diamond SVG -->
+          <svg id="diamond-large" class="menu-shape" xmlns="https://www.w3.org/2000/svg/" viewBox="5 15 90 70">
+            <g fill="white">
+              <path stroke="black" stroke-width="0.5"
+                d="m 28,16 c -0.06245,-0.0029 -0.125046,-0.0029 -0.1875,0 -0.48814,0.05157 -0.954156,0.290259 -1.28125,0.65625 l -20,22 c -0.6783286,0.74969 -0.6491874,2.031901 0.0625,2.75 l 42,42 c 0.739355,0.730954 2.073145,0.730954 2.8125,0 l 42,-42 c 0.711687,-0.718099 0.740829,-2.00031 0.0625,-2.75 l -20,-22 C 73.09797,16.247522 72.551838,16.003505 72,16 z m 0.875,4 10.40625,0 -8.5625,18 L 12.5,38 z m 14.84375,0 12.5625,0 8.5625,18 -29.6875,0 z m 17,0 L 71.125,20 87.5,38 69.28125,38 z m -47.875,22 17.84375,0 13.375,31.21875 z m 22.1875,0 29.9375,0 L 50,76.875 z M 69.3125,42 87.15625,42 55.9375,73.21875 z" />
+            </g>
+          </svg>
+          <!-- Circle SVGs that are menu buttons on hover -->
+          <svg id="circles">
+            <!-- Photos page circle -->
+            <svg id="purple" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 356 356">
+              <g>
+                <circle cx="96px" cy="153px" r="50px" fill="#8551ff"></circle>
+                <text class="nav-text" data-page="photos-page" x="96px" y="153px">Photos</text>
               </g>
             </svg>
-            <!-- Circle SVGs that are menu buttons on hover -->
-            <svg id="circles">
-              <!-- Photos page circle -->
-              <svg id="purple" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 356 356">
-                <g>
-                  <circle cx="96px" cy="153px" r="50px" fill="#8551ff"></circle>
-                  <text class="nav-text" data-page="photos-page" x="96px" y="153px">Photos</text>
-                </g>
-              </svg>
-              <!-- About page circle -->
-              <svg id="green" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 445 445">
-                <g>
-                  <circle cx="58px" cy="257px" r="50px" fill="#7fd13b"></circle>
-                  <text class="nav-text" data-page="about-page" x="58px" y="257px">About</text>
-                </g>
-              </svg>
-              <!-- Ideas page circle -->
-              <svg id="pink" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 198 198">
-                <g>
-                  <circle cx="99px" cy="108px" r="50px" fill="#d24cff"></circle>
-                  <text class="nav-text" data-page="ideas-page" x="99px" y="108px">Ideas</text>
-                </g>
-              </svg>
-              <!-- Projects page circle -->
-              <svg id="teal" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 297 297">
-                <g>
-                  <circle cx="96px" cy="196px" r="50px" fill="#1ebfe8"></circle>
-                  <text class="nav-text" data-page="projects-page" x="96px" y="196px">Projects</text>
-                </g>
-              </svg>
+            <!-- About page circle -->
+            <svg id="green" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 445 445">
+              <g>
+                <circle cx="58px" cy="257px" r="50px" fill="#7fd13b"></circle>
+                <text class="nav-text" data-page="about-page" x="58px" y="257px">About</text>
+              </g>
             </svg>
-          </div>
+            <!-- Ideas page circle -->
+            <svg id="pink" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 198 198">
+              <g>
+                <circle cx="99px" cy="108px" r="50px" fill="#d24cff"></circle>
+                <text class="nav-text" data-page="ideas-page" x="99px" y="108px">Ideas</text>
+              </g>
+            </svg>
+            <!-- Projects page circle -->
+            <svg id="teal" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 297 297">
+              <g>
+                <circle cx="96px" cy="196px" r="50px" fill="#1ebfe8"></circle>
+                <text class="nav-text" data-page="projects-page" x="96px" y="196px">Projects</text>
+              </g>
+            </svg>
+          </svg>
         </div>
-
-        <!-- Projects page -->
-        <div id="projects-page" class="page hidden fade">
-          <ul id="projects-list">
-            <!-- Vroom image and icon -->
-            <li>
-              <div class="project-listing" data-project="vroom" data-displayed="false">
-                <img class="project-image" src="images/vroom.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img id="vroom-icon" class="project-icon" src="images/vroom-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Vroom</span>
-              </div>
-            </li>
-            <!-- Marian image and icon -->
-            <li>
-              <div class="project-listing" data-project="marian" data-displayed="false">
-                <img class="project-image" src="images/marian.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img id="marian-icon" class="project-icon" src="images/marian-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Marian</span>
-              </div>
-            </li>
-            <!-- Pause image and icon -->
-            <li>
-              <div class="project-listing" data-project="pause" data-displayed="false">
-                <img class="project-image" src="images/pause.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img id="pause-icon" class="project-icon" src="images/pause-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Pause</span>
-              </div>
-            </li>
-            <!-- Hacker News Stats image and icon -->
-            <li>
-              <div class="project-listing" data-project="hn-stats" data-displayed="false">
-                <img class="project-image" src="images/hn-stats.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/hn-stats-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Hacker News Stats</span>
-              </div>
-            </li>
-            <!-- User accounts image and icon -->
-            <li>
-              <div class="project-listing" data-project="user" data-displayed="false">
-                <img class="project-image" src="images/user.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/homepage.png">
-                  </div>
-                </span>
-                <span class="project-title">User Accounts</span>
-              </div>
-            </li>
-            <!-- NoBugs! image and icon -->
-            <li>
-              <div class="project-listing" data-project="nobugs" data-displayed="false">
-                <img class="project-image" src="images/nobugs.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/nobugs-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">NoBugs!</span>
-              </div>
-            </li>
-            <!-- Vicarious image and icon -->
-            <li>
-              <div class="project-listing" data-project="vicarious" data-displayed="false">
-                <img class="project-image" src="images/vicarious.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/vicarious-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Vicarious</span>
-              </div>
-            </li>
-            <!-- Thought Writer image and icon -->
-            <li>
-              <div class="project-listing" data-project="thought-writer" data-displayed="false">
-                <img class="project-image" src="images/thought-writer.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/thought-writer-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Thought Writer</span>
-              </div>
-            </li>
-            <!-- CanvaShare image and icon -->
-            <li>
-              <div class="project-listing" data-project="canvashare" data-displayed="false">
-                <img class="project-image" src="images/canvashare.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/canvashare-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">CanvaShare</span>
-              </div>
-            </li>
-            <!-- Rhythm of Life image and icon -->
-            <li>
-              <div class="project-listing" data-project="rhythm-of-life" data-displayed="false">
-                <img class="project-image" src="images/rhythm-of-life.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/rhythm-of-life-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Rhythm of Life</span>
-              </div>
-            </li>
-            <!-- Shapes in Rain image and icon -->
-            <li>
-              <div class="project-listing" data-project="shapes-in-rain" data-displayed="false">
-                <img class="project-image" src="images/shapes-in-rain.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/shapes-in-rain-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Shapes in Rain</span>
-              </div>
-            </li>
-            <!-- Timespace image and icon -->
-            <li>
-              <div class="project-listing" data-project="timespace" data-displayed="false">
-                <img class="project-image" src="images/timespace.png">
-                <span class="project-overlay">
-                  <div class="project-preview">
-                    <img class="project-icon" src="images/timespace-icon.png">
-                  </div>
-                </span>
-                <span class="project-title">Timespace</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-
-        <!-- Photos page -->
-        <div id="photos-page" class="page hidden fade">
-          <ul id="photos-list"></ul>
-        </div>
-
-        <!-- Ideas page -->
-        <div id="ideas-page" class="page hidden fade"></div>
-
-        <!-- About page -->
-        <div id="about-page" class="page hidden fade">
-          <!-- About me overview -->
-          <div id="about-me">
-            Staff-level full-stack engineer with 9+ years of experience leading high-impact healthcare and data products from ambiguous problem to reliable production system. Combines hands-on expertise in React, Python, cloud infrastructure, and data platforms with a record of setting technical direction, modernizing legacy systems, and multiplying team effectiveness. Builds human-centered software, applies AI thoughtfully across engineering workflows, and turns complex operational needs into measurable business and clinical outcomes.
-          </div>
-          <table>
-            <!-- Contact & Profiles section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="contact"></object>
-                <h2 class="section-header-title">Contact &#38; Profiles</h2>
-              </td>
-              <!-- Location -->
-              <td class="section-content contact">
-                <a class="contact-link" href="https://goo.gl/maps/kYQ45KLGnmz/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fas fa-map-marker-alt"></i>
-                  <text class="text-small">Philadelphia, PA</text>
-                </a>
-                <!-- Email -->
-                <a class="contact-link" href="mailto:hoffman.esther@gmail.com">
-                  <i class="small-icon fas fa-envelope"></i>
-                  <text class="text-small">hoffman.esther@gmail.com</text>
-                </a>
-                <!-- Resume -->
-                <a class="contact-link" href="https://estherhoffman.com/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fas fa-file"></i>
-                  <text class="text-small">Resume</text>
-                </a>
-                <!-- GitHub -->
-                <a class="contact-link" href="https://github.com/estherh5/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fab fa-github"></i>
-                  <text class="text-small">estherh5</text>
-                </a>
-                <!-- LinkedIn -->
-                <a class="contact-link" href="https://www.linkedin.com/in/esther-hoffman/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fab fa-linkedin"></i>
-                  <text class="text-small">Esther Hoffman</text>
-                </a>
-                <!-- Codewars -->
-                <a class="contact-link" href="https://www.codewars.com/users/estherh5/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fontello-icon icon-codewars"></i>
-                  <text class="text-small">estherh5</text>
-                </a>
-                <!-- Personal webpage -->
-                <a class="contact-link" href="https://crystalprism.io/" rel="noopener noreferrer" target="_blank">
-                  <i class="small-icon fas fa-external-link-alt"></i>
-                  <text class="text-small">crystalprism.io</text>
-                </a>
-              </td>
-            </tr>
-
-            <!-- Skills section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="skills"></object>
-                <h2 class="section-header-title">Skills</h2>
-              </td>
-              <td class="section-content">
-                <!-- Front-end skills -->
-                <div class="skill-group">
-                  <text class="skill-type">Engineering:</text>
-                  <div class="about-skills">
-                    <div class="skill">
-                      <i class="small-icon fab fa-js-square"></i>
-                      <text class="text-small">JavaScript</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-typescript-plain"></i>
-                      <text class="text-small">TypeScript</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-vuejs"></i>
-                      <text class="text-small">Vue</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-react"></i>
-                      <text class="text-small">React</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-angular"></i>
-                      <text class="text-small">Angular</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-bootstrap-plain"></i>
-                      <text class="text-small">Bootstrap</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-css3"></i>
-                      <text class="text-small">CSS</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-sass"></i>
-                      <text class="text-small">Sass</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-html5"></i>
-                      <text class="text-small">HTML5</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-gulp-plain"></i>
-                      <text class="text-small">Gulp</text>
-                    </div>
-                  </div>
-                </div>
-                <!-- Platform and data skills -->
-                <div class="skill-group">
-                  <text class="skill-type">Platform &amp; Data:</text>
-                  <div class="about-skills">
-                    <div class="skill">
-                      <i class="small-icon fab fa-python"></i>
-                      <text class="text-small">Python</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-flask-original"></i>
-                      <text class="text-small">Flask</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-amazonwebservices-original"></i>
-                      <text class="text-small">AWS (EC2, RDS, S3, Lambda, Boto3)</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-cloud"></i>
-                      <text class="text-small">GCP (App Engine, Compute Engine, Cloud SQL, Firestore, Identity Platform, Cloud Storage, BigQuery)</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-heroku-original"></i>
-                      <text class="text-small">Heroku</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-kubernetes-plain"></i>
-                      <text class="text-small">Kubernetes</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-docker-plain"></i>
-                      <text class="text-small">Docker</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-nginx-original"></i>
-                      <text class="text-small">NGINX</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-linux"></i>
-                      <text class="text-small">Linux</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-apache-plain"></i>
-                      <text class="text-small">Apache</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-postgresql-plain"></i>
-                      <text class="text-small">PostgreSQL</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon devicon-mysql-plain"></i>
-                      <text class="text-small">MySQL</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fab fa-python"></i>
-                      <text class="text-small">SQLAlchemy</text>
-                    </div>
-                  </div>
-                </div>
-                <!-- Leadership and AI skills -->
-                <div class="skill-group">
-                  <text class="skill-type">Leadership &amp; AI:</text>
-                  <div class="about-skills">
-                    <div class="skill">
-                      <i class="small-icon fas fa-drafting-compass"></i>
-                      <text class="text-small">System architecture</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-users"></i>
-                      <text class="text-small">Technical leadership</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-code-branch"></i>
-                      <text class="text-small">Code review &amp; mentorship</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-road"></i>
-                      <text class="text-small">Technical strategy</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-magic"></i>
-                      <text class="text-small">AI-assisted development</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-comment-alt"></i>
-                      <text class="text-small">Prompt engineering</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-vial"></i>
-                      <text class="text-small">AI evaluation &amp; guardrails</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-cogs"></i>
-                      <text class="text-small">Workflow automation</text>
-                    </div>
-                    <div class="skill">
-                      <i class="small-icon fas fa-user-check"></i>
-                      <text class="text-small">Human-centered design</text>
-                    </div>
-                  </div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Work Experience section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="work"></object>
-                <h2 class="section-header-title">Work Experience</h2>
-                <div class="chevron-text expand-parent" data-start="0" data-end="7" data-expanded="false">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="expand-all">Expand All</text>
-                </div>
-              </td>
-              <td class="section-content">
-                <!-- Invitae position -->
-                <div class="chevron-text expand-child" data-start="0" data-end="1" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Senior Software Engineer | <a href="https://invitae.com/" rel="noopener noreferrer" target="_blank">Invitae, now part of Labcorp</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">August 2021 - Present</text>
-                <br>
-                <text class="subsection-location">Philadelphia, PA</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Technical lead for laboratory data, analysis, and operations software supporting genetic testing workflows</div>
-                  <text class="bullet">Owns technical direction and delivery for multiple laboratory applications built with React, Python/Flask, PostgreSQL, Docker, and AWS, leading initiatives from discovery through production operations</text>
-                  <text class="bullet">Serves as Frontend Lead, establishing architecture, engineering standards, reusable patterns, and review practices that improve consistency and maintainability across teams</text>
-                  <text class="bullet">Modernized legacy systems with shared APIs and reusable components, reducing complexity while making critical workflows easier to extend and support</text>
-                  <text class="bullet">Improved an internal dashboard's performance by 20x, returning an estimated eight hours per day to clinical teams</text>
-                  <text class="bullet">Introduced caching and a metrics dashboard that eliminated an estimated 16 hours of daily manual work for client services</text>
-                  <text class="bullet">Architected and delivered a DNA sequencing plate viewer and a secure data-management application, translating specialized laboratory needs into intuitive tools for quality analysis and operations</text>
-                  <text class="bullet">Uses AI-assisted engineering workflows for technical discovery, implementation, testing, refactoring, and documentation, with deliberate human review and quality safeguards</text>
-                </div>
-                <br>
-                <!-- Bainbridge Health position -->
-                <div class="chevron-text expand-child" data-start="1" data-end="2" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Senior Software Engineer | <a href="https://bainbridgehealth.com/" rel="noopener noreferrer" target="_blank">Bainbridge Health</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">March 2021 - August 2021</text>
-                <br>
-                <text class="subsection-location">Philadelphia, PA</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Full-stack technical leader for a medication safety analytics platform used by healthcare organizations</div>
-                  <text class="bullet">Led architecture and development across a Vue, Python/Flask, Looker, Firestore, Kubernetes, and Google Cloud platform</text>
-                  <text class="bullet">Initiated a cross-service performance program and reduced application load times by 10x</text>
-                  <text class="bullet">Designed and delivered real-time job monitoring and operational controls backed by the Kubernetes API, improving visibility into critical data ingestion workflows</text>
-                  <text class="bullet">Partnered with engineering and customer success to set product priorities, shape monthly goals, and raise quality through code review and technical guidance</text>
-                </div>
-                <br>
-                <!-- Bainbridge Health position -->
-                <div class="chevron-text expand-child" data-start="2" data-end="3" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Software Engineer | <a href="https://bainbridgehealth.com/" rel="noopener noreferrer" target="_blank">Bainbridge Health</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">October 2018 - March 2021</text>
-                <br>
-                <text class="subsection-location">Philadelphia, PA</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Full-stack engineer building secure, data-intensive healthcare products and platform foundations</div>
-                  <text class="bullet">Built a medication analytics platform with Vue, Python/Flask, MySQL, Docker, Kubernetes, and Google Cloud, converting complex clinical data into actionable safety recommendations</text>
-                  <text class="bullet">Implemented enterprise single sign-on and multi-factor authentication with Google Identity Platform and ADFS</text>
-                  <text class="bullet">Architected and executed a MySQL-to-Firestore migration that reduced monthly query costs by thousands of dollars</text>
-                  <text class="bullet">Established product analytics foundations and business intelligence visualizations for user behavior, KPIs, and performance metrics</text>
-                  <text class="bullet">Built a 180-scenario behavior-driven integration test suite with Selenium and pytest, improving confidence in platform releases</text>
-                </div>
-                <br>
-                <!-- NoBugs position -->
-                <div class="chevron-text expand-child" data-start="3" data-end="4" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Web Developer and Project Manager | <a href="https://nobugsphilly.com/" rel="noopener noreferrer" target="_blank">NoBugs! Pest Control Supplies</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">August 2017 - October 2018</text>
-                <br>
-                <text class="subsection-location">Philadelphia, PA</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Independent developer and project manager modernizing a local business's digital and operational systems</div>
-                  <text class="bullet">Designed, built, secured, and operated the company's responsive <a class="within-info-link" href="https://nobugsphilly.com/" rel="noopener noreferrer" target="_blank">web presence</a> with JavaScript, Python/Flask, Netlify, and Google Cloud</text>
-                  <text class="bullet">Automated inventory and customer communications, saving the business more than $1,000 per month</text>
-                  <text class="bullet">Managed a complex property renovation, coordinating architects, schedules, requirements, and design approvals</text>
-                </div>
-                <br>
-                <!-- Epic position -->
-                <div class="chevron-text expand-child" data-start="4" data-end="5" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Software Project Manager, Team Lead &amp; Application Success Owner | <a href="https://epic.com/" rel="noopener noreferrer" target="_blank">Epic</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">September 2013 - August 2017</text>
-                <br>
-                <text class="subsection-location">Verona, Wisconsin</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Technical program leader for enterprise electronic health record implementations at four healthcare systems</div>
-                  <text class="bullet">Led multi-year software implementations spanning configuration, demonstrations, project planning, timelines, budgets, testing, training, and go-live readiness</text>
-                  <text class="bullet">Managed and mentored a team of project managers, setting expectations, coaching performance, and recovering at-risk programs</text>
-                  <text class="bullet">Owned two core third-party integrations end to end, aligning clinicians and engineers on requirements, constraints, testing, rollout, and support</text>
-                  <text class="bullet">Redesigned the development intake process with engineering leadership, applying Agile practices to deliver more than 30 customer-requested features</text>
-                  <text class="bullet">Earned Lean Six Sigma and Epic certifications across database, laboratory, reporting, patient portal, and inpatient systems</text>
-                </div>
-                <br>
-                <!-- Photo Editor position -->
-                <div class="chevron-text expand-child" data-start="5" data-end="6" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Photography Editor | <a href="https://cornellsun.com/" rel="noopener noreferrer" target="_blank">The Cornell Daily Sun</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">May 2012 - May 2013</text>
-                <br>
-                <text class="subsection-location">Ithaca, New York</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Photography Editor in charge of 50 photographers and photo editing with Photoshop for university daily newspaper</div>
-                  <text class="bullet">Photographed news, sports, arts and candid events on- and off-campus</text>
-                  <text class="bullet">Led <a class="within-info-link" href="http://161faces.cornellsun.com/" rel="noopener noreferrer" target="_blank"><i>161 Faces of Cornell</i></a> project for capturing student profiles</text>
-                </div>
-                <br>
-                <!-- Production Assistant position -->
-                <div class="chevron-text expand-child" data-start="6" data-end="7" data-expanded="false" data-parent="0">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Production Assistant | <a href="https://cornellsun.com/" rel="noopener noreferrer" target="_blank">The Cornell Daily Sun</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">January 2010 - May 2013</text>
-                <br>
-                <text class="subsection-location">Ithaca, New York</text>
-                <br>
-                <div class="subsection-details">
-                  <div class="subsection-description">Organized newspaper layout for daily production</div>
-                  <text class="bullet">Designed newspaper layout and advertisement placement weekly with QuarkXPress and InDesign</text>
-                  <text class="bullet">Created special edition cover pages and edited sports inserts quarterly with Photoshop</text>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Education section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="education"></object>
-                <h2 class="section-header-title">Education</h2>
-                <div class="chevron-text expand-parent" data-start="7" data-end="8" data-expanded="false">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="expand-all">Expand All</text>
-                </div>
-              </td>
-              <td class="section-content education">
-                <!-- University education -->
-                <div class="chevron-text expand-child" data-start="7" data-end="8" data-expanded="false" data-parent="1">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Bachelor of Arts in Biology and Psychology | <a href="https://cornell.edu/" rel="noopener noreferrer" target="_blank">Cornell University</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">August 2009 - May 2013</text>
-                <br>
-                <text class="subsection-location">Ithaca, New York</text>
-                <div class="subsection-details">
-                  <div class="subsection-description">Double major in Biology, with a concentration in Neurobiology &amp; Behavior, and Psychology; minors in Biomedical Engineering and Global Health</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Awards & Publications section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="awards"></object>
-                <h2 class="section-header-title">Awards &#38; Publications</h2>
-                <div class="chevron-text expand-parent" data-start="8" data-end="11" data-expanded="false">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="expand-all">Expand All</text>
-                </div>
-              </td>
-              <td class="section-content">
-                <!-- Foundation System award -->
-                <div class="chevron-text expand-child" data-start="8" data-end="9" data-expanded="false" data-parent="2">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Foundation System Top Contributor | <a href="https://epic.com/" rel="noopener noreferrer" target="_blank">Epic</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">December 2014</text>
-                <br>
-                <text class="subsection-location">Verona, Wisconsin</text>
-                <div class="subsection-details">
-                  <div class="subsection-description">Awarded for intensive Epic model system build and patient care impact</div>
-                </div>
-                <br>
-                <!-- Psychological Science publication -->
-                <div class="chevron-text expand-child" data-start="9" data-end="10" data-expanded="false" data-parent="2">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Manual Experience Shapes Object Representations | <a href="https://journals.sagepub.com/home/pss/" rel="noopener noreferrer" target="_blank"><i>Psychological Science</i></a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">April 2013</text>
-                <br>
-                <text class="subsection-location"><a class="within-info-link" href="https://www.researchgate.net/publication/236600148_Manual_Experience_Shapes_Object_Representations?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B1DjjZZ9zSCCVXY%2B55VdmwA%3D%3D/" rel="noopener noreferrer" target="_blank">Psychol Sci. 2013 Jun; 24(6): 909–919.</a></text>
-                <div class="subsection-details">
-                  <div class="subsection-description">Research paper exploring the way people mentally represent objects</div>
-                </div>
-                <br>
-                <!-- Dell Social Innovation Challenge award -->
-                <div class="chevron-text expand-child" data-start="10" data-end="11" data-expanded="false" data-parent="2">
-                  <span class="small-icon fas fa-chevron-right"></span>
-                  <text class="subsection-title">Social Innovation Challenge Semi-Finalist | <a href="https://dell.com/" rel="noopener noreferrer" target="_blank">Dell</a></text>
-                </div>
-                <br>
-                <text class="subsection-dates">April 2013</text>
-                <br>
-                <text class="subsection-location">Austin, Texas</text>
-                <div class="subsection-details">
-                  <div class="subsection-description">Awarded for developing a public health intervention, <a class="within-info-link" href="https://www.youtube.com/watch?v=afTHALk8V7U/" rel="noopener noreferrer" target="_blank">Learning from Burning</a>, to counter trash-burning with composting</div>
-                </div>
-              </td>
-            </tr>
-
-            <!-- Interests section -->
-            <tr>
-              <td class="section-header">
-                <object class="section-icon" type="image/svg+xml" data-header="interests"></object>
-                <h2 class="section-header-title">Interests</h2>
-              </td>
-              <td class="section-content">
-                <div class="interest">
-                  <i class="small-icon fas fa-chart-bar"></i>
-                  <text class="text-small">Data analytics</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-magic"></i>
-                  <text class="text-small">Applied AI</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-mobile-alt"></i>
-                  <text class="text-small">Device integration</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-drafting-compass"></i>
-                  <text class="text-small">Human-centered design</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-code-branch"></i>
-                  <text class="text-small">Neuroscience</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-users"></i>
-                  <text class="text-small">Behavioral science</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-lock"></i>
-                  <text class="text-small">Data privacy</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-medkit"></i>
-                  <text class="text-small">Healthcare</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-cloud"></i>
-                  <text class="text-small">Dream science</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-camera"></i>
-                  <text class="text-small">Photography</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon ionicons ion-earth"></i>
-                  <text class="text-small">Traveling</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon ionicons ion-android-walk"></i>
-                  <text class="text-small">Hiking</text>
-                </div>
-                <div class="interest">
-                  <i class="small-icon fas fa-bicycle"></i>
-                  <text class="text-small">Biking</text>
-                </div>
-              </td>
-            </tr>
-
-          </table>
-        </div>
-
       </div>
+
+      <!-- Projects page -->
+      <div id="projects-page" class="page hidden fade">
+        <ul id="projects-list">
+          <!-- Methods image and icon -->
+          <li>
+            <div class="project-listing" data-project="methods" data-displayed="false">
+              <img class="project-image" src="images/methods.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/methods-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Methods</span>
+            </div>
+          </li>
+          <!-- GiftMe image and icon -->
+          <li>
+            <div class="project-listing" data-project="giftme" data-displayed="false">
+              <img class="project-image" src="images/giftme.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/giftme-icon.png">
+                </div>
+              </span>
+              <span class="project-title">GiftMe</span>
+            </div>
+          </li>
+          <!-- Passage image and icon -->
+          <li>
+            <div class="project-listing" data-project="passage" data-displayed="false">
+              <img class="project-image" src="images/passage.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/passage-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Passage</span>
+            </div>
+          </li>
+          <!-- Restock image and icon -->
+          <li>
+            <div class="project-listing" data-project="restock" data-displayed="false">
+              <img class="project-image" src="images/restock.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/restock-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Restock</span>
+            </div>
+          </li>
+          <!-- i dream of neon image and icon -->
+          <li>
+            <div class="project-listing" data-project="idreamofneon" data-displayed="false">
+              <img class="project-image" src="images/idreamofneon.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/idreamofneon-icon.png">
+                </div>
+              </span>
+              <span class="project-title">i dream of neon</span>
+            </div>
+          </li>
+          <!-- Vroom image and icon -->
+          <li>
+            <div class="project-listing" data-project="vroom" data-displayed="false">
+              <img class="project-image" src="images/vroom.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img id="vroom-icon" class="project-icon" src="images/vroom-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Vroom</span>
+            </div>
+          </li>
+          <!-- Marian image and icon -->
+          <li>
+            <div class="project-listing" data-project="marian" data-displayed="false">
+              <img class="project-image" src="images/marian.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img id="marian-icon" class="project-icon" src="images/marian-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Marian</span>
+            </div>
+          </li>
+          <!-- Pause image and icon -->
+          <li>
+            <div class="project-listing" data-project="pause" data-displayed="false">
+              <img class="project-image" src="images/pause.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img id="pause-icon" class="project-icon" src="images/pause-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Pause</span>
+            </div>
+          </li>
+          <!-- Hacker News Stats image and icon -->
+          <li>
+            <div class="project-listing" data-project="hn-stats" data-displayed="false">
+              <img class="project-image" src="images/hn-stats.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/hn-stats-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Hacker News Stats</span>
+            </div>
+          </li>
+          <!-- User accounts image and icon -->
+          <li>
+            <div class="project-listing" data-project="user" data-displayed="false">
+              <img class="project-image" src="images/user.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/homepage.png">
+                </div>
+              </span>
+              <span class="project-title">User Accounts</span>
+            </div>
+          </li>
+          <!-- NoBugs! image and icon -->
+          <li>
+            <div class="project-listing" data-project="nobugs" data-displayed="false">
+              <img class="project-image" src="images/nobugs.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/nobugs-icon.png">
+                </div>
+              </span>
+              <span class="project-title">NoBugs!</span>
+            </div>
+          </li>
+          <!-- Vicarious image and icon -->
+          <li>
+            <div class="project-listing" data-project="vicarious" data-displayed="false">
+              <img class="project-image" src="images/vicarious.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/vicarious-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Vicarious</span>
+            </div>
+          </li>
+          <!-- Thought Writer image and icon -->
+          <li>
+            <div class="project-listing" data-project="thought-writer" data-displayed="false">
+              <img class="project-image" src="images/thought-writer.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/thought-writer-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Thought Writer</span>
+            </div>
+          </li>
+          <!-- CanvaShare image and icon -->
+          <li>
+            <div class="project-listing" data-project="canvashare" data-displayed="false">
+              <img class="project-image" src="images/canvashare.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/canvashare-icon.png">
+                </div>
+              </span>
+              <span class="project-title">CanvaShare</span>
+            </div>
+          </li>
+          <!-- Rhythm of Life image and icon -->
+          <li>
+            <div class="project-listing" data-project="rhythm-of-life" data-displayed="false">
+              <img class="project-image" src="images/rhythm-of-life.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/rhythm-of-life-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Rhythm of Life</span>
+            </div>
+          </li>
+          <!-- Shapes in Rain image and icon -->
+          <li>
+            <div class="project-listing" data-project="shapes-in-rain" data-displayed="false">
+              <img class="project-image" src="images/shapes-in-rain.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/shapes-in-rain-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Shapes in Rain</span>
+            </div>
+          </li>
+          <!-- Timespace image and icon -->
+          <li>
+            <div class="project-listing" data-project="timespace" data-displayed="false">
+              <img class="project-image" src="images/timespace.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/timespace-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Timespace</span>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Photos page -->
+      <div id="photos-page" class="page hidden fade">
+        <ul id="photos-list"></ul>
+      </div>
+
+      <!-- Ideas page -->
+      <div id="ideas-page" class="page hidden fade"></div>
+
+      <!-- About page -->
+      <div id="about-page" class="page hidden fade">
+        <!-- About me overview -->
+        <div id="about-me">
+          Full-stack engineer with nine years building production software, the last seven leading high-impact
+          healthcare and data products from ambiguous problem to reliable production system. Combines hands-on expertise
+          in React, Python, cloud
+          infrastructure, and data platforms with a record of setting technical direction, modernizing legacy systems,
+          and multiplying team effectiveness. Builds human-centered software, applies AI thoughtfully across engineering
+          workflows, and turns complex operational needs into measurable business and clinical outcomes.
+        </div>
+        <table>
+          <!-- Contact & Profiles section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="contact"></object>
+              <h2 class="section-header-title">Contact &#38; Profiles</h2>
+            </td>
+            <!-- Location -->
+            <td class="section-content contact">
+              <a class="contact-link" href="https://goo.gl/maps/kYQ45KLGnmz/" rel="noopener noreferrer" target="_blank">
+                <i class="small-icon fas fa-map-marker-alt"></i>
+                <text class="text-small">Philadelphia, PA</text>
+              </a>
+              <!-- Email -->
+              <a class="contact-link" href="mailto:hoffman.esther@gmail.com">
+                <i class="small-icon fas fa-envelope"></i>
+                <text class="text-small">hoffman.esther@gmail.com</text>
+              </a>
+              <!-- Resume -->
+              <a class="contact-link" href="https://estherhoffman.com/" rel="noopener noreferrer" target="_blank">
+                <i class="small-icon fas fa-file"></i>
+                <text class="text-small">Resume</text>
+              </a>
+              <!-- GitHub -->
+              <a class="contact-link" href="https://github.com/estherh5/" rel="noopener noreferrer" target="_blank">
+                <i class="small-icon fab fa-github"></i>
+                <text class="text-small">estherh5</text>
+              </a>
+              <!-- LinkedIn -->
+              <a class="contact-link" href="https://www.linkedin.com/in/esther-hoffman/" rel="noopener noreferrer"
+                target="_blank">
+                <i class="small-icon fab fa-linkedin"></i>
+                <text class="text-small">Esther Hoffman</text>
+              </a>
+              <!-- Codewars -->
+              <a class="contact-link" href="https://www.codewars.com/users/estherh5/" rel="noopener noreferrer"
+                target="_blank">
+                <i class="small-icon fontello-icon icon-codewars"></i>
+                <text class="text-small">estherh5</text>
+              </a>
+              <!-- Personal webpage -->
+              <a class="contact-link" href="https://crystalprism.io/" rel="noopener noreferrer" target="_blank">
+                <i class="small-icon fas fa-external-link-alt"></i>
+                <text class="text-small">crystalprism.io</text>
+              </a>
+            </td>
+          </tr>
+
+          <!-- Skills section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="skills"></object>
+              <h2 class="section-header-title">Skills</h2>
+            </td>
+            <td class="section-content">
+              <!-- Front-end skills -->
+              <div class="skill-group">
+                <text class="skill-type">Engineering:</text>
+                <div class="about-skills">
+                  <div class="skill">
+                    <i class="small-icon fab fa-react"></i>
+                    <text class="text-small">React</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-typescript-plain"></i>
+                    <text class="text-small">TypeScript</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fab fa-js-square"></i>
+                    <text class="text-small">JavaScript</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fab fa-vuejs"></i>
+                    <text class="text-small">Vue</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fab fa-python"></i>
+                    <text class="text-small">Python</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-flask-original"></i>
+                    <text class="text-small">Flask</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-postgresql-plain"></i>
+                    <text class="text-small">PostgreSQL</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fab fa-html5"></i>
+                    <text class="text-small">HTML</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fab fa-css3"></i>
+                    <text class="text-small">CSS / Sass</text>
+                  </div>
+                </div>
+              </div>
+              <!-- Platform and data skills -->
+              <div class="skill-group">
+                <text class="skill-type">Platform &amp; Data:</text>
+                <div class="about-skills">
+                  <div class="skill">
+                    <i class="small-icon devicon-amazonwebservices-original"></i>
+                    <text class="text-small">AWS</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-googlecloud-plain"></i>
+                    <text class="text-small">Google Cloud</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-docker-plain"></i>
+                    <text class="text-small">Docker</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon devicon-kubernetes-plain"></i>
+                    <text class="text-small">Kubernetes</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-database"></i>
+                    <text class="text-small">SQL / Firestore</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-chart-bar"></i>
+                    <text class="text-small">Analytics / Looker</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-rocket"></i>
+                    <text class="text-small">CI/CD</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-tachometer-alt"></i>
+                    <text class="text-small">Performance</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-shield-alt"></i>
+                    <text class="text-small">Authentication</text>
+                  </div>
+                </div>
+              </div>
+              <!-- Leadership and AI skills -->
+              <div class="skill-group">
+                <text class="skill-type">Leadership &amp; AI:</text>
+                <div class="about-skills">
+                  <div class="skill">
+                    <i class="small-icon fas fa-drafting-compass"></i>
+                    <text class="text-small">System architecture</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-users"></i>
+                    <text class="text-small">Technical leadership</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-code-branch"></i>
+                    <text class="text-small">Code review &amp; mentorship</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-road"></i>
+                    <text class="text-small">Technical strategy</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-magic"></i>
+                    <text class="text-small">AI-assisted development</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-comment-alt"></i>
+                    <text class="text-small">Prompt engineering</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-vial"></i>
+                    <text class="text-small">AI evaluation &amp; guardrails</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-cogs"></i>
+                    <text class="text-small">Workflow automation</text>
+                  </div>
+                  <div class="skill">
+                    <i class="small-icon fas fa-user-check"></i>
+                    <text class="text-small">Human-centered design</text>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Work Experience section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="work"></object>
+              <h2 class="section-header-title">Work Experience</h2>
+              <div class="chevron-text expand-parent" data-start="0" data-end="7" data-expanded="false">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="expand-all">Expand All</text>
+              </div>
+            </td>
+            <td class="section-content">
+              <!-- Invitae position -->
+              <div class="chevron-text expand-child" data-start="0" data-end="1" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Senior Software Engineer | <a href="https://invitae.com/"
+                    rel="noopener noreferrer" target="_blank">Invitae, now part of Labcorp</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">August 2021 - Present</text>
+              <br>
+              <text class="subsection-location">Philadelphia, PA</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Technical lead for laboratory data, analysis, and operations
+                  software supporting genetic testing workflows</div>
+                <text class="bullet">Owns technical direction and delivery for multiple laboratory applications built
+                  with React, Python/Flask, PostgreSQL, Docker, and AWS, leading initiatives from discovery through
+                  production operations</text>
+                <text class="bullet">Serves as Frontend Lead, establishing architecture, engineering standards, reusable
+                  patterns, and review practices that improve consistency and maintainability across teams</text>
+                <text class="bullet">Modernized legacy systems with shared APIs and reusable components, reducing
+                  complexity while making critical workflows easier to extend and support</text>
+                <text class="bullet">Improved an internal dashboard's performance by 20x, returning an estimated eight
+                  hours per day to clinical teams</text>
+                <text class="bullet">Introduced caching and a metrics dashboard that eliminated an estimated 16 hours of
+                  daily manual work for client services</text>
+                <text class="bullet">Architected and delivered a DNA sequencing plate viewer and a secure
+                  data-management application, translating specialized laboratory needs into intuitive tools for quality
+                  analysis and operations</text>
+                <text class="bullet">Uses AI-assisted engineering workflows for technical discovery, implementation,
+                  testing, refactoring, and documentation, with deliberate human review and quality safeguards</text>
+              </div>
+              <br>
+              <!-- Bainbridge Health position -->
+              <div class="chevron-text expand-child" data-start="1" data-end="2" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Senior Software Engineer | <a href="https://bainbridgehealth.com/"
+                    rel="noopener noreferrer" target="_blank">Bainbridge Health</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">March 2021 - August 2021</text>
+              <br>
+              <text class="subsection-location">Philadelphia, PA</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Full-stack technical leader for a medication safety analytics
+                  platform used by healthcare organizations</div>
+                <text class="bullet">Led architecture and development across a Vue, Python/Flask, Looker, Firestore,
+                  Kubernetes, and Google Cloud platform</text>
+                <text class="bullet">Initiated a cross-service performance program and reduced application load times by
+                  10x</text>
+                <text class="bullet">Designed and delivered real-time job monitoring and operational controls backed by
+                  the Kubernetes API, improving visibility into critical data ingestion workflows</text>
+                <text class="bullet">Partnered with engineering and customer success to set product priorities, shape
+                  monthly goals, and raise quality through code review and technical guidance</text>
+              </div>
+              <br>
+              <!-- Bainbridge Health position -->
+              <div class="chevron-text expand-child" data-start="2" data-end="3" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Software Engineer | <a href="https://bainbridgehealth.com/"
+                    rel="noopener noreferrer" target="_blank">Bainbridge Health</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">October 2018 - March 2021</text>
+              <br>
+              <text class="subsection-location">Philadelphia, PA</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Full-stack engineer building secure, data-intensive healthcare
+                  products and platform foundations</div>
+                <text class="bullet">Built a medication analytics platform with Vue, Python/Flask, MySQL, Docker,
+                  Kubernetes, and Google Cloud, converting complex clinical data into actionable safety
+                  recommendations</text>
+                <text class="bullet">Implemented enterprise single sign-on and multi-factor authentication with Google
+                  Identity Platform and ADFS</text>
+                <text class="bullet">Architected and executed a MySQL-to-Firestore migration that reduced monthly query
+                  costs by thousands of dollars</text>
+                <text class="bullet">Established product analytics foundations and business intelligence visualizations
+                  for user behavior, KPIs, and performance metrics</text>
+                <text class="bullet">Built a 180-scenario behavior-driven integration test suite with Selenium and
+                  pytest, improving confidence in platform releases</text>
+              </div>
+              <br>
+              <!-- NoBugs position -->
+              <div class="chevron-text expand-child" data-start="3" data-end="4" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Web Developer and Project Manager | <a href="https://nobugsphilly.com/"
+                    rel="noopener noreferrer" target="_blank">NoBugs! Pest Control Supplies</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">August 2017 - October 2018</text>
+              <br>
+              <text class="subsection-location">Philadelphia, PA</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Independent developer and project manager modernizing a local
+                  business's digital and operational systems</div>
+                <text class="bullet">Designed, built, secured, and operated the company's responsive <a
+                    class="within-info-link" href="https://nobugsphilly.com/" rel="noopener noreferrer"
+                    target="_blank">web presence</a> with JavaScript, Python/Flask, Netlify, and Google Cloud</text>
+                <text class="bullet">Automated inventory and customer communications, saving the business more than
+                  $1,000 per month</text>
+                <text class="bullet">Managed a complex property renovation, coordinating architects, schedules,
+                  requirements, and design approvals</text>
+              </div>
+              <br>
+              <!-- Epic position -->
+              <div class="chevron-text expand-child" data-start="4" data-end="5" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Software Project Manager, Team Lead &amp; Application Success Owner | <a
+                    href="https://epic.com/" rel="noopener noreferrer" target="_blank">Epic</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">September 2013 - August 2017</text>
+              <br>
+              <text class="subsection-location">Verona, Wisconsin</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Technical program leader for enterprise electronic health record
+                  implementations at four healthcare systems</div>
+                <text class="bullet">Led multi-year software implementations spanning configuration, demonstrations,
+                  project planning, timelines, budgets, testing, training, and go-live readiness</text>
+                <text class="bullet">Managed and mentored a team of project managers, setting expectations, coaching
+                  performance, and recovering at-risk programs</text>
+                <text class="bullet">Owned two core third-party integrations end to end, aligning clinicians and
+                  engineers on requirements, constraints, testing, rollout, and support</text>
+                <text class="bullet">Redesigned the development intake process with engineering leadership, applying
+                  Agile practices to deliver more than 30 customer-requested features</text>
+                <text class="bullet">Earned Lean Six Sigma and Epic certifications across database, laboratory,
+                  reporting, patient portal, and inpatient systems</text>
+              </div>
+              <br>
+              <!-- Photo Editor position -->
+              <div class="chevron-text expand-child" data-start="5" data-end="6" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Photography Editor | <a href="https://cornellsun.com/"
+                    rel="noopener noreferrer" target="_blank">The Cornell Daily Sun</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">May 2012 - May 2013</text>
+              <br>
+              <text class="subsection-location">Ithaca, New York</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Photography Editor in charge of 50 photographers and photo editing
+                  with Photoshop for university daily newspaper</div>
+                <text class="bullet">Photographed news, sports, arts and candid events on- and off-campus</text>
+                <text class="bullet">Led <a class="within-info-link" href="http://161faces.cornellsun.com/"
+                    rel="noopener noreferrer" target="_blank"><i>161 Faces of Cornell</i></a> project for capturing
+                  student profiles</text>
+              </div>
+              <br>
+              <!-- Production Assistant position -->
+              <div class="chevron-text expand-child" data-start="6" data-end="7" data-expanded="false" data-parent="0">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Production Assistant | <a href="https://cornellsun.com/"
+                    rel="noopener noreferrer" target="_blank">The Cornell Daily Sun</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">January 2010 - May 2013</text>
+              <br>
+              <text class="subsection-location">Ithaca, New York</text>
+              <br>
+              <div class="subsection-details">
+                <div class="subsection-description">Organized newspaper layout for daily production</div>
+                <text class="bullet">Designed newspaper layout and advertisement placement weekly with QuarkXPress and
+                  InDesign</text>
+                <text class="bullet">Created special edition cover pages and edited sports inserts quarterly with
+                  Photoshop</text>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Education section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="education"></object>
+              <h2 class="section-header-title">Education</h2>
+              <div class="chevron-text expand-parent" data-start="7" data-end="8" data-expanded="false">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="expand-all">Expand All</text>
+              </div>
+            </td>
+            <td class="section-content education">
+              <!-- University education -->
+              <div class="chevron-text expand-child" data-start="7" data-end="8" data-expanded="false" data-parent="1">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Bachelor of Arts in Biology and Psychology | <a
+                    href="https://cornell.edu/" rel="noopener noreferrer" target="_blank">Cornell University</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">August 2009 - May 2013</text>
+              <br>
+              <text class="subsection-location">Ithaca, New York</text>
+              <div class="subsection-details">
+                <div class="subsection-description">Double major in Biology, with a concentration in Neurobiology &amp;
+                  Behavior, and Psychology; minors in Biomedical Engineering and Global Health</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Awards & Publications section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="awards"></object>
+              <h2 class="section-header-title">Awards &#38; Publications</h2>
+              <div class="chevron-text expand-parent" data-start="8" data-end="11" data-expanded="false">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="expand-all">Expand All</text>
+              </div>
+            </td>
+            <td class="section-content">
+              <!-- Foundation System award -->
+              <div class="chevron-text expand-child" data-start="8" data-end="9" data-expanded="false" data-parent="2">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Foundation System Top Contributor | <a href="https://epic.com/"
+                    rel="noopener noreferrer" target="_blank">Epic</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">December 2014</text>
+              <br>
+              <text class="subsection-location">Verona, Wisconsin</text>
+              <div class="subsection-details">
+                <div class="subsection-description">Awarded for intensive Epic model system build and patient care
+                  impact</div>
+              </div>
+              <br>
+              <!-- Psychological Science publication -->
+              <div class="chevron-text expand-child" data-start="9" data-end="10" data-expanded="false" data-parent="2">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Manual Experience Shapes Object Representations | <a
+                    href="https://journals.sagepub.com/home/pss/" rel="noopener noreferrer"
+                    target="_blank"><i>Psychological Science</i></a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">April 2013</text>
+              <br>
+              <text class="subsection-location"><a class="within-info-link"
+                  href="https://www.researchgate.net/publication/236600148_Manual_Experience_Shapes_Object_Representations?lipi=urn%3Ali%3Apage%3Ad_flagship3_profile_view_base%3B1DjjZZ9zSCCVXY%2B55VdmwA%3D%3D/"
+                  rel="noopener noreferrer" target="_blank">Psychol Sci. 2013 Jun; 24(6): 909–919.</a></text>
+              <div class="subsection-details">
+                <div class="subsection-description">Research paper exploring the way people mentally represent objects
+                </div>
+              </div>
+              <br>
+              <!-- Dell Social Innovation Challenge award -->
+              <div class="chevron-text expand-child" data-start="10" data-end="11" data-expanded="false"
+                data-parent="2">
+                <span class="small-icon fas fa-chevron-right"></span>
+                <text class="subsection-title">Social Innovation Challenge Semi-Finalist | <a href="https://dell.com/"
+                    rel="noopener noreferrer" target="_blank">Dell</a></text>
+              </div>
+              <br>
+              <text class="subsection-dates">April 2013</text>
+              <br>
+              <text class="subsection-location">Austin, Texas</text>
+              <div class="subsection-details">
+                <div class="subsection-description">Awarded for developing a public health intervention, <a
+                    class="within-info-link" href="https://www.youtube.com/watch?v=afTHALk8V7U/"
+                    rel="noopener noreferrer" target="_blank">Learning from Burning</a>, to counter trash-burning with
+                  composting</div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Interests section -->
+          <tr>
+            <td class="section-header">
+              <object class="section-icon" type="image/svg+xml" data-header="interests"></object>
+              <h2 class="section-header-title">Interests</h2>
+            </td>
+            <td class="section-content">
+              <div class="interest">
+                <i class="small-icon fas fa-chart-bar"></i>
+                <text class="text-small">Data analytics</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-magic"></i>
+                <text class="text-small">Applied AI</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-mobile-alt"></i>
+                <text class="text-small">Device integration</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-drafting-compass"></i>
+                <text class="text-small">Human-centered design</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-code-branch"></i>
+                <text class="text-small">Neuroscience</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-users"></i>
+                <text class="text-small">Behavioral science</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-lock"></i>
+                <text class="text-small">Data privacy</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-medkit"></i>
+                <text class="text-small">Healthcare</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-cloud"></i>
+                <text class="text-small">Dream science</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-camera"></i>
+                <text class="text-small">Photography</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon ionicons ion-earth"></i>
+                <text class="text-small">Traveling</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon ionicons ion-android-walk"></i>
+                <text class="text-small">Hiking</text>
+              </div>
+              <div class="interest">
+                <i class="small-icon fas fa-bicycle"></i>
+                <text class="text-small">Biking</text>
+              </div>
+            </td>
+          </tr>
+
+        </table>
+      </div>
+
     </div>
+  </div>
 
-    <!-- Fetch polyfill script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
+  <!-- Fetch polyfill script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
 
-    <!-- Moment.js script -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
+  <!-- Moment.js script -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.20.0/moment.min.js"></script>
 
-    <!-- Main and common JS scripts -->
-    <script src="common.js"></script>
-    <script src="main.js"></script>
+  <!-- Main and common JS scripts -->
+  <script src="common.js"></script>
+  <script src="main.js"></script>
 
-  </body>
+</body>
+
 </html>

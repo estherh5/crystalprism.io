@@ -176,14 +176,8 @@ for (var i = 0; i < navCircles.length; i++) {
 
 
 /* Display requested page when window's URL hash changes (when navigating pages
-in SPA) and track via Google Analytics */
+in SPA) */
 window.onhashchange = function() {
-  // Set Google Analytics page to [page URL]/[hash string]
-  if (window.ga && ga.create) {
-    ga('set', 'page', '/' + (window.location.hash.split('#')[1]));
-    ga('send', 'pageview');
-  }
-
   // Display requested page
   togglePage();
 

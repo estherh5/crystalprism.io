@@ -51,12 +51,20 @@ function createPageHeader() {
   siteMenu.appendChild(siteMenuSpacer);
 
   // Create menu rows with icons and links to each project
-  var projectLinks = ['/', '/timespace/', '/shapes-in-rain/',
+  var projectLinks = ['/',
+    'https://methods.crystalprism.io/', 'https://giftme.crystalprism.io/',
+    'https://passage.crystalprism.io/', 'https://restock.crystalprism.io/',
+    'https://nexus.crystalprism.io/', 'https://space.crystalprism.io/',
+    'https://savor.crystalprism.io/', 'https://idreamofneon.crystalprism.io/',
+    '/timespace/', '/shapes-in-rain/',
     '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
     'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
     'https://marian.crystalprism.io/', 'https://vroom.crystalprism.io/', '/'];
 
-  var projectTitles = ['Home', 'Timespace', 'Shapes In Rain',
+  var projectTitles = ['Home',
+    'Methods', 'GiftMe', 'Passage', 'Restock', 'Nexus', 'Space', 'Savor',
+    'i dream of neon',
+    'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Pause', 'Marian', 'Vroom', 'Account'];
 

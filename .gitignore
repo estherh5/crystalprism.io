@@ -1,1 +1,13 @@
 .DS_Store
+
+# Agent scratch
+.superpowers/
+/docs/superpowers/
+/tasks/
+/.claude/
+
+# Tour recording rig
+tools/tours/node_modules/
+tools/tours/raw/
+tools/tours/out/
+tools/tours/.env

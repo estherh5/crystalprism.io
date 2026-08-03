@@ -295,8 +295,11 @@ function togglePage() {
 // Load videos to Projects page modal
 function loadVideos() {
   for (var i = 0; i < videos.length; i++) {
-    videos[i].src = 'https://crystalprism.io/videos/' +
-      videos[i].dataset.project + '.mp4';
+    // Relative, not absolute: an absolute https://crystalprism.io/... meant a
+    // local copy of this page always played the DEPLOYED videos, so a new or
+    // re-recorded one was invisible until after it shipped. Resolves to the
+    // same production URL once served from the site root.
+    videos[i].src = 'videos/' + videos[i].dataset.project + '.mp4';
     videos[i].load();
   }
 

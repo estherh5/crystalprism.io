@@ -36,6 +36,85 @@
     <div id="project-modal-body" class="modal-body">
       <button id="project-close" class="close hidden">&times;</button>
 
+      <!-- Tide overview -->
+      <div id="tide-overview" class="project-overview">
+        <a class="modal-project-title" href="https://tide.crystalprism.io/">
+          <img class="project-icon-large" src="images/tide-icon.png">
+          <h2>Tide</h2>
+        </a>
+        <!-- Tide repo -->
+        <a class="github-repo" href="https://github.com/estherh5/tide/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Aug 2026 - Present</text>
+        </a>
+        <!-- Tide skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-university"></i>
+            <text class="text-small">&nbsp;SimpleFIN</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-lock"></i>
+            <text class="text-small">&nbsp;Auth.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Tide video -->
+        <div class="video-container" data-project="tide">
+          <video id="tide-video" type="video/mp4" preload="metadata" data-project="tide"></video>
+          <i id="tide-control" class="fas fa-play"></i>
+        </div>
+        <!-- Tide description -->
+        <text>
+          <a href="https://tide.crystalprism.io/">Tide</a> is a personal finance tracker built on one idea: a number is
+          a water level. Net worth, what has gone out this month and what has come in each fill their own vessel to
+          where they actually stand, with a tide mark left at the level a month ago &mdash; so the question a budgeting
+          app usually answers in a table is answered at a glance instead. Accounts link through <a
+            href="https://www.simplefin.org/" rel="noopener noreferrer" target="_blank">SimpleFIN</a> and sync
+          overnight, each classified as an asset or a debt before it counts, and transactions file into categories with
+          rules that learn a payee once and file it the same way every time after. It is built with <a
+            href="https://nextjs.org/" rel="noopener noreferrer" target="_blank">Next.js</a> and React in TypeScript,
+          with <a href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a> handling Google
+          sign-in and <a href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a>
+          over a <a href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database.
+        </text>
+      </div>
       <!-- Vitals overview -->
       <div id="vitals-overview" class="project-overview">
         <a class="modal-project-title" href="https://vitals.crystalprism.io/">
@@ -1653,6 +1732,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade">
         <ul id="projects-list">
+          <!-- Tide image and icon -->
+          <li>
+            <div class="project-listing" data-project="tide" data-displayed="false">
+              <img class="project-image" src="images/tide.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/tide-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Tide</span>
+            </div>
+          </li>
           <!-- Vitals image and icon -->
           <li>
             <div class="project-listing" data-project="vitals" data-displayed="false">

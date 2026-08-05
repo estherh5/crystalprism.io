@@ -7,6 +7,14 @@
 // new one must match it. Capturing at 1374x1128 (the same 1.218 ratio, 3x up)
 // and scaling down keeps the text crisp instead of squashing a widescreen shot.
 //
+// An app may set `cssWidth` to be laid out narrower than that. The physical
+// capture stays 1374x1128 either way — the device scale factor absorbs the
+// difference — so only the CSS breakpoints the page sees change, not the
+// sharpness. It exists because a screen whose content is much wider than it is
+// tall (tide's overview is a four-column row of blocks) leaves the bottom
+// two thirds of a 1.218-ratio tile empty, while the same screen at its own
+// two-column breakpoint fills it.
+//
 //   node capture-tile.mjs <app>
 
 import { chromium } from 'playwright';
@@ -50,6 +58,16 @@ const APPS = {
     cookieName: 'authjs.session-token',
     extraClaims: { role: 'admin', checkedAt: Date.now() },
   },
+  tide: {
+    dir: 'Developer/tide', appPort: 3260, proxyPort: 3261,
+    userId: 'demo-user-tide', route: '/overview', wait: '.blk',
+    // Below 720px the overview grid drops from four columns to two, which is
+    // what turns a wide strip of blocks into a tile-shaped screen. 620 rather
+    // than 700 for where it puts the fold: the fixed FAB and feedback pill sit
+    // over the top edge of the "Against my limits" block instead of on top of
+    // its rows, so nothing legible is covered up.
+    cssWidth: 620,
+  },
   vantage: {
     dir: 'Developer/vantage/web', appPort: 3270, proxyPort: 3271,
     userId: 'demo-user-vantage', route: '/a/river', wait: '.wall-cell img',
@@ -87,10 +105,15 @@ const proxy = await startCookieProxy({
   cookieValue: cookie.value,
 });
 
+// Lay out at cssWidth, but always land 1374 physical pixels wide: the scale
+// factor takes up the slack, so a narrower layout costs nothing in sharpness.
+const cssWidth = cfg.cssWidth ?? CAPTURE_W;
+const cssHeight = Math.round(cssWidth * (TILE_H / TILE_W));
+
 const browser = await chromium.launch({ args: ['--hide-scrollbars'] });
 const context = await browser.newContext({
-  viewport: { width: CAPTURE_W, height: CAPTURE_H },
-  deviceScaleFactor: 1,
+  viewport: { width: cssWidth, height: cssHeight },
+  deviceScaleFactor: CAPTURE_W / cssWidth,
   colorScheme: name === 'nexus' || name === 'vantage' ? 'dark' : 'light',
 });
 const page = await context.newPage();

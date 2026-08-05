@@ -101,6 +101,34 @@ Note vitals is **not** on the crystalprism SSO ring: its cookie is
 `authjs.session-token` with no `__Secure-` prefix over http, and the token needs
 `role` and `checkedAt` claims.
 
+### tide
+
+Its migrations replay cleanly onto an empty file, so no `drizzle-kit push` is
+needed. The env var is `DATABASE_URL`, not `TURSO_DATABASE_URL`.
+
+```sh
+cd ~/Developer/tide
+node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs ./db/migrations "file:$(pwd)/demo.db"
+DATABASE_URL="file:$(pwd)/demo.db" node ~/Developer/crystalprism.io/tools/tours/seeds/tide.mjs
+DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN="" AUTH_TRUST_HOST=true npm run build
+DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN="" AUTH_TRUST_HOST=true PORT=3260 npm run start
+```
+
+The seed writes **zero rows to `institution_link`**, and asserts it afterwards.
+That table's `accessUrlEnc` is the encrypted SimpleFIN access URL — the bank
+credential itself — and `/settings` decrypts it on render, which is why the
+tour never goes there. No link row means nothing to decrypt and nothing a sync
+could reach.
+
+Tide's session callback resolves the user id **by email**, through
+`upsertUserByEmail`, not from the token's `sub`. The address in `tours/tide.mjs`
+must match the one the seed wrote or the app silently creates a second, empty
+user and every screen renders its "link your first account" state.
+
+Its tile is captured at `cssWidth: 620` rather than the default full width: the
+overview is a four-column strip that would leave two thirds of a 458x376 tile
+empty, and 620 puts it under its own two-column breakpoint.
+
 ### vantage
 
 The only app whose demo data is **real**. It is a photo archive — an archive of

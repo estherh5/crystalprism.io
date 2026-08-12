@@ -71,6 +71,14 @@
             <text class="text-small">&nbsp;SimpleFIN</text>
           </div>
           <div class="skill">
+            <i class="small-icon fas fa-robot"></i>
+            <text class="text-small">&nbsp;Claude API</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-chart-line"></i>
+            <text class="text-small">&nbsp;Monte Carlo</text>
+          </div>
+          <div class="skill">
             <i class="small-icon fas fa-lock"></i>
             <text class="text-small">&nbsp;Auth.js</text>
           </div>
@@ -81,6 +89,10 @@
           <div class="skill">
             <i class="small-icon fas fa-database"></i>
             <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-envelope"></i>
+            <text class="text-small">&nbsp;Resend</text>
           </div>
           <div class="skill">
             <i class="small-icon fas fa-cloud"></i>
@@ -107,12 +119,20 @@
           where they actually stand, with a tide mark left at the level a month ago &mdash; so the question a budgeting
           app usually answers in a table is answered at a glance instead. Accounts link through <a
             href="https://www.simplefin.org/" rel="noopener noreferrer" target="_blank">SimpleFIN</a> and sync
-          overnight, each classified as an asset or a debt before it counts, and transactions file into categories with
-          rules that learn a payee once and file it the same way every time after. It is built with <a
-            href="https://nextjs.org/" rel="noopener noreferrer" target="_blank">Next.js</a> and React in TypeScript,
-          with <a href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a> handling Google
-          sign-in and <a href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a>
-          over a <a href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database.
+          overnight, each classified as an asset or a debt before it counts, and transactions file into categories by
+          rules matched against the payee the bank actually sent. Under that sits a merchant layer, which gathers the
+          several spellings one shop arrives under into a single name so a rule written once keeps holding; a charge
+          can be split across categories, and a refund is tied back to the charge it reverses only where the match is
+          unambiguous. The same ledger is read forward as well as back: it profiles each card's rates, caps and bonus
+          categories to answer which one to hand over at a given register, fills sinking funds toward dated targets,
+          and runs a thousand simulated lifetimes to ask whether the money lasts. Emailed receipts are swept in and
+          their line items read out by <a href="https://www.anthropic.com/claude" rel="noopener noreferrer"
+            target="_blank">Claude</a>, then matched to the charge they belong to and offered as a split already filled
+          in. It is built with <a href="https://nextjs.org/" rel="noopener noreferrer" target="_blank">Next.js</a> and
+          React in TypeScript, with <a href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a>
+          handling Google sign-in and <a href="https://orm.drizzle.team/" rel="noopener noreferrer"
+            target="_blank">Drizzle ORM</a> over a <a href="https://turso.tech/" rel="noopener noreferrer"
+            target="_blank">Turso</a> (libSQL) database.
         </text>
       </div>
       <!-- Vitals overview -->
@@ -148,6 +168,18 @@
           <div class="skill">
             <i class="small-icon fas fa-hospital"></i>
             <text class="text-small">&nbsp;Epic (FHIR)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-calendar-alt"></i>
+            <text class="text-small">&nbsp;Google Calendar</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-microphone"></i>
+            <text class="text-small">&nbsp;AssemblyAI</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-robot"></i>
+            <text class="text-small">&nbsp;Claude API</text>
           </div>
           <div class="skill">
             <i class="small-icon fas fa-lock"></i>
@@ -190,7 +222,13 @@
           documents and the nightly metrics from a wearable, all in one timeline. Records imported from connected
           health systems over <a href="https://fhir.epic.com/" rel="noopener noreferrer" target="_blank">Epic's FHIR
             API</a> are filed alongside hand-entered values and always labeled by source, so it stays clear where
-          every number came from. It is built with <a href="https://nextjs.org/" rel="noopener noreferrer"
+          every number came from. Three health systems are connected at once, and where two of them report the same
+          test the results reconcile into one row rather than reading as two. An appointment can be recorded on a
+          phone and comes back as a speaker-labeled transcript, a plain-language summary, a list of what to do next,
+          and answers filled in against the questions the family wrote down beforehand &mdash; and it syncs both ways
+          with Google Calendar, so a visit added on anyone's phone arrives here with its agenda attached. Readings
+          from a wearable are drawn against the patient's own baseline rather than a population range, each reader
+          seeing them in the units they chose. It is built with <a href="https://nextjs.org/" rel="noopener noreferrer"
             target="_blank">Next.js</a> and React in TypeScript, with <a href="https://authjs.dev/"
             rel="noopener noreferrer" target="_blank">Auth.js</a> handling Google sign-in, <a
             href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a

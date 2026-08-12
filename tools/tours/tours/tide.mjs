@@ -11,9 +11,16 @@
 // rather than to visit every route. It opens and closes on the overview — the
 // one screen where all four levels sit together — and spends its middle on the
 // three screens whose type stays legible at the 175-345px the projects page
-// actually renders these at. The transactions table is the least legible of
-// them at that size, so it gets the shortest hold and earns its place with
-// motion instead.
+// actually renders these at.
+//
+// The middle was re-cut in Aug 2026. The nav went from five items to nine and
+// the earlier walk (accounts, categories, transactions) showed none of what had
+// been added, so it now visits Cards, Merchants and Retirement instead. Those
+// three were chosen over Plan and Transactions on legibility: a which-card
+// table, a set of alias rows collapsing into one name, and a widening
+// projection channel each read as shape at thumbnail size, whereas the ledger
+// reads as grey texture. Nothing here is a claim that the dropped screens
+// matter less — only that they survive a 345px-wide silent video worse.
 //
 // Assumes a production build of tide is listening on APP_PORT against the
 // SEEDED DEMO FILE, never dev.db and never a remote Turso URL. See README.md.
@@ -72,32 +79,31 @@ export default async function run() {
         await page.waitForSelector('.blk');
         await beat(2000);
 
-        // The net worth block is itself a link to the accounts it is made of —
-        // clicking the number to see what is behind it, rather than reaching
-        // for the nav.
-        await glideTo(page, 'a.blk.hue-teal', { click: true });
-        await settle(/\/accounts/, '.acct-list');
-        await beat(1000);
+        // Cards — the longest hold in the middle, because it is the screen that
+        // answers a question the others only describe: which card to hand over
+        // at this register. The which-card table is the answer and the cap
+        // vessels beside it are why the answer changes through the month, so
+        // hold long enough for both to be taken in, then scroll to the caps.
+        await glideTo(page, '.nav-item:has-text("Cards")', { click: true });
+        await settle(/\/cards/, '.which-table');
+        await beat(1500);
+        await glideScroll(page, 260);
+        await beat(700);
 
-        // Categories: the colour vocabulary the blocks are drawn from, and the
-        // limits the spending level is measured against. The screen opens on
-        // its "add a category" form, which is an empty grey form in a silent
-        // video — scroll straight past it to the coloured rows, which are the
-        // part worth showing.
-        await glideTo(page, '.nav-item:has-text("Categories")', { click: true });
-        await settle(/\/categories/, '.cat-list');
-        await beat(300);
-        await glideScroll(page, 300);
-        await beat(1000);
+        // Merchants — one shop, several bank spellings, gathered under a single
+        // name. The alias rows sitting indented under their canonical merchant
+        // are the whole point of the screen and read fine at thumbnail size.
+        await glideTo(page, '.nav-item:has-text("Merchants")', { click: true });
+        await settle(/\/merchants/, '.mrc-list');
+        await beat(1600);
 
-        // Transactions — the ledger under all of it. Short hold, then a scroll,
-        // because at the size this video renders the table reads as texture and
-        // movement rather than as rows anyone can parse.
-        await glideTo(page, '.nav-item:has-text("Transactions")', { click: true });
-        await settle(/\/transactions/, '.txn-table');
-        await beat(450);
-        await glideScroll(page, 320);
-        await beat(600);
+        // Retirement — a thousand simulated lifetimes drawn as one widening
+        // channel with a dashed median through it. It is the most purely
+        // graphic screen in the app, which is exactly what a silent 345px-wide
+        // video can carry, so it gets the last of the middle.
+        await glideTo(page, '.nav-item:has-text("Retirement")', { click: true });
+        await settle(/\/retirement/, '.ret-headline');
+        await beat(1800);
 
         // Close where it opened, then flip the theme. The toggle cycles
         // System -> Light -> Dark and the recording context is light, so the
@@ -108,14 +114,14 @@ export default async function run() {
         // does and it deserves the last word.
         await glideTo(page, '.nav-item:has-text("Overview")', { click: true });
         await settle(/\/overview/, '.blk');
-        await beat(650);
+        await beat(500);
 
         await glideTo(page, '.theme-toggle', { click: true });
         await beat(150);
         await page.mouse.down();
         await beat(70);
         await page.mouse.up();
-        await beat(3000);
+        await beat(2400);
       },
     });
   } finally {

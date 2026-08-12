@@ -14,14 +14,23 @@
 //   1. seeds/vitals.mjs writes ZERO rows to fhir_connections,
 //      calendar_connections and wearable_connections, and asserts it afterwards.
 //      With those empty, both auto-sync gates evaluate false.
-//   2. This tour visits only dashboard, labs and timeline. The appointments,
-//      settings, documents and wearable screens are deliberately never opened.
+//   2. This tour visits only dashboard, labs and wearable. The appointments,
+//      settings, documents and timeline screens are deliberately never opened,
+//      and no "Sync now" control is ever clicked.
 //   3. The route guard below aborts any request leaving localhost, so even an
 //      unforeseen client-side fetch cannot reach Epic or Google.
 //
-// The Wearable screen is excluded despite being visually strong: it renders an
-// empty state unless a `wearable_connections` row exists, and creating one to
-// get a nicer video is not a trade worth making.
+// The Wearable screen WAS excluded on the grounds that it renders an empty
+// state without a `wearable_connections` row. It is included as of Aug 2026,
+// because that exclusion conflated two different hazards. The one that matters
+// is auto-sync on mount, and it lives on labs (`syncHealthRecordsNow`) and
+// appointments (`syncCalendarNow`) — both gated on tables this seed still
+// leaves empty and still asserts empty. The wearable page is an async server
+// component with no mount-time sync at all; `syncWearableNow` fires only from
+// an explicit form action in components/WearableConnect.tsx. So the seed now
+// writes one wearable connection and its nightly readings, layers 2 and 3 are
+// unchanged, and the single new rule is that this tour must never click
+// "Sync now".
 
 import path from 'node:path';
 import os from 'node:os';
@@ -32,7 +41,12 @@ import { startCookieProxy } from '../lib/cookie-proxy.mjs';
 const APP_DIR = path.join(os.homedir(), 'Developer/vitals');
 const APP_PORT = Number(process.env.APP_PORT ?? 3250);
 const PROXY_PORT = Number(process.env.PROXY_PORT ?? 3251);
-const PATIENT = 'demo-patient';
+// The patient's SLUG, not its id. Every patient-scoped route moved from
+// `/p/<uuid>/…` to `/<slug>/…` in Aug 2026; `/p/<uuid>` survives only as a
+// redirect shim, and filming a redirect puts a blank frame at the head of the
+// video. This must match the slug seeds/vitals.mjs writes — `patients.slug` is
+// NOT NULL and uniquely indexed, so a mismatch is a 404, not a fallback.
+const PATIENT = 'rosemary';
 
 // vitals is NOT on the crystalprism SSO ring — it uses Auth.js's own default
 // cookie name, and over plain http that name carries no `__Secure-` prefix
@@ -64,7 +78,7 @@ export default async function run() {
   try {
     return await recordTour({
       name: 'vitals',
-      baseURL: `http://localhost:${PROXY_PORT}/p/${PATIENT}`,
+      baseURL: `http://localhost:${PROXY_PORT}/${PATIENT}`,
       colorScheme: 'light',
       async tour(page) {
         // Layer 3: nothing leaves the machine.
@@ -88,9 +102,9 @@ export default async function run() {
 
         // Dashboard: next appointment, and the watched-analyte trend.
         await page.waitForSelector('nav a');
-        await beat(2400);
+        await beat(2600);
         await glideScroll(page, 240);
-        await beat(700);
+        await beat(800);
 
         // Labs — the strongest screen. The chart draws itself in on mount, and
         // the reference band only paints where a range is actually known.
@@ -99,13 +113,46 @@ export default async function run() {
         await beat(3000);
 
         // Switch the watched analyte; the chart redraws against a new range.
+        // Ferritin is reachable by name only because seeds/vitals.mjs stars
+        // five labs in `watched_analytes` — lib/analyte-ranking.ts scores on
+        // distinct months across ALL observations, so with nothing starred the
+        // wearable metrics win every slot and this button does not exist.
         await glideTo(page, 'button:has-text("Ferritin")', { click: true });
-        await beat(2600);
+        await beat(2400);
 
-        // Timeline: labs grouped by blood draw, medications filed alongside.
-        await glideTo(page, `a[href$="/${PATIENT}/timeline"]`, { click: true });
-        await settle(/\/timeline/, 'main');
-        await beat(3200);
+        // The timeline is deliberately NOT visited, and the reason is worth
+        // writing down because it looks like an omission.
+        //
+        // lib/timeline.ts builds its rows from lib/observations.ts#groupIntoDraws
+        // over every observation, with no filter on source. A night of wearable
+        // readings shares one instant, so it collapses to exactly one row —
+        // which means once a Fitbit is connected, nightly rows outnumber blood
+        // draws roughly 10:1. Measured against this seed: 19 of the 20 most
+        // recent draws are `source='fitbit'`. Filming it would show a wall of
+        // identical nightly entries, and it would show them immediately before
+        // the wearable screen says the same thing better.
+        //
+        // So the tour goes straight to wearable. If the timeline ever grows a
+        // source filter or a collapse for nightly rows, put this beat back —
+        // it is a strong screen, it is just not a strong screen *here*.
+
+        // Wearable — the one screen drawn against the patient's OWN baseline
+        // rather than a population range, which is the argument the app makes
+        // about what continuous data is for. The banded sections read as shape
+        // at thumbnail size, so this closes the tour.
+        //
+        // Never click "Sync now" here. It is the only control on this screen
+        // that would reach Fitbit, and the whole reason the screen is safe to
+        // film is that nothing else on it syncs.
+        await glideTo(page, `a[href$="/${PATIENT}/wearable"]`, { click: true });
+        // `.wearable-section` is the per-metric panel and is present on load.
+        // NOT `.wearable-curve` — that only mounts when a night row is expanded
+        // (WearableMetricSection.tsx:286), so waiting on it times out on a page
+        // that has in fact drawn perfectly well.
+        await settle(/\/wearable/, '.wearable-section');
+        await beat(1700);
+        await glideScroll(page, 280);
+        await beat(1700);
 
         if (blocked > 0) {
           throw new Error(

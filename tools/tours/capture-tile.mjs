@@ -54,7 +54,10 @@ const APPS = {
   },
   vitals: {
     dir: 'Developer/vitals', appPort: 3250, proxyPort: 3251,
-    userId: 'demo-user-vitals', route: '/p/demo-patient/labs', wait: 'svg',
+    // The patient's SLUG, not `/p/<uuid>`. That older shape still resolves, but
+    // only as a client-side redirect — capturing it races the redirect against
+    // the `wait` selector. Must match the slug seeds/vitals.mjs writes.
+    userId: 'demo-user-vitals', route: '/rosemary/labs', wait: 'svg',
     cookieName: 'authjs.session-token',
     extraClaims: { role: 'admin', checkedAt: Date.now() },
   },

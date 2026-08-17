@@ -14,8 +14,10 @@
 //    crystalprism SSO ring and sets no custom cookie name, so @auth/core's own
 //    default applies — and that default drops the `__Secure-` prefix when the
 //    request arrives over http, which a local recording always does. The
-//    prefixed name is silently rejected (404, because requireAdmin() throws and
-//    the page calls notFound()).
+//    prefixed name is silently ignored, which reads as no session at all: every
+//    page 307s to /login. A cookie that DOES read but carries the wrong address
+//    is the other failure — 404, because requireAdmin() throws and the page
+//    calls notFound(). Sign-in screen means the cookie; 404 means ADMIN_EMAIL.
 //  * the session must carry a `uid` claim. flare's session callback reads
 //    session.user.id from token.uid and from nothing else, and requireAdmin()
 //    demands both an id and an email matching ADMIN_EMAIL.

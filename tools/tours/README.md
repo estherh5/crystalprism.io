@@ -171,8 +171,14 @@ from every other app here: its session cookie is plain `authjs.session-token`
 (it is not on the crystalprism SSO ring and sets no custom name, so @auth/core's
 default applies and drops the `__Secure-` prefix over http), and the token must
 carry a `uid` claim — `session.user.id` is read from that and from nothing else.
-`ADMIN_EMAIL` has to match the address the token is minted with or every page
-answers 404, because `requireAdmin()` throws and the page calls `notFound()`.
+
+The two failure signatures are different and each names its own cause. A cookie
+the server cannot read at all — wrong name, wrong `AUTH_SECRET` — is no session,
+so `proxy.ts` 307s every page to `/login`. A cookie that reads fine but carries
+an address other than `ADMIN_EMAIL` is a session that is not the administrator's,
+so the page answers **404**: `requireAdmin()` throws and the page calls
+`notFound()` on purpose. A recording that lands on the sign-in screen is the
+first; one that lands on a 404 is the second.
 
 ```sh
 export FLARE_SECRET="$(openssl rand -base64 32)"
@@ -196,8 +202,12 @@ the harness records at the viewport's own size and lets ffmpeg do the upscale;
 asking Playwright for a frame bigger than the viewport parks the page in the
 top-left corner of a grey canvas.
 
-Its queue rows are not links, so the step from the list to a group's detail page
-is a `goto`. The cursor is parked on the row first so the cut still reads.
+Every queue row is a real anchor to `/g/<id>` wrapping the whole row, so the step
+from the list to a group's detail page is an actual click on the row — it used to
+be a `goto`, because the rows were not links until that was fixed while filming.
+The selector has to reach the row through its `<li>` (`.rows li:first-child …`):
+`.row` is the anchor and the anchor is its `<li>`'s only child, so
+`.row:first-child` matches every row rather than the first one.
 
 ### then
 

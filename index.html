@@ -101,12 +101,14 @@
         </div>
         <!-- flare description -->
         <text>
-          <a href="https://flare.crystalprism.io/">flare</a> is the error monitor the other apps on this page report
-          to. A small reporter is copied into each one &mdash; <a href="https://nextjs.org/" rel="noopener noreferrer"
-            target="_blank">Next.js</a>, <a href="https://vite.dev/" rel="noopener noreferrer" target="_blank">Vite</a>,
+          <a href="https://flare.crystalprism.io/">flare</a> is the error monitor for the current fleet of apps on
+          this page, the ones it was built alongside. A small reporter is copied into each one &mdash; <a
+            href="https://nextjs.org/" rel="noopener noreferrer" target="_blank">Next.js</a>, <a
+            href="https://vite.dev/" rel="noopener noreferrer" target="_blank">Vite</a>,
           <a href="https://angular.dev/" rel="noopener noreferrer" target="_blank">Angular</a> and plain Node
-          background jobs alike &mdash; and it sends a stack trace and a path, never a request body, a cookie or a
-          query string. It never throws into the code it is watching and stays silent outside production. Reports are
+          background jobs alike &mdash; and it sends a stack trace, a route and a small bounded block of context. It
+          never stores a request body, a cookie or a query string, never throws into the code it is watching, and stays
+          silent outside production. Reports are
           fingerprinted before they are stored, so one bug is one row to triage however many times it fires. The
           reason it was worth building is what happens to a browser stack: it arrives minified, naming a one-letter
           function in a hashed bundle at a column eighty thousand characters along, which nobody can act on. flare

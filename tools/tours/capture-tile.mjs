@@ -75,6 +75,21 @@ const APPS = {
     dir: 'Developer/vantage/web', appPort: 3270, proxyPort: 3271,
     userId: 'demo-user-vantage', route: '/a/river', wait: '.wall-cell img',
   },
+  flare: {
+    dir: 'Developer/flare', appPort: 3280, proxyPort: 3281,
+    userId: 'demo-user-flare', route: '/', wait: '.row',
+    // Not on the crystalprism SSO ring: no custom cookie name, so @auth/core's
+    // own default applies and drops the `__Secure-` prefix over http. The `uid`
+    // claim is what flare's session callback reads session.user.id from, and the
+    // email has to match the ADMIN_EMAIL the server was started with.
+    cookieName: 'authjs.session-token',
+    email: 'demo@pinelight.dev',
+    extraClaims: { uid: 'demo-user-flare' },
+    // The queue is a wide ledger; at the full 1374 CSS px the tile would be four
+    // rows adrift in a field of cream. 760 keeps the desktop row grid and fills
+    // the 458x376 frame with the header, the filter band and five rows.
+    cssWidth: 760,
+  },
 };
 
 const name = process.argv[2];
@@ -86,16 +101,19 @@ if (!cfg) {
 
 const appDir = path.join(os.homedir(), cfg.dir);
 // vantage keeps its secret only in .env.production.local, so all three are tried.
+// An inline AUTH_SECRET wins over all of them: flare keeps no env file at all —
+// its demo server is started with a throwaway secret on the command line.
 const secret =
-  (await readEnvVar(path.join(appDir, '.env.local'), 'AUTH_SECRET')) ??
-  (await readEnvVar(path.join(appDir, '.env'), 'AUTH_SECRET')) ??
+  process.env.AUTH_SECRET ||
+  (await readEnvVar(path.join(appDir, '.env.local'), 'AUTH_SECRET')) ||
+  (await readEnvVar(path.join(appDir, '.env'), 'AUTH_SECRET')) ||
   (await readEnvVar(path.join(appDir, '.env.production.local'), 'AUTH_SECRET'));
 
 const cookie = await mintRingSession({
   appDir,
   secret,
   userId: cfg.userId,
-  email: 'demo@crystalprism.io',
+  email: cfg.email ?? 'demo@crystalprism.io',
   name: 'Demo',
   cookieName: cfg.cookieName ?? RING_COOKIE_SECURE,
   extraClaims: cfg.extraClaims ?? {},

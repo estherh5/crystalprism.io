@@ -156,6 +156,49 @@ now asserts a non-empty archive rather than trusting the order.
 
 Its secret lives only in `.env.production.local`, not `.env.local`.
 
+### flare
+
+flare indexes every private repo in the fleet — real file paths, real function
+names, real route paths, real commit SHAs — and both the video and the tile are
+public, so **the real queue may never be recorded**. `seeds/flare.mjs` invents a
+whole fictional fleet (six apps at `pinelight.dev`) and then sweeps every text
+column in the seeded database for a real slug, domain or path before it exits.
+Never point this at `flare.crystalprism.io`, and never at the Turso database.
+
+flare keeps **no env file at all**, so the demo secret is passed inline and must
+be the same value for the server, the tour and the tile. Two more differences
+from every other app here: its session cookie is plain `authjs.session-token`
+(it is not on the crystalprism SSO ring and sets no custom name, so @auth/core's
+default applies and drops the `__Secure-` prefix over http), and the token must
+carry a `uid` claim — `session.user.id` is read from that and from nothing else.
+`ADMIN_EMAIL` has to match the address the token is minted with or every page
+answers 404, because `requireAdmin()` throws and the page calls `notFound()`.
+
+```sh
+export FLARE_SECRET="$(openssl rand -base64 32)"
+cd ~/Developer/flare
+node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs ./drizzle "file:$(pwd)/data/demo.db"
+TURSO_DATABASE_URL="file:$(pwd)/data/demo.db" node ~/Developer/crystalprism.io/tools/tours/seeds/flare.mjs
+TURSO_DATABASE_URL="file:$(pwd)/data/demo.db" TURSO_AUTH_TOKEN="" ADMIN_EMAIL=demo@pinelight.dev \
+  AUTH_SECRET="$FLARE_SECRET" AUTH_TRUST_HOST=true npm run build
+TURSO_DATABASE_URL="file:$(pwd)/data/demo.db" TURSO_AUTH_TOKEN="" ADMIN_EMAIL=demo@pinelight.dev \
+  AUTH_SECRET="$FLARE_SECRET" AUTH_TRUST_HOST=true PORT=3280 npm run start
+```
+
+Then, with `AUTH_SECRET` still exported, `node run.mjs flare` and
+`node capture-tile.mjs flare`.
+
+It is the one tour recorded at a **smaller CSS viewport** (896x504, scaled up
+into the 1280x720 frame by ffmpeg). The payoff is a stack trace, and at 1280 CSS
+pixels a 13px stack line lands under four physical pixels in a 345px player.
+Note that Playwright only ever scales a page DOWN into `recordVideo.size`, so
+the harness records at the viewport's own size and lets ffmpeg do the upscale;
+asking Playwright for a frame bigger than the viewport parks the page in the
+top-left corner of a grey canvas.
+
+Its queue rows are not links, so the step from the list to a group's detail page
+is a `goto`. The cursor is parked on the row first so the cut still reads.
+
 ### then
 
 ```sh

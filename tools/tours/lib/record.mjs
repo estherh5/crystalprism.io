@@ -67,9 +67,22 @@ export async function glideScroll(page, distance, { steps = 26, pause = 22 } = {
  * @param {string} opts.baseURL     Origin of the locally running app.
  * @param {Array}  [opts.cookies]   Session cookies to seed before first paint.
  * @param {string} [opts.colorScheme]
+ * @param {{width: number, height: number}} [opts.viewport]
+ *   CSS viewport to lay the app out at. The video is ALWAYS 1280x720; a smaller
+ *   viewport is scaled up into it, which is the only lever these tours have on
+ *   legibility — the players on the projects page are 345px wide at their widest,
+ *   so a text-dense app recorded at 1280 CSS pixels is unreadable there. Keep the
+ *   aspect ratio at 16:9 or ffmpeg letterboxes the result.
  * @param {(page: import('playwright').Page) => Promise<void>} opts.tour
  */
-export async function recordTour({ name, baseURL, cookies = [], colorScheme = 'dark', tour }) {
+export async function recordTour({
+  name,
+  baseURL,
+  cookies = [],
+  colorScheme = 'dark',
+  viewport = { width: WIDTH, height: HEIGHT },
+  tour,
+}) {
   await mkdir(RAW_DIR, { recursive: true });
   await mkdir(OUT_DIR, { recursive: true });
 
@@ -84,11 +97,15 @@ export async function recordTour({ name, baseURL, cookies = [], colorScheme = 'd
   });
 
   const context = await browser.newContext({
-    viewport: { width: WIDTH, height: HEIGHT },
+    viewport,
     deviceScaleFactor: 2,
     colorScheme,
     reducedMotion: 'no-preference',
-    recordVideo: { dir: rawDir, size: { width: WIDTH, height: HEIGHT } },
+    // Recorded at the VIEWPORT's own size, not at 1280x720. Playwright only ever
+    // scales a page DOWN into `size` — asking for a frame larger than the viewport
+    // parks the page in the top-left corner of a grey 1280x720 canvas. ffmpeg does
+    // the upscale below instead, where it is a plain scale of the whole picture.
+    recordVideo: { dir: rawDir, size: viewport },
   });
 
   if (cookies.length) await context.addCookies(cookies);
@@ -134,7 +151,9 @@ export async function recordTour({ name, baseURL, cookies = [], colorScheme = 'd
     '-ss', trimStart.toFixed(3),
     '-i', webm,
     '-t', String(TARGET_SECONDS),
-    '-vf', `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease,pad=${WIDTH}:${HEIGHT}:(ow-iw)/2:(oh-ih)/2,fps=30`,
+    // lanczos is a no-op when the source is already 1280x720 and is what keeps
+    // text crisp for a tour recorded at a smaller viewport (see `viewport` above).
+    '-vf', `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${WIDTH}:${HEIGHT}:(ow-iw)/2:(oh-ih)/2,fps=30`,
     '-vsync', 'cfr',
     '-c:v', 'libx264',
     '-profile:v', 'high',

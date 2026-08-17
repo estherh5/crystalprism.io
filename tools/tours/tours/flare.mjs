@@ -20,9 +20,11 @@
 //    session.user.id from token.uid and from nothing else, and requireAdmin()
 //    demands both an id and an email matching ADMIN_EMAIL.
 //
-// The queue's rows are not links, so the walk from the list to a group's detail
-// page is a goto rather than a click. The cursor is parked on the row it is
-// "opening" first so the cut still reads as a click rather than a jump.
+// Every queue row is a real anchor to /g/<id> wrapping the whole row, so the walk
+// from the list to a group's detail page is an actual click on the row. Note the
+// selector has to reach the row through its <li>: `.row` is the anchor and the
+// anchor is its <li>'s only child, so `.row:first-child` matches every row, not
+// the first one.
 
 import path from 'node:path';
 import os from 'node:os';
@@ -91,14 +93,13 @@ export default async function run() {
         await glideScroll(page, 240, { steps: 18 });
         await beat(600);
 
-        // Park on the row being opened, then open it. The rows are not anchors, so
-        // this is a goto; the pause on the row is what makes the cut read as a
-        // click. glideTo scrolls the row back into view on its own.
-        await glideTo(page, '.rows .row:first-child .row-title');
-        await beat(400);
-        await page.goto(`http://localhost:${PROXY_PORT}/g/${GROUP}`, {
-          waitUntil: 'networkidle',
-        });
+        // Park on the row being opened, then click it. The click lands on the row's
+        // title, which is inside the anchor, so it opens the group the way a person
+        // would. glideTo scrolls the row back into view on its own. The seed orders
+        // the queue newest-lastSeen first and GROUP is the newest, so the first row
+        // is the source-mapped one the rest of the tour is about.
+        await glideTo(page, '.rows li:first-child .row-title', { click: true });
+        await page.waitForURL(`**/g/${GROUP}`, { waitUntil: 'networkidle' });
 
         // The header: which app, what threw, and the culprit still in its minified
         // form — `Ur@main-4f2a.js`, the thing a person cannot act on.
@@ -109,7 +110,7 @@ export default async function run() {
         // is suspended, so the surrounding page paints before the frames exist.
         await page.waitForSelector('.detail-stack');
         await glideScroll(page, 320, { steps: 20 });
-        // The synthetic cursor resets to 0,0 on a goto, so it would otherwise spend
+        // The synthetic cursor resets to 0,0 on a navigation, so it would otherwise spend
         // the whole payoff parked in the corner. Moved by hand rather than with
         // glideTo, whose scrollIntoViewIfNeeded would jump the scroll position that
         // the glide above just set smoothly.

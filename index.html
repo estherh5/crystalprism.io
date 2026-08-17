@@ -36,6 +36,92 @@
     <div id="project-modal-body" class="modal-body">
       <button id="project-close" class="close hidden">&times;</button>
 
+      <!-- flare overview -->
+      <div id="flare-overview" class="project-overview">
+        <a class="modal-project-title" href="https://flare.crystalprism.io/">
+          <img class="project-icon-large" src="images/flare-icon.png">
+          <h2>flare</h2>
+        </a>
+        <!-- flare dates (the repository is local-only, so there is nothing to link) -->
+        <div class="github-repo">
+          <i class="small-icon fas fa-calendar-alt"></i>
+          <text>Aug 2026 - Present</text>
+        </div>
+        <!-- flare skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-map-signs"></i>
+            <text class="text-small">&nbsp;Source maps</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-lock"></i>
+            <text class="text-small">&nbsp;Auth.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- flare video -->
+        <div class="video-container" data-project="flare">
+          <video id="flare-video" type="video/mp4" preload="metadata" data-project="flare"></video>
+          <i id="flare-control" class="fas fa-play"></i>
+        </div>
+        <!-- flare description -->
+        <text>
+          <a href="https://flare.crystalprism.io/">flare</a> is the error monitor the other apps on this page report
+          to. A small reporter is copied into each one &mdash; <a href="https://nextjs.org/" rel="noopener noreferrer"
+            target="_blank">Next.js</a>, <a href="https://vite.dev/" rel="noopener noreferrer" target="_blank">Vite</a>,
+          <a href="https://angular.dev/" rel="noopener noreferrer" target="_blank">Angular</a> and plain Node
+          background jobs alike &mdash; and it sends a stack trace and a path, never a request body, a cookie or a
+          query string. It never throws into the code it is watching and stays silent outside production. Reports are
+          fingerprinted before they are stored, so one bug is one row to triage however many times it fires. The
+          reason it was worth building is what happens to a browser stack: it arrives minified, naming a one-letter
+          function in a hashed bundle at a column eighty thousand characters along, which nobody can act on. flare
+          resolves it against the app's own published source maps the first time the group is opened and shows real
+          file names and real line numbers, cached from then on, with any frame it could not map left as it arrived
+          and labeled rather than quietly dropped. Every row carries a strip of the last seven days, so a fresh spike
+          reads differently from a slow leak. Because each app holds its own copy of the reporter rather than
+          installing a package, a drift check diffs every copy against the canonical one and fails on divergence. It
+          is built with Next.js and React in TypeScript,
+          with <a href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a> gating it to a
+          single administrator and <a href="https://orm.drizzle.team/" rel="noopener noreferrer"
+            target="_blank">Drizzle ORM</a> over a <a href="https://turso.tech/" rel="noopener noreferrer"
+            target="_blank">Turso</a> (libSQL) database.
+        </text>
+      </div>
       <!-- Tide overview -->
       <div id="tide-overview" class="project-overview">
         <a class="modal-project-title" href="https://tide.crystalprism.io/">
@@ -1770,6 +1856,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade">
         <ul id="projects-list">
+          <!-- flare image and icon -->
+          <li>
+            <div class="project-listing" data-project="flare" data-displayed="false">
+              <img class="project-image" src="images/flare.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/flare-icon.png">
+                </div>
+              </span>
+              <span class="project-title">flare</span>
+            </div>
+          </li>
           <!-- Tide image and icon -->
           <li>
             <div class="project-listing" data-project="tide" data-displayed="false">

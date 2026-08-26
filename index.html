@@ -36,6 +36,97 @@
     <div id="project-modal-body" class="modal-body">
       <button id="project-close" class="close hidden">&times;</button>
 
+      <!-- Glimpse overview -->
+      <div id="glimpse-overview" class="project-overview">
+        <a class="modal-project-title" href="https://glimpse.crystalprism.io/">
+          <img class="project-icon-large" src="images/glimpse-icon.png">
+          <h2>Glimpse</h2>
+        </a>
+        <!-- Glimpse repo -->
+        <a class="github-repo" href="https://github.com/estherh5/glimpse/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Aug 2026 - Present</text>
+        </a>
+        <!-- Glimpse skills -->
+        <div class="project-skills">
+          <div class="skill">
+            <i class="small-icon devicon-typescript-plain"></i>
+            <text class="text-small">&nbsp;TypeScript</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-react"></i>
+            <text class="text-small">&nbsp;React</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-server"></i>
+            <text class="text-small">&nbsp;Next.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon devicon-nodejs-plain"></i>
+            <text class="text-small">&nbsp;Node.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-film"></i>
+            <text class="text-small">&nbsp;WebCodecs</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-hdd"></i>
+            <text class="text-small">&nbsp;Cloudflare R2</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-lock"></i>
+            <text class="text-small">&nbsp;Auth.js</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-table"></i>
+            <text class="text-small">&nbsp;Drizzle ORM</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-database"></i>
+            <text class="text-small">&nbsp;Turso (libSQL)</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fas fa-cloud"></i>
+            <text class="text-small">&nbsp;Vercel</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-css3"></i>
+            <text class="text-small">&nbsp;CSS</text>
+          </div>
+          <div class="skill">
+            <i class="small-icon fab fa-html5"></i>
+            <text class="text-small">&nbsp;HTML5</text>
+          </div>
+        </div>
+        <!-- Glimpse video -->
+        <div class="video-container" data-project="glimpse">
+          <video id="glimpse-video" type="video/mp4" preload="metadata" data-project="glimpse"></video>
+          <i id="glimpse-control" class="fas fa-play"></i>
+        </div>
+        <!-- Glimpse description -->
+        <text>
+          <a href="https://glimpse.crystalprism.io/">Glimpse</a> is a private gallery of short video clips that loop
+          without a seam. Every one is the same shape &mdash; a phone held still on a single scene while something
+          inside the frame keeps moving: an escalator's steps, water at last light, six lanes of traffic seen from
+          above. A cinemagraph in everything but name, and the pleasure is in the stillness around the motion.
+          One rule outranks everything else in it: nothing but the shot decides the frame. Glimpse never zooms, pans,
+          letterboxes, or lets a box crop a picture to fill itself, so the gallery holds portrait and landscape beside
+          each other without making either one fit. Steadying is the one edit that touches the picture and it is not
+          an exception &mdash; aligning a handheld clip onto its own first frame and taking a symmetric,
+          aspect-preserving trim off the wobble margin leaves the composition exactly as shot. The rendering runs in
+          the browser rather than on a server: <a href="https://developer.mozilla.org/en-US/docs/Web/API/WebCodecs_API"
+            rel="noopener noreferrer" target="_blank">WebCodecs</a> decodes the original, the trimmed loop is muxed
+          back into an mp4 in the tab, and the finished file is uploaded straight to <a
+            href="https://developers.cloudflare.com/r2/" rel="noopener noreferrer" target="_blank">Cloudflare R2</a> on
+          a presigned URL, so the video never passes through the app at all. The editor is a real tool &mdash; trim,
+          loop mode, steadying, sound &mdash; and a clip can be sent to one person at its own link, where it arrives
+          with no navigation and no way back in. It is built with Next.js and React in TypeScript, with <a
+            href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a> keeping it invite-only and
+          <a href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a
+            href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database.
+        </text>
+      </div>
       <!-- flare overview -->
       <div id="flare-overview" class="project-overview">
         <a class="modal-project-title" href="https://flare.crystalprism.io/">
@@ -1858,6 +1949,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade">
         <ul id="projects-list">
+          <!-- Glimpse image and icon -->
+          <li>
+            <div class="project-listing" data-project="glimpse" data-displayed="false">
+              <img class="project-image" src="images/glimpse.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/glimpse-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Glimpse</span>
+            </div>
+          </li>
           <!-- flare image and icon -->
           <li>
             <div class="project-listing" data-project="flare" data-displayed="false">

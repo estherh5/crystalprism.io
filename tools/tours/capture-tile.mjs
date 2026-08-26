@@ -90,6 +90,30 @@ const APPS = {
     // the 458x376 frame with the header, the filter band and five rows.
     cssWidth: 760,
   },
+  glimpse: {
+    dir: 'Developer/glimpse/web', appPort: 3290, proxyPort: 3291,
+    userId: 'demo-user-glimpse', route: '/', wait: '.hero-frame video',
+    // Not on the crystalprism SSO ring — same shape as flare: default @auth/core
+    // cookie name, which loses its `__Secure-` prefix over http. The email has to
+    // equal the ADMIN_EMAIL the server was started with, because every screen but
+    // `/s/[token]` is owner-only and 404s anyone else.
+    cookieName: 'authjs.session-token',
+    extraClaims: { 'checkedAt:glimpse': Date.now() },
+    // The gallery is a lit hero above a row of inserts, and the one thing the
+    // tile has to say is that it IS a gallery — a hero on its own is a video
+    // player. `cssWidth` cannot get the insert row into frame here: the hero
+    // sizes itself to the viewport, so a narrower layout shrinks the hero and
+    // the row below it in step and the fold does not move. 900 and 640 were
+    // both tried and both put the same sliver of grid at the bottom edge.
+    //
+    // 96 is the scroll that costs the least: it takes the crown off the top and
+    // buys a whole hero, a whole caption bar, and the insert row breaking in
+    // underneath. Scrolling further (300 was tried) trades the top of the hero
+    // for more grid, which is the wrong way round for an app whose subject is
+    // the clip.
+    cssWidth: 760,
+    scrollY: 96,
+  },
 };
 
 const name = process.argv[2];
@@ -143,6 +167,15 @@ const raw = path.join(HERE, 'raw', `tile-${name}.png`);
 await page.goto(`http://localhost:${cfg.proxyPort}${cfg.route}`, { waitUntil: 'networkidle' });
 await page.waitForSelector(cfg.wait, { timeout: 15000 });
 await page.evaluate(() => document.fonts?.ready);
+// An app may set `scrollY` to shift the frame down the page. `cssWidth` is the
+// wrong tool when what fills the viewport is stacked vertically rather than
+// laid out wide: glimpse's hero sizes itself to the viewport, so narrowing the
+// layout shrinks the hero and the grid below it in step and the fold does not
+// move. Scrolling is the only thing that does.
+if (cfg.scrollY) {
+  await page.evaluate((y) => window.scrollTo(0, y), cfg.scrollY);
+  await new Promise((r) => setTimeout(r, 400));
+}
 await new Promise((r) => setTimeout(r, 1200));
 await page.screenshot({ path: raw });
 

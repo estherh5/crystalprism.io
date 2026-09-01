@@ -141,8 +141,16 @@ export async function recordTour({
   const webm = path.join(rawDir, files[0]);
   const mp4 = path.join(OUT_DIR, `${name}.mp4`);
 
-  // Playwright's webm is variable-frame-rate; -vsync cfr + an explicit fps
+  // Playwright's webm is variable-frame-rate; -fps_mode cfr + an explicit fps
   // gives a clean 30fps H.264 that Safari and Chrome both scrub reliably.
+  //
+  // IT IS -fps_mode, NOT -vsync. ffmpeg 9 REMOVED the long-deprecated -vsync
+  // alias outright, and it does not fail as an unknown value would — it fails
+  // the whole argument parse with "Unrecognized option 'vsync'. Error splitting
+  // the argument list", AFTER playwright has recorded the take. So the tour
+  // looks like it worked, the raw webm is sitting in raw/, and only the encode
+  // is gone. Every app's tour broke at once on 2026-09-01, not just the one
+  // being re-recorded. -fps_mode has meant the same thing since ffmpeg 5.
   console.log(`  trimming ${trimStart.toFixed(1)}s of page load off the head`);
 
   await execFileAsync('ffmpeg', [
@@ -154,7 +162,7 @@ export async function recordTour({
     // lanczos is a no-op when the source is already 1280x720 and is what keeps
     // text crisp for a tour recorded at a smaller viewport (see `viewport` above).
     '-vf', `scale=${WIDTH}:${HEIGHT}:force_original_aspect_ratio=decrease:flags=lanczos,pad=${WIDTH}:${HEIGHT}:(ow-iw)/2:(oh-ih)/2,fps=30`,
-    '-vsync', 'cfr',
+    '-fps_mode', 'cfr',
     '-c:v', 'libx264',
     '-profile:v', 'high',
     '-pix_fmt', 'yuv420p',

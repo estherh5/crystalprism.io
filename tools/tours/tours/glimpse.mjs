@@ -35,7 +35,7 @@ const APP_DIR = path.join(os.homedir(), 'Developer/glimpse/web');
 const APP_PORT = Number(process.env.APP_PORT ?? 3290);
 const PROXY_PORT = Number(process.env.PROXY_PORT ?? 3291);
 
-const insert = (slug) => `[data-clip-id="demo-clip-${slug}"] .insert-pick`;
+const cell = (slug) => `a.cell[data-clip-id="demo-clip-${slug}"]`;
 
 export default async function run() {
   const secret =
@@ -89,31 +89,42 @@ export default async function run() {
           return route.abort();
         });
 
-        // The backglass: one clip lit large above a row of inserts, all of them
-        // moving. Waiting on the element alone would record a frame of black —
-        // wait until the hero's video has actually decoded something.
-        await page.waitForSelector('.hero-frame video');
+        // O2's facade: a brick wall of windows, every one of them a still. The
+        // sheet is packed on the CLIENT — a course is a function of the
+        // viewport, so the server sends `data-packed="0"` and a layout effect
+        // solves the courses after mount. Recording before that flag flips
+        // catches the pre-hydration paint, which is short unjustified lines
+        // rather than a wall, so wait on the flag and not merely on a tile.
+        await page.waitForSelector('.sheet[data-packed="1"]', { timeout: 15000 });
         await page.waitForFunction(
           () => {
-            const v = document.querySelector('.hero-frame video');
-            return v && v.readyState >= 2 && v.videoWidth > 0;
+            const imgs = [...document.querySelectorAll('.cell .frame img')];
+            return imgs.length > 0 && imgs.every((i) => i.complete && i.naturalWidth > 0);
           },
           { timeout: 15000 },
         );
         await beat(2600);
 
-        // Pick the portrait one. This is the product's hardest claim made
-        // visible: the hero re-shapes itself around the clip rather than
-        // fitting the clip into a box, and the landscape inserts beside it do
-        // not move to accommodate it.
-        await glideTo(page, insert('pines'), { click: true });
+        // Then light one window. On a fine pointer `use-activation.ts` makes a
+        // tile live on `pointerenter`, so a glide IS the gesture — there is
+        // nothing to click and no hero to promote a clip into any more. The
+        // still-to-moving flip under the cursor is the whole of what the sheet
+        // does, and a take that only pans across it records a contact sheet.
+        //
+        // Portrait first. This is the product's hardest claim made visible: the
+        // course solves for a height that fills the measure, so a 9:16 clip is
+        // simply a tall narrow window and the landscape ones beside it keep
+        // their own proportions rather than being made to match.
+        await glideTo(page, cell('pines'));
         await beat(2500);
 
-        await glideTo(page, insert('circle'), { click: true });
-        await beat(900);
+        await glideTo(page, cell('circle'));
+        await beat(1400);
 
-        // Open it full-bleed. The interface recedes to a top bar and two arrows.
-        await glideTo(page, '.hero-cap-actions a[href="/c/demo-clip-circle"]', { click: true });
+        // The tile IS the link now, so opening it is one gesture rather than a
+        // promote-then-open pair. Full-bleed; the interface recedes to a top
+        // bar and two arrows.
+        await glideTo(page, cell('circle'), { click: true });
         await page.waitForURL(/\/c\/demo-clip-circle$/, { timeout: 10000 });
         await page.waitForSelector('.clip-frame video', { state: 'visible', timeout: 15000 });
         await beat(1800);

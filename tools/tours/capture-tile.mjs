@@ -92,27 +92,43 @@ const APPS = {
   },
   glimpse: {
     dir: 'Developer/glimpse/web', appPort: 3290, proxyPort: 3291,
-    userId: 'demo-user-glimpse', route: '/', wait: '.hero-frame video',
+    userId: 'demo-user-glimpse', route: '/', wait: '.sheet[data-packed="1"]',
     // Not on the crystalprism SSO ring — same shape as flare: default @auth/core
     // cookie name, which loses its `__Secure-` prefix over http. The email has to
     // equal the ADMIN_EMAIL the server was started with, because every screen but
     // `/s/[token]` is owner-only and 404s anyone else.
     cookieName: 'authjs.session-token',
     extraClaims: { 'checkedAt:glimpse': Date.now() },
-    // The gallery is a lit hero above a row of inserts, and the one thing the
-    // tile has to say is that it IS a gallery — a hero on its own is a video
-    // player. `cssWidth` cannot get the insert row into frame here: the hero
-    // sizes itself to the viewport, so a narrower layout shrinks the hero and
-    // the row below it in step and the fold does not move. 900 and 640 were
-    // both tried and both put the same sliver of grid at the bottom edge.
+    // TUNED FOR O2, 2026-09-01. The hero-and-inserts backglass this used to be
+    // framed for is gone: the gallery is now a pink-hour sky over a brick
+    // facade of justified courses, and the tile has to carry both halves — a
+    // wall of windows with no sky above it is a contact sheet, and a sky with
+    // one course under it is a masthead.
     //
-    // 96 is the scroll that costs the least: it takes the crown off the top and
-    // buys a whole hero, a whole caption bar, and the insert row breaking in
-    // underneath. Scrolling further (300 was tried) trades the top of the hero
-    // for more grid, which is the wrong way round for an app whose subject is
-    // the clip.
+    // The sheet is packed on the CLIENT (a course is a function of the
+    // viewport), so `wait` is the `data-packed` flag rather than a tile: before
+    // it flips, a course may WRAP and the capture is short unjustified lines.
+    //
+    // 45 is the only scroll that buys wall without breaking something. At 0 the
+    // masthead takes 60% of the tile and one course survives, which reads as a
+    // masthead with a strip of pictures under it. 110 and 170 were both tried:
+    // 110 cuts the wordmark through the middle, which reads as a broken capture
+    // rather than a crop, and 170 clears it entirely and takes the identity
+    // with it. 45 lifts the kicker off the top and keeps `Glimpse.` whole with
+    // air above it, which buys a full course plus the next one breaking in.
+    //
+    // NARROWER IS WORSE HERE, WHICH IS THE OPPOSITE OF TIDE. 640 and 560 were
+    // both tried: the wordmark is `clamp(44px,9vw,124px)` and barely shrinks,
+    // while the filter bar wraps to two lines, so a narrower layout pushes the
+    // facade DOWN and shows less of it. And the wall itself has a floor — the
+    // packer caps a course at `width / 3.6` so a floor is never one window
+    // wide — so squeezing the measure trades windows per floor for nothing.
+    //
+    // The wall is small because the demo library is four clips, not because the
+    // framing is wrong. Seeding more would buy more courses than any amount of
+    // scrolling can.
     cssWidth: 760,
-    scrollY: 96,
+    scrollY: 45,
   },
 };
 

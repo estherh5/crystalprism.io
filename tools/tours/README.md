@@ -240,9 +240,21 @@ inline `ADMIN_EMAIL` above must equal the address `seeds/glimpse.mjs` writes.
 A recording that lands on `/login` is the cookie name; one that lands on a 404
 is the address.
 
-Its tile is captured at `cssWidth: 900`. The gallery is one lit clip above a row
-of inserts, and at full width the hero alone fills the frame — 900 keeps the
-insert row in shot, which is the only thing that says "gallery".
+Its tile framing lives in `capture-tile.mjs`'s `APPS` literal and **that file is
+the authority, not this one** — this paragraph said `cssWidth: 900` for weeks
+after the code had settled on 760, and a reader who trusted it reintroduced a
+framing that had already been tried and thrown away. It is currently
+`cssWidth: 760, scrollY: 45`; the comment beside it records what else was tried.
+
+The gallery is no longer a lit hero above a row of inserts. O2 made it a
+pink-hour sky over a brick facade of justified courses, and the tour and the
+tile were both re-framed for it on 2026-09-01. Two things follow: the sheet is
+packed on the CLIENT, so anything waiting on it must wait for
+`.sheet[data-packed="1"]` and not for a tile (before that flag flips, a course
+may wrap and you capture short unjustified lines); and a tile goes live on
+`pointerenter` under a fine pointer, so the tour's gesture is a GLIDE across the
+wall — there is no hero to promote a clip into, and each tile links straight to
+its own page.
 
 ### then
 

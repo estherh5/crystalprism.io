@@ -547,7 +547,9 @@ video {
 
 #front-page-icon {
   position: absolute;
-  height: 50px;
+  /* homepage.png is a 512px square with the diamond inset to 76.2% of its
+     height, so the box is sized to render the mark itself at 50px. */
+  height: 66px;
   margin: auto;
   top: 0px;
   bottom: 0px;
@@ -1195,7 +1197,7 @@ h1 {
   }
 
   #front-page-icon {
-    height: initial;
+    height: 92px;
   }
 
   h1 {

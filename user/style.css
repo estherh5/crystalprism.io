@@ -521,6 +521,20 @@ h2 {
   text-align: right;
 }
 
+/* Password recovery link on the sign-in page. Width matches the input beside it so the
+   column centres identically and the text lands flush with the input's right edge; the
+   vertical padding is dead space that lifts the hit area to 44px without changing the
+   type size. */
+#forgot-password {
+  display: inline-block;
+  width: 181px;
+  padding: 14px 0px;
+  font-family: 'Pompiere', cursive;
+  font-size: 15px;
+  line-height: 16px;
+  text-align: right;
+}
+
 input {
   width: 181px;
   border-color: #c1c1c1;
@@ -1194,6 +1208,11 @@ label.editing {
 
   h2 {
     font-size: 24px;
+  }
+
+  #forgot-password {
+    font-size: 18px;
+    line-height: 19px;
   }
 
   .warning {

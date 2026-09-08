@@ -19,11 +19,110 @@ window.onload = function() {
     window.location = '../my-account/';
   }
 
+  /* Offer a one-click continue if this visitor already holds a Crystal Prism
+  ring session */
+  checkRingSession();
+
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(checkIfLoggedIn);
 
   // Create page footer (from common.js script)
   createPageFooter();
+
+  return;
+}
+
+
+// The ring-session bridge. auth.crystalprism.io holds the Crystal Prism
+// password accounts; if this visitor already has a ring session, it can mint a
+// legacy token for them and they never retype their 2017 password.
+//
+// A 401 renders NOTHING. Almost every visitor here has no ring session, and
+// this page's job is to accept a password - an error banner for a convenience
+// nobody asked for is noise. 429, 503 and a network failure are the same: the
+// form below works unaided and is the fallback.
+//
+// A 200 does NOT sign anyone in by itself. Appearing already-authenticated on a
+// page that is asking for a password is the wrong surprise, and it removes the
+// visitor's chance to sign in as somebody else.
+function checkRingSession() {
+  var bridge = document.getElementById('ring-bridge');
+
+  if (!bridge) {
+    return;
+  }
+
+  fetch('https://auth.crystalprism.io/api/legacy-token', {
+    method: 'POST',
+    credentials: 'include'
+  })
+
+    .then(function(response) {
+      if (response.status == 409) {
+        var note = document.createElement('p');
+        note.textContent = "Your Crystal Prism account isn't linked to a site " +
+          'username yet. Sign in below with your original username and ' +
+          'password.';
+        bridge.appendChild(note);
+        return null;
+      }
+
+      if (response.status != 200) {
+        return null;
+      }
+
+      return response.json();
+    })
+
+    .then(function(data) {
+      if (!data || !data.token || !data.username) {
+        return;
+      }
+
+      var note = document.createElement('p');
+      note.textContent = 'Signed in to Crystal Prism as ' + data.username + '.';
+
+      var button = document.createElement('button');
+      button.id = 'ring-continue';
+      button.textContent = 'Continue';
+
+      button.onclick = function() {
+        button.disabled = true;
+        document.body.style.cursor = 'wait';
+
+        /* Written exactly as requestLogin() writes it: `token` is the bare JWT
+        string, and `username` is the claim its payload carries. Six other files
+        read these two keys directly. */
+        localStorage.removeItem('username');
+        localStorage.setItem('username', data.username);
+        localStorage.removeItem('token');
+        localStorage.setItem('token', data.token);
+
+        /* The same redirect requestLogin() uses, so a deep link that bounced
+        the visitor here still lands them where they were going. */
+        if (sessionStorage.getItem('previous-window')) {
+          var previousWindow = sessionStorage.getItem('previous-window');
+          sessionStorage.removeItem('previous-window');
+          window.location = previousWindow;
+          return;
+        }
+
+        window.location = '../my-account/';
+
+        return;
+      };
+
+      bridge.appendChild(note);
+      bridge.appendChild(button);
+
+      return;
+    })
+
+    .catch(function() {
+      /* auth.crystalprism.io unreachable. The legacy form below is the fallback
+      and needs no announcement. */
+      return;
+    });
 
   return;
 }

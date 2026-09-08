@@ -535,6 +535,46 @@ h2 {
   text-align: right;
 }
 
+/* The ring-session bridge on the sign-in page. Empty and invisible for every
+   visitor without a Crystal Prism session, which is nearly all of them - it is
+   populated by main.js only on a 200 or a 409 from auth.crystalprism.io. Width
+   matches the inputs and #forgot-password, and #ring-bridge-row copies that
+   row's empty .col-3 so the block lands on the inputs' axis rather than the
+   container's - measured identical at 390, 576, 768, 992 and 1200. The text is
+   prose rather than a link, so it sets flush left where #forgot-password sets
+   flush right. */
+#ring-bridge {
+  width: 181px;
+  font-family: 'Pompiere', cursive;
+  font-size: 15px;
+  line-height: 16px;
+  text-align: left;
+}
+
+/* Hiding the empty #ring-bridge is not enough: the row around it still breaks
+   the margin collapse between the title row and the username row and pushes the
+   whole form down 4px for every visitor without a ring session. The row itself
+   has to go. Measured, not assumed.
+
+   This is why #ring-bridge-row is the one row on the page without Bootstrap's
+   `d-flex`: that utility is `display: flex !important` and would beat this rule.
+   `.row` is already a flex container in Bootstrap 4 alpha, so the class was only
+   ever redundant here. */
+#ring-bridge-row:has(#ring-bridge:empty) {
+  display: none;
+}
+
+#ring-bridge p {
+  margin: 0px 0px 8px 0px;
+}
+
+#ring-bridge button {
+  width: 181px;
+  /* The house `button` rule supplies the face, colour and transition; only the
+     box is set here, and 44px is the tap-target floor. */
+  min-height: 44px;
+}
+
 input {
   width: 181px;
   border-color: #c1c1c1;
@@ -1211,6 +1251,11 @@ label.editing {
   }
 
   #forgot-password {
+    font-size: 18px;
+    line-height: 19px;
+  }
+
+  #ring-bridge {
     font-size: 18px;
     line-height: 19px;
   }

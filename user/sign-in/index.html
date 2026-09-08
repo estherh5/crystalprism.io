@@ -63,6 +63,17 @@
           </div>
         </div>
 
+        <!-- Ring-session bridge, populated by main.js only when
+        auth.crystalprism.io recognises this visitor's Crystal Prism session.
+        Same two-column shape as the Forgot-your-password row below, so the
+        block sits on the inputs' axis rather than the container's. -->
+        <div id="ring-bridge-row" class="row justify-content-center">
+          <div class="col-3"></div>
+          <div class="col-auto">
+            <div id="ring-bridge" aria-live="polite"></div>
+          </div>
+        </div>
+
         <!-- Username input -->
         <div class="row my-2 d-flex align-items-center justify-content-center">
           <div class="col-3">

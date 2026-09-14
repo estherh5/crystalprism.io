@@ -129,6 +129,40 @@ Its tile is captured at `cssWidth: 620` rather than the default full width: the
 overview is a four-column strip that would leave two thirds of a 458x376 tile
 empty, and 620 puts it under its own two-column breakpoint.
 
+### restock
+
+Its migrations replay cleanly onto an empty file, so no `drizzle-kit push` and
+no patching is needed. The env var is `DATABASE_URL`, like tide.
+
+`ADMIN_EMAIL` must be set at both build and start, to `demo@crystalprism.io` —
+the address `seeds/restock.mjs` writes. Two things depend on it: it is what
+puts the fourth row (Admin) in the sidebar (`lib/guard.ts` `isAdminEmail`),
+and it is what lets the seeded account past the admission gate on every
+session read (`lib/guard.ts` `maySignIn` / `revalidateAdmission`) without a
+row in `invites`.
+
+```sh
+cd ~/Developer/restock
+node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs ./db/migrations "file:$(pwd)/demo.db"
+DATABASE_URL="file:$(pwd)/demo.db" node ~/Developer/crystalprism.io/tools/tours/seeds/restock.mjs
+DATABASE_URL="file:$(pwd)/demo.db" ADMIN_EMAIL=demo@crystalprism.io RESEND_API_KEY= BLOB_READ_WRITE_TOKEN= \
+  AUTH_TRUST_HOST=true npm run build
+DATABASE_URL="file:$(pwd)/demo.db" ADMIN_EMAIL=demo@crystalprism.io RESEND_API_KEY= BLOB_READ_WRITE_TOKEN= \
+  AUTH_TRUST_HOST=true PORT=3300 npm run start
+```
+
+Blank `RESEND_API_KEY` and `BLOB_READ_WRITE_TOKEN` on the command line —
+restock's own `.env.local` carries live values for both, and Next does not
+override a variable already set in `process.env`.
+
+`seeds/restock.mjs` writes ~60 days of real `adjustment` rows for every item,
+ending exactly at that item's current `qty`, so `lib/predict.ts`
+`estimateRatePerDay` has real signal — the item drawer's usage-strip
+sparkline (what replaced the old /trends page) is never the "not enough
+history yet" placeholder, and the On-the-way section's coverage chips (what
+replaced /deliveries) are the app's own `isCovered` arithmetic, not a staged
+label.
+
 ### vantage
 
 The only app whose demo data is **real**. It is a photo archive — an archive of

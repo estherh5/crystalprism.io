@@ -187,6 +187,15 @@ a:focus {
 button {
   border: none;
   background-color: #ffb1b1;
+  /* 44px is the fleet tap-target floor; the incumbent had no size at all and
+     rendered 20-26px tall. Real size, not an invisible band, so neighbours lay
+     out around it and no two hit areas overlap. */
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 16px;
+  /* min-width replaces a flex item's automatic minimum, so without this a
+     button in a narrow flex column shrinks below its own label. */
+  flex-shrink: 0;
   font-family: 'Rajdhani', sans-serif;
   font-size: 13px;
   font-weight: 600;
@@ -228,7 +237,7 @@ button:focus {
 .delete-button {
   position: absolute;
   top: 0px;
-  right: 10px;
+  right: 0px; /* the 44px box now centres the glyph where right: 10px used to */
   padding: 0px;
   border: none !important;
   outline: none !important;
@@ -522,7 +531,7 @@ h2 {
   margin-bottom: 0px;
   font-family: 'Pompiere', cursive;
   font-size: 12px;
-  text-align: right;
+  text-align: center;
 }
 
 /* Password recovery link on the sign-in page. Width matches the input beside it so the
@@ -798,10 +807,15 @@ input:focus, button:focus {
   color: #ffffff;
 }
 
+/* A row at the foot of the card, not a stack pinned top-right: at 44px each
+   the three links stood 132px tall and ran over the About field. The
+   !importants beat Bootstrap's `.flex-column` utility on the element. */
 #account-buttons {
-  position: absolute;
-  top: 0px;
-  right: 0px;
+  order: 1;
+  flex-direction: row !important;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  margin-top: 8px;
 }
 
 .account-button {
@@ -1116,7 +1130,9 @@ label.editing {
   position: absolute;
   height: 26px;
   margin-top: 3px;
-  top: 0px;
+  /* The tabs are 44px tall now; lifting the row by half the growth keeps the
+     labels exactly where the 20px tabs had them. */
+  top: -12px;
 }
 
 .menu-options button {
@@ -1136,9 +1152,11 @@ label.editing {
 }
 
 .menu-options button.selected, .menu-options button:focus, .menu-options button:active {
-  border-bottom-color: #000000;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
+  /* An underline, not a bottom border: the border would sit at the foot of the
+     44px box, a tab-height below the label it marks. */
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 7px;
   outline: none !important;
   box-shadow: none !important;
   font-weight: bold;

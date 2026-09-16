@@ -182,12 +182,16 @@ a:focus {
   font-size: 25px;
 }
 
+/* Rajdhani semibold in tracked capitals, not Bungee Hairline: a hairline face's
+   ~1px stems antialias to grey, so black on pink read far below its 12:1. */
 button {
   border: none;
   background-color: #ffb1b1;
-  font-family: 'Bungee Hairline', cursive;
-  font-size: 10px;
-  font-weight: bold;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: #000000;
   cursor: pointer;
   transform: scale(1) translateZ(0);
@@ -202,7 +206,7 @@ button:active {
 
 button:hover {
   background-color: rgba(0, 128, 0, 0.75);
-  color: #ffffff;
+  color: #000000; /* white on this green is 3.32:1; black is 6.32:1 */
   transform: scale(1.1) translateZ(0);
   transition: all 0.3s;
 }
@@ -804,7 +808,7 @@ input:focus, button:focus {
   border: none !important;
   box-shadow: none !important;
   background-color: rgba(0, 0, 0, 0);
-  font-size: 9px;
+  font-size: 12px;
   text-align: right;
   transform: none !important;
   transition: none !important;
@@ -1230,7 +1234,7 @@ label.editing {
   }
 
   button {
-    font-size: 15px;
+    font-size: 16px;
   }
 
   .title {

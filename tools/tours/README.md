@@ -290,6 +290,41 @@ may wrap and you capture short unjustified lines); and a tile goes live on
 wall — there is no hero to promote a clip into, and each tile links straight to
 its own page.
 
+### menagerie
+
+**Every animal is invented and every "photo" is a drawing.** Esther's real
+collection and its photos are private, so `seeds/menagerie.mjs` writes eight
+made-up animals and renders their portraits with Chromium in the style of the
+approved mockup. Nothing comes from production and nothing is fetched from R2 —
+the seed refuses to run against anything but a `file:` DATABASE_URL, and it
+fails if any photo row points somewhere other than its own local drawings.
+
+```sh
+cd ~/Developer/menagerie
+rm -f demo.db
+node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs ./db/migrations "file:$(pwd)/demo.db"
+(cd ~/Developer/crystalprism.io/tools/tours && DATABASE_URL="file:$HOME/Developer/menagerie/demo.db" node seeds/menagerie.mjs)
+export AUTH_SECRET="$(openssl rand -base64 32)"
+export DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN= ADMIN_EMAIL=demo@crystalprism.io \
+  AUTH_TRUST_HOST=true R2_ACCOUNT_ID= R2_PUBLIC_BASE= RESEND_API_KEY=
+npm run build && (PORT=3310 npm run start &)
+```
+
+Keep that `AUTH_SECRET` exported: `capture-tile.mjs` and `run.mjs` both mint
+their session with it, and a fresh one mid-run lands you on `/login`.
+
+`ADMIN_EMAIL` **must** equal `demo@crystalprism.io` — the address the seed
+writes. Anything else and every page redirects to `/login?removed=1`, which
+reads like a broken cookie rather than a wrong address.
+
+With `R2_PUBLIC_BASE` empty the drawings are served from the app's own
+`public/uploads/photos/`, which is gitignored in menagerie.
+
+Pins reveal on HOVER (`onMouseEnter`), so the tour glides onto `.photo-frame`
+and holds — it must not click, because on a hover-capable device the click
+toggles the reveal straight back off.
+
+
 ### then
 
 ```sh

@@ -36,6 +36,51 @@
     <div id="project-modal-body" class="modal-body">
       <button id="project-close" class="close hidden">&times;</button>
 
+      <!-- Menagerie overview -->
+      <div id="menagerie-overview" class="project-overview">
+        <a class="modal-project-title" href="https://menagerie.crystalprism.io/">
+          <img class="project-icon-large" src="images/menagerie-icon.png">
+          <h2>Menagerie</h2>
+        </a>
+        <!-- Menagerie repo -->
+        <a class="github-repo" href="https://github.com/estherh5/menagerie/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Sep 2026 - Present</text>
+        </a>
+        <!-- Menagerie skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Cloudflare R2</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Vercel</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Menagerie video -->
+        <div class="video-container" data-project="menagerie">
+          <video id="menagerie-video" type="video/mp4" preload="metadata" data-project="menagerie"></video>
+          <i id="menagerie-control" class="fas fa-play"></i>
+        </div>
+        <!-- Menagerie description -->
+        <text>
+          <a href="https://menagerie.crystalprism.io/">Menagerie</a> is a private compendium of a stuffed animal
+          collection: one profile per animal, every photo they turn up in, and who is in each one. The home screen is a
+          roster, each animal a solid block of one of nine inks with its portrait, name and the year it arrived, so the
+          wall reads as a patchwork. A profile is a character sheet &mdash; nicknames, maker, where they came from,
+          birthday, likes &mdash; with relationships to the others and a grid of every photo they are tagged in. Photos
+          come straight from a phone's camera roll and are converted from HEIC and re-encoded in the browser before
+          upload, so location data never leaves the device and only the capture date is kept. Tagging is tap-to-pin: a
+          pin sits at a fraction of the image, so it lands in the same place at any size. Invited people browse, add
+          photos, or edit profiles depending on their role. It is built with Next.js and React in TypeScript, with <a
+            href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a>, <a
+            href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a
+            href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database, and photos
+          in <a href="https://developers.cloudflare.com/r2/" rel="noopener noreferrer" target="_blank">Cloudflare R2</a>.
+        </text>
+      </div>
       <!-- Glimpse overview -->
       <div id="glimpse-overview" class="project-overview">
         <a class="modal-project-title" href="https://glimpse.crystalprism.io/">
@@ -1949,6 +1994,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade">
         <ul id="projects-list">
+          <!-- Menagerie image and icon -->
+          <li>
+            <div class="project-listing" data-project="menagerie" data-displayed="false">
+              <img class="project-image" src="images/menagerie.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/menagerie-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Menagerie</span>
+            </div>
+          </li>
           <!-- Glimpse image and icon -->
           <li>
             <div class="project-listing" data-project="glimpse" data-displayed="false">

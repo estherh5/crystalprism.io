@@ -130,6 +130,16 @@ const APPS = {
     cssWidth: 760,
     scrollY: 45,
   },
+  menagerie: {
+    dir: 'Developer/menagerie', appPort: 3310, proxyPort: 3311,
+    userId: 'demo@crystalprism.io', route: '/', wait: '.roster-grid .card img',
+    // Not on the crystalprism SSO ring: default @auth/core cookie name over http.
+    // ADMIN_EMAIL must equal demo@crystalprism.io or every page 307s to /login?removed=1.
+    cookieName: 'authjs.session-token',
+    // 1024 is the first width where the Roster runs 4 columns: the crown, the headline,
+    // the chip rail and a full row of cards fit the 458x376 frame.
+    cssWidth: 1024,
+  },
 };
 
 const name = process.argv[2];

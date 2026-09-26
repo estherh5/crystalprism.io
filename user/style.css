@@ -1564,4 +1564,11 @@ label.editing {
     margin-top: 12px;
     margin-bottom: 12px;
   }
+
+  /* The Personal card's seven rows at 12px ran 47px past the 500px section,
+     clipping the profile icon and the Edit button; keep the 768px spacing. */
+  #personal-menu .my-row {
+    margin-top: 6px;
+    margin-bottom: 6px;
+  }
 }

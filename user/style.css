@@ -588,9 +588,10 @@ h2 {
   min-height: 44px;
 }
 
-/* "or" between the password form and Google sign-in. Width matches the inputs
-   so the two hairlines end where the inputs do; they are aria-hidden in the
-   markup, and the word between them is the only part a screen reader hears. */
+/* "or" between the password form and Google sign-in. Width matches the Google
+   button below it, so the two hairlines span exactly that button. They are
+   aria-hidden in the markup, and the word between them is the only part a
+   screen reader hears. */
 #or-separator {
   display: flex;
   align-items: center;

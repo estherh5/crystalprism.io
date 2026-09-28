@@ -44,12 +44,33 @@ window.onload = function() {
 //
 // A 200 does NOT sign anyone in by itself. Appearing already-authenticated on a
 // page that is asking for a password is the wrong surprise, and it removes the
-// visitor's chance to sign in as somebody else.
+// visitor's chance to sign in as somebody else. The one exception is a return
+// from Google sign-in on auth.crystalprism.io (?via=google): the visitor just
+// asked to sign in, so the Continue button is pressed for them.
+//
+// ?google=error is that same round trip failing. It gets one note here and the
+// password form stays the way in.
+//
+// Both flags are read once and the query is then stripped, so a reload or a
+// bookmark does not replay an automatic sign-in or a stale error.
 function checkRingSession() {
   var bridge = document.getElementById('ring-bridge');
 
   if (!bridge) {
     return;
+  }
+
+  var viaGoogle = /[?&]via=google(&|$)/.test(location.search);
+
+  if (/[?&]google=error(&|$)/.test(location.search)) {
+    var errorNote = document.createElement('p');
+    errorNote.textContent = "Google sign-in didn't go through. Try again, or " +
+      'use your username and password.';
+    bridge.appendChild(errorNote);
+  }
+
+  if (location.search && window.history && history.replaceState) {
+    history.replaceState(null, '', location.pathname + location.hash);
   }
 
   fetch('https://auth.crystalprism.io/api/legacy-token', {
@@ -114,6 +135,10 @@ function checkRingSession() {
 
       bridge.appendChild(note);
       bridge.appendChild(button);
+
+      if (viaGoogle) {
+        button.click();
+      }
 
       return;
     })

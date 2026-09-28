@@ -67,7 +67,8 @@ if (Number(survived[0].n) === 0) {
 
 // Repoint every image at the local mirror. `photos.displayUrl`/`thumbUrl` are
 // plain text columns rendered verbatim — there is no signing step — and a
-// leading-slash path bypasses next.config.ts's R2-only remotePatterns, so this
+// leading-slash path bypasses next.config.ts's R2-only remotePatterns, and
+// next/image accepts it because images.localPatterns lists `/demo/**`, so this
 // works on the <img> screens and the next/image ones alike.
 const { rows: photos } = await db.execute('SELECT sha256 FROM photos');
 let missing = 0;

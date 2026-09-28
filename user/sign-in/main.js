@@ -49,7 +49,8 @@ window.onload = function() {
 // asked to sign in, so the Continue button is pressed for them.
 //
 // ?google=error is that same round trip failing. It gets one note here and the
-// password form stays the way in.
+// password form stays the way in. It carries an id so the access-request notes
+// below, which replace the bridge's contents, leave it standing.
 //
 // Both flags are read once and the query is then stripped, so a reload or a
 // bookmark does not replay an automatic sign-in or a stale error.
@@ -64,6 +65,7 @@ function checkRingSession() {
 
   if (/[?&]google=error(&|$)/.test(location.search)) {
     var errorNote = document.createElement('p');
+    errorNote.id = 'google-error';
     errorNote.textContent = "Google sign-in didn't go through. Try again, or " +
       'use your username and password.';
     bridge.appendChild(errorNote);
@@ -187,6 +189,12 @@ function checkAccessRequest(bridge) {
         return;
       }
 
+      if (data.request && data.request.status == 'failed' &&
+          data.request.failure != 'username_taken') {
+        showAccessNotes(bridge, [handledNote(data.request.username)]);
+        return;
+      }
+
       showAccessForm(bridge, data.request);
       return;
     })
@@ -202,10 +210,13 @@ function checkAccessRequest(bridge) {
 
 // Replace the bridge's contents with these notes, then the sign-in line.
 // The unlinked note already says to sign in below, so it goes without one.
+// The ?google=error note is the visitor's to read, so it stays.
 function showAccessNotes(bridge, notes, withoutSignIn) {
-  while (bridge.firstChild) {
-    bridge.removeChild(bridge.firstChild);
-  }
+  Array.prototype.slice.call(bridge.childNodes).forEach(function(child) {
+    if (child.id != 'google-error') {
+      bridge.removeChild(child);
+    }
+  });
 
   notes.forEach(function(note) {
     bridge.appendChild(note);
@@ -232,20 +243,33 @@ function unlinkedNote() {
 }
 
 
-function pendingNote(username) {
+function requestNote(username, rest) {
   var note = document.createElement('p');
   var name = document.createElement('strong');
   name.textContent = username;
   note.appendChild(document.createTextNode('Your request for '));
   note.appendChild(name);
-  note.appendChild(document.createTextNode(
-    " is waiting for approval. You'll get an email."));
+  note.appendChild(document.createTextNode(rest));
   return note;
 }
 
 
+function pendingNote(username) {
+  return requestNote(username, " is waiting for approval. You'll get an email.");
+}
+
+
+// A failure that isn't a taken name (the link didn't attach, or the original
+// site's answer was unclear) is finished by hand on auth.crystalprism.io, and
+// asking again would only race that fix - so no form.
+function handledNote(username) {
+  return requestNote(username, ' hit a problem and is being fixed by hand. ' +
+    "There's no need to ask again.");
+}
+
+
 // The request form. `last` is the visitor's previous request, if any; a
-// declined or failed one gets a line saying so above the form.
+// declined one, or one whose name was taken, gets a line saying so above it.
 function showAccessForm(bridge, last) {
   var notes = [];
 
@@ -328,6 +352,20 @@ function showAccessForm(bridge, last) {
         if (result.status == 201) {
           showAccessNotes(bridge, [textNote("Request sent. You'll get an " +
             "email when it's approved.")]);
+          return;
+        }
+
+        // The account got its username since this page loaded (approved in
+        // another tab, or linked by hand), so ask again for the sign-in it now has.
+        if (result.status == 409 && result.data.reason == 'already_linked') {
+          showAccessNotes(bridge, [], true);
+          checkRingSession();
+          return;
+        }
+
+        if (result.status == 401) {
+          showAccessNotes(bridge, [textNote("You've been signed out, so " +
+            "that wasn't sent. Sign in below.")], true);
           return;
         }
 

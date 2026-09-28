@@ -80,11 +80,7 @@ function checkRingSession() {
 
     .then(function(response) {
       if (response.status == 409) {
-        var note = document.createElement('p');
-        note.textContent = "Your Crystal Prism account isn't linked to a site " +
-          'username yet. Sign in below with your original username and ' +
-          'password.';
-        bridge.appendChild(note);
+        checkAccessRequest(bridge);
         return null;
       }
 
@@ -148,6 +144,232 @@ function checkRingSession() {
       and needs no announcement. */
       return;
     });
+
+  return;
+}
+
+
+// A ring session with no site username (the 409 above). Visitors who joined the
+// ring after 2017 have nothing to sign in with here, so they ask for a username
+// and Esther approves it by email on auth.crystalprism.io. Visitors who DO have
+// a 2017 username still link it by signing in below, so every state keeps that
+// line.
+//
+// If the lookup itself fails, the pre-request note is shown instead of a form:
+// a form whose endpoint just failed would only fail again on submit.
+//
+// Every string the server returns goes in through textContent, never innerHTML.
+var ACCESS_REQUEST_URL = 'https://auth.crystalprism.io/api/access-request';
+
+// The server's USERNAME_PATTERN (auth.crystalprism.io lib/access-requests.ts),
+// checked here only so a typo is caught without a round trip.
+var ACCESS_USERNAME_PATTERN = /^[a-zA-Z0-9_-]+$/;
+
+function checkAccessRequest(bridge) {
+  fetch(ACCESS_REQUEST_URL, {credentials: 'include'})
+
+    .then(function(response) {
+      if (response.status != 200) {
+        return null;
+      }
+
+      return response.json();
+    })
+
+    .then(function(data) {
+      if (!data || !data.ok) {
+        showAccessNotes(bridge, [unlinkedNote()], true);
+        return;
+      }
+
+      if (data.request && data.request.status == 'pending') {
+        showAccessNotes(bridge, [pendingNote(data.request.username)]);
+        return;
+      }
+
+      showAccessForm(bridge, data.request);
+      return;
+    })
+
+    .catch(function() {
+      showAccessNotes(bridge, [unlinkedNote()], true);
+      return;
+    });
+
+  return;
+}
+
+
+// Replace the bridge's contents with these notes, then the sign-in line.
+// The unlinked note already says to sign in below, so it goes without one.
+function showAccessNotes(bridge, notes, withoutSignIn) {
+  while (bridge.firstChild) {
+    bridge.removeChild(bridge.firstChild);
+  }
+
+  notes.forEach(function(note) {
+    bridge.appendChild(note);
+  });
+
+  if (!withoutSignIn) {
+    bridge.appendChild(textNote('Already have one? Sign in below.'));
+  }
+
+  return;
+}
+
+
+function textNote(text) {
+  var note = document.createElement('p');
+  note.textContent = text;
+  return note;
+}
+
+
+function unlinkedNote() {
+  return textNote("Your Crystal Prism account isn't linked to a site " +
+    'username yet. Sign in below with your original username and password.');
+}
+
+
+function pendingNote(username) {
+  var note = document.createElement('p');
+  var name = document.createElement('strong');
+  name.textContent = username;
+  note.appendChild(document.createTextNode('Your request for '));
+  note.appendChild(name);
+  note.appendChild(document.createTextNode(
+    " is waiting for approval. You'll get an email."));
+  return note;
+}
+
+
+// The request form. `last` is the visitor's previous request, if any; a
+// declined or failed one gets a line saying so above the form.
+function showAccessForm(bridge, last) {
+  var notes = [];
+
+  if (last && last.status == 'declined') {
+    notes.push(textNote('Your request for ' + last.username +
+      " wasn't approved."));
+  }
+
+  if (last && last.status == 'failed') {
+    notes.push(textNote(last.username + ' was taken — try another.'));
+  }
+
+  notes.push(textNote("You're signed in, but you don't have a username on " +
+    'this site yet. Request one:'));
+
+  var form = document.createElement('form');
+  form.id = 'access-request';
+  form.noValidate = true;
+
+  var label = document.createElement('label');
+  label.htmlFor = 'access-username';
+  label.textContent = 'Username';
+
+  var input = document.createElement('input');
+  input.id = 'access-username';
+  input.type = 'text';
+  input.maxLength = 30;
+  input.setAttribute('autocomplete', 'username');
+  input.setAttribute('autocapitalize', 'none');
+  input.spellcheck = false;
+
+  // Every failure lands here: the house `.warning`, shown only when set
+  var warning = document.createElement('p');
+  warning.id = 'access-warning';
+  warning.className = 'warning';
+  warning.setAttribute('role', 'alert');
+
+  var button = document.createElement('button');
+  button.type = 'submit';
+  button.textContent = 'Request username';
+
+  function warn(text) {
+    warning.textContent = text;
+    warning.style.display = text ? 'block' : 'none';
+    return;
+  }
+
+  form.onsubmit = function(e) {
+    e.preventDefault();
+
+    var username = input.value.trim();
+
+    if (!ACCESS_USERNAME_PATTERN.test(username)) {
+      warn('Letters, numbers, - and _ only.');
+      input.focus();
+      return;
+    }
+
+    warn('');
+    button.disabled = true;
+
+    fetch(ACCESS_REQUEST_URL, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify({username: username})
+    })
+
+      .then(function(response) {
+        return response.json()
+          .catch(function() {
+            return {};
+          })
+          .then(function(data) {
+            return {status: response.status, data: data};
+          });
+      })
+
+      .then(function(result) {
+        if (result.status == 201) {
+          showAccessNotes(bridge, [textNote("Request sent. You'll get an " +
+            "email when it's approved.")]);
+          return;
+        }
+
+        if (result.status == 409 && result.data.reason == 'already_pending') {
+          showAccessNotes(bridge,
+            [pendingNote(result.data.username || username)]);
+          return;
+        }
+
+        button.disabled = false;
+
+        if (result.status == 400) {
+          warn('Letters, numbers, - and _ only.');
+          input.focus();
+          return;
+        }
+
+        if (result.status == 429) {
+          warn('Too many tries. Wait a few minutes.');
+          return;
+        }
+
+        warn("Couldn't send that. Try again.");
+        return;
+      })
+
+      .catch(function() {
+        button.disabled = false;
+        warn("Couldn't send that. Try again.");
+        return;
+      });
+
+    return;
+  };
+
+  form.appendChild(label);
+  form.appendChild(input);
+  form.appendChild(warning);
+  form.appendChild(button);
+  notes.push(form);
+
+  showAccessNotes(bridge, notes);
 
   return;
 }

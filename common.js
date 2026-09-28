@@ -128,7 +128,7 @@ function createPageHeader() {
   profileLink.id = 'profile-link';
   accountLink = document.createElement('a');
   accountLink.id = 'account-link';
-  accountLink.href = root + '/user/create-account/';
+  accountLink.href = 'https://auth.crystalprism.io/register';
   signInLink = document.createElement('a');
   signInLink.id = 'sign-in-link';
   signInLink.href = root + '/user/sign-in/';

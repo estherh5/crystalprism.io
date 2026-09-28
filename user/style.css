@@ -588,6 +588,76 @@ h2 {
   min-height: 44px;
 }
 
+/* "or" between the password form and Google sign-in. Width matches the inputs
+   so the two hairlines end where the inputs do; they are aria-hidden in the
+   markup, and the word between them is the only part a screen reader hears. */
+#or-separator {
+  display: flex;
+  align-items: center;
+  width: 181px;
+  font-family: 'Pompiere', cursive;
+  font-size: 15px;
+  line-height: 16px;
+}
+
+#or-separator .or-rule {
+  flex: 1;
+  border-top: 1px solid #c1c1c1; /* the inputs' own border colour */
+}
+
+#or-separator .or-rule:first-child {
+  margin-right: 8px;
+}
+
+#or-separator .or-rule:last-child {
+  margin-left: 8px;
+}
+
+/* A link that looks like the house `button`: Google sign-in navigates away, so
+   it is an <a>, but it should read as the same kind of control as Submit.
+   Face, colour, hover and focus are copied from `button` rather than shared,
+   because the `a`, `a:hover` and `a:focus` rules above would otherwise turn the
+   label grey and drop the focus ring. 181px matches the inputs; 44px is the
+   tap-target floor. */
+.button-link {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 181px;
+  min-height: 44px;
+  padding: 0 16px;
+  background-color: #ffb1b1;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #000000;
+  cursor: pointer;
+  transform: scale(1) translateZ(0);
+  transition: all 0.3s;
+}
+
+.button-link:active {
+  box-shadow: 1px 1px #000000;
+  background-color: rgba(0, 128, 0, 0.75);
+  text-shadow: 0.1px 0.1px 0px #000000;
+}
+
+.button-link:hover {
+  background-color: rgba(0, 128, 0, 0.75);
+  color: #000000; /* as `button:hover` - black on this green is 6.32:1 */
+  transform: scale(1.1) translateZ(0);
+  transition: all 0.3s;
+}
+
+.button-link:focus {
+  outline: none;
+  color: #000000;
+  border: 2px solid rgba(0, 128, 0, 0.69);
+  box-shadow: 0px 0px 2px 0px rgba(0, 128, 0, 0.69);
+}
+
 input {
   width: 181px;
   border-color: #c1c1c1;

@@ -617,12 +617,10 @@ h2 {
 
 /* The house `.warning` colour and show/hide, but the bridge's own size rather
    than `.warning`'s 9px: this line carries a server error the visitor has to
-   act on, and 9px is below the fleet's 11px text floor. The house #ff0000 is
-   4.0:1 on this page's white; #cc0000 (5.9:1) clears AA for the thin face. */
+   act on, and 9px is below the fleet's 11px text floor. */
 #ring-bridge #access-warning {
   margin: 4px 0px 0px 0px;
   font-size: inherit;
-  color: #cc0000;
 }
 
 /* "or" between the password form and Google sign-in. Width matches the Google
@@ -722,7 +720,8 @@ input:focus, button:focus {
   margin-top: 3px;
   display: none;
   font-size: 9px;
-  color: #ff0000;
+  /* #ff0000 was 4.0:1 on white; #cc0000 is 5.9:1 and clears AA. */
+  color: #cc0000;
   text-align: left;
 }
 

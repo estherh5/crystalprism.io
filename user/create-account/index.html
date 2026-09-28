@@ -2,6 +2,18 @@
 <html>
   <head>
     <meta charset="UTF-8">
+    <!-- New sign-ups go through the Crystal Prism ring at auth.crystalprism.io.
+    This page stays only to confirm a legacy account deletion, which My Account
+    hands off here with account-request = delete. -->
+    <script>
+      try {
+        if (sessionStorage.getItem('account-request') != 'delete') {
+          location.replace('https://auth.crystalprism.io/register');
+        }
+      } catch (e) {
+        location.replace('https://auth.crystalprism.io/register');
+      }
+    </script>
     <meta name="description" content="Want to be a part of the Crystal Prism community? Create an account to save CanvaShare drawings, Thought Writer posts, and game scores.">
     <meta name="keywords" content="Crystal Prism create account,register,sign up,username,password">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">

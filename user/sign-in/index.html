@@ -114,12 +114,12 @@
         </div>
 
         <!-- The second way in, after the password form (fleet Ring sign-in
-        order). The rules are decoration; the word "or" is read. Same
-        two-column shape as the Forgot-your-password row, so both rows sit on
-        the inputs' axis. -->
-        <div class="row d-flex justify-content-center">
-          <div class="col-3"></div>
-          <div class="col-auto">
+        order). The rules are decoration; the word "or" is read. Centred like
+        the Submit row above rather than on the inputs' axis: the two buttons
+        are alternatives, so they share one axis (measured 67px apart at 1200
+        when this sat under the inputs). -->
+        <div class="row">
+          <div class="col d-flex justify-content-center">
             <div id="or-separator">
               <span class="or-rule" aria-hidden="true"></span>
               <span>or</span>
@@ -131,9 +131,8 @@
         <!-- Google sign-in on auth.crystalprism.io, which brings the visitor
         back here with ?via=google so main.js can finish the sign-in. A link,
         not a button: it navigates. -->
-        <div class="row mt-2 mb-3 d-flex justify-content-center">
-          <div class="col-3"></div>
-          <div class="col-auto">
+        <div class="row mt-2 mb-3">
+          <div class="col d-flex justify-content-center">
             <a id="google-sign-in" class="button-link" href="https://auth.crystalprism.io/google">Sign in with Google</a>
           </div>
         </div>

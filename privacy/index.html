@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="What the Crystal Prism apps keep when you sign in with Google, and why.">
+    <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.ico">
+    <link href="https://fonts.googleapis.com/css2?family=Poiret+One&family=Scope+One&display=swap" rel="stylesheet">
+
+    <!-- Plausible Analytics (cookieless, self-hosted) -->
+    <script defer data-domain="crystalprism.io" src="https://plausible.crystalprism.io/js/script.js"></script>
+
+    <!-- Public on purpose: every app's Google OAuth consent screen links here,
+    and Google's reviewers arrive without a session. Every sentence is a claim
+    about the apps' code; change one only alongside what it describes. -->
+    <title>Privacy · Crystal Prism</title>
+
+    <style>
+      :root {
+        --ground: #ffffff;
+        --ink: #000000;
+        --quiet: #4d4d4d;
+        --select: #ffb1b1;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --ground: #000000;
+          --ink: #ffffff;
+          --quiet: #b3b3b3;
+          --select: #7a3a3a;
+        }
+      }
+      * { box-sizing: border-box; }
+      html { background: var(--ground); }
+      body {
+        margin: 0;
+        padding: 0 16px 64px;
+        background: var(--ground);
+        color: var(--ink);
+        font-family: 'Scope One', Georgia, serif;
+        font-size: 17px;
+        line-height: 1.65;
+      }
+      ::selection { background: var(--select); }
+      header {
+        border-bottom: 4px solid var(--ink);
+        margin: 0 -16px;
+        padding: 12px 16px;
+      }
+      header a { display: inline-block; line-height: 0; }
+      header img { height: 32px; width: 32px; }
+      main { max-width: 38rem; margin: 0 auto; }
+      h1 {
+        font-family: 'Poiret One', cursive;
+        font-weight: 400;
+        font-size: clamp(2.25rem, 7vw, 3.25rem);
+        line-height: 1.1;
+        margin: 56px 0 28px;
+        text-wrap: balance;
+      }
+      p { margin: 0 0 1.1em; }
+      strong { font-weight: 400; }
+      .quiet { color: var(--quiet); }
+      a { color: inherit; text-underline-offset: 3px; }
+      a:hover { color: var(--quiet); }
+      a:focus-visible { outline: 2px solid var(--ink); outline-offset: 3px; }
+    </style>
+  </head>
+  <body>
+    <header>
+      <a href="/" aria-label="Crystal Prism home"><img src="../favicon.svg" alt=""></a>
+    </header>
+    <main>
+      <h1>What the Crystal Prism apps keep, and why</h1>
+
+      <p>
+        The apps at crystalprism.io are small, private tools built and run by one person,
+        Esther Hoffman. They have no ads, and they sell or share nothing with anyone.
+      </p>
+      <p>
+        <strong>When you sign in with Google</strong>, an app keeps your name, email address and
+        profile picture. It uses them to check your invitation and to show who you are signed in
+        as. It asks Google for nothing else.
+      </p>
+      <p>
+        <strong>What you add to an app</strong> is stored so the app can show it back to you and
+        to the people you share it with. Records are stored on Turso, and uploaded files on
+        Cloudflare.
+      </p>
+      <p>
+        <strong>Visits are counted</strong> with Plausible, which sets no cookies and records no
+        personal data. <strong>When a page breaks</strong>, a report of the error and the page it
+        happened on is sent so it can be fixed.
+      </p>
+      <p class="quiet">
+        To have your account and everything tied to it deleted, or to ask anything about this
+        policy, email <a href="mailto:hoffman.esther@gmail.com">hoffman.esther@gmail.com</a>.
+      </p>
+    </main>
+  </body>
+</html>

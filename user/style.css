@@ -562,6 +562,9 @@ h2 {
   font-size: 15px;
   line-height: 16px;
   text-align: left;
+  /* A requested username is one word of up to 30 characters, wider than this
+     column; it breaks rather than running past the edge. */
+  overflow-wrap: break-word;
 }
 
 /* Hiding the empty #ring-bridge is not enough: the row around it still breaks
@@ -586,6 +589,38 @@ h2 {
   /* The house `button` rule supplies the face, colour and transition; only the
      box is set here, and 44px is the tap-target floor. */
   min-height: 44px;
+}
+
+/* "Request a username", built by main.js#showAccessForm for a ring session
+   with no site username. Label over input over button, all in the bridge's
+   181px column. The global `label` rule zeroes margins with !important, so the
+   gap below the label is the input's margin instead. */
+#access-request {
+  margin: 0px 0px 8px 0px;
+}
+
+#access-request label {
+  display: block;
+}
+
+#access-request input {
+  display: block;
+  margin-top: 4px;
+  /* Bootstrap's body 1.5, as the house inputs below get it; the bridge's own
+     line-height would otherwise make this one shorter than its neighbours. */
+  line-height: 1.5;
+}
+
+#access-request button {
+  margin-top: 8px;
+}
+
+/* The house `.warning` colour and show/hide, but the bridge's own size rather
+   than `.warning`'s 9px: this line carries a server error the visitor has to
+   act on, and 9px is below the fleet's 11px text floor. */
+#ring-bridge #access-warning {
+  margin: 4px 0px 0px 0px;
+  font-size: inherit;
 }
 
 /* "or" between the password form and Google sign-in. Width matches the Google

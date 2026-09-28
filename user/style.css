@@ -725,6 +725,18 @@ input:focus, button:focus {
   text-align: left;
 }
 
+/* my-account's warnings sit on the visitor's own profile colour, and no red
+   ink passes on every one of those: on a mid grey (#777777) black is 4.7:1 and
+   white 4.5:1, and any red scores below both. So the warning carries its own
+   white ground, the same white as the editing input above it, where #cc0000 is
+   5.9:1 whatever colour the profile is. #last-name-blank is only an &nbsp;
+   spacer that keeps the name row level, so it stays unbacked. */
+#profile-background .warning:not(#last-name-blank) {
+  align-self: flex-start;
+  padding: 1px 4px;
+  background-color: #ffffff;
+}
+
 #verify-password-input {
   font-size: 15px;
 }

@@ -33,8 +33,10 @@ var RICH_TEXT_CONFIG = {
   ALLOWED_TAGS: ['a', 'b', 'br', 'div', 'font', 'i', 'img', 'li', 'ol',
     'strike', 'sub', 'sup', 'u', 'ul'],
   ALLOWED_ATTR: ['align', 'color', 'href', 'src', 'style'],
-  // href/src: http(s) and mailto only; DOMPurify separately admits data: for
-  // img src (pasted images), which cannot run script inside an <img>
+  // href/src: http(s) and mailto only; DOMPurify separately admits any
+  // data: URI for img src (pasted images) regardless of this regexp, so the
+  // hook below narrows that to raster image mime types (no svg+xml, which
+  // can carry a <script> or onload of its own)
   ALLOWED_URI_REGEXP: /^(?:https?|mailto):/i,
   // Validated by the hook below instead of the URI regexp
   ADD_URI_SAFE_ATTR: ['align', 'color']
@@ -43,11 +45,12 @@ var RICH_TEXT_CONFIG = {
 var RICH_TEXT_STYLE = /^\s*(?:(?:text-align\s*:\s*(?:left|right|center|justify)|font-weight\s*:\s*(?:bold|normal|[1-9]00))\s*(?:;\s*|$))*$/i;
 var RICH_TEXT_ALIGN = /^(?:left|right|center|justify)$/i;
 var RICH_TEXT_COLOR = /^(?:#[0-9a-f]{3,8}|[a-z]+)$/i;
+var RICH_TEXT_SRC = /^(?:https?:|data:image\/(?:png|jpe?g|gif|webp)[;,])/i;
 
 if (window.DOMPurify) {
   DOMPurify.addHook('uponSanitizeAttribute', function(node, data) {
     var valid = {style: RICH_TEXT_STYLE, align: RICH_TEXT_ALIGN,
-      color: RICH_TEXT_COLOR}[data.attrName];
+      color: RICH_TEXT_COLOR, src: RICH_TEXT_SRC}[data.attrName];
     if (valid && !valid.test(data.attrValue)) {
       data.keepAttr = false;
     }

@@ -2797,3 +2797,14 @@ function deleteContent(contentType, contentId, afterFunction) {
       }
     });
 }
+
+// jscolor's string-valued options are evaluated with new Function, which the
+// site's Content-Security-Policy forbids, so its callbacks are set here as functions.
+window.addEventListener('load', function() {
+  document.getElementById('background-color-picker').jscolor.onFineChange = function() {
+    updateBgColor(this);
+  };
+  document.getElementById('icon-color-picker').jscolor.onFineChange = function() {
+    updateIconColor(this);
+  };
+});

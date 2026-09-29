@@ -1133,3 +1133,11 @@ function requestMorePosts() {
 
   return;
 }
+
+// jscolor's string-valued options are evaluated with new Function, which the
+// site's Content-Security-Policy forbids, so its callback is set here as a function.
+window.addEventListener('load', function() {
+  document.getElementById('font-color-picker').jscolor.onFineChange = function() {
+    formatFontColor(this);
+  };
+});

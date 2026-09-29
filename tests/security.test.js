@@ -85,3 +85,13 @@ test('profile page rejects invalid or missing usernames', async () => {
     }
   }
 });
+
+test('stored username is encoded wherever it goes into an API path', () => {
+  const fs = require('node:fs');
+  for (const file of ['user/my-account/main.js', 'thought-writer/editor/main.js']) {
+    const src = fs.readFileSync(path.join(root, file), 'utf8');
+    // A string ending in '/' concatenated (optionally via `data +`) with the raw value
+    const raw = /\/'\s*\+\s*(?:data\s*\+\s*)?localStorage\s*\.getItem\('username'\)/g;
+    assert.deepStrictEqual(src.match(raw), null, file);
+  }
+});

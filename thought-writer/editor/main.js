@@ -131,7 +131,7 @@ function loadPosts() {
 
   // Otherwise, load previously written posts to cabinet
   return fetch(api + '/thought-writer/posts/' +
-    localStorage.getItem('username') + '?start=' + requestStart + '&end=' +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' + requestStart + '&end=' +
     requestEnd, {
       credentials: 'include',
       method: 'GET',

@@ -108,7 +108,7 @@ function loadPersonalInfo() {
           displayPersonalInfo(info);
 
           // Store info in localStorage for offline loading
-          localStorage.setItem(username + 'profile', JSON.stringify(info));
+          localStorage.setItem(username + '-profile', JSON.stringify(info));
         });
 
         return;

@@ -439,8 +439,8 @@ function endGame() {
     data = JSON.stringify(finalScore);
 
     return fetch(api + '/shapes-in-rain/score', {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
       method: 'POST',
       body: data,
     })

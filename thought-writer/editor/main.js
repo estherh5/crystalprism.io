@@ -125,7 +125,7 @@ function toggleButtons() {
 // Load user's posts from server
 function loadPosts() {
   // Do nothing if user is not logged in
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem('username')) {
     return;
   }
 
@@ -133,7 +133,7 @@ function loadPosts() {
   return fetch(api + '/thought-writer/posts/' +
     localStorage.getItem('username') + '?start=' + requestStart + '&end=' +
     requestEnd, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      credentials: 'include',
       method: 'GET',
     })
 
@@ -297,7 +297,7 @@ function displayPosts(posts) {
 // Load post that has passed post id
 function loadPost(postId) {
   return fetch(api + '/thought-writer/post/' + postId, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      credentials: 'include',
     })
 
     // Display error message if server is down
@@ -516,7 +516,7 @@ document.getElementById('submit-post').onclick = submitPost;
 
 function submitPost() {
   // If user is not logged in, warn user that login is required to submit post
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem('username')) {
     window.alert('You must log in to create a post.');
     return;
   }
@@ -559,8 +559,8 @@ function submitPost() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/thought-writer/post', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
@@ -704,7 +704,7 @@ function modifyPost() {
   }
 
   // If user is not logged in, warn user that login is required to modify post
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem('username')) {
     window.alert('You must log in to edit a post.');
     return;
   }
@@ -735,8 +735,8 @@ function modifyPost() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/thought-writer/post/' + postId, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'PATCH',
     body: data,
   })
@@ -845,8 +845,8 @@ function deletePost() {
     document.body.style.cursor = 'wait';
 
     return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
     })
 

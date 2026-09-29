@@ -15,9 +15,11 @@ window.onload = function() {
   createPageHeader();
 
   // If user is logged in, redirect to My Account page
-  if (checkIfLoggedIn()) {
-    window.location = '../my-account/';
-  }
+  Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
+    if (loggedIn) {
+      window.location = '../my-account/';
+    }
+  });
 
   /* Offer a one-click continue if this visitor already holds a Crystal Prism
   ring session */
@@ -109,24 +111,42 @@ function checkRingSession() {
         button.disabled = true;
         document.body.style.cursor = 'wait';
 
-        /* Written exactly as requestLogin() writes it: `token` is the bare JWT
-        string, and `username` is the claim its payload carries. Six other files
-        read these two keys directly. */
-        localStorage.removeItem('username');
-        localStorage.setItem('username', data.username);
-        localStorage.removeItem('token');
-        localStorage.setItem('token', data.token);
+        /* The minted token is exchanged once for the API's HttpOnly session
+        cookie and then dropped: script never keeps it. `username` is the
+        claim its payload carries, stored as requestLogin() stores it. */
+        fetch(api + '/session', {
+          credentials: 'include',
+          headers: {'Authorization': 'Bearer ' + data.token},
+          method: 'POST',
+        })
 
-        /* The same redirect requestLogin() uses, so a deep link that bounced
-        the visitor here still lands them where they were going. */
-        if (sessionStorage.getItem('previous-window')) {
-          var previousWindow = sessionStorage.getItem('previous-window');
-          sessionStorage.removeItem('previous-window');
-          window.location = previousWindow;
-          return;
-        }
+          .catch(function(error) {
+            return;
+          })
 
-        window.location = '../my-account/';
+          .then(function(response) {
+            if (!response || !response.ok) {
+              window.alert('Your request did not go through. Please try ' +
+                'again soon.');
+              button.disabled = false;
+              document.body.style.cursor = '';
+              return;
+            }
+
+            localStorage.removeItem('username');
+            localStorage.setItem('username', data.username);
+
+            /* The same redirect requestLogin() uses, so a deep link that
+            bounced the visitor here still lands them where they were going. */
+            if (sessionStorage.getItem('previous-window')) {
+              var previousWindow = sessionStorage.getItem('previous-window');
+              sessionStorage.removeItem('previous-window');
+              window.location = previousWindow;
+              return;
+            }
+
+            window.location = '../my-account/';
+          });
 
         return;
       };
@@ -418,10 +438,9 @@ function confirmLogout() {
   // Display successful logout banner
   document.getElementById('logout').style.display = 'block';
 
-  /* Remove username and token from localStorage and logout request from
-  sessionStorage */
-  localStorage.removeItem('username');
-  localStorage.removeItem('token');
+  /* Clear the session cookie and stored username (from common.js script),
+  and the logout request from sessionStorage */
+  requestLogout();
   sessionStorage.removeItem('account-request');
 
   return;
@@ -506,6 +525,7 @@ function requestLogin() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/login', {
+    credentials: 'include',
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)},
     method: 'GET',
   })
@@ -529,6 +549,17 @@ function requestLogin() {
         // Remove server down banner from page (from common.js script)
         pingServer();
 
+        // Too many attempts: show the rate-limit message (from common.js)
+        if (response.status == 429) {
+          showRateLimited();
+
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
         /* If server responds with error, display warning that credentials are
         incorrect */
         if (response.status != 200) {
@@ -548,14 +579,13 @@ function requestLogin() {
           return;
         }
 
-        /* Otherwise, save returned token from server and decoded token's
-        payload (username) to localStorage */
+        /* Otherwise, the server has set the HttpOnly session cookie; save
+        the token payload's username (its canonical casing) to localStorage
+        and discard the token itself */
         response.text().then(function(token) {
           localStorage.removeItem('username');
           var payload = JSON.parse(atob(token.split('.')[1]));
           localStorage.setItem('username', payload['username']);
-          localStorage.removeItem('token');
-          localStorage.setItem('token', token);
 
           // Reset Submit button and cursor style
           document.getElementById('submit').disabled = false;

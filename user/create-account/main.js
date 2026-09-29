@@ -16,9 +16,11 @@ window.onload = function() {
   createPageHeader();
 
   // If user is logged in, redirect to My Account page
-  if (checkIfLoggedIn()) {
-    window.location = '../my-account/';
-  }
+  Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
+    if (loggedIn) {
+      window.location = '../my-account/';
+    }
+  });
 
   // Enable Bootstrap tooltips
   $('[data-toggle="tooltip"]').tooltip();
@@ -41,10 +43,9 @@ function confirmDeletion() {
   // Focus on Okay button to close modal
   document.getElementById('okay').focus();
 
-  /* Remove username and token from localStorage and logout request from
-  sessionStorage */
-  localStorage.removeItem('username');
-  localStorage.removeItem('token');
+  /* Clear the deleted account's session cookie and stored username (from
+  common.js script), and the request from sessionStorage */
+  requestLogout();
   sessionStorage.removeItem('account-request');
 
   return;
@@ -205,25 +206,42 @@ function createAccount() {
           return;
         }
 
+        // Too many attempts: show the rate-limit message (from common.js)
+        if (response.status == 429) {
+          showRateLimited();
+
+          // Reset Submit button and cursor style
+          document.getElementById('submit').disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
         // If account is created successfully, send request to log into account
         if (response.status == 201) {
           return fetch(api + '/login', {
+            credentials: 'include',
             headers: {
               'Authorization': 'Basic ' + btoa(username + ':' + password)
             },
             method: 'GET',
           })
 
-            /* If server responds successfully, save username and returned
-            token from server to localStorage */
+            /* If server responds successfully, it has set the HttpOnly session
+            cookie; save the username to localStorage */
             .then(function(response) {
 
+              // Account exists but sign-in was throttled
+              if (response.status == 429) {
+                showRateLimited();
+                window.location = '../sign-in/';
+                return;
+              }
+
               if (response.status == 200) {
-                response.text().then(function(token) {
+                response.text().then(function() {
                   localStorage.removeItem('username');
                   localStorage.setItem('username', username);
-                  localStorage.removeItem('token');
-                  localStorage.setItem('token', token);
 
                   /* Save request to create account to sessionStorage to
                   display success modal on next page (My Account page) */

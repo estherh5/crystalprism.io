@@ -195,8 +195,8 @@ function deletePost() {
     document.body.style.cursor = 'wait';
 
     return fetch(api + '/thought-writer/post/' + postId, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
     })
 
@@ -429,7 +429,7 @@ document.getElementById('submit-comment').onclick = submitComment;
 
 function submitComment() {
   // If user is not logged in, warn user that login is required to post comment
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem('username')) {
     window.alert('You must log in to leave a comment.');
     return;
   }
@@ -453,8 +453,8 @@ function submitComment() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/thought-writer/comment', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
@@ -629,8 +629,8 @@ function submitEdits() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/thought-writer/comment/' + commentId, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'PATCH',
     body: data,
   })
@@ -745,8 +745,8 @@ function deleteComment() {
     document.body.style.cursor = 'wait';
 
     return fetch(api + '/thought-writer/comment/' + commentId, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-        'Content-Type': 'application/json'},
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
     })
 

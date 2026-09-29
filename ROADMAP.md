@@ -7,6 +7,25 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **Security roadmap closed — session cookie, CSP, username URLs, markup check.**
+  - The session token no longer lives in `localStorage`: api.crystalprism.io sets an HttpOnly,
+    Secure, SameSite=Strict `cp_session` cookie (Path=/api), and every authed fetch sends
+    `credentials: 'include'` with no `Authorization` header. Cookie-authed writes need an
+    allowlisted Origin. A legacy stored token is exchanged once via `POST /api/session` and deleted;
+    the auth.crystalprism.io bridge token goes through the same exchange. Sign-out calls
+    `POST /api/logout`. Verified with a 47-check Playwright run against a local API. Commits
+    api 32a9a1f, site 0a72fd6.
+  - Content-Security-Policy plus `nosniff` and `Referrer-Policy`, served from `_headers`. There is
+    no `unsafe-eval` and no inline script: the easel palette `eval` and jscolor's string callbacks
+    were rewritten. 0 violations across all 15 pages, including interactions. Commits d8fdb23, 450c0f4.
+  - `contains_markup` now rejects only complete tags, `<!--` and HTML entities, so `a<b` saves.
+    My Account, the Thought Writer editor and the easel show the server's 400 reason instead of
+    failing silently. Commits api 4981639, site d147fe7.
+  - Usernames are `encodeURIComponent`-ed in every profile URL. The profile page validates
+    `^[a-zA-Z0-9_-]+$` and shows not-found otherwise. `tests/` (`npm test`) holds a committed
+    regression test for the `RICH_TEXT_SRC` image allowlist and the username validator, proven to
+    go red. Commit 91ae13b.
+
 - **2026-09** **Stored XSS fixed — other users' rich text is sanitised.** Post/comment content and
   titles, drawing titles, and about/name/email were written to `innerHTML` unsanitised on public
   pages, so a `<font>`/`<img>`-carrying post could run script in any reader's session, including
@@ -27,31 +46,22 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- [security] **Auth token kept in `localStorage` (Medium).** `token` is read at
-  `localStorage['token']`, so any future XSS can still steal a reader's session — the stored-XSS
-  path above is closed, but this is defence in depth against the next one. Fix: move the session
-  token to an HttpOnly cookie set by api.crystalprism.io.
-
-- [security] **No Content-Security-Policy (Medium).** The site is static, served from Netlify,
-  with no CSP header anywhere. Fix: set a CSP via Netlify `_headers` or `netlify.toml`.
-
-- [security] **My Account silently 400s on a field containing markup, and `contains_markup` also
-  rejects innocent text (Low).** The server's `contains_markup` check (api.crystalprism.io)
-  rejects any plain-text field — about, name, email — that merely resembles markup, e.g. `a<b`,
-  and the client shows no error when this happens, just a silent failure. Fix: show the rejection
-  reason in the UI; loosen `contains_markup` to require a closing tag or a real HTML entity, not
-  any bare `<`.
-
-- [security] **Client-side `RICH_TEXT_SRC` image check has no committed regression test (Low).**
-  `common.js`'s allowlist for image `src` inside rich text was verified only with a throwaway
-  Playwright harness during the fix, not a committed test. Fix: commit a regression test asserting
-  `data:image/svg+xml` and non-image URLs are rejected client-side too.
-
-- [security] **Unvalidated username in URLs (Medium).** `common.js`
-  (`profileLink.href = root + '/user/?username=' + payload['username']`) and `user/main.js`
-  (`location.search.split('username=')[1]` into a fetch URL and localStorage keys) allow path
-  injection within the API origin (GET only). Fix: `encodeURIComponent` and validate against
-  `^[a-zA-Z0-9_-]+$`.
+- **Sign-out ignores a failed `/api/logout`.** `common.js#requestLogout` clears `username` even
+  when the API call fails, so on a network error the HttpOnly cookie outlives the signed-out UI for
+  up to 1h. That matters on a shared computer. Keep the signed-in state and tell the user instead.
+- **My Account doesn't wait for the one-time token migration.** `user/my-account/main.js`'s
+  `window.onload` treats `checkIfLoggedIn()`'s Promise as truthy and loads data before the
+  `/api/session` exchange lands, so a migrating visitor's first page is blank until a reload. Chain
+  the rest of onload on the Promise. The Thought Writer editor has the same issue.
+- **Stored username still goes into API paths unencoded.** `user/my-account/main.js`
+  (`loadPersonalInfo`, `loadScores`, `loadPosts`, `deleteAccount`, `downloadData`, `submitEdits`)
+  and `thought-writer/editor/main.js#loadPosts`. The value comes from the server, but wrap it in
+  `encodeURIComponent` to match the profile links.
+- **Profile cache never hits.** `user/main.js` writes `username + 'profile'` but reads
+  `username + '-profile'`.
+- **Create-account hangs on an unexpected login status.** `user/create-account/main.js#createAccount`
+  does nothing when the post-create `/login` returns anything but 200 or 429, and the button stays
+  disabled. `user/my-account/main.js#checkPassword`'s 429 branch also leaves the verify modal open.
 
 ## Declined
 

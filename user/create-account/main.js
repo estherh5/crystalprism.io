@@ -227,18 +227,23 @@ function createAccount() {
             method: 'GET',
           })
 
+            // Network error: handled below with any other failed sign-in
+            .catch(function(error) {
+              return;
+            })
+
             /* If server responds successfully, it has set the HttpOnly session
             cookie; save the username to localStorage */
             .then(function(response) {
 
               // Account exists but sign-in was throttled
-              if (response.status == 429) {
+              if (response && response.status == 429) {
                 showRateLimited();
                 window.location = '../sign-in/';
                 return;
               }
 
-              if (response.status == 200) {
+              if (response && response.status == 200) {
                 response.text().then(function() {
                   localStorage.removeItem('username');
                   localStorage.setItem('username', username);
@@ -259,7 +264,15 @@ function createAccount() {
                   // Take user to My Account page
                   window.location = '../my-account/';
                 });
+                return;
               }
+
+              /* Otherwise the account exists but sign-in did not go through,
+              so creating it again would fail: send user to Sign In page */
+              window.alert('Your account was created, but signing in did ' +
+                'not go through. Please sign in.');
+              window.location = '../sign-in/';
+              return;
             });
 
           return;

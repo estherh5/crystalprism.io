@@ -11,12 +11,19 @@ Committed doc, not scratch. Kept current by hand as work ships.
   titles, drawing titles, and about/name/email were written to `innerHTML` unsanitised on public
   pages, so a `<font>`/`<img>`-carrying post could run script in any reader's session, including
   reading the auth token. Rich text now passes through DOMPurify on read (this repo) and on write
-  (api.crystalprism.io) against a shared allowlist; plain fields (names, usernames, about) render
-  via `textContent` instead. Image `src` inside rich text is restricted to raster
+  (api.crystalprism.io) against a shared allowlist; plain fields (names, about) render via
+  `textContent` instead. Image `src` inside rich text is restricted to raster
   `data:image/(png|jpeg|gif|webp)` and `https?:` — `data:image/svg+xml` was accepted in review
   round 1 and tightened, since SVG can carry a `<script>`. Verified: 30 real production posts
   render byte-identical DOM and screenshots before/after; a headless-browser XSS sentinel fired on
-  7 pages before the fix and 0 after. Commits c6e49dc, 0bddc24.
+  7 pages before the fix and 0 after. Commits c6e49dc, 0bddc24. **Username sinks were ruled out of
+  scope for that round** (`update_user` didn't validate usernames before 2026-09-06, so a legacy
+  row could still hold markup and reach `innerHTML` — post writer/commenter links, the leaderboard
+  and gallery artist links, the profile title, and the header's own-username links) — closed
+  2026-09 in commit 2ea978e, which switches all of those to `textContent` too. Render is
+  byte-identical for the current `^[a-zA-Z0-9_-]+$` format (headless-Chromium parity check on the
+  post, gallery, profile and leaderboard pages); the prod backup's 5 users all conform, so 0 legacy
+  rows are affected today.
 
 ## Next
 

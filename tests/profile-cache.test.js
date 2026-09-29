@@ -22,6 +22,8 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
 // Visit alice's profile with the API either answering or unreachable
 async function visitProfile(context, { online }) {
   const page = await context.newPage();
+  page.errors = [];
+  page.on('pageerror', (e) => page.errors.push(e.message));
   await page.addInitScript(() => {
     window.$ = () => ({ tooltip() {}, modal() {}, on() {} });
     window.moment = () => ({ format: () => '01/01/2020' });
@@ -68,5 +70,8 @@ test('a profile loaded once is shown from cache when the API is down', async () 
     () => document.getElementById('profile-title').textContent !== '');
   assert.strictEqual(await second.textContent('#profile-title'), 'alice');
   assert.strictEqual(await second.textContent('#about-blurb'), 'Hello');
+  // The failed fetch must not also reach the success handler
+  await second.waitForTimeout(500);
+  assert.deepStrictEqual(second.errors, []);
   await context.close();
 });

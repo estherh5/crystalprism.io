@@ -11,6 +11,8 @@ Committed doc, not scratch. Kept current by hand as work ships.
   wrote `username + 'profile'` but read `username + '-profile'`, so the offline fallback never
   hit; it now writes `-profile`, matching the drawings/posts/comments caches.
   `tests/profile-cache.test.js` loads a profile online, then offline, and checks it still shows.
+  The offline path also no longer throws `Cannot read properties of undefined (reading 'ok')`:
+  its `.then` now skips the response the `.catch` already handled, like the other loaders.
 - **2026-09** **Create-account no longer hangs after the account exists.** When the sign-in that
   follows `POST /user` fails with any status but 200/429, or with a network error,
   `user/create-account/main.js#createAccount` says the account was created and sends the visitor

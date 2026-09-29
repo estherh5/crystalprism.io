@@ -103,6 +103,11 @@ function loadPersonalInfo() {
 
     // Display user's information on profile if server responds without error
     .then(function(response) {
+      // Nothing to do if the catch above already handled a server error
+      if (!response) {
+        return;
+      }
+
       if (response.ok) {
         response.json().then(function(info) {
           displayPersonalInfo(info);

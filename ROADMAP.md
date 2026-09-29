@@ -7,6 +7,10 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **The stored username is URL-encoded in every API path.** All nine requests in
+  `user/my-account/main.js` (including the drawings and comments lists) and
+  `thought-writer/editor/main.js#loadPosts` wrap it in `encodeURIComponent`, matching the profile
+  links; `tests/security.test.js` fails if a raw one comes back.
 - **2026-09** **My Account and the Thought Writer editor wait for the one-time token migration.**
   Both pages chain their data requests on `checkIfLoggedIn()`'s Promise, so a visitor still holding a
   pre-cookie token gets their data on the first load instead of a blank page. My Account no longer
@@ -59,10 +63,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Stored username still goes into API paths unencoded.** `user/my-account/main.js`
-  (`loadPersonalInfo`, `loadScores`, `loadPosts`, `deleteAccount`, `downloadData`, `submitEdits`)
-  and `thought-writer/editor/main.js#loadPosts`. The value comes from the server, but wrap it in
-  `encodeURIComponent` to match the profile links.
 - **Profile cache never hits.** `user/main.js` writes `username + 'profile'` but reads
   `username + '-profile'`.
 - **Create-account hangs on an unexpected login status.** `user/create-account/main.js#createAccount`

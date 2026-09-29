@@ -216,7 +216,7 @@ function confirmCreation() {
 
 // Load user's personal information from server
 function loadPersonalInfo() {
-  return fetch(api + '/user/' + localStorage.getItem('username'), {
+  return fetch(api + '/user/' + encodeURIComponent(localStorage.getItem('username')), {
     credentials: 'include',
     method: 'GET',
   })
@@ -317,7 +317,7 @@ function loadScores(game) {
   }
 
   return fetch(api + '/' + game + '/scores/' +
-    localStorage.getItem('username') + '?start=' + scoreStart + '&end=' +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' + scoreStart + '&end=' +
     scoreEnd, {
       credentials: 'include',
       method: 'GET',
@@ -608,7 +608,7 @@ function displayScores(scores, game) {
 user-created drawings or 'drawing-likes/user' for drawings the user liked) */
 function loadDrawings(type) {
   return fetch(api + '/canvashare/' + type + '/' +
-    localStorage.getItem('username') + '?start=' + drawingRequestStart +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' + drawingRequestStart +
     '&end=' + drawingRequestEnd)
 
       // If server is down, clear drawing area and hide navigation arrows
@@ -1063,7 +1063,7 @@ function updateLikes() {
 // Load user's posts from server
 function loadPosts() {
   return fetch(api + '/thought-writer/posts/' +
-    localStorage.getItem('username') + '?start=' + postRequestStart + '&end=' +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' + postRequestStart + '&end=' +
     postRequestEnd, {
       credentials: 'include',
       method: 'GET',
@@ -1342,7 +1342,7 @@ function displayPosts(posts) {
 // Load user's comments from server
 function loadComments() {
   return fetch(api + '/thought-writer/comments/user/' +
-    localStorage.getItem('username') + '?start=' + commentRequestStart +
+    encodeURIComponent(localStorage.getItem('username')) + '?start=' + commentRequestStart +
     '&end=' + commentRequestEnd)
 
       // If server is down, clear post area and hide navigation arrows
@@ -1865,7 +1865,7 @@ document.getElementById('confirm-delete-account-button')
 
 // Delete account, including user's data if specified ('/data')
 function deleteAccount(data) {
-  return fetch(api + '/user/' + data + localStorage.getItem('username'), {
+  return fetch(api + '/user/' + data + encodeURIComponent(localStorage.getItem('username')), {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE',
@@ -1916,7 +1916,7 @@ document.getElementById('download-data')
   }, false);
 
 function downloadData() {
-  return fetch(api + '/user/data/' + localStorage.getItem('username') +
+  return fetch(api + '/user/data/' + encodeURIComponent(localStorage.getItem('username')) +
     '?preventCache=' + new Date().getTime(), {
       credentials: 'include',
       method: 'GET',
@@ -2502,7 +2502,7 @@ function submitEdits() {
     'username': usernameInput.value
   });
 
-  return fetch(api + '/user/' + localStorage.getItem('username'), {
+  return fetch(api + '/user/' + encodeURIComponent(localStorage.getItem('username')), {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'PATCH',

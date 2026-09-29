@@ -128,7 +128,7 @@ window.onload = function() {
   document.getElementById('profile-main-link').textContent = localStorage
     .getItem('username');
   document.getElementById('profile-main-link')
-    .href = '../?username=' + localStorage.getItem('username');
+    .href = '../?username=' + encodeURIComponent(localStorage.getItem('username'));
 
   // Load user's personal information from server
   loadPersonalInfo();
@@ -855,7 +855,7 @@ function displayDrawings(type, drawings) {
 
       // Create link to artist's profile
       var artistLink = document.createElement('a');
-      artistLink.href = '../../user/?username=' + drawings[i]['artist_name'];
+      artistLink.href = '../../user/?username=' + encodeURIComponent(drawings[i]['artist_name']);
       artistLink.textContent = drawings[i]['artist_name'];
       drawingInfo.appendChild(drawingArtist);
       drawingArtist.appendChild(artistLink);
@@ -2542,7 +2542,7 @@ function submitEdits() {
             document.getElementById('profile-link').textContent = localStorage
               .getItem('username');
             document.getElementById('profile-link')
-              .href = '../?username=' + localStorage.getItem('username');
+              .href = '../?username=' + encodeURIComponent(localStorage.getItem('username'));
 
             // Return Personal menu fields to view-only mode and disable inputs
             profileBackground.classList.remove('editing');

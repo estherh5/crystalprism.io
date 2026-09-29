@@ -347,7 +347,7 @@ function checkIfLoggedIn() {
           localStorage.setItem('username', payload['username']);
 
           profileLink.textContent = payload['username'];
-          profileLink.href = root + '/user/?username=' + payload['username'];
+          profileLink.href = root + '/user/?username=' + encodeURIComponent(payload['username']);
           accountLink.innerHTML = 'My Account';
           accountLink.href = root + '/user/my-account/';
           signInLink.innerHTML = 'Sign Out';

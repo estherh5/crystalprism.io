@@ -168,7 +168,7 @@ function displayPost(post) {
   }
 
   // Add link to writer's profile
-  postWriter.href = '../../user/?username=' + post.username;
+  postWriter.href = '../../user/?username=' + encodeURIComponent(post.username);
   postWriter.textContent = post.username;
 
   // Display comment count
@@ -350,8 +350,8 @@ function displayComments(comments) {
     // Create link to commenter's profile
     var commenter = document.createElement('a');
     commenter.classList.add('commenter');
-    commenter.href = '../../user/?username=' + comments[i]
-      .username;
+    commenter.href = '../../user/?username=' + encodeURIComponent(comments[i]
+      .username);
     commenter.textContent = comments[i].username;
 
     // Create container for comment timestamp

@@ -11,3 +11,6 @@ tools/tours/node_modules/
 tools/tours/raw/
 tools/tours/out/
 tools/tours/.env
+
+# Test deps
+tests/node_modules/

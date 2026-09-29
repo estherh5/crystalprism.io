@@ -797,7 +797,7 @@ function setHeartAttr() {
   if (systolic >= 164 && diastolic >= 102) {
 
     // Send game score to server if user is logged in
-    if (localStorage.getItem('token')) {
+    if (localStorage.getItem('username')) {
       storeScore();
     }
 
@@ -823,8 +823,8 @@ function storeScore() {
   });
 
   return fetch(api + '/rhythm-of-life/score', {
-    headers: {'Authorization': 'Bearer ' + localStorage
-      .getItem('token'), 'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })

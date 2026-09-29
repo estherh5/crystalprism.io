@@ -99,7 +99,7 @@ window.onload = function() {
   createPageHeader();
 
   // If user is not logged in, redirect to Sign In page
-  if (!localStorage.getItem('token') || !checkIfLoggedIn()) {
+  if (!localStorage.getItem('username') || !checkIfLoggedIn()) {
     window.location = '../sign-in/';
     return;
   }
@@ -204,7 +204,7 @@ function confirmCreation() {
 // Load user's personal information from server
 function loadPersonalInfo() {
   return fetch(api + '/user/' + localStorage.getItem('username'), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    credentials: 'include',
     method: 'GET',
   })
 
@@ -306,7 +306,7 @@ function loadScores(game) {
   return fetch(api + '/' + game + '/scores/' +
     localStorage.getItem('username') + '?start=' + scoreStart + '&end=' +
     scoreEnd, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      credentials: 'include',
       method: 'GET',
     })
 
@@ -951,8 +951,8 @@ function updateLikes() {
 
     return fetch(api + '/canvashare/drawing-like/' + this.dataset
       .drawinglike, {
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          'Content-Type': 'application/json'},
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
       })
 
@@ -1000,8 +1000,8 @@ function updateLikes() {
   var data = JSON.stringify({'drawing_id': this.dataset.drawing});
 
   return fetch(api + '/canvashare/drawing-like', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
@@ -1052,7 +1052,7 @@ function loadPosts() {
   return fetch(api + '/thought-writer/posts/' +
     localStorage.getItem('username') + '?start=' + postRequestStart + '&end=' +
     postRequestEnd, {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      credentials: 'include',
       method: 'GET',
     })
 
@@ -1853,8 +1853,8 @@ document.getElementById('confirm-delete-account-button')
 // Delete account, including user's data if specified ('/data')
 function deleteAccount(data) {
   return fetch(api + '/user/' + data + localStorage.getItem('username'), {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'DELETE',
   })
 
@@ -1905,7 +1905,7 @@ document.getElementById('download-data')
 function downloadData() {
   return fetch(api + '/user/data/' + localStorage.getItem('username') +
     '?preventCache=' + new Date().getTime(), {
-      headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+      credentials: 'include',
       method: 'GET',
     })
 
@@ -2410,6 +2410,7 @@ function checkPassword() {
   return fetch(api + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(localStorage
       .getItem('username') + ':' + verifyPassword)},
+    credentials: 'include',
     method: 'GET',
   })
 
@@ -2441,6 +2442,12 @@ function checkPassword() {
         // If server responds successfully, submit edits to server
         if (response.status == 200) {
           submitEdits();
+          return;
+        }
+
+        // Too many password attempts: show the server's rate-limit message
+        if (response.status == 429) {
+          showRateLimited();
           return;
         }
 
@@ -2483,8 +2490,8 @@ function submitEdits() {
   });
 
   return fetch(api + '/user/' + localStorage.getItem('username'), {
-    headers: {'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'PATCH',
     body: data,
   })
@@ -2532,13 +2539,11 @@ function submitEdits() {
         }
 
         if (response.status == 200) {
-          /* If response is successful, update localStorage username and token
+          /* If response is successful, update localStorage username
           and profile link (in case user updated username) */
-          response.text().then(function(token) {
+          response.text().then(function() {
             localStorage.removeItem('username');
             localStorage.setItem('username', usernameInput.value);
-            localStorage.removeItem('token');
-            localStorage.setItem('token', token);
             document.getElementById('profile-link').textContent = localStorage
               .getItem('username');
             document.getElementById('profile-link')
@@ -2738,8 +2743,8 @@ function deleteContent(contentType, contentId, afterFunction) {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/' + contentType + '/' + contentId, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'DELETE',
   })
 

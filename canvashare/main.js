@@ -376,8 +376,8 @@ function updateLikes() {
 
     return fetch(api + '/canvashare/drawing-like/' + this.dataset
       .drawinglike, {
-        headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-          'Content-Type': 'application/json'},
+        credentials: 'include',
+        headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
       })
 
@@ -420,8 +420,8 @@ function updateLikes() {
   var data = JSON.stringify({'drawing_id': this.dataset.drawing});
 
   return fetch(api + '/canvashare/drawing-like', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })

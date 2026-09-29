@@ -133,7 +133,7 @@ function createPageHeader() {
     menuRow.classList.add('site-menu-row');
 
     if (i == projectLinks.length - 1) {
-      if (localStorage.getItem('token')) {
+      if (localStorage.getItem('username')) {
         menuRow.dataset.link = projectLinks[i] + 'user/my-account/';
       } else {
         menuRow.dataset.link = projectLinks[i] + 'user/sign-in/';
@@ -293,54 +293,90 @@ function pingServer(action) {
 }
 
 
-// Check if user is logged in by assessing JWT token's validity
-function checkIfLoggedIn() {
-  // If user does not have a token stored locally, set account menu to default
-  if (!localStorage.getItem('token')) {
-    accountLink.innerHTML = 'Create Account';
-    signInLink.innerHTML = 'Sign In';
+// Show the signed-out account menu
+function showSignedOut() {
+  accountLink.innerHTML = 'Create Account';
+  signInLink.innerHTML = 'Sign In';
 
-    /* Store current window for user to return to after logging in, if current
-    window is not homepage, Create Account, or Sign In pages */
-    if (currentPath != domain && currentPath != 'create-account'
-      && currentPath != 'sign-in') {
-        signInLink.onclick = function() {
-          sessionStorage.setItem('previous-window', window.location.href);
-          return;
-        }
+  /* Store current window for user to return to after logging in, if current
+  window is not homepage, Create Account, or Sign In pages */
+  if (currentPath != domain && currentPath != 'create-account'
+    && currentPath != 'sign-in') {
+      signInLink.onclick = function() {
+        sessionStorage.setItem('previous-window', window.location.href);
+        return;
       }
+    }
 
+  return;
+}
+
+
+/* The API throttles /api/login and account creation with a 429; show its
+message rather than the wrong-credentials warning */
+function showRateLimited() {
+  window.alert('Too many attempts. Try again later.');
+  return;
+}
+
+
+/* Check if user is logged in. The session is an HttpOnly cookie
+(cp_session) set by the API, so script never sees the token: the stored
+username is only a cheap hint, and /api/user/verify is the answer. */
+function checkIfLoggedIn() {
+  /* One-time migration: browsers signed in before the cookie session kept
+  the token in localStorage. Exchange it for the cookie, then drop it
+  whatever the answer - a stale or pre-rotation token (401) simply leaves the
+  visitor signed out */
+  var legacyToken = localStorage.getItem('token');
+
+  if (legacyToken) {
+    return fetch(api + '/session', {
+      credentials: 'include',
+      headers: {'Authorization': 'Bearer ' + legacyToken},
+      method: 'POST',
+    })
+
+      .catch(function(error) {
+        return;
+      })
+
+      .then(function() {
+        localStorage.removeItem('token');
+        return verifySession();
+      });
+  }
+
+  // If user has no stored username, set account menu to default
+  if (!localStorage.getItem('username')) {
+    showSignedOut();
     return false;
   }
 
-  /* Otherwise, check if the user is logged in by sending their token to the
-  server */
+  return verifySession();
+}
+
+
+// Ask the server whether the session cookie is valid
+function verifySession() {
   return fetch(api + '/user/verify', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
+    credentials: 'include',
     method: 'GET',
   })
 
     // Set account menu to default if server is down
     .catch(function(error) {
-      accountLink.innerHTML = 'Create Account';
-      signInLink.innerHTML = 'Sign In';
-
-      /* Store current window for user to return to after logging in, if
-      current window is not homepage, Create Account, or Sign In pages */
-      if (currentPath != domain && currentPath != 'create-account'
-        && currentPath != 'sign-in') {
-          signInLink.onclick = function() {
-            sessionStorage.setItem('previous-window', window.location.href);
-            return;
-          }
-        }
-
+      showSignedOut();
       return false;
     })
 
     .then(function(response) {
-      /* If server verifies token is correct, display link to profile, My
-      Account page, and Sign In page (with "Sign Out" title) */
+      if (!response) {
+        return false;
+      }
+
+      /* If server verifies the session, display link to profile, My Account
+      page, and Sign In page (with "Sign Out" title) */
       if (response.ok) {
         response.json().then(function(payload) {
           // Set localStorage username to payload username
@@ -363,22 +399,10 @@ function checkIfLoggedIn() {
       }
 
       /* If server responds with unauthorized status, set account menu to
-      default and remove username and token from localStorage */
+      default and remove username from localStorage */
       if (response.status == 401) {
         localStorage.removeItem('username');
-        localStorage.removeItem('token');
-        accountLink.innerHTML = 'Create Account';
-        signInLink.innerHTML = 'Sign In';
-
-        /* Store current window for user to return to after logging in, if
-        current window is not homepage, Create Account, or Sign In pages */
-        if (currentPath != domain && currentPath != 'create-account'
-          && currentPath != 'sign-in') {
-            signInLink.onclick = function() {
-              sessionStorage.setItem('previous-window', window.location.href);
-              return;
-            }
-          }
+        showSignedOut();
 
         // Redirect to Sign In page if user is on My Account page
         if (currentPath == 'my-account') {
@@ -388,6 +412,22 @@ function checkIfLoggedIn() {
       }
 
       return false;
+    });
+}
+
+
+// Sign out: clear the HttpOnly session cookie (only the server can) and the
+// stored username
+function requestLogout() {
+  localStorage.removeItem('username');
+
+  return fetch(api + '/logout', {
+    credentials: 'include',
+    method: 'POST',
+  })
+
+    .catch(function(error) {
+      return;
     });
 }
 

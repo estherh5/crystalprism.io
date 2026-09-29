@@ -400,7 +400,6 @@ function endBrushStroke(event) {
 function updateViews() {
   // Send request to server to update view count
   return fetch(api + '/canvashare/drawing/' + drawingId, {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token')},
     method: 'PATCH',
   });
 }
@@ -469,7 +468,7 @@ document.getElementById('post').onclick = postDrawing;
 function postDrawing() {
   /* If user is not logged in, warn user that login is required to post to
   gallery */
-  if (!localStorage.getItem('token')) {
+  if (!localStorage.getItem('username')) {
     window.alert('You must log in to post your drawing to the gallery.');
     return;
   }
@@ -514,8 +513,8 @@ function postDrawing() {
   document.body.style.cursor = 'wait';
 
   return fetch(api + '/canvashare/drawing', {
-    headers: {'Authorization': 'Bearer ' + localStorage.getItem('token'),
-      'Content-Type': 'application/json'},
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })

@@ -7,6 +7,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **My Account and the Thought Writer editor wait for the one-time token migration.**
+  Both pages chain their data requests on `checkIfLoggedIn()`'s Promise, so a visitor still holding a
+  pre-cookie token gets their data on the first load instead of a blank page. My Account no longer
+  bounces a migrating visitor with no stored username through Sign In and back, and
+  `common.js#verifySession` resolves only after it has stored the username. Covered by
+  `tests/migration.test.js`.
+
 - **2026-09** **Sign-out only reports success when the server confirms it.**
   `common.js#requestLogout` clears `username` only on a 2xx from `/api/logout`; on a network or
   server error the sign-in page keeps the header signed in, skips the redirect to My Account, and
@@ -52,10 +59,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **My Account doesn't wait for the one-time token migration.** `user/my-account/main.js`'s
-  `window.onload` treats `checkIfLoggedIn()`'s Promise as truthy and loads data before the
-  `/api/session` exchange lands, so a migrating visitor's first page is blank until a reload. Chain
-  the rest of onload on the Promise. The Thought Writer editor has the same issue.
 - **Stored username still goes into API paths unencoded.** `user/my-account/main.js`
   (`loadPersonalInfo`, `loadScores`, `loadPosts`, `deleteAccount`, `downloadData`, `submitEdits`)
   and `thought-writer/editor/main.js#loadPosts`. The value comes from the server, but wrap it in

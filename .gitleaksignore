@@ -1,0 +1,15 @@
+# security audit 2026-09-28: Cloudflare Web Analytics data-cf-beacon token, public by design
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:canvashare/index.html:generic-api-key:19
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:canvashare/easel/index.html:generic-api-key:18
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:user/create-account/index.html:generic-api-key:18
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:timespace/index.html:generic-api-key:17
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:index.html:generic-api-key:29
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:rhythm-of-life/index.html:generic-api-key:17
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:user/my-account/index.html:generic-api-key:19
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:shapes-in-rain/index.html:generic-api-key:17
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:thought-writer/editor/index.html:generic-api-key:18
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:thought-writer/post/index.html:generic-api-key:17
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:thought-writer/index.html:generic-api-key:17
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:user/index.html:generic-api-key:19
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:user/sign-in/index.html:generic-api-key:18
+21ecc2cdf023cd4f6679e6e01e59f6929895f8fd:vicarious/index.html:generic-api-key:21

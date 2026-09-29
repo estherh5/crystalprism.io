@@ -209,7 +209,7 @@ function displayPosts(posts) {
 
     // Create container for post writer with link to profile
     var postWriter = document.createElement('a');
-    postWriter.href = '../user/?username=' + posts[i].username;
+    postWriter.href = '../user/?username=' + encodeURIComponent(posts[i].username);
     postWriter.textContent = posts[i].username;
     postBoard.appendChild(postContainer);
     postContainer.appendChild(postTitle);

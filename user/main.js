@@ -1,5 +1,10 @@
 // Define global variables
-var username = window.location.search.split('username=')[1];
+/* Requested profile username, or null if it is missing or not a valid
+username (letters, digits, underscore, hyphen) */
+var username = new URLSearchParams(window.location.search).get('username');
+if (!/^[a-zA-Z0-9_-]+$/.test(username || '')) {
+  username = null;
+}
 var drawingStart = 0; // Range start for number of drawings to request from API
 var drawingEnd = 4; // Range end for number of drawings to request from API
 var moreDrawingsToDisplay = false; // If there are more drawings to display from API
@@ -19,6 +24,17 @@ var commentsButton = document.getElementById('comments');
 
 // Define load functions
 window.onload = function() {
+  // Show the not-found state without contacting the server
+  if (username === null) {
+    createPageHeader();
+    document.getElementById('header').classList.add('divider');
+    checkIfLoggedIn();
+    createPageFooter();
+    document.getElementById('profile-title').textContent = 'User does not exist';
+    document.title = 'Not found';
+    return;
+  }
+
   // Load profile user's personal information from server
   loadPersonalInfo();
 
@@ -66,7 +82,7 @@ function retryFunctions() {
 
 // Load profile user's personal information from server
 function loadPersonalInfo() {
-  return fetch(api + '/user/' + username)
+  return fetch(api + '/user/' + encodeURIComponent(username))
 
     // Display error if server is down
     .catch(function(error) {
@@ -112,7 +128,7 @@ function loadPersonalInfo() {
 function displayPersonalInfo(info) {
   /* Set profile username display and page title to requested
   username */
-  document.getElementById('user-link').href = '?username=' + info['username'];
+  document.getElementById('user-link').href = '?username=' + encodeURIComponent(info['username']);
   document.getElementById('profile-title').textContent = info['username'];
   document.title = info['username'];
 
@@ -213,7 +229,7 @@ function updateFontColors(color) {
 
 // Load profile user's drawings from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/drawings/' + username + '?start=' +
+  return fetch(api + '/canvashare/drawings/' + encodeURIComponent(username) + '?start=' +
     drawingStart + '&end=' + drawingEnd)
 
     // Add error message to gallery if server responds with error
@@ -582,7 +598,7 @@ function updateLikes() {
 
 // Load user's posts from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/posts/' + username + '?start=' +
+  return fetch(api + '/thought-writer/posts/' + encodeURIComponent(username) + '?start=' +
     postStart + '&end=' + postEnd)
 
     // Add error message to post list if server responds with error
@@ -782,7 +798,7 @@ function displayPosts(posts) {
 
 // Load user's comments from server
 function loadComments() {
-  return fetch(api + '/thought-writer/comments/user/' + username + '?start=' +
+  return fetch(api + '/thought-writer/comments/user/' + encodeURIComponent(username) + '?start=' +
     commentStart + '&end=' + commentEnd)
 
       // Add error message to comment list if server responds with error

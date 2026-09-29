@@ -983,7 +983,7 @@ function displayLeaders(leadersList) {
 
     // Display link to player's user profile in player cell
     var userLink = document.createElement('a');
-    userLink.href = '../user/?username=' + leadersList[i].username;
+    userLink.href = '../user/?username=' + encodeURIComponent(leadersList[i].username);
     userLink.appendChild(
       document.createTextNode(leadersList[i].username));
     playerCell.appendChild(userLink);

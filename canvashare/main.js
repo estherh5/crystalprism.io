@@ -295,7 +295,7 @@ function displayDrawings(drawings) {
 
     // Create link to artist's profile
     var artistLink = document.createElement('a');
-    artistLink.href = '../user/?username=' + drawings[i].username;
+    artistLink.href = '../user/?username=' + encodeURIComponent(drawings[i].username);
     artistLink.textContent = drawings[i].username;
 
     gallery.appendChild(drawingContainer);

@@ -20,8 +20,13 @@
   </head>
   <body class="d-flex flex-column align-items-center justify-content-center">
     <!-- Successful logout banner -->
-    <div id="logout" class="banner">
+    <div id="logout" class="banner" role="status">
       You have been signed out.
+    </div>
+
+    <!-- Failed logout banner -->
+    <div id="logout-failed" class="banner" role="alert">
+      Sign-out didn't reach the server, so you're still signed in. Click Sign Out to try again.
     </div>
 
     <!-- Incorrect username/password modal -->

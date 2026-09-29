@@ -505,7 +505,8 @@ button.close:active, button.close:hover {
   text-align: center;
 }
 
-#logout {
+#logout,
+#logout-failed {
   top: 45px;
 }
 

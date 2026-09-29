@@ -5,20 +5,23 @@ var passwordInput = document.getElementById('password-input');
 
 // Define load functions
 window.onload = function() {
-  /* Display confirmation of account logout if user requested it from another
-  page and populate page header based on logged out status (from common.js) */
-  if (sessionStorage.getItem('account-request') == 'logout') {
-    confirmLogout();
-  }
-
   // Create page header (from common.js script)
   createPageHeader();
 
-  // If user is logged in, redirect to My Account page
-  Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
-    if (loggedIn) {
-      window.location = '../my-account/';
-    }
+  /* Sign out first if user requested it from another page, so the session
+  check below sees the cookie's final state */
+  var signOut = sessionStorage.getItem('account-request') == 'logout' ?
+    confirmLogout() : Promise.resolve(true);
+
+  signOut.then(function(signedOut) {
+    /* Populate page header based on logged in status (from common.js), and
+    redirect to My Account page if user is logged in - unless sign-out just
+    failed, so the warning stays on screen */
+    Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
+      if (loggedIn && signedOut) {
+        window.location = '../my-account/';
+      }
+    });
   });
 
   /* Offer a one-click continue if this visitor already holds a Crystal Prism
@@ -433,17 +436,22 @@ function showAccessForm(bridge, last) {
 }
 
 
-// Display confirmation of account logout
+/* Clear the session cookie and stored username (from common.js script), then
+confirm the logout. Resolves false if user is still signed in */
 function confirmLogout() {
-  // Display successful logout banner
-  document.getElementById('logout').style.display = 'block';
-
-  /* Clear the session cookie and stored username (from common.js script),
-  and the logout request from sessionStorage */
-  requestLogout();
   sessionStorage.removeItem('account-request');
 
-  return;
+  return requestLogout().then(function(signedOut) {
+    /* A failed request only matters if user was signed in: a session the
+    server already rejected has no username left to keep */
+    if (!signedOut && localStorage.getItem('username')) {
+      document.getElementById('logout-failed').style.display = 'block';
+      return false;
+    }
+
+    document.getElementById('logout').style.display = 'block';
+    return true;
+  });
 }
 
 
@@ -509,8 +517,9 @@ document.getElementById('submit').onclick = requestLogin;
 
 // Send request to log into account to server
 function requestLogin() {
-  // Hide logout banner
+  // Hide logout banners
   document.getElementById('logout').style.display = 'none';
+  document.getElementById('logout-failed').style.display = 'none';
   var username = usernameInput.value;
   var password = passwordInput.value;
 

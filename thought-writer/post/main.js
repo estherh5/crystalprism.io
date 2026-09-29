@@ -169,7 +169,7 @@ function displayPost(post) {
 
   // Add link to writer's profile
   postWriter.href = '../../user/?username=' + post.username;
-  postWriter.innerHTML = post.username;
+  postWriter.textContent = post.username;
 
   // Display comment count
   if (post.comment_count == 1) {
@@ -352,7 +352,7 @@ function displayComments(comments) {
     commenter.classList.add('commenter');
     commenter.href = '../../user/?username=' + comments[i]
       .username;
-    commenter.innerHTML = comments[i].username;
+    commenter.textContent = comments[i].username;
 
     // Create container for comment timestamp
     var commentTimestamp = document.createElement('div');

@@ -113,7 +113,7 @@ function displayPersonalInfo(info) {
   /* Set profile username display and page title to requested
   username */
   document.getElementById('user-link').href = '?username=' + info['username'];
-  document.getElementById('profile-title').innerHTML = info['username'];
+  document.getElementById('profile-title').textContent = info['username'];
   document.title = info['username'];
 
   /* Populate user's about me blurb, name, email address, background

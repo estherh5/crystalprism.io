@@ -125,7 +125,7 @@ window.onload = function() {
   }
 
   // Display profile link in Personal menu
-  document.getElementById('profile-main-link').innerHTML = localStorage
+  document.getElementById('profile-main-link').textContent = localStorage
     .getItem('username');
   document.getElementById('profile-main-link')
     .href = '../?username=' + localStorage.getItem('username');
@@ -856,7 +856,7 @@ function displayDrawings(type, drawings) {
       // Create link to artist's profile
       var artistLink = document.createElement('a');
       artistLink.href = '../../user/?username=' + drawings[i]['artist_name'];
-      artistLink.innerHTML = drawings[i]['artist_name'];
+      artistLink.textContent = drawings[i]['artist_name'];
       drawingInfo.appendChild(drawingArtist);
       drawingArtist.appendChild(artistLink);
     }
@@ -2539,7 +2539,7 @@ function submitEdits() {
             localStorage.setItem('username', usernameInput.value);
             localStorage.removeItem('token');
             localStorage.setItem('token', token);
-            document.getElementById('profile-link').innerHTML = localStorage
+            document.getElementById('profile-link').textContent = localStorage
               .getItem('username');
             document.getElementById('profile-link')
               .href = '../?username=' + localStorage.getItem('username');

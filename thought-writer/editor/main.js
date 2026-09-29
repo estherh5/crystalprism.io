@@ -619,8 +619,17 @@ function submitPost() {
           return;
         }
 
+        // If server rejects the post (e.g. HTML in title), display its reason
+        if (response.status == 400) {
+          response.text().then(function(reason) {
+            window.alert(reason);
+          });
+        }
+
         // Otherwise, display error message
-        window.alert('You must log in to create a post.');
+        else {
+          window.alert('You must log in to create a post.');
+        }
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
@@ -798,8 +807,17 @@ function modifyPost() {
           return;
         }
 
+        // If server rejects the post (e.g. HTML in title), display its reason
+        else if (response.status == 400) {
+          response.text().then(function(reason) {
+            window.alert(reason);
+          });
+        }
+
         // Otherwise, display login error message
-        window.alert('You must log in to edit a post.');
+        else {
+          window.alert('You must log in to edit a post.');
+        }
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;

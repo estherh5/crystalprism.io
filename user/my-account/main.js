@@ -2598,6 +2598,21 @@ function submitEdits() {
           return;
         }
 
+        /* If server rejects a field (e.g. HTML in About), display the
+        server's reason */
+        if (response.status == 400) {
+          response.text().then(function(reason) {
+            window.alert(reason);
+          });
+
+          // Reset Save and Cancel buttons and cursor style
+          saveButton.disabled = false;
+          cancelButton.disabled = false;
+          document.body.style.cursor = '';
+
+          return;
+        }
+
         // Otherwise, display warning if server responds with other error
         window.alert('Your request did not go through. Please try again ' +
           'soon.');

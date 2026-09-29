@@ -566,8 +566,17 @@ function postDrawing() {
           return;
         }
 
+        // If server rejects the drawing (e.g. HTML in title), display its reason
+        if (response.status == 400) {
+          response.text().then(function(reason) {
+            window.alert(reason);
+          });
+        }
+
         // Otherwise, display login error message
-        window.alert('You must log in to post your drawing to the gallery.');
+        else {
+          window.alert('You must log in to post your drawing to the gallery.');
+        }
 
         // Reset menu buttons and cursor style
         document.getElementById('clear').disabled = false;

@@ -346,7 +346,7 @@ function checkIfLoggedIn() {
           // Set localStorage username to payload username
           localStorage.setItem('username', payload['username']);
 
-          profileLink.innerHTML = payload['username'];
+          profileLink.textContent = payload['username'];
           profileLink.href = root + '/user/?username=' + payload['username'];
           accountLink.innerHTML = 'My Account';
           accountLink.href = root + '/user/my-account/';

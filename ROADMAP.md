@@ -7,6 +7,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **Create-account no longer hangs after the account exists.** When the sign-in that
+  follows `POST /user` fails with any status but 200/429, or with a network error,
+  `user/create-account/main.js#createAccount` says the account was created and sends the visitor
+  to Sign In, instead of leaving the Create button disabled; `tests/create-account.test.js` covers
+  200, 429, 500, 401 and abort. The paired claim that `user/my-account/main.js#checkPassword`'s 429
+  branch leaves the verify modal open was false: the modal's Submit carries `data-dismiss="modal"`,
+  so real Bootstrap closes it before `/login` answers (probed in headless Chromium; a 401 reopens it).
 - **2026-09** **The stored username is URL-encoded in every API path.** All nine requests in
   `user/my-account/main.js` (including the drawings and comments lists) and
   `thought-writer/editor/main.js#loadPosts` wrap it in `encodeURIComponent`, matching the profile
@@ -65,9 +72,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 - **Profile cache never hits.** `user/main.js` writes `username + 'profile'` but reads
   `username + '-profile'`.
-- **Create-account hangs on an unexpected login status.** `user/create-account/main.js#createAccount`
-  does nothing when the post-create `/login` returns anything but 200 or 429, and the button stays
-  disabled. `user/my-account/main.js#checkPassword`'s 429 branch also leaves the verify modal open.
 
 ## Declined
 

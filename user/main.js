@@ -119,20 +119,20 @@ function displayPersonalInfo(info) {
   /* Populate user's about me blurb, name, email address, background
   color, and icon color */
   if (info['about']) {
-    document.getElementById('about-blurb').innerHTML = info['about'];
+    document.getElementById('about-blurb').textContent = info['about'];
   } else {
     document.getElementById('about-row').classList.add('hidden');
   }
 
   if (info['first_name']) {
     document.getElementById('name')
-      .innerHTML = info['first_name'] + ' ' + info['last_name'];
+      .textContent = info['first_name'] + ' ' + info['last_name'];
   } else {
     document.getElementById('name-row').classList.add('hidden');
   }
 
   if (info['email']) {
-    document.getElementById('email').innerHTML = info['email'];
+    document.getElementById('email').textContent = info['email'];
     document.getElementById('email').href = 'mailto:' + info['email'];
   } else {
     document.getElementById('email-row').classList.add('hidden');
@@ -338,7 +338,7 @@ function displayDrawings(drawings) {
     drawingTitle.classList.add('drawing-title');
     drawingTitle.href = '../canvashare/easel/?drawing=' +
       drawings[i]['drawing_id'];
-    drawingTitle.innerHTML = drawings[i]['title'];
+    drawingTitle.textContent = drawings[i]['title'];
 
     // Create drawing image
     var drawing = document.createElement('img');
@@ -705,7 +705,7 @@ function displayPosts(posts) {
     var postTitle = document.createElement('a');
     postTitle.classList.add('post-title');
     postTitle.href = '../thought-writer/post/?post=' + posts[i].post_id;
-    postTitle.innerHTML = posts[i].title;
+    postTitle.textContent = posts[i].title;
     postTitle.title = 'View post page';
 
     // Create container for post background
@@ -715,7 +715,7 @@ function displayPosts(posts) {
     // Create container with post content
     var postContent = document.createElement('div');
     postContent.classList.add('post-content');
-    postContent.innerHTML = posts[i].content;
+    setRichText(postContent, posts[i].content);
 
     // Create container for post timestamp and comment number
     var postInfo = document.createElement('div');
@@ -908,7 +908,7 @@ function displayComments(comments) {
     // Create container with comment content
     var commentContent = document.createElement('div');
     commentContent.classList.add('comment-content');
-    commentContent.innerHTML = comments[i].content;
+    setRichText(commentContent, comments[i].content);
 
     /* Create container for comment timestamp and link to parent
     post */
@@ -930,7 +930,7 @@ function displayComments(comments) {
     parentPost.title = 'View comment on post page';
     parentPost.href = '../../thought-writer/post/?post=' +
       comments[i].post_id + '#comment' + comments[i].comment_id;
-    parentPost.innerHTML = comments[i].title;
+    parentPost.textContent = comments[i].title;
 
     commentList.appendChild(commentContainer);
     commentContainer.appendChild(commentBoard);

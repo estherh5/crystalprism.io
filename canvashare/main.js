@@ -239,7 +239,7 @@ function displayDrawings(drawings) {
     var drawingTitle = document.createElement('a');
     drawingTitle.classList.add('drawing-title');
     drawingTitle.href = 'easel/?drawing=' + drawings[i]['drawing_id'];
-    drawingTitle.innerHTML = drawings[i]['title'];
+    drawingTitle.textContent = drawings[i]['title'];
 
     // Create drawing image
     var drawing = document.createElement('img');

@@ -218,7 +218,7 @@ function findImages(input) {
       display no results modal and clear carousel */
       if (imageURLs.length == 0) {
         loadingImage.style.animationPlayState = 'paused';
-        noResultsTitle.innerHTML = 'No images found for "' + input + '"';
+        noResultsTitle.textContent = 'No images found for "' + input + '"';
         $(noResultsModal).modal('show');
 
         // Focus on okay button after modal displays
@@ -267,7 +267,7 @@ function displayImages() {
 
       // Display link to image's Reddit post as title for image
       displayedImageTitles[i].href = imageTitleLinks[i];
-      displayedImageTitles[i].innerHTML = imageTitleTexts[i];
+      displayedImageTitles[i].textContent = htmlToText(imageTitleTexts[i]);
     } else {
       displayedImages[i].classList.add('hidden');
     }

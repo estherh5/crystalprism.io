@@ -240,8 +240,11 @@ function updatePalette() {
   currentPaletteButton = this;
   currentPaletteButton.classList.add('selected');
 
-  // Set current palette as data-palette item from clicked button
-  currentPalette = eval(currentPaletteButton.dataset.palette);
+  /* Set current palette as data-palette item from clicked button (looked up by
+  name; eval would need 'unsafe-eval' in the Content-Security-Policy) */
+  currentPalette = {basic: basic, pastel: pastel, seashore: seashore,
+    bold: bold, oblique: oblique, contrast: contrast, calico: calico,
+    mauve: mauve, grayscale: grayscale}[currentPaletteButton.dataset.palette];
 
   // Remove selected class from previously selected paint color
   currentPaint.classList.remove('selected');

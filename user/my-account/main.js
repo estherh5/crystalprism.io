@@ -784,7 +784,7 @@ function displayDrawings(type, drawings) {
     drawingTitle.classList.add('drawing-title');
     drawingTitle.href = '../../canvashare/easel/?drawing=' +
       drawings[i]['drawing_id'];
-    drawingTitle.innerHTML = drawings[i]['title'];
+    drawingTitle.textContent = drawings[i]['title'];
 
     // Create drawing image
     var drawing = document.createElement('img');
@@ -1233,7 +1233,7 @@ function displayPosts(posts) {
     // Create container for post title
     var postTitle = document.createElement('div');
     postTitle.classList.add('post-title');
-    postTitle.innerHTML = posts[i].title;
+    postTitle.textContent = posts[i].title;
     postTitle.title = 'Edit post';
 
     // Set data-postid attribute to save in sessionStorage when clicked
@@ -1254,7 +1254,7 @@ function displayPosts(posts) {
     // Create container with post content
     var postContent = document.createElement('div');
     postContent.classList.add('post-content');
-    postContent.innerHTML = posts[i].content;
+    setRichText(postContent, posts[i].content);
 
     // Create container for post timestamp and comment number
     var postInfo = document.createElement('div');
@@ -1515,7 +1515,7 @@ function displayComments(comments) {
     // Create container with comment content
     var commentContent = document.createElement('div');
     commentContent.classList.add('comment-content');
-    commentContent.innerHTML = comments[i].content;
+    setRichText(commentContent, comments[i].content);
 
     // Create container for comment timestamp and link to parent post
     var commentInfo = document.createElement('div');
@@ -1536,7 +1536,7 @@ function displayComments(comments) {
     parentPost.title = 'View comment on post page';
     parentPost.href = '../../thought-writer/post/?post=' +
       comments[i].post_id + '#comment' + comments[i].comment_id;
-    parentPost.innerHTML = comments[i].title;
+    parentPost.textContent = comments[i].title;
 
     postList.appendChild(commentContainer);
     commentContainer.appendChild(commentBoard);

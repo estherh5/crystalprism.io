@@ -73,7 +73,7 @@ function displayDraft() {
 
   // Display in-progress post content if it is stored
   if (localStorage.getItem('post-content')) {
-    post.innerHTML = localStorage.getItem('post-content');
+    setRichText(post, localStorage.getItem('post-content'));
   }
 
   // Display whether or not in-progress post is public if stored
@@ -251,7 +251,7 @@ function displayPosts(posts) {
     // Create container with post content
     var postContent = document.createElement('div');
     postContent.classList.add('previous-post-content');
-    postContent.innerHTML = posts[i].content;
+    setRichText(postContent, posts[i].content);
     postsContainer.appendChild(previousPost);
     previousPost.appendChild(postContent);
 
@@ -342,13 +342,13 @@ function loadPost(postId) {
 function displayPost(postToEdit) {
   // Set post title, content, data-id attribute, and public status
   postTitle.value = postToEdit.title;
-  post.innerHTML = postToEdit.content;
+  setRichText(post, postToEdit.content);
   post.dataset.postid = postToEdit.post_id;
   publicInput.checked = postToEdit.public;
 
   /* Save original post content to check if user makes changes after
   editing */
-  post.dataset.original = postToEdit.content;
+  post.dataset.original = post.innerHTML;
 
   if (postToEdit.public) {
     publicCheckbox.classList.add('checked');

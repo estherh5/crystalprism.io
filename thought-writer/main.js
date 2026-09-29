@@ -172,13 +172,13 @@ function displayPosts(posts) {
     // Create container for post title
     var postTitle = document.createElement('a');
     postTitle.classList.add('post-title');
-    postTitle.innerHTML = posts[i].title;
+    postTitle.textContent = posts[i].title;
     postTitle.href = 'post/?post=' + posts[i].post_id;
 
     // Create container with post content
     var postContent = document.createElement('div');
     postContent.classList.add('post-content');
-    postContent.innerHTML = posts[i].content;
+    setRichText(postContent, posts[i].content);
 
     /* Create container for post timestamp, comment number, and
     writer */

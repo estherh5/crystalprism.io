@@ -129,7 +129,7 @@ function displayPost(post) {
 
   // Set page title and post title container to title of post
   document.title = post.title;
-  postTitle.innerHTML = post.title;
+  postTitle.textContent = post.title;
 
   // Create post content container
   var postContent = document.createElement('div');
@@ -137,7 +137,7 @@ function displayPost(post) {
   postBackground.appendChild(postContent);
 
   // Add content to post content container
-  postContent.innerHTML = post.content;
+  setRichText(postContent, post.content);
 
   // If user is the post writer, display edit and delete buttons
   if (post.username == localStorage.getItem('username')) {
@@ -345,7 +345,7 @@ function displayComments(comments) {
     var commentContent = document.createElement('div');
     commentContent.classList.add('comment-content');
     commentContent.dataset.id = comments[i].comment_id;
-    commentContent.innerHTML = comments[i].content;
+    setRichText(commentContent, comments[i].content);
 
     // Create link to commenter's profile
     var commenter = document.createElement('a');
@@ -561,7 +561,7 @@ function cancelEdits() {
   comment.classList.remove('editing');
 
   // Reset comment content to pre-editing content
-  comment.innerHTML = this.dataset.content;
+  setRichText(comment, this.dataset.content);
 
   // Hide Submit and Cancel buttons and display Modify button
   this.style.display = 'none';

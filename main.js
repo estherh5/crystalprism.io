@@ -959,7 +959,7 @@ function displayPosts(posts) {
     postHeader.classList.add('post-header');
     var postTitle = document.createElement('td');
     postTitle.classList.add('post-title');
-    postTitle.innerHTML = posts[i].title;
+    postTitle.textContent = posts[i].title;
     var postTimestamp = document.createElement('td');
     postTimestamp.classList.add('post-timestamp');
 
@@ -982,8 +982,8 @@ function displayPosts(posts) {
       /* Store full text in data-fulltext attribute to load if
       user expands preview */
       postContent.dataset.fulltext = posts[i].content;
-      postContent.innerHTML = posts[i].content.slice(0, 200) +
-        '...';
+      setRichText(postContent, posts[i].content.slice(0, 200) +
+        '...');
       var toggleTextIcon = document.createElement('i');
       toggleTextIcon.classList.add('far');
       toggleTextIcon.classList.add('fa-plus-square');
@@ -999,7 +999,7 @@ function displayPosts(posts) {
 
     // Display full post otherwise
     else {
-      postContent.innerHTML = posts[i].content;
+      setRichText(postContent, posts[i].content);
     }
 
     // Add post to Ideas page
@@ -1025,7 +1025,7 @@ function toggleFullText() {
       this.getElementsByTagName('i')[0].classList.remove('fa-plus-square');
       this.getElementsByTagName('i')[0].classList.add('fa-minus-square');
       var postToDisplay = document.getElementById(this.dataset.post);
-      postToDisplay.innerHTML = postToDisplay.dataset.fulltext;
+      setRichText(postToDisplay, postToDisplay.dataset.fulltext);
       postToDisplay.appendChild(this);
       return;
   }
@@ -1034,8 +1034,8 @@ function toggleFullText() {
   this.getElementsByTagName('i')[0].classList.remove('fa-minus-square');
   this.getElementsByTagName('i')[0].classList.add('fa-plus-square');
   var postToDisplay = document.getElementById(this.dataset.post);
-  postToDisplay.innerHTML = postToDisplay.dataset.fulltext
-    .slice(0, 200) + '...';
+  setRichText(postToDisplay, postToDisplay.dataset.fulltext
+    .slice(0, 200) + '...');
   postToDisplay.appendChild(this);
   return;
 }

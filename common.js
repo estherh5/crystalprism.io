@@ -19,6 +19,59 @@ if (window.location.hostname == 'crystalprism.io') {
 }
 
 
+/* Stored content written by other users never reaches innerHTML raw. Post and
+comment bodies are rich text from Thought Writer's contenteditable editor, so
+they keep exactly the markup that editor's toolbar emits (execCommand:
+bold/italic/underline/strikeThrough/sub/superscript -> b i u strike sub sup,
+foreColor -> font[color], justify* -> div[style=text-align] (Chrome) or
+div[align] (Firefox), lists -> ol ul li, createLink -> a[href],
+insertImage -> img[src], Enter -> div br) and nothing else. The same
+allowlist is enforced on write by api.crystalprism.io
+(utils/sanitize.py#clean_rich_text). Every other field is plain text and goes
+in through textContent. */
+var RICH_TEXT_CONFIG = {
+  ALLOWED_TAGS: ['a', 'b', 'br', 'div', 'font', 'i', 'img', 'li', 'ol',
+    'strike', 'sub', 'sup', 'u', 'ul'],
+  ALLOWED_ATTR: ['align', 'color', 'href', 'src', 'style'],
+  // href/src: http(s) and mailto only; DOMPurify separately admits data: for
+  // img src (pasted images), which cannot run script inside an <img>
+  ALLOWED_URI_REGEXP: /^(?:https?|mailto):/i,
+  // Validated by the hook below instead of the URI regexp
+  ADD_URI_SAFE_ATTR: ['align', 'color']
+};
+
+var RICH_TEXT_STYLE = /^\s*(?:(?:text-align\s*:\s*(?:left|right|center|justify)|font-weight\s*:\s*(?:bold|normal|[1-9]00))\s*(?:;\s*|$))*$/i;
+var RICH_TEXT_ALIGN = /^(?:left|right|center|justify)$/i;
+var RICH_TEXT_COLOR = /^(?:#[0-9a-f]{3,8}|[a-z]+)$/i;
+
+if (window.DOMPurify) {
+  DOMPurify.addHook('uponSanitizeAttribute', function(node, data) {
+    var valid = {style: RICH_TEXT_STYLE, align: RICH_TEXT_ALIGN,
+      color: RICH_TEXT_COLOR}[data.attrName];
+    if (valid && !valid.test(data.attrValue)) {
+      data.keepAttr = false;
+    }
+  });
+}
+
+// Plain text of an HTML string, parsed in an inert document (no scripts run,
+// no images load), so entities decode exactly as innerHTML would show them
+function htmlToText(html) {
+  return new DOMParser().parseFromString(String(html), 'text/html').body
+    .textContent;
+}
+
+/* Render a stored post or comment body into element. Fails closed: if
+DOMPurify did not load, the text shows without its formatting. */
+function setRichText(element, html) {
+  if (window.DOMPurify) {
+    element.innerHTML = DOMPurify.sanitize(String(html), RICH_TEXT_CONFIG);
+  } else {
+    element.textContent = htmlToText(html);
+  }
+}
+
+
 // Create header with navigation and account menus
 function createPageHeader() {
   var header = document.createElement('div');

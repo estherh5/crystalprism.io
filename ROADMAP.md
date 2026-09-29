@@ -7,6 +7,12 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** **Sign-out only reports success when the server confirms it.**
+  `common.js#requestLogout` clears `username` only on a 2xx from `/api/logout`; on a network or
+  server error the sign-in page keeps the header signed in, skips the redirect to My Account, and
+  says "Sign-out didn't reach the server, so you're still signed in." Clicking Sign Out again
+  retries. The session check now waits for the logout to settle. Covered by
+  `tests/logout.test.js` (red on the old code).
 - **2026-09** **Security roadmap closed — session cookie, CSP, username URLs, markup check.**
   - The session token no longer lives in `localStorage`: api.crystalprism.io sets an HttpOnly,
     Secure, SameSite=Strict `cp_session` cookie (Path=/api), and every authed fetch sends
@@ -46,9 +52,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Sign-out ignores a failed `/api/logout`.** `common.js#requestLogout` clears `username` even
-  when the API call fails, so on a network error the HttpOnly cookie outlives the signed-out UI for
-  up to 1h. That matters on a shared computer. Keep the signed-in state and tell the user instead.
 - **My Account doesn't wait for the one-time token migration.** `user/my-account/main.js`'s
   `window.onload` treats `checkIfLoggedIn()`'s Promise as truthy and loads data before the
   `/api/session` exchange lands, so a migrating visitor's first page is blank until a reload. Chain

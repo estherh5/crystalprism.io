@@ -417,17 +417,25 @@ function verifySession() {
 
 
 // Sign out: clear the HttpOnly session cookie (only the server can) and the
-// stored username
+// stored username. Resolves true only if the server cleared the cookie; on
+// failure the cookie is still live, so the username stays and the UI keeps
+// showing the visitor as signed in
 function requestLogout() {
-  localStorage.removeItem('username');
-
   return fetch(api + '/logout', {
     credentials: 'include',
     method: 'POST',
   })
 
+    .then(function(response) {
+      if (!response.ok) {
+        return false;
+      }
+      localStorage.removeItem('username');
+      return true;
+    })
+
     .catch(function(error) {
-      return;
+      return false;
     });
 }
 

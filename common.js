@@ -378,7 +378,7 @@ function verifySession() {
       /* If server verifies the session, display link to profile, My Account
       page, and Sign In page (with "Sign Out" title) */
       if (response.ok) {
-        response.json().then(function(payload) {
+        return response.json().then(function(payload) {
           // Set localStorage username to payload username
           localStorage.setItem('username', payload['username']);
 
@@ -394,8 +394,9 @@ function verifySession() {
             sessionStorage.setItem('account-request', 'logout');
             return;
           }
+
+          return true;
         });
-        return true;
       }
 
       /* If server responds with unauthorized status, set account menu to

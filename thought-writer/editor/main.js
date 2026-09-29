@@ -24,27 +24,27 @@ window.onload = function() {
   // Auto-save post every second
   saveInterval = setInterval(savePost, 1000);
 
-  /* If user has post stored in sessionStorage (by clicking post from My
-  Account page), request post from server */
-  if (sessionStorage.getItem('post-id')) {
-    loadPost(sessionStorage.getItem('post-id'));
-
-    /* Clear sessionStorage item to allow user to open another previous post
-    (i.e., from cabinet) */
-    sessionStorage.removeItem('post-id');
-  }
+  /* Post stored in sessionStorage (by clicking post from My Account page),
+  cleared to allow user to open another previous post (i.e., from cabinet) */
+  var postId = sessionStorage.getItem('post-id');
+  sessionStorage.removeItem('post-id');
 
   // Set focus in contenteditable post for immediate editing
   post.focus();
 
-  // Load user's previous posts to cabinet
-  loadPosts();
-
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  /* Check if user is logged in (from common.js script), then request posts:
+  until any one-time token migration lands, the session cookie may not exist */
+  Promise.resolve(checkIfLoggedIn()).then(function() {
+    if (postId) {
+      loadPost(postId);
+    }
+
+    // Load user's previous posts to cabinet
+    loadPosts();
+  });
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(retryFunctions);

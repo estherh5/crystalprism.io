@@ -98,12 +98,28 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  // If user is not logged in, redirect to Sign In page
-  if (!localStorage.getItem('username') || !checkIfLoggedIn()) {
-    window.location = '../sign-in/';
-    return;
-  }
+  /* Wait for the session check (and any one-time token migration) before
+  loading anything: until it lands the cookie may not exist yet */
+  Promise.resolve(checkIfLoggedIn()).then(function() {
+    /* No username means signed out (a 401 clears it); a server outage keeps
+    it, so the page still shows cached content under the down banner */
+    if (!localStorage.getItem('username')) {
+      window.location = '../sign-in/';
+      return;
+    }
 
+    loadAccount();
+  });
+
+  // Create page footer (from common.js script)
+  createPageFooter();
+
+  return;
+}
+
+
+// Load the signed-in user's account page
+function loadAccount() {
   /* Display confirmation of account creation if user redirected from Create
   Account page */
   if (sessionStorage.getItem('account-request') == 'create') {
@@ -145,9 +161,6 @@ window.onload = function() {
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(retryFunctions);
-
-  // Create page footer (from common.js script)
-  createPageFooter();
 
   return;
 }

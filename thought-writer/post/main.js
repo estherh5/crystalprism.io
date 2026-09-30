@@ -173,9 +173,9 @@ function displayPost(post) {
 
   // Display comment count
   if (post.comment_count == 1) {
-    commentCount.innerHTML = post.comment_count + ' comment';
+    commentCount.textContent = (Number(post.comment_count) || 0) + ' comment';
   } else {
-    commentCount.innerHTML = post.comment_count + ' comments';
+    commentCount.textContent = (Number(post.comment_count) || 0) + ' comments';
   }
 }
 

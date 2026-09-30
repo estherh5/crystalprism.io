@@ -178,16 +178,17 @@ function displayPersonalInfo(info) {
     moment(info['created']).format('MM/DD/YYYY');
 
   // Display high scores for Rhythm of Life and Shapes in Rain
-  document.getElementById('shapes-stat').innerHTML = info['shapes_high_score'];
+  document.getElementById('shapes-stat').textContent =
+    String(Number(info['shapes_high_score']) || 0);
 
   // Display Rhythm lifespan from score
-  var sec_num = info['rhythm_high_score'];
+  var sec_num = Number(info['rhythm_high_score']) || 0;
   var score_hours = Math.floor(sec_num / 3600);
   var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
   var score_seconds = sec_num - (score_hours * 3600) - (score_minutes * 60);
   var lifespan_value = ('0' + score_hours).slice(-2) + ':' +
     ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds).slice(-2);
-  document.getElementById('rhythm-stat').innerHTML = lifespan_value;
+  document.getElementById('rhythm-stat').textContent = lifespan_value;
 
   return;
 }
@@ -389,7 +390,7 @@ function displayDrawings(drawings) {
 
     // Create text to display number of likes
     var likeText = document.createElement('text');
-    likeText.innerHTML = drawings[i]['like_count'];
+    likeText.textContent = String(Number(drawings[i]['like_count']) || 0);
 
     /* Set data-drawing attribute as drawing id for later
     identification */
@@ -410,7 +411,7 @@ function displayDrawings(drawings) {
 
     // Create text to display number of views
     var viewText = document.createElement('text');
-    viewText.innerHTML = drawings[i]['views'];
+    viewText.textContent = String(Number(drawings[i]['views']) || 0);
 
     gallery.appendChild(drawingContainer);
     drawingContainer.appendChild(drawingTitle);
@@ -759,9 +760,11 @@ function displayPosts(posts) {
       posts[i].post_id + '#comments';
 
     if (posts[i].comment_count == 1) {
-      postComments.innerHTML = posts[i].comment_count + ' comment';
+      postComments.textContent = (Number(posts[i].comment_count) || 0) +
+        ' comment';
     } else {
-      postComments.innerHTML = posts[i].comment_count + ' comments';
+      postComments.textContent = (Number(posts[i].comment_count) || 0) +
+        ' comments';
     }
 
     postList.appendChild(postContainer);

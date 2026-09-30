@@ -282,18 +282,22 @@ function displayPersonalInfo(info) {
     .format('MM/DD/YYYY');
 
   document.getElementById('rhythm-plays-stat')
-    .innerHTML = info['rhythm_score_count'];
+    .textContent = String(Number(info['rhythm_score_count']) || 0);
 
   document.getElementById('shapes-plays-stat')
-    .innerHTML = info['shapes_score_count'];
+    .textContent = String(Number(info['shapes_score_count']) || 0);
 
-  document.getElementById('drawings-stat').innerHTML = info['drawing_count'];
+  document.getElementById('drawings-stat')
+    .textContent = String(Number(info['drawing_count']) || 0);
 
-  document.getElementById('liked-stat').innerHTML = info['drawing_like_count'];
+  document.getElementById('liked-stat')
+    .textContent = String(Number(info['drawing_like_count']) || 0);
 
-  document.getElementById('posts-stat').innerHTML = info['post_count'];
+  document.getElementById('posts-stat')
+    .textContent = String(Number(info['post_count']) || 0);
 
-  document.getElementById('comments-stat').innerHTML = info['comment_count'];
+  document.getElementById('comments-stat')
+    .textContent = String(Number(info['comment_count']) || 0);
 
   return;
 }
@@ -542,7 +546,7 @@ function displayScores(scores, game) {
         var scoreCol = document.createElement('div');
         scoreCol.classList.add('col-3');
 
-        var sec_num = displayedScores[i].score;
+        var sec_num = Number(displayedScores[i].score) || 0;
         var score_hours = Math.floor(sec_num / 3600);
         var score_minutes = Math.floor((sec_num - (score_hours * 3600)) / 60);
         var score_seconds = sec_num - (score_hours * 3600) -
@@ -551,7 +555,7 @@ function displayScores(scores, game) {
           ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds)
           .slice(-2);
 
-        scoreCol.innerHTML = lifespan_value;
+        scoreCol.textContent = lifespan_value;
       }
 
       // Otherwise, display score
@@ -560,7 +564,7 @@ function displayScores(scores, game) {
         var scoreCol = document.createElement('div');
         scoreCol.classList.add('col-2');
 
-        scoreCol.innerHTML = displayedScores[i].score;
+        scoreCol.textContent = String(Number(displayedScores[i].score) || 0);
       }
 
       // Create column for score timestamp
@@ -826,7 +830,7 @@ function displayDrawings(type, drawings) {
 
     // Create text to display number of likes
     var likeText = document.createElement('text');
-    likeText.innerHTML = drawings[i]['like_count'];
+    likeText.textContent = String(Number(drawings[i]['like_count']) || 0);
 
     // Set data-drawing attribute as drawing id for later identification
     likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
@@ -846,7 +850,7 @@ function displayDrawings(type, drawings) {
 
     // Create text to display number of views
     var viewText = document.createElement('text');
-    viewText.innerHTML = drawings[i]['views'];
+    viewText.textContent = String(Number(drawings[i]['views']) || 0);
 
     gallery.appendChild(drawingContainer);
     drawingContainer.appendChild(drawingTitle);
@@ -1291,9 +1295,11 @@ function displayPosts(posts) {
         posts[i].post_id + '#comments';
 
       if (posts[i].comment_count == 1) {
-        postComments.innerHTML = posts[i].comment_count + ' comment';
+        postComments.textContent =
+          (Number(posts[i].comment_count) || 0) + ' comment';
       } else {
-        postComments.innerHTML = posts[i].comment_count + ' comments';
+        postComments.textContent =
+          (Number(posts[i].comment_count) || 0) + ' comments';
       }
     }
 

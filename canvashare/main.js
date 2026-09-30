@@ -266,7 +266,7 @@ function displayDrawings(drawings) {
 
     // Create text to display number of likes
     var likeText = document.createElement('text');
-    likeText.innerHTML = drawings[i]['like_count'];
+    likeText.textContent = String(Number(drawings[i]['like_count']) || 0);
 
     // Set data-drawing attribute as drawing id for later identification
     likeText.dataset.drawing = 'likes' + drawings[i]['drawing_id'];
@@ -286,7 +286,7 @@ function displayDrawings(drawings) {
 
     // Create text to display number of views
     var viewText = document.createElement('text');
-    viewText.innerHTML = drawings[i]['views'];
+    viewText.textContent = String(Number(drawings[i]['views']) || 0);
 
     // Create container for drawing artist
     var drawingArtist = document.createElement('div');

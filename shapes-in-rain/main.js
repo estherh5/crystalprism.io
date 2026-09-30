@@ -145,7 +145,7 @@ function displayLeaders(leadersList) {
     leaders[i].appendChild(playerCell);
 
     // Display score in score cell
-    scoreCell.innerHTML = leadersList[i].score;
+    scoreCell.textContent = String(Number(leadersList[i].score) || 0);
 
     // Display link to player's user profile in player cell
     var userLink = document.createElement('a');

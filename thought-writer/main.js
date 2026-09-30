@@ -200,10 +200,10 @@ function displayPosts(posts) {
       .post_id + '#comments';
 
     if (posts[i].comment_count == 1) {
-      postComments.innerHTML = posts[i].comment_count +
+      postComments.textContent = (Number(posts[i].comment_count) || 0) +
         ' comment';
     } else {
-      postComments.innerHTML = posts[i].comment_count +
+      postComments.textContent = (Number(posts[i].comment_count) || 0) +
         ' comments';
     }
 

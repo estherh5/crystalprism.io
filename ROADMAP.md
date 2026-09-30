@@ -7,6 +7,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-09** [security] **API counts and scores can no longer render as markup.** Like and view
+  counts, profile stats, high scores, leaderboard scores and comment counts went into `innerHTML`
+  raw, so a string in an API row would have been parsed as HTML. They now go in through
+  `textContent`, coerced with `Number(x) || 0`, in `canvashare/main.js#displayDrawings`,
+  `user/main.js`, `user/my-account/main.js`, `shapes-in-rain/main.js`, `thought-writer/main.js`
+  and `thought-writer/post/main.js`; valid numbers render exactly as before. Rhythm of Life's
+  leaderboard already used text nodes.
 - **2026-09** **Profiles load from cache when the API is down.** `user/main.js#loadPersonalInfo`
   wrote `username + 'profile'` but read `username + '-profile'`, so the offline fallback never
   hit; it now writes `-profile`, matching the drawings/posts/comments caches.

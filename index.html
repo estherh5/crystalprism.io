@@ -36,6 +36,51 @@
     <div id="project-modal-body" class="modal-body">
       <button id="project-close" class="close hidden">&times;</button>
 
+      <!-- Toile overview -->
+      <div id="toile-overview" class="project-overview">
+        <a class="modal-project-title" href="https://toile.crystalprism.io/">
+          <img class="project-icon-large" src="images/toile-icon.png">
+          <h2>Toile</h2>
+        </a>
+        <!-- Toile repo -->
+        <a class="github-repo" href="https://github.com/estherh5/toile/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Oct 2026 - Present</text>
+        </a>
+        <!-- Toile skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-pencil-alt"></i><text class="text-small">&nbsp;SVG</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Vercel</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Toile video -->
+        <div class="video-container" data-project="toile">
+          <video id="toile-video" type="video/mp4" preload="metadata" data-project="toile"></video>
+          <i id="toile-control" class="fas fa-play"></i>
+        </div>
+        <!-- Toile description -->
+        <text>
+          <a href="https://toile.crystalprism.io/">Toile</a> is a private fashion-design studio that turns ideas into
+          structured outfit designs on a paper-doll figure, filled with photos of real fabric. A toile is the trial
+          garment made before cutting good fabric, which is what the app is for: dreaming and designing now, sewing
+          instructions and a handoff sheet for a seamstress later. Every design is built from a library of garment parts
+          anchored to landmarks on the figure rather than drawn as a flat picture, so whichever way an idea comes in
+          &mdash; assembled from parts, described in words, drawn freehand or collected as inspiration &mdash; it ends up
+          as the same checkable structure. The first release is the foundation: owner-only sign-in, the hand-drawn doll
+          as an inline SVG, a setup checklist whose ticks come straight from the data, and feedback threads that continue
+          by email. It is built with Next.js and React in TypeScript, with <a href="https://authjs.dev/"
+            rel="noopener noreferrer" target="_blank">Auth.js</a> and <a href="https://orm.drizzle.team/"
+            rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a href="https://turso.tech/"
+            rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database.
+        </text>
+      </div>
+
       <!-- Menagerie overview -->
       <div id="menagerie-overview" class="project-overview">
         <a class="modal-project-title" href="https://menagerie.crystalprism.io/">
@@ -1995,6 +2040,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade">
         <ul id="projects-list">
+          <!-- Toile image and icon -->
+          <li>
+            <div class="project-listing" data-project="toile" data-displayed="false">
+              <img class="project-image" src="images/toile.png">
+              <span class="project-overlay">
+                <div class="project-preview">
+                  <img class="project-icon" src="images/toile-icon.png">
+                </div>
+              </span>
+              <span class="project-title">Toile</span>
+            </div>
+          </li>
           <!-- Menagerie image and icon -->
           <li>
             <div class="project-listing" data-project="menagerie" data-displayed="false">

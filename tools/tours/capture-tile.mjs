@@ -140,6 +140,19 @@ const APPS = {
     // the chip rail and a full row of cards fit the 458x376 frame.
     cssWidth: 1024,
   },
+  toile: {
+    dir: 'Developer/toile', appPort: 3320, proxyPort: 3321,
+    userId: 'demo@crystalprism.io', route: '/', wait: '.doll-stage svg',
+    // Not on the crystalprism SSO ring: default @auth/core cookie name over http.
+    // ADMIN_EMAIL must equal demo@crystalprism.io; toile keeps no .env.local, so
+    // the server and this script share an AUTH_SECRET exported inline.
+    cookieName: 'authjs.session-token',
+    // At full width the two cards sit in the left third of an empty pink field.
+    // 640 keeps the wordmark, the checklist and the doll down to the hips; 520 was
+    // tried and loses all of the doll but her head behind the floating buttons.
+    // The doll is sized off vh, so no width shows all three whole.
+    cssWidth: 640,
+  },
 };
 
 const name = process.argv[2];

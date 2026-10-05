@@ -115,6 +115,7 @@ function createPageHeader() {
     'https://vantage.crystalprism.io/', 'https://vitals.crystalprism.io/',
     'https://tide.crystalprism.io/', 'https://flare.crystalprism.io/',
     'https://glimpse.crystalprism.io/', 'https://menagerie.crystalprism.io/',
+    'https://toile.crystalprism.io/',
     '/timespace/', '/shapes-in-rain/',
     '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
     'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
@@ -123,7 +124,7 @@ function createPageHeader() {
   var projectTitles = ['Home',
     'Methods', 'GiftMe', 'Passage', 'Restock', 'Nexus', 'Space', 'Savor',
     'i dream of neon', 'Vantage', 'Vitals', 'Tide', 'flare', 'Glimpse',
-    'Menagerie',
+    'Menagerie', 'Toile',
     'Timespace', 'Shapes In Rain',
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Pause', 'Marian', 'Vroom', 'Account'];

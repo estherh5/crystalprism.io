@@ -7,6 +7,11 @@ checkRingSession() strips the query string. A safe one is also kept in
 sessionStorage (this origin's, which survives the Google round trip through
 auth.crystalprism.io and back to ?via=google with no ?next=). */
 var nextParam = new URLSearchParams(window.location.search).get('next');
+
+/* The account menu's Sign Out has just asked the server to end the session
+(signOut in common.js). Only says which banner to show: the session check
+decides which one is true */
+var justSignedOut = new URLSearchParams(window.location.search).has('signed-out');
 if (safeNext(nextParam)) {
   sessionStorage.setItem('sign-in-next', nextParam);
 }
@@ -17,21 +22,18 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  /* Sign out first if user requested it from another page, so the session
-  check below sees the cookie's final state */
-  var signOut = (sessionStorage.getItem('account-request') == 'logout' ||
-    new URLSearchParams(window.location.search).get('request') == 'logout') ?
-    confirmLogout() : Promise.resolve(true);
-
-  signOut.then(function(signedOut) {
-    /* Populate page header based on logged in status (from common.js), and
-    redirect to My Account page if user is logged in - unless sign-out just
-    failed, so the warning stays on screen */
-    Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
-      if (loggedIn && signedOut) {
-        window.location = nextTarget() || '../my-account/';
-      }
-    });
+  /* Populate page header based on logged in status (from common.js), and
+  redirect to My Account page if user is logged in - unless a sign-out just
+  failed, so the warning stays on screen */
+  Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
+    if (justSignedOut) {
+      document.getElementById(loggedIn ? 'logout-failed' : 'logout')
+        .style.display = 'block';
+      return;
+    }
+    if (loggedIn) {
+      window.location = nextTarget() || '../my-account/';
+    }
   });
 
   /* Offer a one-click continue if this visitor already holds a Crystal Prism
@@ -453,25 +455,6 @@ function nextTarget() {
   sessionStorage.removeItem('sign-in-next');
   return safeNext(nextParam) || safeNext(stored);
 }
-
-/* Clear the session cookie and stored username (from common.js script), then
-confirm the logout. Resolves false if user is still signed in */
-function confirmLogout() {
-  sessionStorage.removeItem('account-request');
-
-  return requestLogout().then(function(signedOut) {
-    /* A failed request only matters if user was signed in: a session the
-    server already rejected has no username left to keep */
-    if (!signedOut && localStorage.getItem('username')) {
-      document.getElementById('logout-failed').style.display = 'block';
-      return false;
-    }
-
-    document.getElementById('logout').style.display = 'block';
-    return true;
-  });
-}
-
 
 // Define login functions
 

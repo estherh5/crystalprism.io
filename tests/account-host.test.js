@@ -149,11 +149,19 @@ test('a hostile stored next is ignored after the Google round trip', async () =>
   assert.strictEqual(r.landed, 'https://account.crystalprism.io/my-account/');
 });
 
-test('?request=logout signs the visitor out', async () => {
-  const { page, calls } = await open('https://account.crystalprism.io/sign-in/?request=logout', { session: 'esther' });
-  await page.waitForFunction(() => true);
-  for (let i = 0; i < 50 && !calls.includes('/logout'); i++) await page.waitForTimeout(100);
+test('Sign Out on an app subdomain signs out, then lands on account sign-in', async () => {
+  const { page, calls } = await open('https://canvashare.crystalprism.io/', { session: 'esther' });
+  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  await Promise.all([page.waitForURL('https://account.crystalprism.io/sign-in/?signed-out'),
+    page.click('#sign-in-link')]);
   assert.ok(calls.includes('/logout'), calls.join());
+  await page.close();
+});
+
+test('?request=logout no longer signs the visitor out', async () => {
+  const { page, calls } = await open('https://account.crystalprism.io/sign-in/?request=logout', { session: 'esther' });
+  await page.waitForURL('https://account.crystalprism.io/my-account/');
+  assert.ok(!calls.includes('/logout'), calls.join());
   await page.close();
 });
 

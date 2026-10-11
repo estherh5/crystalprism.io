@@ -114,9 +114,9 @@ test('signed out: Sign In carries the current page as ?next=', async () => {
   await page.close();
 });
 
-test('signed in: Sign Out goes to sign-in with request=logout', async () => {
+test('signed in: Sign Out points at sign-in, with no sign-out in the URL', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/', { session: 'esther' });
-  assert.strictEqual(await href(page, 'sign-in-link'), 'https://account.crystalprism.io/sign-in/?request=logout');
+  assert.strictEqual(await href(page, 'sign-in-link'), 'https://account.crystalprism.io/sign-in/');
   await page.close();
 });
 

@@ -7,6 +7,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **Sign-out is a POST from the menu, so no link can sign a visitor out.** The menu's
+  Sign Out (`common.js#signOut`) calls `POST /api/logout` itself, shows "Signing Out…" while it
+  runs (abandoned after 4s), then lands on `sign-in/?signed-out`. That param only picks a banner,
+  and the session check decides which one: signed out, or "still signed in". The old
+  `sign-in/?request=logout` GET (logout CSRF) does nothing now. `tests/logout.test.js` drives the
+  real click and pins that neither URL calls `/logout`.
+
 - **2026-10** **The six legacy apps and the account pages live on their own subdomains.** Timespace,
   Vicarious, CanvaShare, Thought Writer, Shapes in Rain and Rhythm of Life serve at
   `<app>.crystalprism.io`, and `user/` at `account.crystalprism.io`, all from this one Netlify site
@@ -93,10 +100,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Make sign-out a POST, not a link.** `account.crystalprism.io/sign-in/?request=logout` signs the
-  visitor out on a plain GET, so any site can log a visitor out (logout CSRF). Have the menu's Sign
-  Out in `common.js` call the logout endpoint itself, and drop the `request=logout` branch in
-  `user/sign-in/main.js`.
 - **Give each app subdomain its own Plausible site.** All seven hosts report to the one
   `crystalprism.io` site, so `/` mixes the homepage with six app roots and the account page. Either
   per-subdomain `data-domain` in each app's HTML or Plausible's hostname dimension.

@@ -417,11 +417,17 @@ function checkIfLoggedIn() {
 }
 
 
-// Ask the server whether the session cookie is valid
+// Ask the server whether the session cookie is valid. Pages wait on this
+// before rendering, so a request that stalls is abandoned after 4s and the
+// visitor is treated as signed out (the abort rejects into the .catch below)
 function verifySession() {
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, 4000);
+
   return fetch(api + '/user/verify', {
     credentials: 'include',
     method: 'GET',
+    signal: controller.signal,
   })
 
     // Set account menu to default if server is down
@@ -478,6 +484,10 @@ function verifySession() {
     .catch(function(error) {
       showSignedOut();
       return false;
+    })
+
+    .finally(function() {
+      clearTimeout(timer);
     });
 }
 

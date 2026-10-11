@@ -36,7 +36,8 @@ function serve(route, file) {
 // `data` maps an API pathname to the JSON body it answers with
 // `verifyDelay` holds the verify answer back (ms), so other API calls answer first
 // `verifyRaw` replaces the verify answer with this raw fulfill (e.g. a non-JSON 200)
-async function open(url, { session = null, localUsername = null, header = true, data = {}, verifyDelay = 0, verifyRaw = null } = {}) {
+// `verifyHang` never answers verify at all (a stalled request)
+async function open(url, { session = null, localUsername = null, header = true, data = {}, verifyDelay = 0, verifyRaw = null, verifyHang = false } = {}) {
   const page = await browser.newPage();
   const apiCalls = [];
   await page.route('**/*', async (route) => {
@@ -44,6 +45,7 @@ async function open(url, { session = null, localUsername = null, header = true, 
     if (u.origin === 'https://api.crystalprism.io' || u.origin === 'http://localhost:5000') {
       apiCalls.push(route.request().url());
       if (u.pathname === '/api/user/verify') {
+        if (verifyHang) return;
         if (verifyDelay) await new Promise((r) => setTimeout(r, verifyDelay));
         if (verifyRaw) return route.fulfill(verifyRaw);
         return session
@@ -339,3 +341,26 @@ for (const [name, verifyRaw] of [
     await page.close();
   });
 }
+
+// A verify request that never answers (seen live: a browser-side stall while
+// curl got a 401 at once) must not hold back the page's content
+test('post page renders signed out when verify never answers', async () => {
+  const { page } = await open('https://thought-writer.crystalprism.io/post/?post=7', {
+    verifyHang: true, data: POST_PAGE_DATA,
+  });
+  await page.waitForSelector('#comment10', { state: 'attached', timeout: 8000 });
+  assert.strictEqual(await page.$eval('#edit', (b) => b.classList.contains('hidden')), true);
+  await page.close();
+});
+
+test('canvashare gallery renders when verify never answers', async () => {
+  const { page } = await open('https://canvashare.crystalprism.io/', {
+    verifyHang: true,
+    data: { '/api/canvashare/drawings': [{
+      drawing_id: 4, title: 'Four', url: 'https://crystalprism.io/favicon.ico',
+      like_count: 0, likers: [], views: 0, username: 'a',
+    }] },
+  });
+  await page.waitForSelector('[data-drawing="likes4"]', { state: 'attached', timeout: 8000 });
+  await page.close();
+});

@@ -29,7 +29,7 @@ window.onload = function() {
     failed, so the warning stays on screen */
     Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
       if (loggedIn && signedOut) {
-        window.location = '../my-account/';
+        window.location = nextTarget() || '../my-account/';
       }
     });
   });

@@ -135,6 +135,15 @@ test('a Google sign-in round trip still lands on ?next=', async () => {
   assert.strictEqual(r.landed, next);
 });
 
+test('an already signed-in visitor with ?next= goes back to next', async () => {
+  const next = 'https://canvashare.crystalprism.io/easel/';
+  const { page } = await open('https://account.crystalprism.io/sign-in/?next=' + encodeURIComponent(next),
+    { session: 'esther' });
+  await page.waitForURL((u) => !u.href.startsWith('https://account.crystalprism.io/sign-in/'));
+  assert.strictEqual(page.url(), next);
+  await page.close();
+});
+
 test('a hostile stored next is ignored after the Google round trip', async () => {
   const r = await googleReturn({ stored: 'https://evil.com/' });
   assert.strictEqual(r.landed, 'https://account.crystalprism.io/my-account/');

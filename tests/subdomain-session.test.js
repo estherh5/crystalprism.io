@@ -192,14 +192,27 @@ test('the editor opens the post named by ?post=', async () => {
   await page.close();
 });
 
+test('the editor drops ?post= once the post is loaded', async () => {
+  const { page } = await open('https://thought-writer.crystalprism.io/editor/?post=7', {
+    session: 'esther', data: { '/api/thought-writer/post/7': POST_7 },
+  });
+  await page.waitForFunction(() => postTitle.value === 'Seven');
+  assert.strictEqual(page.url(), 'https://thought-writer.crystalprism.io/editor/');
+  await page.close();
+});
+
 test('the Edit button on an own post hands off by ?post=', async () => {
   const { page } = await open('https://thought-writer.crystalprism.io/post/?post=7', {
     session: 'esther', localUsername: 'esther',
     data: { '/api/thought-writer/post/7': POST_7, '/api/thought-writer/comments/post/7': [] },
   });
   await page.waitForSelector('#edit:not(.hidden)');
-  await Promise.all([page.waitForURL('**/editor/**'), page.click('#edit')]);
-  assert.strictEqual(page.url(), 'https://thought-writer.crystalprism.io/editor/?post=7');
+  // The URL navigated to: the editor consumes ?post= on load
+  const [nav] = await Promise.all([
+    page.waitForEvent('framenavigated', (f) => f === page.mainFrame() && f.url().includes('/editor/')),
+    page.click('#edit'),
+  ]);
+  assert.strictEqual(nav.url(), 'https://thought-writer.crystalprism.io/editor/?post=7');
   await page.close();
 });
 
@@ -256,6 +269,20 @@ test('own likes show as liked on a first canvashare visit', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/', {
     session: 'esther', verifyDelay: 400,
     data: { '/api/canvashare/drawings': [{
+      drawing_id: 4, title: 'Four', url: 'https://crystalprism.io/favicon.ico',
+      like_count: 1, likers: [{ username: 'esther', drawing_like_id: 12 }], views: 0, username: 'a',
+    }] },
+  });
+  await page.waitForSelector('[data-drawing="likes4"]', { state: 'attached' });
+  assert.ok(await page.$('.fas.fa-heart[data-drawinglike="12"]'), 'liked heart shown');
+  assert.strictEqual(await page.$('.far.fa-heart'), null);
+  await page.close();
+});
+
+test('own likes show as liked on a first profile visit', async () => {
+  const { page } = await open('https://account.crystalprism.io/?username=a', {
+    session: 'esther', verifyDelay: 400,
+    data: { '/api/canvashare/drawings/a': [{
       drawing_id: 4, title: 'Four', url: 'https://crystalprism.io/favicon.ico',
       like_count: 1, likers: [{ username: 'esther', drawing_like_id: 12 }], views: 0, username: 'a',
     }] },

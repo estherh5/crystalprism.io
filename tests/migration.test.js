@@ -22,7 +22,7 @@ const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/cs
 // Open `pagePath` as a migrating visitor. The /session exchange answers
 // slowly; until it has answered there is no cookie, so every other endpoint
 // is 401. Returns the order of API calls and whether each had the cookie.
-async function visit(pagePath, { username = 'esther', postId = null } = {}) {
+async function visit(pagePath, { username = 'esther' } = {}) {
   const page = await browser.newPage();
   const calls = [];
   let cookie = false;
@@ -56,11 +56,10 @@ async function visit(pagePath, { username = 'esther', postId = null } = {}) {
   });
 
   await page.goto(SITE + '/robots.txt');
-  await page.evaluate(({ u, id }) => {
+  await page.evaluate((u) => {
     localStorage.setItem('token', 'legacy.jwt.token');
     if (u) localStorage.setItem('username', u);
-    if (id) sessionStorage.setItem('post-id', id);
-  }, { u: username, id: postId });
+  }, username);
 
   const visited = [];
   page.on('framenavigated', (f) => { if (f === page.mainFrame()) visited.push(new URL(f.url()).pathname); });
@@ -95,7 +94,7 @@ test('My Account keeps a migrating visitor whose username hint is missing', asyn
 });
 
 test('the editor requests posts only after the token exchange', async () => {
-  const s = await visit('/thought-writer/editor/', { postId: '7' });
+  const s = await visit('/thought-writer/editor/?post=7');
   assert.ok(s.data.some((c) => c.endpoint.startsWith('/thought-writer/posts/esther')), JSON.stringify(s.calls));
   assert.ok(s.data.some((c) => c.endpoint === '/thought-writer/post/7'), JSON.stringify(s.calls));
   assert.deepStrictEqual(s.data.filter((c) => !c.cookie), []);

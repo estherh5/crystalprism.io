@@ -24,10 +24,9 @@ window.onload = function() {
   // Auto-save post every second
   saveInterval = setInterval(savePost, 1000);
 
-  /* Post stored in sessionStorage (by clicking post from My Account page),
-  cleared to allow user to open another previous post (i.e., from cabinet) */
-  var postId = sessionStorage.getItem('post-id');
-  sessionStorage.removeItem('post-id');
+  /* Post to edit, named in the URL (by the Edit button on a post, or a post
+  title on My Account) */
+  var postId = new URLSearchParams(window.location.search).get('post');
 
   // Set focus in contenteditable post for immediate editing
   post.focus();

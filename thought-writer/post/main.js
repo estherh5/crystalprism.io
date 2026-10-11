@@ -144,11 +144,9 @@ function displayPost(post) {
     document.getElementById('edit').classList.remove('hidden');
     document.getElementById('delete').classList.remove('hidden');
 
-    /* Set sessionStorage post-id item when button is clicked and
-    go to editor page */
+    // Open the post in the editor, named in the URL
     document.getElementById('edit').onclick = function() {
-      sessionStorage.setItem('post-id', postId);
-      window.location = '../editor/';
+      window.location = '../editor/?post=' + encodeURIComponent(postId);
       return;
     }
   } else {
@@ -168,7 +166,7 @@ function displayPost(post) {
   }
 
   // Add link to writer's profile
-  postWriter.href = '../../user/?username=' + encodeURIComponent(post.username);
+  postWriter.href = appUrl('account', '?username=' + encodeURIComponent(post.username));
   postWriter.textContent = post.username;
 
   // Display comment count
@@ -350,8 +348,8 @@ function displayComments(comments) {
     // Create link to commenter's profile
     var commenter = document.createElement('a');
     commenter.classList.add('commenter');
-    commenter.href = '../../user/?username=' + encodeURIComponent(comments[i]
-      .username);
+    commenter.href = appUrl('account', '?username=' + encodeURIComponent(comments[i]
+      .username));
     commenter.textContent = comments[i].username;
 
     // Create container for comment timestamp

@@ -35,7 +35,8 @@ function serve(route, file) {
 // Open `url`; `session` is the /user/verify answer (username or null)
 // `data` maps an API pathname to the JSON body it answers with
 // `verifyDelay` holds the verify answer back (ms), so other API calls answer first
-async function open(url, { session = null, localUsername = null, header = true, data = {}, verifyDelay = 0 } = {}) {
+// `verifyRaw` replaces the verify answer with this raw fulfill (e.g. a non-JSON 200)
+async function open(url, { session = null, localUsername = null, header = true, data = {}, verifyDelay = 0, verifyRaw = null } = {}) {
   const page = await browser.newPage();
   const apiCalls = [];
   await page.route('**/*', async (route) => {
@@ -44,6 +45,7 @@ async function open(url, { session = null, localUsername = null, header = true, 
       apiCalls.push(route.request().url());
       if (u.pathname === '/api/user/verify') {
         if (verifyDelay) await new Promise((r) => setTimeout(r, verifyDelay));
+        if (verifyRaw) return route.fulfill(verifyRaw);
         return session
           ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ username: session }) })
           : route.fulfill({ status: 401, body: '' });
@@ -290,3 +292,23 @@ test('leaderboard names link to the account host profile', async () => {
   assert.deepStrictEqual(got, [want]);
   await rhythm.page.close();
 });
+
+// A visitor who is not signed in, or whose verify answer is not JSON (a
+// captive portal, an HTML page from an intermediary), still sees the post
+const POST_PAGE_DATA = { '/api/thought-writer/post/7': POST_7,
+  '/api/thought-writer/comments/post/7': [COMMENT_10] };
+for (const [name, verifyRaw] of [
+  ['signed out (401)', null],
+  ['verify answers 200 text/html', { status: 200, contentType: 'text/html', body: '<html>' }],
+]) {
+  test(`post page renders without Edit when ${name}`, async () => {
+    const { page } = await open('https://thought-writer.crystalprism.io/post/?post=7', {
+      verifyRaw, data: POST_PAGE_DATA,
+    });
+    await page.waitForSelector('#post-content', { state: 'attached', timeout: 5000 });
+    await page.waitForSelector('#comment10', { state: 'attached', timeout: 5000 });
+    assert.strictEqual(await page.$eval('#edit', (b) => b.classList.contains('hidden')), true);
+    assert.strictEqual(await page.$eval('#sign-in-link', (a) => a.textContent), 'Sign In');
+    await page.close();
+  });
+}

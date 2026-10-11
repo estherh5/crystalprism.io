@@ -10,9 +10,6 @@ var menuOpen = false;
 
 // Define load functions
 window.onload = function() {
-  // Load drawings from server
-  loadDrawings();
-
   // Load preview of in-progress drawing if one is stored locally
   if (localStorage.getItem('drawing-source')) {
     // Unhide continue option in drawing menu
@@ -47,8 +44,10 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  /* Check if user is logged in (from common.js script), then load drawings:
+  the stored username decides which hearts show as liked, and a first visit
+  to this subdomain has none until the session check writes it */
+  Promise.resolve(checkIfLoggedIn()).then(loadDrawings);
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(retryFunctions);
@@ -65,8 +64,7 @@ function retryFunctions() {
   // Clear gallery to display most up-to-date server drawings
   gallery.innerHTML = '';
 
-  checkIfLoggedIn();
-  loadDrawings();
+  Promise.resolve(checkIfLoggedIn()).then(loadDrawings);
 
   return;
 }

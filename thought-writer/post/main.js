@@ -10,17 +10,16 @@ var moreCommentsToDisplay = false;
 
 // Define load functions
 window.onload = function() {
-  // Load post from server
-  loadPost();
-
-  // Load post comments to comments list
-  loadComments(postId);
-
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  /* Check if user is logged in (from common.js script), then load the post
+  and its comments: the stored username decides who sees Edit/Delete, and a
+  first visit to this subdomain has none until the session check writes it */
+  Promise.resolve(checkIfLoggedIn()).then(function() {
+    loadPost();
+    loadComments(postId);
+  });
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(retryFunctions);
@@ -37,9 +36,10 @@ function retryFunctions() {
   // Clear comments list
   document.getElementById('comments-list').innerHTML = '';
 
-  checkIfLoggedIn();
-  loadPost();
-  loadComments(postId);
+  Promise.resolve(checkIfLoggedIn()).then(function() {
+    loadPost();
+    loadComments(postId);
+  });
 
   return;
 }

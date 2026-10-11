@@ -1,0 +1,232 @@
+// Every legacy app is served from its own subdomain by host-conditioned
+// rewrites in the generated `_redirects`. This suite does NOT trust the
+// generator: it parses `_redirects` itself, routes URLs the way Netlify does
+// (first match wins, host-qualified rules only for that host, :splat, query
+// carried through), and checks that every asset and link an app page reaches
+// lands on a real file in this repo. A stylesheet that 404s on a subdomain
+// fails here, not in production.
+const test = require('node:test');
+const assert = require('node:assert');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const root = path.resolve(__dirname, '..');
+const REDIRECTS = path.join(root, '_redirects');
+
+// Host label -> repo directory (the plan's Global Constraints, written out
+// here independently of common.js and the generator)
+const HOSTS = {
+  'timespace': 'timespace',
+  'vicarious': 'vicarious',
+  'canvashare': 'canvashare',
+  'thought-writer': 'thought-writer',
+  'shapes-in-rain': 'shapes-in-rain',
+  'rhythm-of-life': 'rhythm-of-life',
+  'account': 'user',
+};
+
+function readRules() {
+  return fs.readFileSync(REDIRECTS, 'utf8').split('\n')
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith('#'))
+    .map((line) => {
+      const [from, to, status, ...rest] = line.split(/\s+/);
+      assert.strictEqual(rest.length, 0, `unexpected fields in: ${line}`);
+      assert.match(status, /^(200|301)!$/, `status must be forced: ${line}`);
+      let host = null;
+      let fromPath = from;
+      if (/^https?:\/\//.test(from)) {
+        const u = new URL(from.replace(/\*$/, 'SPLAT'));
+        host = u.host;
+        fromPath = u.pathname.replace(/SPLAT$/, '*');
+      }
+      return { host, fromPath, to, status: Number(status.replace('!', '')) };
+    });
+}
+
+// Netlify matching: `/a/*` matches `/a/...` and `/a` itself; a literal path
+// matches with or without a trailing slash
+function matchPath(pattern, pathname) {
+  if (pattern.endsWith('/*')) {
+    const base = pattern.slice(0, -2);
+    if (pathname === base) return '';
+    if (pathname.startsWith(base + '/')) return pathname.slice(base.length + 1);
+    return null;
+  }
+  const strip = (p) => (p.length > 1 ? p.replace(/\/$/, '') : p);
+  return strip(pattern) === strip(pathname) ? '' : null;
+}
+
+function route(url, rules = readRules()) {
+  const u = new URL(url);
+  for (const rule of rules) {
+    if (rule.host && rule.host !== u.host) continue;
+    const splat = matchPath(rule.fromPath, u.pathname);
+    if (splat === null) continue;
+    let target = rule.to.replace(':splat', splat);
+    if (u.search) target += u.search;
+    return { status: rule.status, target };
+  }
+  return null;
+}
+
+// The repo file a request on `url` is served from, or null for a 404
+function serve(url) {
+  const routed = route(url);
+  let pathname;
+  if (!routed) {
+    pathname = new URL(url).pathname;
+  } else {
+    assert.strictEqual(routed.status, 200, `${url} redirects, expected a page`);
+    pathname = new URL(routed.target, 'https://x.invalid').pathname;
+  }
+  let file = path.join(root, decodeURIComponent(pathname));
+  if (pathname.endsWith('/')) file = path.join(file, 'index.html');
+  return fs.existsSync(file) && fs.statSync(file).isFile() ? file : null;
+}
+
+function walk(dir, ext) {
+  const out = [];
+  for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+    const full = path.join(dir, entry.name);
+    if (entry.isDirectory()) out.push(...walk(full, ext));
+    else if (ext.includes(path.extname(entry.name))) out.push(full);
+  }
+  return out;
+}
+
+// The URL a repo file is served at on its app's subdomain
+function subdomainUrl(host, dir, file) {
+  const rel = path.relative(path.join(root, dir), file).split(path.sep).join('/');
+  return `https://${host}.crystalprism.io/` + rel.replace(/(^|\/)index\.html$/, '$1');
+}
+
+const SKIP = /^(https?:|data:|#|mailto:|javascript:|tel:|\/\/)/i;
+
+function htmlRefs(text) {
+  return [...text.matchAll(/\b(?:src|href)\s*=\s*["']([^"']*)["']/gi)].map((m) => m[1]);
+}
+function cssRefs(text) {
+  return [...text.matchAll(/url\(\s*["']?([^"')]+)["']?\s*\)/gi)].map((m) => m[1]);
+}
+// Relative navigations written as string literals in an app's scripts, e.g.
+// window.location = '../my-account/'
+function jsRefs(text) {
+  return [...text.matchAll(/['"](\.\.?\/[^'"\s]*)['"]/g)].map((m) => m[1]);
+}
+
+// Every local reference reachable from every page, script and stylesheet
+// of every app, resolved on that app's subdomain; CSS reached on the
+// subdomain (the shared common.css included) is followed for its url()s
+function collectRefs() {
+  const refs = [];
+  for (const [host, dir] of Object.entries(HOSTS)) {
+    const files = walk(path.join(root, dir), ['.html', '.css', '.js']);
+    assert.ok(files.some((f) => f.endsWith('.html')), `${dir} has no pages`);
+    const seenCss = new Set();
+    const queue = files.map((file) => ({ file, base: subdomainUrl(host, dir, file) }));
+    while (queue.length) {
+      const { file, base } = queue.shift();
+      const text = fs.readFileSync(file, 'utf8');
+      const ext = path.extname(file);
+      const found = ext === '.html' ? htmlRefs(text).concat(cssRefs(text))
+        : ext === '.css' ? cssRefs(text) : jsRefs(text);
+      for (const ref of found) {
+        if (!ref || SKIP.test(ref)) continue;
+        const url = new URL(ref, base);
+        url.hash = '';
+        refs.push({ from: path.relative(root, file), ref, url: url.href });
+        if (url.pathname.endsWith('.css') && !seenCss.has(url.href)) {
+          seenCss.add(url.href);
+          const served = serve(url.href);
+          if (served && !served.startsWith(path.join(root, dir) + path.sep)) {
+            queue.push({ file: served, base: url.href });
+          }
+        }
+      }
+    }
+  }
+  return refs;
+}
+
+test('_redirects is the generator output, checked in', async () => {
+  const { buildRedirects } = await import('../tools/subdomains/build-redirects.mjs');
+  assert.strictEqual(fs.readFileSync(REDIRECTS, 'utf8'), buildRedirects());
+});
+
+test('_redirects carries the generated-file header', () => {
+  assert.ok(fs.readFileSync(REDIRECTS, 'utf8').startsWith(
+    '# Generated by tools/subdomains/build-redirects.mjs — do not edit by hand.'));
+});
+
+test('every src/href/url() in every app resolves to a real file on its subdomain', () => {
+  const refs = collectRefs();
+  // Guard against a vacuous pass: the shared files must actually be covered
+  const urls = new Set(refs.map((r) => r.url));
+  for (const host of Object.keys(HOSTS)) {
+    assert.ok(urls.has(`https://${host}.crystalprism.io/common.js`), `${host} common.js not seen`);
+    assert.ok(urls.has(`https://${host}.crystalprism.io/common.css`), `${host} common.css not seen`);
+  }
+  assert.ok(refs.length >= 90, `only ${refs.length} refs collected`);
+  const broken = refs.filter((r) => !serve(r.url))
+    .map((r) => `${r.from}: ${r.ref} -> ${r.url} -> ${JSON.stringify(route(r.url))}`);
+  assert.deepStrictEqual(broken, []);
+});
+
+test('shared root files are served from the repo root on every subdomain', () => {
+  for (const host of Object.keys(HOSTS)) {
+    assert.strictEqual(serve(`https://${host}.crystalprism.io/common.js`), path.join(root, 'common.js'));
+    assert.strictEqual(serve(`https://${host}.crystalprism.io/common.css`), path.join(root, 'common.css'));
+  }
+  assert.strictEqual(serve('https://timespace.crystalprism.io/audio-embed.js'), path.join(root, 'audio-embed.js'));
+  assert.strictEqual(serve('https://account.crystalprism.io/favicon.ico'), path.join(root, 'favicon.ico'));
+});
+
+test('every app page is served at its own subdomain URL', () => {
+  for (const [host, dir] of Object.entries(HOSTS)) {
+    for (const file of walk(path.join(root, dir), ['.html'])) {
+      const url = subdomainUrl(host, dir, file);
+      assert.strictEqual(serve(url), file, url);
+    }
+  }
+  assert.strictEqual(serve('https://canvashare.crystalprism.io/easel/'),
+    path.join(root, 'canvashare/easel/index.html'));
+  assert.strictEqual(serve('https://account.crystalprism.io/'), path.join(root, 'user/index.html'));
+});
+
+test('an app-owned file wins over the root file of the same name', () => {
+  assert.ok(fs.existsSync(path.join(root, 'thought-writer/favicon.ico')));
+  assert.deepStrictEqual(route('https://thought-writer.crystalprism.io/favicon.ico'),
+    { status: 200, target: '/thought-writer/favicon.ico' });
+  assert.deepStrictEqual(route('https://canvashare.crystalprism.io/style.css'),
+    { status: 200, target: '/canvashare/style.css' });
+});
+
+test('old single-site URLs 301 to the new host with the query intact', () => {
+  assert.deepStrictEqual(route('https://crystalprism.io/thought-writer/post/?post=12'),
+    { status: 301, target: 'https://thought-writer.crystalprism.io/post/?post=12' });
+  assert.deepStrictEqual(route('https://www.crystalprism.io/user/?username=x'),
+    { status: 301, target: 'https://account.crystalprism.io/?username=x' });
+  assert.deepStrictEqual(route('https://www.crystalprism.io/user/'),
+    { status: 301, target: 'https://account.crystalprism.io/' });
+  assert.deepStrictEqual(route('https://crystalprism.io/canvashare/easel/?drawing=1'),
+    { status: 301, target: 'https://canvashare.crystalprism.io/easel/?drawing=1' });
+  for (const [host, dir] of Object.entries(HOSTS)) {
+    for (const apex of ['crystalprism.io', 'www.crystalprism.io']) {
+      assert.deepStrictEqual(route(`https://${apex}/${dir}/`),
+        { status: 301, target: `https://${host}.crystalprism.io/` });
+    }
+  }
+});
+
+test('the portfolio and privacy page are untouched', () => {
+  for (const url of ['https://crystalprism.io/', 'https://crystalprism.io/privacy/',
+    'https://crystalprism.io/common.js', 'https://crystalprism.io/index.html',
+    'https://www.crystalprism.io/', 'https://crystalprism.netlify.app/canvashare/']) {
+    assert.strictEqual(route(url), null, url);
+  }
+});
+
+test('local dev and previews keep the directory layout (no bare-path rules)', () => {
+  assert.deepStrictEqual(readRules().filter((r) => !r.host), []);
+});

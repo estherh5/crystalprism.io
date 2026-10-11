@@ -1,6 +1,7 @@
-// Drives the REAL sign-in page, common.js and user/main.js in headless
-// Chromium with the API mocked: a sign-out the server never confirmed must
-// leave the visitor signed in and say so.
+// Drives the REAL account menu, sign-in page and common.js in headless
+// Chromium with the API mocked: Sign Out is a POST made by the menu's click,
+// no URL signs anyone out, and a sign-out the server never confirmed leaves
+// the visitor signed in and says so.
 const test = require('node:test');
 const assert = require('node:assert');
 const fs = require('node:fs');
@@ -17,14 +18,17 @@ test.after(async () => { await browser.close(); });
 
 const types = { '.html': 'text/html', '.js': 'text/javascript', '.css': 'text/css', '.txt': 'text/plain' };
 
-// Open the sign-in page after the header's Sign Out link, with `logout`
-// answering /api/logout: a status code, or 'abort' for a network error.
-// `session` is whether the cookie is still valid after that answer.
-async function signOut({ logout, session, username = 'esther' }) {
+// Mock the site and API. `logout` answers /api/logout: a status code, 'abort'
+// for a network error, or 'hang' for a request that never answers (or an
+// array of those, one per request). The
+// session is `session` until a 2xx logout ends it.
+async function openPage(url, { logout = 200, session = true, username = 'esther' } = {}) {
   const page = await browser.newPage();
   const calls = [];
+  let live = session;
   await page.route('**/*', (route) => {
-    const url = route.request().url();
+    const req = route.request();
+    const url = req.url();
     if (url.startsWith(SITE)) {
       let file = path.join(root, new URL(url).pathname);
       if (file.endsWith('/')) file += 'index.html';
@@ -36,12 +40,16 @@ async function signOut({ logout, session, username = 'esther' }) {
     }
     if (url.startsWith(API)) {
       const endpoint = url.slice(API.length);
-      calls.push(endpoint);
+      calls.push(req.method() + ' ' + endpoint);
       if (endpoint === '/logout') {
-        return logout === 'abort' ? route.abort() : route.fulfill({ status: logout, body: '' });
+        const answer = Array.isArray(logout) ? logout.shift() : logout;
+        if (answer === 'hang') return;
+        if (answer === 'abort') return route.abort();
+        if (answer < 300) live = false;
+        return route.fulfill({ status: answer, body: '' });
       }
       if (endpoint === '/user/verify') {
-        return session
+        return live
           ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ username }) })
           : route.fulfill({ status: 401, body: '' });
       }
@@ -50,70 +58,104 @@ async function signOut({ logout, session, username = 'esther' }) {
     }
     return route.abort();
   });
+  await page.goto(url);
+  return { page, calls };
+}
 
-  // What a Sign Out link leaves behind: the username (the request itself
-  // travels in the URL)
-  await page.goto(SITE + '/robots.txt');
-  await page.evaluate((u) => {
-    if (u) localStorage.setItem('username', u);
-  }, username);
-
-  await page.goto(SITE + '/user/sign-in/?request=logout');
+async function state(page) {
   await page.waitForFunction(() => ['Sign In', 'Sign Out']
     .includes(document.querySelector('#sign-in-link')?.textContent));
   // Let a redirect to My Account start, if one is coming
   await page.waitForTimeout(200);
-
-  const state = await page.evaluate(() => ({
+  return page.evaluate(() => ({
     path: location.pathname,
     signedOut: getComputedStyle(document.getElementById('logout')).display,
     failed: getComputedStyle(document.getElementById('logout-failed')).display,
-    username: localStorage.getItem('username'),
     menu: document.querySelector('#sign-in-link').textContent,
-    request: sessionStorage.getItem('account-request'),
   }));
-  await page.close();
-  return { ...state, calls };
 }
 
-test('a confirmed sign-out clears the username and says so', async () => {
-  const s = await signOut({ logout: 200, session: false });
+// Click Sign Out in the menu of an ordinary app page, signed in
+async function signOut(logout) {
+  const { page, calls } = await openPage(SITE + '/canvashare/', { logout });
+  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  await page.evaluate(() => localStorage.setItem('username', 'esther'));
+  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), page.click('#sign-in-link')]);
+  return { page, calls, s: await state(page) };
+}
+
+test('Sign Out POSTs the logout from the menu, then confirms it', async () => {
+  const { page, calls, s } = await signOut(200);
+  assert.ok(calls.includes('POST /logout'), calls.join());
   assert.strictEqual(s.signedOut, 'block');
   assert.strictEqual(s.failed, 'none');
-  assert.strictEqual(s.username, null);
   assert.strictEqual(s.menu, 'Sign In');
-  assert.strictEqual(s.request, null);
+  assert.strictEqual(s.path, '/user/sign-in/');
+  assert.strictEqual(await page.evaluate(() => localStorage.getItem('username')), null);
+  await page.close();
 });
 
 test('a network error keeps the visitor signed in and warns them', async () => {
-  const s = await signOut({ logout: 'abort', session: true });
+  const { page, s } = await signOut('abort');
   assert.strictEqual(s.failed, 'block');
   assert.strictEqual(s.signedOut, 'none');
-  assert.strictEqual(s.username, 'esther');
   assert.strictEqual(s.menu, 'Sign Out');
   // Stays put so the warning is read, rather than bouncing to My Account
   assert.strictEqual(s.path, '/user/sign-in/');
-  assert.strictEqual(s.request, null);
+  await page.close();
 });
 
 test('a server error keeps the visitor signed in and warns them', async () => {
-  const s = await signOut({ logout: 500, session: true });
+  const { page, s } = await signOut(500);
   assert.strictEqual(s.failed, 'block');
-  assert.strictEqual(s.username, 'esther');
   assert.strictEqual(s.menu, 'Sign Out');
   assert.strictEqual(s.path, '/user/sign-in/');
+  await page.close();
 });
 
-test('the session check waits for the logout to settle', async () => {
-  const s = await signOut({ logout: 200, session: false });
-  assert.ok(s.calls.indexOf('/logout') >= 0);
-  assert.ok(!s.calls.includes('/user/verify') ||
-    s.calls.indexOf('/logout') < s.calls.indexOf('/user/verify'));
+test('a stalled logout is abandoned and reported as failed', async () => {
+  const { page, s } = await signOut('hang');
+  assert.strictEqual(s.failed, 'block');
+  assert.strictEqual(s.menu, 'Sign Out');
+  await page.close();
 });
 
-test('a failed request after the session was already rejected still reads as signed out', async () => {
-  // My Account's 401 path removes the username before sending the visitor here
-  const s = await signOut({ logout: 'abort', session: false, username: null });
-  assert.strictEqual(s.signedOut, 'block');
+test('Sign Out on the failure banner tries again', async () => {
+  const { page, calls } = await signOut([500, 200]);
+  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), page.click('#sign-in-link')]);
+  // Same URL, so wait for the reloaded page's banner rather than the URL
+  await page.waitForFunction(() => getComputedStyle(document.getElementById('logout')).display === 'block');
+  const s = await state(page);
+  assert.strictEqual(calls.filter((c) => c === 'POST /logout').length, 2);
   assert.strictEqual(s.failed, 'none');
+  assert.strictEqual(s.menu, 'Sign In');
+  await page.close();
+});
+
+// Logout CSRF: any site can link or redirect a visitor to these URLs
+for (const query of ['?request=logout', '?signed-out', '?request=logout&signed-out']) {
+  test(`opening sign-in/${query} does not sign the visitor out`, async () => {
+    const { page, calls } = await openPage(SITE + '/user/sign-in/' + query);
+    if (!query.includes('signed-out')) {
+      // Still signed in, so it goes on to My Account as any signed-in visit does
+      await page.waitForURL('**/user/my-account/');
+      assert.ok(!calls.some((c) => c.endsWith('/logout')), calls.join());
+      await page.close();
+      return;
+    }
+    const s = await state(page);
+    assert.ok(!calls.some((c) => c.endsWith('/logout')), calls.join());
+    // Still signed in, so it says so rather than claiming a sign-out
+    assert.strictEqual(s.failed, 'block');
+    assert.strictEqual(s.signedOut, 'none');
+    await page.close();
+  });
+}
+
+test('the menu Sign Out is no longer a sign-out URL', async () => {
+  const { page } = await openPage(SITE + '/canvashare/');
+  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  assert.strictEqual(await page.$eval('#sign-in-link', (a) => a.getAttribute('href')),
+    SITE + '/user/sign-in/');
+  await page.close();
 });

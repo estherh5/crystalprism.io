@@ -455,9 +455,10 @@ function verifySession() {
           accountLink.href = appUrl('account', 'my-account/');
           signInLink.innerHTML = 'Sign Out';
 
-          // The Sign In page logs the user out when it sees request=logout
-          signInLink.href = appUrl('account', 'sign-in/?request=logout');
-          signInLink.onclick = null;
+          /* Sign out from this page with a POST, so no link anywhere can
+          sign a visitor out; the Sign In page then says how it went */
+          signInLink.href = appUrl('account', 'sign-in/');
+          signInLink.onclick = signOut;
 
           return true;
         });
@@ -495,11 +496,16 @@ function verifySession() {
 // Sign out: clear the HttpOnly session cookie (only the server can) and the
 // stored username. Resolves true only if the server cleared the cookie; on
 // failure the cookie is still live, so the username stays and the UI keeps
-// showing the visitor as signed in
+// showing the visitor as signed in. A request that stalls is abandoned after
+// 4s and counts as a failure
 function requestLogout() {
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, 4000);
+
   return fetch(api + '/logout', {
     credentials: 'include',
     method: 'POST',
+    signal: controller.signal,
   })
 
     .then(function(response) {
@@ -512,7 +518,27 @@ function requestLogout() {
 
     .catch(function(error) {
       return false;
+    })
+
+    .finally(function() {
+      clearTimeout(timer);
     });
+}
+
+
+// The account menu's Sign Out: ask the server to end the session, then show
+// the Sign In page, which reads the outcome from the session check itself
+function signOut(event) {
+  event.preventDefault();
+  if (signInLink.getAttribute('aria-disabled') == 'true') {
+    return;
+  }
+  signInLink.setAttribute('aria-disabled', 'true');
+  signInLink.textContent = 'Signing Out…';
+
+  requestLogout().then(function() {
+    window.location = appUrl('account', 'sign-in/?signed-out');
+  });
 }
 
 

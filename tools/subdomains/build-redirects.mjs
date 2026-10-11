@@ -9,8 +9,14 @@
 //      reach via ../ (common.js, common.css, ...) that the app lacks itself,
 //      computed from the app's own src/href/url() references, never listed
 //      by hand, so an app-owned file of the same name still wins;
-//   2. per host, everything else rewrites into the app's directory;
-//   3. on the apex and www, every old /<dir>/ URL 301s to its subdomain
+//   2. per host, one EXACT-path 301 per app folder page (computed from the
+//      tree): Netlify's add-a-trailing-slash 301 for `/easel` names the
+//      rewritten path (`/canvashare/easel/`), which would otherwise be
+//      rewritten again into `/canvashare/canvashare/easel/` and 404. Never a
+//      `/<dir>/*` wildcard: slash normalization lets it drop the slash from
+//      :splat and loop;
+//   3. per host, everything else rewrites into the app's directory;
+//   4. on the apex and www, every old /<dir>/ URL 301s to its subdomain
 //      (Netlify carries the query string through a 301).
 // tests/subdomain-routing.test.js checks the output with its own resolver.
 import fs from 'node:fs';
@@ -78,12 +84,28 @@ function sharedFiles(host, dir) {
   return [...shared].sort();
 }
 
+// App folders below the app root that hold a page, e.g. ['easel']
+function folderPages(dir) {
+  const appDir = path.join(ROOT, dir);
+  return filesUnder(appDir)
+    .map((f) => path.relative(appDir, f).split(path.sep).join('/'))
+    .filter((rel) => rel.endsWith('/index.html'))
+    .map((rel) => rel.slice(0, -'/index.html'.length));
+}
+
 export function buildRedirects() {
   const lines = [HEADER, ''];
   lines.push('# Shared root files each app loads via ../');
   for (const [host, dir] of Object.entries(APP_DIRS)) {
     for (const p of sharedFiles(host, dir)) {
       lines.push(`https://${host}.crystalprism.io${p}  ${p}  200!`);
+    }
+  }
+  lines.push('', "# Netlify's folder-slash 301 names the rewritten path; send it back");
+  for (const [host, dir] of Object.entries(APP_DIRS)) {
+    for (const sub of folderPages(dir)) {
+      const origin = `https://${host}.crystalprism.io`;
+      lines.push(`${origin}/${dir}/${sub}  ${origin}/${sub}/  301!`);
     }
   }
   lines.push('', '# Each app host serves its directory');

@@ -7,6 +7,12 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **Each app subdomain has its own Plausible site.** Pages under an app directory send
+  `data-domain="<host>.crystalprism.io"` (`user/` sends `account.crystalprism.io`), so the
+  `crystalprism.io` site's `/` is the homepage alone. The seven sites were added on the Plausible
+  instance; history before this stays in the `crystalprism.io` site. `tests/analytics-domain.test.js`
+  pins every page's `data-domain` to the host that serves it.
+
 - **2026-10** **Sign-out is a POST from the menu, so no link can sign a visitor out.** The menu's
   Sign Out (`common.js#signOut`) calls `POST /api/logout` itself, shows "Signing Out…" while it
   runs (abandoned after 4s), then lands on `sign-in/?signed-out`. That param only picks a banner,
@@ -100,9 +106,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Give each app subdomain its own Plausible site.** All seven hosts report to the one
-  `crystalprism.io` site, so `/` mixes the homepage with six app roots and the account page. Either
-  per-subdomain `data-domain` in each app's HTML or Plausible's hostname dimension.
 - **Same-host links in local dev.** Static HTML links between apps are absolute production URLs
   (e.g. `user/` profile links, `index.html` modals), so a localhost session leaves for prod on click.
   Route them through `common.js#appUrl` at load time or rewrite them for dev hosts.

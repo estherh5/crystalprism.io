@@ -7,6 +7,10 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **Static links to the legacy apps stay local in dev.** Off crystalprism.io,
+  `common.js#localizeAppLinks` rewrites every static `<a>` to a legacy-app subdomain or the apex
+  through `appUrl`/`homeUrl` at load, so a localhost session no longer leaves for prod on click.
+  Links to fleet apps and auth.crystalprism.io stay absolute — they aren't served locally.
 - **2026-10** **Each app subdomain has its own Plausible site.** Pages under an app directory send
   `data-domain="<host>.crystalprism.io"` (`user/` sends `account.crystalprism.io`), so the
   `crystalprism.io` site's `/` is the homepage alone. The seven sites were added on the Plausible
@@ -106,9 +110,6 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Same-host links in local dev.** Static HTML links between apps are absolute production URLs
-  (e.g. `user/` profile links, `index.html` modals), so a localhost session leaves for prod on click.
-  Route them through `common.js#appUrl` at load time or rewrite them for dev hosts.
 
 ## Declined
 

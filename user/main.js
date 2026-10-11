@@ -358,8 +358,8 @@ function displayDrawings(drawings) {
     // Create container for drawing title
     var drawingTitle = document.createElement('a');
     drawingTitle.classList.add('drawing-title');
-    drawingTitle.href = '../canvashare/easel/?drawing=' +
-      drawings[i]['drawing_id'];
+    drawingTitle.href = appUrl('canvashare', 'easel/?drawing=' +
+      drawings[i]['drawing_id']);
     drawingTitle.textContent = drawings[i]['title'];
 
     // Create drawing image
@@ -374,7 +374,8 @@ function displayDrawings(drawings) {
 
     // Go to easel page for drawing if user clicks drawing
     drawing.onclick = function() {
-      window.location = '../canvashare/easel/?drawing=' + this.dataset.drawing;
+      window.location = appUrl('canvashare', 'easel/?drawing=' +
+        this.dataset.drawing);
       return;
     }
 
@@ -726,7 +727,8 @@ function displayPosts(posts) {
     // Create container for post title
     var postTitle = document.createElement('a');
     postTitle.classList.add('post-title');
-    postTitle.href = '../thought-writer/post/?post=' + posts[i].post_id;
+    postTitle.href = appUrl('thought-writer', 'post/?post=' +
+      posts[i].post_id);
     postTitle.textContent = posts[i].title;
     postTitle.title = 'View post page';
 
@@ -756,8 +758,8 @@ function displayPosts(posts) {
     var postComments = document.createElement('a');
     postComments.classList.add('post-comments');
     postComments.title = 'View post comments';
-    postComments.href = '../thought-writer/post/?post=' +
-      posts[i].post_id + '#comments';
+    postComments.href = appUrl('thought-writer', 'post/?post=' +
+      posts[i].post_id) + '#comments';
 
     if (posts[i].comment_count == 1) {
       postComments.textContent = (Number(posts[i].comment_count) || 0) +
@@ -952,8 +954,8 @@ function displayComments(comments) {
     var parentPost = document.createElement('a');
     parentPost.classList.add('parent-post');
     parentPost.title = 'View comment on post page';
-    parentPost.href = '../../thought-writer/post/?post=' +
-      comments[i].post_id + '#comment' + comments[i].comment_id;
+    parentPost.href = appUrl('thought-writer', 'post/?post=' +
+      comments[i].post_id) + '#comment' + comments[i].comment_id;
     parentPost.textContent = comments[i].title;
 
     commentList.appendChild(commentContainer);

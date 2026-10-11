@@ -1,22 +1,71 @@
 // Define global variables
+var APP_DIRS = {
+  'timespace': 'timespace', 'vicarious': 'vicarious',
+  'canvashare': 'canvashare', 'thought-writer': 'thought-writer',
+  'shapes-in-rain': 'shapes-in-rain', 'rhythm-of-life': 'rhythm-of-life',
+  'account': 'user'
+};
+var onCrystalPrism = /(^|\.)crystalprism\.io$/.test(window.location.hostname);
+
+// Each legacy app is served from <app>.crystalprism.io; locally the repo root
+// is served as-is, so the same app lives under its directory
+function appUrl(app, path) {
+  path = path || '';
+  if (onCrystalPrism) {
+    return 'https://' + app + '.crystalprism.io/' + path;
+  }
+  return window.location.origin + '/' + APP_DIRS[app] + '/' + path;
+}
+
+function homeUrl(path) {
+  path = path || '';
+  return (onCrystalPrism ? 'https://crystalprism.io' : window.location.origin)
+    + '/' + path;
+}
+
+/* Where sign-in may send the visitor back to: a Crystal Prism page (or this
+origin, locally) and nothing else */
+function safeNext(url) {
+  if (!url) {
+    return null;
+  }
+  try {
+    var parsed = new URL(url, window.location.href);
+  } catch (error) {
+    return null;
+  }
+  if (parsed.origin == window.location.origin && !onCrystalPrism) {
+    return parsed.href;
+  }
+  if (parsed.protocol == 'https:'
+    && /^([a-z0-9-]+\.)?crystalprism\.io$/.test(parsed.hostname)) {
+      return parsed.href;
+    }
+  return null;
+}
+
+/* The path as it would read in the single-site layout, so a subdomain's root
+still names its app (canvashare.crystalprism.io/easel/ -> /canvashare/easel/) */
+var hostApp = window.location.hostname.split('.')[0];
+var logicalPath = window.location.pathname;
+if (onCrystalPrism && APP_DIRS[hostApp]) {
+  logicalPath = '/' + APP_DIRS[hostApp] + logicalPath;
+}
+var domain = window.location.host;
+var currentPath = logicalPath == '/' ? domain
+  : logicalPath.split('/').slice(-2)[0];
+var root = homeUrl().replace(/\/$/, '');
 var profileLink;
 var accountLink;
 var signInLink;
-var currentPath = window.location.href.split('/').slice(-2)[0];
-var domain = window.location.origin.split('/').slice(-2)[1];
-var root = window.location.origin;
 var repinged = false // If Retry button was clicked for pingServer function
 var scrolled = false // Stores if user scrolled down page with infinite scroll
 var mobile = false; // Used to determine if user is on mobile device or desktop
 var siteMenuOpen = false; // Stores if site menu is open or closed
 
 
-// Determine API endpoint based on window location
-if (window.location.hostname == 'crystalprism.io') {
-  var api = 'https://api.crystalprism.io/api';
-} else {
-  var api = 'http://localhost:5000/api';
-}
+var api = onCrystalPrism ? 'https://api.crystalprism.io/api'
+  : 'http://localhost:5000/api';
 
 
 /* Stored content written by other users never reaches innerHTML raw. Post and
@@ -107,7 +156,7 @@ function createPageHeader() {
   siteMenu.appendChild(siteMenuSpacer);
 
   // Create menu rows with icons and links to each project
-  var projectLinks = ['/',
+  var projectLinks = [homeUrl(),
     'https://methods.crystalprism.io/', 'https://giftme.crystalprism.io/',
     'https://passage.crystalprism.io/', 'https://restock.crystalprism.io/',
     'https://nexus.crystalprism.io/', 'https://space.crystalprism.io/',
@@ -116,10 +165,13 @@ function createPageHeader() {
     'https://tide.crystalprism.io/', 'https://flare.crystalprism.io/',
     'https://glimpse.crystalprism.io/', 'https://menagerie.crystalprism.io/',
     'https://toile.crystalprism.io/',
-    '/timespace/', '/shapes-in-rain/',
-    '/rhythm-of-life/', '/canvashare/', '/thought-writer/', '/vicarious/',
+    appUrl('timespace'), appUrl('shapes-in-rain'),
+    appUrl('rhythm-of-life'), appUrl('canvashare'), appUrl('thought-writer'),
+    appUrl('vicarious'),
     'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
-    'https://marian.crystalprism.io/', 'https://vroom.crystalprism.io/', '/'];
+    'https://marian.crystalprism.io/', 'https://vroom.crystalprism.io/',
+    appUrl('account', localStorage.getItem('username') ? 'my-account/'
+      : 'sign-in/')];
 
   var projectTitles = ['Home',
     'Methods', 'GiftMe', 'Passage', 'Restock', 'Nexus', 'Space', 'Savor',
@@ -133,15 +185,7 @@ function createPageHeader() {
     var menuRow = document.createElement('tr');
     menuRow.classList.add('site-menu-row');
 
-    if (i == projectLinks.length - 1) {
-      if (localStorage.getItem('username')) {
-        menuRow.dataset.link = projectLinks[i] + 'user/my-account/';
-      } else {
-        menuRow.dataset.link = projectLinks[i] + 'user/sign-in/';
-      }
-    } else {
-      menuRow.dataset.link = projectLinks[i];
-    }
+    menuRow.dataset.link = projectLinks[i];
 
     menuRow.addEventListener('click', function() {
       window.location = this.dataset.link;
@@ -153,7 +197,8 @@ function createPageHeader() {
 
     var menuImage = document.createElement('img');
     menuImage.classList.add('site-menu-image');
-    menuImage.src = projectLinks[i] + 'favicon.ico';
+    menuImage.src = (i == projectLinks.length - 1 ? homeUrl()
+      : projectLinks[i]) + 'favicon.ico';
 
     var menuTextCell = document.createElement('td');
     menuTextCell.classList.add('site-menu-text-cell');
@@ -188,7 +233,7 @@ function createPageHeader() {
   accountLink.href = 'https://auth.crystalprism.io/register';
   signInLink = document.createElement('a');
   signInLink.id = 'sign-in-link';
-  signInLink.href = root + '/user/sign-in/';
+  signInLink.href = appUrl('account', 'sign-in/');
   headerContainer.appendChild(accountMenu);
   accountMenu.appendChild(profileLink);
   accountMenu.appendChild(accountLink);
@@ -301,13 +346,12 @@ function showSignedOut() {
 
   /* Store current window for user to return to after logging in, if current
   window is not homepage, Create Account, or Sign In pages */
+  signInLink.href = appUrl('account', 'sign-in/');
   if (currentPath != domain && currentPath != 'create-account'
     && currentPath != 'sign-in') {
-      signInLink.onclick = function() {
-        sessionStorage.setItem('previous-window', window.location.href);
-        return;
-      }
+      signInLink.href += '?next=' + encodeURIComponent(window.location.href);
     }
+  signInLink.onclick = null;
 
   return;
 }
@@ -348,12 +392,10 @@ function checkIfLoggedIn() {
       });
   }
 
-  // If user has no stored username, set account menu to default
-  if (!localStorage.getItem('username')) {
-    showSignedOut();
-    return false;
-  }
-
+  /* The stored username is a per-origin hint, so a first visit to a
+  subdomain has none: always ask the server. Show the signed-out menu
+  meanwhile. */
+  showSignedOut();
   return verifySession();
 }
 
@@ -384,17 +426,14 @@ function verifySession() {
           localStorage.setItem('username', payload['username']);
 
           profileLink.textContent = payload['username'];
-          profileLink.href = root + '/user/?username=' + encodeURIComponent(payload['username']);
+          profileLink.href = appUrl('account', '?username=' + encodeURIComponent(payload['username']));
           accountLink.innerHTML = 'My Account';
-          accountLink.href = root + '/user/my-account/';
+          accountLink.href = appUrl('account', 'my-account/');
           signInLink.innerHTML = 'Sign Out';
 
-          /* Send request to log user out when Sign In page link ("Sign Out"
-          title) is clicked */
-          signInLink.onclick = function() {
-            sessionStorage.setItem('account-request', 'logout');
-            return;
-          }
+          // The Sign In page logs the user out when it sees request=logout
+          signInLink.href = appUrl('account', 'sign-in/?request=logout');
+          signInLink.onclick = null;
 
           return true;
         });
@@ -408,8 +447,7 @@ function verifySession() {
 
         // Redirect to Sign In page if user is on My Account page
         if (currentPath == 'my-account') {
-          sessionStorage.setItem('account-request', 'logout');
-          window.location = '../sign-in/';
+          window.location = appUrl('account', 'sign-in/');
         }
       }
 

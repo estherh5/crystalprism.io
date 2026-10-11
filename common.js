@@ -470,6 +470,14 @@ function verifySession() {
       }
 
       return false;
+    })
+
+    /* A 200 whose body is not JSON (a captive portal, an intermediary's HTML
+    page) rejects response.json(): settle to signed out so every caller's
+    .then still runs */
+    .catch(function(error) {
+      showSignedOut();
+      return false;
     });
 }
 

@@ -33,7 +33,8 @@ function serve(route, file) {
 }
 
 // Open `url`; `session` is the /user/verify answer (username or null)
-async function open(url, { session = null, localUsername = null, header = true } = {}) {
+// `data` maps an API pathname to the JSON body it answers with
+async function open(url, { session = null, localUsername = null, header = true, data = {} } = {}) {
   const page = await browser.newPage();
   const apiCalls = [];
   await page.route('**/*', (route) => {
@@ -46,7 +47,19 @@ async function open(url, { session = null, localUsername = null, header = true }
           : route.fulfill({ status: 401, body: '' });
       }
       if (u.pathname === '/api/ping') return route.fulfill({ status: 200, body: 'Success' });
+      if (Object.hasOwn(data, u.pathname)) {
+        return route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(data[u.pathname]) });
+      }
       return route.fulfill({ status: 401, body: '' });
+    }
+    // Third-party libraries: minimal stand-ins for what the pages call
+    if (u.hostname === 'cdnjs.cloudflare.com' && u.pathname.includes('moment')) {
+      return route.fulfill({ contentType: 'text/javascript',
+        body: 'window.moment=function(){return{format:function(){return ""},fromNow:function(){return ""}}}' });
+    }
+    if (u.hostname === 'cdnjs.cloudflare.com' && u.pathname.includes('dompurify')) {
+      return route.fulfill({ contentType: 'text/javascript',
+        body: 'window.DOMPurify={sanitize:function(h){return h}}' });
     }
     const m = u.hostname.match(/^([a-z-]+)\.crystalprism\.io$/);
     if (u.protocol === 'https:' && m && DIRS[m[1]]) {
@@ -158,4 +171,51 @@ test('currentPath matches the old href-based value on the dev host', async () =>
     assert.strictEqual(got.now, got.old, p);
     await page.close();
   }
+});
+
+const POST_7 = {
+  post_id: 7, title: 'Seven', content: '<p>Body of seven</p>', public: true,
+  username: 'esther', created: '2026-01-01T00:00:00Z', modified: '2026-01-01T00:00:00Z', comment_count: 0,
+};
+
+test('the editor opens the post named by ?post=', async () => {
+  const { page } = await open('https://thought-writer.crystalprism.io/editor/?post=7', {
+    session: 'esther', data: { '/api/thought-writer/post/7': POST_7 },
+  });
+  await page.waitForFunction(() => postTitle.value === 'Seven');
+  assert.strictEqual(await page.evaluate(() => post.dataset.postid), '7');
+  assert.match(await page.evaluate(() => post.innerHTML), /Body of seven/);
+  await page.close();
+});
+
+test('the Edit button on an own post hands off by ?post=', async () => {
+  const { page } = await open('https://thought-writer.crystalprism.io/post/?post=7', {
+    session: 'esther', localUsername: 'esther',
+    data: { '/api/thought-writer/post/7': POST_7, '/api/thought-writer/comments/post/7': [] },
+  });
+  await page.waitForSelector('#edit:not(.hidden)');
+  await Promise.all([page.waitForURL('**/editor/**'), page.click('#edit')]);
+  assert.strictEqual(page.url(), 'https://thought-writer.crystalprism.io/editor/?post=7');
+  await page.close();
+});
+
+test('writer and artist names link to the account host profile', async () => {
+  const board = await open('https://thought-writer.crystalprism.io/', {
+    data: { '/api/thought-writer/posts': [POST_7] },
+  });
+  await board.page.waitForSelector('.post-info a[href*="username="]', { state: 'attached' });
+  assert.strictEqual(await board.page.$eval('.post-info a[href*="username="]', (a) => a.href),
+    'https://account.crystalprism.io/?username=esther');
+  await board.page.close();
+
+  const gallery = await open('https://canvashare.crystalprism.io/', {
+    data: { '/api/canvashare/drawings': [{
+      drawing_id: 4, title: 'Four', url: 'https://crystalprism.io/favicon.ico',
+      like_count: 0, likers: [], views: 0, username: 'esther',
+    }] },
+  });
+  await gallery.page.waitForSelector('.drawing-artist a', { state: 'attached' });
+  assert.strictEqual(await gallery.page.$eval('.drawing-artist a', (a) => a.href),
+    'https://account.crystalprism.io/?username=esther');
+  await gallery.page.close();
 });

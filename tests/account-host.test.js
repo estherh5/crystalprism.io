@@ -45,6 +45,11 @@ async function open(url, { session = null, logout = 200 } = {}) {
   const calls = [];
   await page.route('**/*', (route) => {
     const u = new URL(route.request().url());
+    if (u.href === 'https://auth.crystalprism.io/api/legacy-token') {
+      return route.fulfill({ status: 200, contentType: 'application/json',
+        body: JSON.stringify({ token: 'ring', username: 'esther' }) });
+    }
+    if (u.href === API + '/session') return route.fulfill({ status: 200, body: '' });
     if (u.origin === 'https://api.crystalprism.io') {
       const ep = u.pathname.replace(/^\/api/, '');
       calls.push(ep);
@@ -105,6 +110,34 @@ test('sign-in with a Crystal Prism ?next= lands there', async () => {
 
 test('sign-in with a foreign ?next= lands on My Account', async () => {
   assert.strictEqual(await signIn('https://evil.com/'), 'https://account.crystalprism.io/my-account/');
+});
+
+// The Google round trip leaves the account origin and comes back to
+// /sign-in/?via=google with no ?next=; sessionStorage is what carries it
+async function googleReturn({ next, stored }) {
+  const { page } = await open('https://account.crystalprism.io/sign-in/' +
+    (next ? '?next=' + encodeURIComponent(next) : ''));
+  await page.waitForSelector('#username-input');
+  if (stored) await page.evaluate((v) => sessionStorage.setItem('sign-in-next', v), stored);
+  await Promise.all([
+    page.waitForURL((u) => !u.href.startsWith('https://account.crystalprism.io/sign-in/')),
+    page.goto('https://account.crystalprism.io/sign-in/?via=google').catch(() => {}),
+  ]);
+  const landed = page.url();
+  const left = await page.evaluate(() => sessionStorage.getItem('sign-in-next')).catch(() => null);
+  await page.close();
+  return { landed, left };
+}
+
+test('a Google sign-in round trip still lands on ?next=', async () => {
+  const next = 'https://canvashare.crystalprism.io/easel/';
+  const r = await googleReturn({ next });
+  assert.strictEqual(r.landed, next);
+});
+
+test('a hostile stored next is ignored after the Google round trip', async () => {
+  const r = await googleReturn({ stored: 'https://evil.com/' });
+  assert.strictEqual(r.landed, 'https://account.crystalprism.io/my-account/');
 });
 
 test('?request=logout signs the visitor out', async () => {

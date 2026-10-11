@@ -44,8 +44,11 @@ function readRules() {
     });
 }
 
-// Netlify matching: `/a/*` matches `/a/...` and `/a` itself; a literal path
-// matches with or without a trailing slash
+// Netlify matching: a literal path matches with or without a trailing slash
+// (documented). `/a/*` also matching `/a` itself is an ASSUMPTION from
+// forum behavior, not a documented guarantee; on the apex it changes nothing,
+// because if it did not match, Netlify's own slash 301 would yield `/a/`,
+// which does, and the chain still converges (see follow()).
 function matchPath(pattern, pathname) {
   if (pattern.endsWith('/*')) {
     const base = pattern.slice(0, -2);
@@ -70,19 +73,58 @@ function route(url, rules = readRules()) {
   return null;
 }
 
-// The repo file a request on `url` is served from, or null for a 404
-function serve(url) {
+// The internal path a request on `url` is served from: route() for a 200,
+// the request path itself when no rule matches; asserts no redirect
+function servedPath(url) {
   const routed = route(url);
-  let pathname;
-  if (!routed) {
-    pathname = new URL(url).pathname;
-  } else {
-    assert.strictEqual(routed.status, 200, `${url} redirects, expected a page`);
-    pathname = new URL(routed.target, 'https://x.invalid').pathname;
-  }
+  if (!routed) return new URL(url).pathname;
+  assert.strictEqual(routed.status, 200, `${url} redirects, expected a page`);
+  return new URL(routed.target, 'https://x.invalid').pathname;
+}
+
+function fileFor(pathname) {
   let file = path.join(root, decodeURIComponent(pathname));
   if (pathname.endsWith('/')) file = path.join(file, 'index.html');
   return fs.existsSync(file) && fs.statSync(file).isFile() ? file : null;
+}
+
+const isDir = (pathname) => {
+  const p = path.join(root, decodeURIComponent(pathname));
+  return fs.existsSync(p) && fs.statSync(p).isDirectory();
+};
+
+// The repo file a request on `url` is served from, or null for a 404
+function serve(url) {
+  return fileFor(servedPath(url));
+}
+
+// Follows a request through redirects the way a browser on Netlify would,
+// including Netlify's own add-a-trailing-slash 301 for a folder asked for
+// without its slash. Measured live on the apex, that 301's Location is the
+// INTERNAL served path, relative (`/canvashare/easel` -> `/canvashare/easel/`),
+// so on a rewritten host it names the rewritten path on the same host.
+// Returns the final URL, the file served there, and the hop count.
+const MAX_HOPS = 5;
+function follow(start) {
+  let url = start;
+  const seen = new Set();
+  for (let hops = 0; hops <= MAX_HOPS; hops++) {
+    assert.ok(!seen.has(url), `redirect loop at ${url} (from ${start})`);
+    seen.add(url);
+    const u = new URL(url);
+    const routed = route(url);
+    if (routed && routed.status === 301) {
+      url = new URL(routed.target, url).href;
+      continue;
+    }
+    const internal = routed ? new URL(routed.target, 'https://x.invalid').pathname : u.pathname;
+    if (!internal.endsWith('/') && isDir(internal)) {
+      url = new URL(internal + '/' + u.search, url).href;
+      continue;
+    }
+    return { url, file: fileFor(internal), hops };
+  }
+  assert.fail(`more than ${MAX_HOPS} redirects from ${start}`);
 }
 
 function walk(dir, ext) {
@@ -229,4 +271,73 @@ test('the portfolio and privacy page are untouched', () => {
 
 test('local dev and previews keep the directory layout (no bare-path rules)', () => {
   assert.deepStrictEqual(readRules().filter((r) => !r.host), []);
+});
+
+// Every app page below its app's root, as [host, dir, sub] with sub like
+// `easel` or `post` (found on disk, not listed)
+function subPages() {
+  const out = [];
+  for (const [host, dir] of Object.entries(HOSTS)) {
+    for (const file of walk(path.join(root, dir), ['.html'])) {
+      const rel = path.relative(path.join(root, dir), file).split(path.sep).join('/');
+      const m = rel.match(/^(.+)\/index\.html$/);
+      if (m) out.push([host, dir, m[1], file]);
+    }
+  }
+  return out;
+}
+
+test('a folder URL without its slash settles on that folder page, on every host', () => {
+  const pages = subPages();
+  assert.ok(pages.length >= 6, `only ${pages.length} sub-pages found`);
+  for (const [host, dir, sub, file] of pages) {
+    for (const start of [`https://${host}.crystalprism.io/${sub}`,
+      `https://crystalprism.io/${dir}/${sub}`,
+      `https://www.crystalprism.io/${dir}/${sub}`]) {
+      const end = follow(start);
+      assert.strictEqual(end.url, `https://${host}.crystalprism.io/${sub}/`, start);
+      assert.strictEqual(end.file, file, start);
+    }
+  }
+});
+
+test('the query survives the slash redirects', () => {
+  assert.deepStrictEqual(follow('https://crystalprism.io/canvashare/easel?drawing=1').url,
+    'https://canvashare.crystalprism.io/easel/?drawing=1');
+  assert.deepStrictEqual(follow('https://canvashare.crystalprism.io/easel?drawing=1').url,
+    'https://canvashare.crystalprism.io/easel/?drawing=1');
+  assert.deepStrictEqual(follow('https://account.crystalprism.io/sign-in').url,
+    'https://account.crystalprism.io/sign-in/');
+});
+
+test('an old app root without its slash settles on the app host', () => {
+  for (const [host, dir] of Object.entries(HOSTS)) {
+    const end = follow(`https://crystalprism.io/${dir}`);
+    assert.strictEqual(end.url, `https://${host}.crystalprism.io/`);
+    assert.strictEqual(end.file, path.join(root, dir, 'index.html'));
+  }
+});
+
+test('the slash guards are exact paths, never a wildcard (a splat guard loops)', () => {
+  const appHosts = new Set(Object.keys(HOSTS).map((h) => `${h}.crystalprism.io`));
+  const guards = readRules().filter((r) => r.status === 301 && appHosts.has(r.host));
+  assert.strictEqual(guards.length, subPages().length, 'one guard per folder page');
+  for (const r of guards) {
+    assert.ok(!r.fromPath.includes('*'), `wildcard guard: ${r.host}${r.fromPath}`);
+    assert.ok(r.to.endsWith('/'), `guard target must carry its slash: ${r.to}`);
+  }
+});
+
+// The extraction regexes above are the generator's too, so a ref form both
+// miss is invisible to both. Anchor them with plain substring counting: every
+// `src=`/`href=` written in a page must be one the regex picked up.
+test('the HTML ref regex misses no src=/href= attribute (non-regex anchor)', () => {
+  const count = (text, needle) => text.split(needle).length - 1;
+  for (const dir of Object.values(HOSTS)) {
+    for (const file of walk(path.join(root, dir), ['.html'])) {
+      const text = fs.readFileSync(file, 'utf8').toLowerCase();
+      assert.strictEqual(htmlRefs(text).length, count(text, 'src=') + count(text, 'href='),
+        path.relative(root, file));
+    }
+  }
 });

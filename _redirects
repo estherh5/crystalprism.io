@@ -19,6 +19,14 @@ https://account.crystalprism.io/common.css  /common.css  200!
 https://account.crystalprism.io/common.js  /common.js  200!
 https://account.crystalprism.io/favicon.ico  /favicon.ico  200!
 
+# Netlify's folder-slash 301 names the rewritten path; send it back
+https://canvashare.crystalprism.io/canvashare/easel  https://canvashare.crystalprism.io/easel/  301!
+https://thought-writer.crystalprism.io/thought-writer/editor  https://thought-writer.crystalprism.io/editor/  301!
+https://thought-writer.crystalprism.io/thought-writer/post  https://thought-writer.crystalprism.io/post/  301!
+https://account.crystalprism.io/user/create-account  https://account.crystalprism.io/create-account/  301!
+https://account.crystalprism.io/user/my-account  https://account.crystalprism.io/my-account/  301!
+https://account.crystalprism.io/user/sign-in  https://account.crystalprism.io/sign-in/  301!
+
 # Each app host serves its directory
 https://timespace.crystalprism.io/*  /timespace/:splat  200!
 https://vicarious.crystalprism.io/*  /vicarious/:splat  200!

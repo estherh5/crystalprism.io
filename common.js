@@ -186,6 +186,9 @@ function createPageHeader() {
     menuRow.classList.add('site-menu-row');
 
     menuRow.dataset.link = projectLinks[i];
+    if (i == projectLinks.length - 1) {
+      menuRow.id = 'site-menu-account';
+    }
 
     menuRow.addEventListener('click', function() {
       window.location = this.dataset.link;
@@ -341,6 +344,7 @@ function pingServer(action) {
 
 // Show the signed-out account menu
 function showSignedOut() {
+  setAccountMenuRow(false);
   accountLink.innerHTML = 'Create Account';
   signInLink.innerHTML = 'Sign In';
 
@@ -352,6 +356,19 @@ function showSignedOut() {
       signInLink.href += '?next=' + encodeURIComponent(window.location.href);
     }
   signInLink.onclick = null;
+
+  return;
+}
+
+
+/* Point the site menu's Account row at My Account or Sign In. The header is
+built from the stored username, which a first visit to a subdomain lacks, so
+the session check corrects it */
+function setAccountMenuRow(signedIn) {
+  var row = document.getElementById('site-menu-account');
+  if (row) {
+    row.dataset.link = appUrl('account', signedIn ? 'my-account/' : 'sign-in/');
+  }
 
   return;
 }
@@ -427,6 +444,7 @@ function verifySession() {
 
           profileLink.textContent = payload['username'];
           profileLink.href = appUrl('account', '?username=' + encodeURIComponent(payload['username']));
+          setAccountMenuRow(true);
           accountLink.innerHTML = 'My Account';
           accountLink.href = appUrl('account', 'my-account/');
           signInLink.innerHTML = 'Sign Out';

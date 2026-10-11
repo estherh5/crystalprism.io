@@ -34,14 +34,16 @@ function serve(route, file) {
 
 // Open `url`; `session` is the /user/verify answer (username or null)
 // `data` maps an API pathname to the JSON body it answers with
-async function open(url, { session = null, localUsername = null, header = true, data = {} } = {}) {
+// `verifyDelay` holds the verify answer back (ms), so other API calls answer first
+async function open(url, { session = null, localUsername = null, header = true, data = {}, verifyDelay = 0 } = {}) {
   const page = await browser.newPage();
   const apiCalls = [];
-  await page.route('**/*', (route) => {
+  await page.route('**/*', async (route) => {
     const u = new URL(route.request().url());
     if (u.origin === 'https://api.crystalprism.io' || u.origin === 'http://localhost:5000') {
       apiCalls.push(route.request().url());
       if (u.pathname === '/api/user/verify') {
+        if (verifyDelay) await new Promise((r) => setTimeout(r, verifyDelay));
         return session
           ? route.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify({ username: session }) })
           : route.fulfill({ status: 401, body: '' });
@@ -218,4 +220,73 @@ test('writer and artist names link to the account host profile', async () => {
   assert.strictEqual(await gallery.page.$eval('.drawing-artist a', (a) => a.href),
     'https://account.crystalprism.io/?username=esther');
   await gallery.page.close();
+});
+
+
+const COMMENT_9 = {
+  comment_id: 9, post_id: 7, content: 'Nine', username: 'esther',
+  created: '2026-01-02T00:00:00Z', modified: '2026-01-02T00:00:00Z',
+};
+const COMMENT_10 = { ...COMMENT_9, comment_id: 10, content: 'Ten', username: 'a b' };
+
+// First visit to a subdomain: no stored username, and the post answers before verify
+test('own post and comment show Edit/Delete on a first subdomain visit', async () => {
+  const { page } = await open('https://thought-writer.crystalprism.io/post/?post=7', {
+    session: 'esther', verifyDelay: 400,
+    data: { '/api/thought-writer/post/7': POST_7,
+      '/api/thought-writer/comments/post/7': [COMMENT_9, COMMENT_10] },
+  });
+  await page.waitForSelector('#post-content', { state: 'attached' });
+  await page.waitForSelector('#comment10', { state: 'attached' });
+  assert.strictEqual(await page.$eval('#edit', (b) => b.classList.contains('hidden')), false);
+  assert.strictEqual(await page.$eval('#delete', (b) => b.classList.contains('hidden')), false);
+  assert.ok(await page.$('#comment9 .modify-button'), 'own comment has Modify');
+  assert.ok(await page.$('#comment9 .delete-button'), 'own comment has Delete');
+  assert.strictEqual(await page.$('#comment10 .modify-button'), null);
+  // Writer and commenter names link to the account host profile
+  assert.strictEqual(await href(page, 'post-writer'), 'https://account.crystalprism.io/?username=esther');
+  assert.strictEqual(await page.$eval('#comment10 .commenter', (a) => a.href),
+    'https://account.crystalprism.io/?username=a%20b');
+  await page.close();
+});
+
+test('own likes show as liked on a first canvashare visit', async () => {
+  const { page } = await open('https://canvashare.crystalprism.io/', {
+    session: 'esther', verifyDelay: 400,
+    data: { '/api/canvashare/drawings': [{
+      drawing_id: 4, title: 'Four', url: 'https://crystalprism.io/favicon.ico',
+      like_count: 1, likers: [{ username: 'esther', drawing_like_id: 12 }], views: 0, username: 'a',
+    }] },
+  });
+  await page.waitForSelector('[data-drawing="likes4"]', { state: 'attached' });
+  assert.ok(await page.$('.fas.fa-heart[data-drawinglike="12"]'), 'liked heart shown');
+  assert.strictEqual(await page.$('.far.fa-heart'), null);
+  await page.close();
+});
+
+test('the Account menu row follows the verified session on a first visit', async () => {
+  const { page } = await open('https://canvashare.crystalprism.io/', { session: 'esther', verifyDelay: 200 });
+  assert.strictEqual((await menu(page))['Account'], 'https://account.crystalprism.io/my-account/');
+  await page.close();
+});
+
+test('leaderboard names link to the account host profile', async () => {
+  const leaders = [{ username: 'a b', score: 5 }];
+  const want = 'https://account.crystalprism.io/?username=a%20b';
+  const shapes = await open('https://shapes-in-rain.crystalprism.io/', {
+    header: false, data: { '/api/shapes-in-rain/scores': leaders },
+  });
+  await shapes.page.waitForSelector('a[href*="username="]', { state: 'attached' });
+  assert.deepStrictEqual(await shapes.page.$$eval('a[href*="username="]', (as) => as.map((a) => a.href)), [want]);
+  await shapes.page.close();
+
+  /* Rhythm of Life's onload stops at Snap.svg (a CDN script the harness
+  blocks) before it loads leaders, so render the leaderboard directly */
+  const rhythm = await open('https://rhythm-of-life.crystalprism.io/', { header: false });
+  const got = await rhythm.page.evaluate((l) => {
+    displayLeaders(l);
+    return [...document.querySelectorAll('a[href*="username="]')].map((a) => a.href);
+  }, leaders);
+  assert.deepStrictEqual(got, [want]);
+  await rhythm.page.close();
 });

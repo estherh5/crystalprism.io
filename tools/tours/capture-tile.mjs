@@ -142,16 +142,20 @@ const APPS = {
   },
   toile: {
     dir: 'Developer/toile', appPort: 3320, proxyPort: 3321,
-    userId: 'demo@crystalprism.io', route: '/', wait: '.doll-stage svg',
+    userId: 'demo@crystalprism.io', route: '/', wait: '.home-hero-stage svg',
     // Not on the crystalprism SSO ring: default @auth/core cookie name over http.
     // ADMIN_EMAIL must equal demo@crystalprism.io; toile keeps no .env.local, so
     // the server and this script share an AUTH_SECRET exported inline.
     cookieName: 'authjs.session-token',
-    // At full width the two cards sit in the left third of an empty pink field.
-    // 640 keeps the wordmark, the checklist and the doll down to the hips; 520 was
-    // tried and loses all of the doll but her head behind the floating buttons.
-    // The doll is sized off vh, so no width shows all three whole.
-    cssWidth: 640,
+    // The cutting table: hero card, four ways in, then Designs / Swatches /
+    // Inspiration. Tried 1374, 1180, 1140, 1100, 1024 and 860. Below ~1150 the
+    // ways go 2x2 and the columns stack, so the tile ends mid-Swatches with no
+    // inspiration at all (1024 and 1100 fill the frame but show half the page;
+    // 860 is just the hero). 1374 shows everything but small, the bottom ~40%
+    // empty pink. 1180 is the narrowest width that keeps all of it on one
+    // screen, every part legible, the bottom ~25% still empty because the page
+    // ends there; scrollY cannot help a page that short.
+    cssWidth: 1180,
   },
 };
 

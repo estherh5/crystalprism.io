@@ -28,6 +28,12 @@ window.onload = function() {
   title on My Account) */
   var postId = new URLSearchParams(window.location.search).get('post');
 
+  /* Consume it, so a reload or Back reopens the draft rather than this post
+  (the same pattern sign-in uses) */
+  if (postId && window.history && history.replaceState) {
+    history.replaceState(null, '', location.pathname + location.hash);
+  }
+
   // Set focus in contenteditable post for immediate editing
   post.focus();
 

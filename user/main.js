@@ -35,20 +35,22 @@ window.onload = function() {
     return;
   }
 
-  // Load profile user's personal information from server
-  loadPersonalInfo();
-
-  // Load user's drawings from server
-  loadDrawings();
-
   // Create page header (from common.js script)
   createPageHeader();
 
   // Apply additional style to header
   document.getElementById('header').classList.add('divider');
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  /* Check if user is logged in (from common.js script) before loading the
+  profile, so own likes render against the verified username on a first visit
+  to this origin */
+  Promise.resolve(checkIfLoggedIn()).then(function() {
+    // Load profile user's personal information from server
+    loadPersonalInfo();
+
+    // Load user's drawings from server
+    loadDrawings();
+  });
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(retryFunctions);

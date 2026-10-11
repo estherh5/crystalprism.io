@@ -82,27 +82,50 @@ function servedPath(url) {
   return new URL(routed.target, 'https://x.invalid').pathname;
 }
 
-function fileFor(pathname) {
-  let file = path.join(root, decodeURIComponent(pathname));
-  if (pathname.endsWith('/')) file = path.join(file, 'index.html');
-  return fs.existsSync(file) && fs.statSync(file).isFile() ? file : null;
-}
-
 const isDir = (pathname) => {
   const p = path.join(root, decodeURIComponent(pathname));
   return fs.existsSync(p) && fs.statSync(p).isDirectory();
 };
+
+// A folder asked for without its slash is served its index.html as a 200,
+// with NO slash 301: measured live 2026-10-11 (`curl -sIL
+// https://canvashare.crystalprism.io/easel` is a plain 200), so the page's
+// relative refs resolve one level up until /slash.js adds the slash.
+function fileFor(pathname) {
+  let file = path.join(root, decodeURIComponent(pathname));
+  if (pathname.endsWith('/') || isDir(pathname)) file = path.join(file, 'index.html');
+  return fs.existsSync(file) && fs.statSync(file).isFile() ? file : null;
+}
 
 // The repo file a request on `url` is served from, or null for a 404
 function serve(url) {
   return fileFor(servedPath(url));
 }
 
-// Follows a request through redirects the way a browser on Netlify would,
-// including Netlify's own add-a-trailing-slash 301 for a folder asked for
-// without its slash. Measured live on the apex, that 301's Location is the
-// INTERNAL served path, relative (`/canvashare/easel` -> `/canvashare/easel/`),
-// so on a rewritten host it names the rewritten path on the same host.
+// Runs the repo's slash.js against `url` with a stand-in location; returns
+// the URL it location.replace()s to, or null when it leaves the page alone
+const vm = require('node:vm');
+function runSlash(url) {
+  const u = new URL(url);
+  let replaced = null;
+  const location = {
+    pathname: u.pathname, search: u.search, hash: u.hash,
+    replace(to) { replaced = new URL(to, url).href; },
+  };
+  vm.runInNewContext(fs.readFileSync(path.join(root, 'slash.js'), 'utf8'), { location });
+  return replaced;
+}
+
+// The first <script> inside <head>, as written
+function firstHeadScript(html) {
+  const head = html.slice(html.indexOf('<head>'), html.indexOf('</head>'));
+  const m = head.match(/<script\b[^>]*\bsrc\s*=\s*["']([^"']*)["'][^>]*>/i);
+  return m ? { src: m[1], before: head.slice(0, m.index), tag: m[0] } : null;
+}
+
+// Follows a request the way a browser on Netlify would: forced 301 rules,
+// then the served page (a slashless folder is a 200 of its index.html, see
+// fileFor), then that page's own /slash.js hop when it loads it first.
 // Returns the final URL, the file served there, and the hop count.
 const MAX_HOPS = 5;
 function follow(start) {
@@ -118,11 +141,14 @@ function follow(start) {
       continue;
     }
     const internal = routed ? new URL(routed.target, 'https://x.invalid').pathname : u.pathname;
-    if (!internal.endsWith('/') && isDir(internal)) {
-      url = new URL(internal + '/' + u.search, url).href;
+    const file = fileFor(internal);
+    const first = file && file.endsWith('.html') && firstHeadScript(fs.readFileSync(file, 'utf8'));
+    const next = first && first.src === '/slash.js' ? runSlash(url) : null;
+    if (next) {
+      url = next;
       continue;
     }
-    return { url, file: fileFor(internal), hops };
+    return { url, file, hops };
   }
   assert.fail(`more than ${MAX_HOPS} redirects from ${start}`);
 }
@@ -221,6 +247,9 @@ test('shared root files are served from the repo root on every subdomain', () =>
     assert.strictEqual(serve(`https://${host}.crystalprism.io/common.css`), path.join(root, 'common.css'));
   }
   assert.strictEqual(serve('https://timespace.crystalprism.io/audio-embed.js'), path.join(root, 'audio-embed.js'));
+  for (const host of Object.keys(HOSTS)) {
+    assert.strictEqual(serve(`https://${host}.crystalprism.io/slash.js`), path.join(root, 'slash.js'), host);
+  }
   assert.strictEqual(serve('https://account.crystalprism.io/favicon.ico'), path.join(root, 'favicon.ico'));
 });
 
@@ -301,7 +330,9 @@ test('a folder URL without its slash settles on that folder page, on every host'
   }
 });
 
-test('the query survives the slash redirects', () => {
+test('the query and hash survive the slash redirects', () => {
+  assert.deepStrictEqual(follow('https://thought-writer.crystalprism.io/post?post=12#c3').url,
+    'https://thought-writer.crystalprism.io/post/?post=12#c3');
   assert.deepStrictEqual(follow('https://crystalprism.io/canvashare/easel?drawing=1').url,
     'https://canvashare.crystalprism.io/easel/?drawing=1');
   assert.deepStrictEqual(follow('https://canvashare.crystalprism.io/easel?drawing=1').url,
@@ -339,5 +370,42 @@ test('the HTML ref regex misses no src=/href= attribute (non-regex anchor)', () 
       assert.strictEqual(htmlRefs(text).length, count(text, 'src=') + count(text, 'href='),
         path.relative(root, file));
     }
+  }
+});
+
+// The six folder pages a slashless URL reaches (see fileFor). Each must load
+// /slash.js, absolute and synchronous, before anything that loads a relative
+// resource, or that resource is fetched from one level up first.
+const SLASH_PAGES = ['canvashare/easel', 'thought-writer/post', 'thought-writer/editor',
+  'user/my-account', 'user/create-account', 'user/sign-in'];
+
+test('every folder page loads /slash.js first, synchronously', () => {
+  const onDisk = subPages().map(([, dir, sub]) => `${dir}/${sub}`).sort();
+  assert.deepStrictEqual(onDisk, [...SLASH_PAGES].sort(), 'folder pages changed; update SLASH_PAGES');
+  for (const page of SLASH_PAGES) {
+    const html = fs.readFileSync(path.join(root, page, 'index.html'), 'utf8');
+    const first = firstHeadScript(html);
+    assert.ok(first, `${page}: no script in <head>`);
+    assert.strictEqual(first.src, '/slash.js', page);
+    assert.ok(!/\b(defer|async|type\s*=\s*["']module)/i.test(first.tag), `${page}: ${first.tag}`);
+    assert.ok(!/\b(src|href)\s*=/i.test(first.before), `${page}: a resource loads before slash.js`);
+  }
+});
+
+test('slash.js adds the slash to a slashless folder URL, query and hash kept', () => {
+  assert.strictEqual(runSlash('https://canvashare.crystalprism.io/easel'),
+    'https://canvashare.crystalprism.io/easel/');
+  assert.strictEqual(runSlash('https://canvashare.crystalprism.io/easel?drawing=1#top'),
+    'https://canvashare.crystalprism.io/easel/?drawing=1#top');
+  assert.strictEqual(runSlash('http://localhost:8000/user/sign-in?next=x'),
+    'http://localhost:8000/user/sign-in/?next=x');
+});
+
+test('slash.js leaves slashed, root and file URLs alone', () => {
+  for (const url of ['https://canvashare.crystalprism.io/easel/',
+    'https://canvashare.crystalprism.io/easel/?drawing=1',
+    'https://canvashare.crystalprism.io/', 'https://crystalprism.io/x.html',
+    'https://account.crystalprism.io/sign-in/index.html']) {
+    assert.strictEqual(runSlash(url), null, url);
   }
 });

@@ -23,6 +23,28 @@ function homeUrl(path) {
     + '/' + path;
 }
 
+/* Static HTML links to the legacy apps and the apex by their production URLs;
+off crystalprism.io, point them at this origin so a dev session stays local.
+Runs at load: every page includes common.js at the end of <body> */
+function localizeAppLinks() {
+  if (onCrystalPrism) {
+    return;
+  }
+  var links = document.querySelectorAll('a[href^="https://"]');
+  for (var i = 0; i < links.length; i++) {
+    var url = new URL(links[i].href);
+    var rest = url.pathname.slice(1) + url.search + url.hash;
+    var app = url.hostname.replace(/\.crystalprism\.io$/, '');
+    if (url.hostname == 'crystalprism.io') {
+      links[i].href = homeUrl(rest);
+    } else if (app != url.hostname && Object.hasOwn(APP_DIRS, app)) {
+      links[i].href = appUrl(app, rest);
+    }
+  }
+}
+
+localizeAppLinks();
+
 /* Where sign-in may send the visitor back to: a Crystal Prism page (or this
 origin, locally) and nothing else */
 function safeNext(url) {

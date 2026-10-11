@@ -151,6 +151,27 @@ test('safeNext allows Crystal Prism https pages only', async () => {
   await page.close();
 });
 
+test('dev host: static links to legacy apps stay on the dev origin', async () => {
+  const legacy = /^https:\/\/((timespace|vicarious|canvashare|thought-writer|shapes-in-rain|rhythm-of-life|account)\.)?crystalprism\.io\//;
+  for (const p of ['/', '/user/?username=a', '/user/my-account/', '/user/sign-in/']) {
+    const { page } = await open(DEV + p, p === '/user/my-account/' ? { session: 'esther' } : { header: false });
+    const hrefs = await page.$$eval('a[href]', (as) => as.map((a) => a.href));
+    assert.deepStrictEqual(hrefs.filter((h) => legacy.test(h)), [], p);
+    if (p === '/') {
+      assert.ok(hrefs.includes(DEV + '/user/?username=admin'), 'profile link');
+      assert.ok(hrefs.includes(DEV + '/timespace/'), 'modal app link');
+      assert.ok(hrefs.includes('https://giftme.crystalprism.io/'), 'fleet app untouched');
+    }
+    if (p === '/user/my-account/') {
+      assert.ok(hrefs.includes(DEV + '/thought-writer/editor/'), 'editor link');
+    }
+    if (p === '/user/sign-in/') {
+      assert.ok(hrefs.includes('https://auth.crystalprism.io/forgot'), 'auth host untouched');
+    }
+    await page.close();
+  }
+});
+
 test('dev host keeps the single-site layout', async () => {
   const { page } = await open(DEV + '/canvashare/');
   assert.strictEqual(await page.evaluate(() => appUrl('account', '?username=a')), DEV + '/user/?username=a');

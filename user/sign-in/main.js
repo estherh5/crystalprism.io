@@ -3,8 +3,13 @@ var usernameInput = document.getElementById('username-input');
 var passwordInput = document.getElementById('password-input');
 
 /* The page that sent the visitor here (?next=), read at load because
-checkRingSession() strips the query string */
+checkRingSession() strips the query string. A safe one is also kept in
+sessionStorage (this origin's, which survives the Google round trip through
+auth.crystalprism.io and back to ?via=google with no ?next=). */
 var nextParam = new URLSearchParams(window.location.search).get('next');
+if (safeNext(nextParam)) {
+  sessionStorage.setItem('sign-in-next', nextParam);
+}
 
 
 // Define load functions
@@ -440,14 +445,17 @@ function showAccessForm(bridge, last) {
 }
 
 
-/* Clear the session cookie and stored username (from common.js script), then
-confirm the logout. Resolves false if user is still signed in */
-/* Where to send a signed-in visitor: the ?next= page, or null unless it is a
-Crystal Prism page (safeNext, from common.js) */
+/* Where to send a signed-in visitor: the live ?next= page, else the one kept
+across the Google round trip - null unless it is a Crystal Prism page (safeNext,
+from common.js). Consumes the stored value. */
 function nextTarget() {
-  return safeNext(nextParam);
+  var stored = sessionStorage.getItem('sign-in-next');
+  sessionStorage.removeItem('sign-in-next');
+  return safeNext(nextParam) || safeNext(stored);
 }
 
+/* Clear the session cookie and stored username (from common.js script), then
+confirm the logout. Resolves false if user is still signed in */
 function confirmLogout() {
   sessionStorage.removeItem('account-request');
 

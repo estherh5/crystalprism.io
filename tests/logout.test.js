@@ -51,14 +51,14 @@ async function signOut({ logout, session, username = 'esther' }) {
     return route.abort();
   });
 
-  // What the header's Sign Out link leaves behind before navigating here
+  // What a Sign Out link leaves behind: the username (the request itself
+  // travels in the URL)
   await page.goto(SITE + '/robots.txt');
   await page.evaluate((u) => {
     if (u) localStorage.setItem('username', u);
-    sessionStorage.setItem('account-request', 'logout');
   }, username);
 
-  await page.goto(SITE + '/user/sign-in/');
+  await page.goto(SITE + '/user/sign-in/?request=logout');
   await page.waitForFunction(() => ['Sign In', 'Sign Out']
     .includes(document.querySelector('#sign-in-link')?.textContent));
   // Let a redirect to My Account start, if one is coming

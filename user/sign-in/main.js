@@ -2,6 +2,10 @@
 var usernameInput = document.getElementById('username-input');
 var passwordInput = document.getElementById('password-input');
 
+/* The page that sent the visitor here (?next=), read at load because
+checkRingSession() strips the query string */
+var nextParam = new URLSearchParams(window.location.search).get('next');
+
 
 // Define load functions
 window.onload = function() {
@@ -10,7 +14,8 @@ window.onload = function() {
 
   /* Sign out first if user requested it from another page, so the session
   check below sees the cookie's final state */
-  var signOut = sessionStorage.getItem('account-request') == 'logout' ?
+  var signOut = (sessionStorage.getItem('account-request') == 'logout' ||
+    new URLSearchParams(window.location.search).get('request') == 'logout') ?
     confirmLogout() : Promise.resolve(true);
 
   signOut.then(function(signedOut) {
@@ -141,9 +146,8 @@ function checkRingSession() {
 
             /* The same redirect requestLogin() uses, so a deep link that
             bounced the visitor here still lands them where they were going. */
-            if (sessionStorage.getItem('previous-window')) {
-              var previousWindow = sessionStorage.getItem('previous-window');
-              sessionStorage.removeItem('previous-window');
+            var previousWindow = nextTarget();
+            if (previousWindow) {
               window.location = previousWindow;
               return;
             }
@@ -438,6 +442,12 @@ function showAccessForm(bridge, last) {
 
 /* Clear the session cookie and stored username (from common.js script), then
 confirm the logout. Resolves false if user is still signed in */
+/* Where to send a signed-in visitor: the ?next= page, or null unless it is a
+Crystal Prism page (safeNext, from common.js) */
+function nextTarget() {
+  return safeNext(nextParam);
+}
+
 function confirmLogout() {
   sessionStorage.removeItem('account-request');
 
@@ -600,10 +610,10 @@ function requestLogin() {
           document.getElementById('submit').disabled = false;
           document.body.style.cursor = '';
 
-          // Take user to previous page if stored in sessionStorage
-          if (sessionStorage.getItem('previous-window')) {
-            window.location = sessionStorage.getItem('previous-window');
-            sessionStorage.removeItem('previous-window');
+          // Take user to the page they came from, if ?next= names a safe one
+          var previousWindow = nextTarget();
+          if (previousWindow) {
+            window.location = previousWindow;
             return;
           }
 

@@ -5,51 +5,51 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/vicarious/</loc>
+    <loc>https://vicarious.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/thought-writer/</loc>
+    <loc>https://thought-writer.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/canvashare/</loc>
+    <loc>https://canvashare.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/rhythm-of-life/</loc>
+    <loc>https://rhythm-of-life.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/shapes-in-rain/</loc>
+    <loc>https://shapes-in-rain.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/timespace/</loc>
+    <loc>https://timespace.crystalprism.io/</loc>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/canvashare/easel/</loc>
+    <loc>https://canvashare.crystalprism.io/easel/</loc>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/thought-writer/editor/</loc>
+    <loc>https://thought-writer.crystalprism.io/editor/</loc>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/thought-writer/post/</loc>
+    <loc>https://thought-writer.crystalprism.io/post/</loc>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/user/</loc>
+    <loc>https://account.crystalprism.io/</loc>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/user/my-account/</loc>
+    <loc>https://account.crystalprism.io/my-account/</loc>
     <priority>0.64</priority>
   </url>
   <url>
-    <loc>https://crystalprism.io/user/sign-in/</loc>
+    <loc>https://account.crystalprism.io/sign-in/</loc>
     <priority>0.64</priority>
   </url>
 </urlset>

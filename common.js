@@ -230,7 +230,7 @@ function createPageHeader() {
 
     var menuText = document.createElement('div');
     menuText.classList.add('site-menu-text');
-    menuText.innerHTML = title;
+    menuText.textContent = title;
 
     menuRow.appendChild(menuImageCell);
     menuImageCell.appendChild(menuImage);

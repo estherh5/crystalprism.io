@@ -1,0 +1,226 @@
+[
+  {
+    "key": "methods",
+    "name": "Methods",
+    "url": "https://methods.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/methods-icon.png",
+    "tagline": "A lab notebook for sourdough bakes and fermentation experiments.",
+    "status": "live"
+  },
+  {
+    "key": "giftme",
+    "name": "GiftMe",
+    "url": "https://giftme.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/giftme-icon.png",
+    "tagline": "Track the gifts you've given, received, and want, by person and occasion.",
+    "status": "live"
+  },
+  {
+    "key": "passage",
+    "name": "Passage",
+    "url": "https://passage.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/passage-icon.png",
+    "tagline": "A travel logbook and trip planner in one chronological record.",
+    "status": "live"
+  },
+  {
+    "key": "restock",
+    "name": "Restock",
+    "url": "https://restock.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/restock-icon.png",
+    "tagline": "A household inventory tracker for the consumables you buy on repeat.",
+    "status": "live"
+  },
+  {
+    "key": "nexus",
+    "name": "Nexus",
+    "url": "https://nexus.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/nexus-icon.png",
+    "tagline": "A personal relationship keeper for the people in your life.",
+    "status": "live"
+  },
+  {
+    "key": "space",
+    "name": "Space",
+    "url": "https://space.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/space-icon.png",
+    "tagline": "A home for your app and product ideas, from spark to shipped.",
+    "status": "live"
+  },
+  {
+    "key": "savor",
+    "name": "Savor",
+    "url": "https://savor.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/savor-icon.png",
+    "tagline": "A keeper of your safe foods, the ones that make you feel good.",
+    "status": "live"
+  },
+  {
+    "key": "idreamofneon",
+    "name": "i dream of neon",
+    "url": "https://idreamofneon.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/idreamofneon-icon.png",
+    "tagline": "A neon-soaked dream journal that stays on your own machine.",
+    "status": "live"
+  },
+  {
+    "key": "vantage",
+    "name": "Vantage",
+    "url": "https://vantage.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/vantage-icon.png",
+    "tagline": "A photo archive of one river seen from one bridge.",
+    "status": "live"
+  },
+  {
+    "key": "vitals",
+    "name": "Vitals",
+    "url": "https://vitals.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/vitals-icon.png",
+    "tagline": "A shared health tracker a family uses to follow one member's care.",
+    "status": "live"
+  },
+  {
+    "key": "tide",
+    "name": "Tide",
+    "url": "https://tide.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/tide-icon.png",
+    "tagline": "A personal finance tracker where a number is a water level.",
+    "status": "live"
+  },
+  {
+    "key": "flare",
+    "name": "flare",
+    "url": "https://flare.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/flare-icon.png",
+    "tagline": "Error monitoring for the fleet of apps.",
+    "status": "live"
+  },
+  {
+    "key": "glimpse",
+    "name": "Glimpse",
+    "url": "https://glimpse.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/glimpse-icon.png",
+    "tagline": "A gallery of short video clips that loop without a seam.",
+    "status": "live"
+  },
+  {
+    "key": "menagerie",
+    "name": "Menagerie",
+    "url": "https://menagerie.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/menagerie-icon.png",
+    "tagline": "A compendium of a stuffed animal collection.",
+    "status": "live"
+  },
+  {
+    "key": "toile",
+    "name": "Toile",
+    "url": "https://toile.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/toile-icon.png",
+    "tagline": "A fashion-design studio for outfits on a paper-doll figure.",
+    "status": "live"
+  },
+  {
+    "key": "timespace",
+    "name": "Timespace",
+    "url": "https://timespace.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/timespace-icon.png",
+    "tagline": "A clock that shows time as moving, color-changing circles.",
+    "status": "live"
+  },
+  {
+    "key": "shapes-in-rain",
+    "name": "Shapes In Rain",
+    "url": "https://shapes-in-rain.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/shapes-in-rain-icon.png",
+    "tagline": "A game of clearing shapes while hearts rain down.",
+    "status": "live"
+  },
+  {
+    "key": "rhythm-of-life",
+    "name": "Rhythm of Life",
+    "url": "https://rhythm-of-life.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/rhythm-of-life-icon.png",
+    "tagline": "An educational take on Snake about blood pressure.",
+    "status": "live"
+  },
+  {
+    "key": "canvashare",
+    "name": "CanvaShare",
+    "url": "https://canvashare.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/canvashare-icon.png",
+    "tagline": "A community drawing gallery to create, share, and iterate.",
+    "status": "live"
+  },
+  {
+    "key": "thought-writer",
+    "name": "Thought Writer",
+    "url": "https://thought-writer.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/thought-writer-icon.png",
+    "tagline": "A community board for short ideas and comments.",
+    "status": "live"
+  },
+  {
+    "key": "vicarious",
+    "name": "Vicarious",
+    "url": "https://vicarious.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/vicarious-icon.png",
+    "tagline": "A travel photo hub of the latest images from Reddit's Travel.",
+    "status": "live"
+  },
+  {
+    "key": "hn-stats",
+    "name": "Hacker News Stats",
+    "url": "https://hn-stats.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/hn-stats-icon.png",
+    "tagline": "Statistics from data scraped from Hacker News.",
+    "status": "live"
+  },
+  {
+    "key": "pause",
+    "name": "Pause",
+    "url": "https://pause.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/pause-icon.png",
+    "tagline": "Plan your day, week, or month as a 24-hour chart.",
+    "status": "live"
+  },
+  {
+    "key": "marian",
+    "name": "Marian",
+    "url": "https://marian.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/marian-icon.png",
+    "tagline": "Real-time stock data, portfolio graphs, and market news.",
+    "status": "live"
+  },
+  {
+    "key": "vroom",
+    "name": "Vroom",
+    "url": "https://vroom.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/vroom-icon.png",
+    "tagline": "A quick, easy way to search and rent a car.",
+    "status": "live"
+  },
+  {
+    "key": "almanac",
+    "name": "Almanac",
+    "url": "https://almanac.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/almanac-icon.png",
+    "tagline": "A private archive, one plate per subject.",
+    "status": "hidden"
+  },
+  {
+    "key": "hearsay",
+    "name": "Hearsay",
+    "url": "https://hearsay.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/hearsay-icon.png",
+    "tagline": "Two-track call recording with on-device transcripts.",
+    "status": "hidden"
+  },
+  {
+    "key": "ration",
+    "name": "Ration",
+    "url": "https://ration.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/ration-icon.png",
+    "tagline": "A local dashboard for Claude Code weekly quota.",
+    "status": "hidden"
+  }
+]

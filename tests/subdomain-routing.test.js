@@ -247,6 +247,11 @@ test('shared root files are served from the repo root on every subdomain', () =>
     assert.strictEqual(serve(`https://${host}.crystalprism.io/common.css`), path.join(root, 'common.css'));
   }
   assert.strictEqual(serve('https://timespace.crystalprism.io/audio-embed.js'), path.join(root, 'audio-embed.js'));
+  assert.ok(fs.readFileSync(REDIRECTS, 'utf8')
+    .includes('https://timespace.crystalprism.io/apps.json  /apps.json  200!'));
+  for (const host of Object.keys(HOSTS)) {
+    assert.strictEqual(serve(`https://${host}.crystalprism.io/apps.json`), path.join(root, 'apps.json'));
+  }
   for (const host of Object.keys(HOSTS)) {
     assert.strictEqual(serve(`https://${host}.crystalprism.io/slash.js`), path.join(root, 'slash.js'), host);
   }

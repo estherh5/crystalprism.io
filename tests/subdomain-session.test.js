@@ -114,7 +114,13 @@ test('signed in on a subdomain with an empty localStorage: header, links, not th
   assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and account, esther');
   const m = await menu(page);
   assert.strictEqual(m.label, 'esther');
-  assert.deepStrictEqual(m.rows, { Settings: 'https://account.crystalprism.io/my-account/', 'Sign out': 'BUTTON' });
+  assert.deepStrictEqual(m.rows, {
+    Profile: 'https://account.crystalprism.io/?username=esther',
+    Settings: 'https://account.crystalprism.io/my-account/',
+    'Sign out': 'BUTTON',
+  });
+  // Order pinned: Profile, Settings, Sign out
+  assert.deepStrictEqual(Object.keys(m.rows), ['Profile', 'Settings', 'Sign out']);
   // currentPath == domain would move the theme toggle into the header
   assert.strictEqual(await page.evaluate(() => currentPath), 'canvashare');
   assert.strictEqual(await page.$('#header-container #theme-container'), null);
@@ -408,5 +414,16 @@ test('canvashare gallery renders when verify never answers', async () => {
     }] },
   });
   await page.waitForSelector('[data-drawing="likes4"]', { state: 'attached', timeout: 8000 });
+  await page.close();
+});
+
+test('the Profile row encodes the username and follows a rename', async () => {
+  const { page } = await open('https://canvashare.crystalprism.io/', { session: 'a b' });
+  assert.strictEqual((await menu(page)).rows['Profile'], 'https://account.crystalprism.io/?username=a%20b');
+  await page.evaluate(() => showSignedIn('zed'));
+  const m = await menu(page);
+  assert.deepStrictEqual(Object.keys(m.rows), ['Profile', 'Settings', 'Sign out']);
+  assert.strictEqual(m.rows['Profile'], 'https://account.crystalprism.io/?username=zed');
+  assert.strictEqual(m.label, 'zed');
   await page.close();
 });

@@ -12,7 +12,8 @@ const KIT = fs.readFileSync(path.join(root, 'fleet-menu.js'), 'utf8');
 const CSS = fs.readFileSync(path.join(root, 'fleet.css'), 'utf8');
 let browser;
 
-test.before(async () => { browser = await chromium.launch(); });
+// Scrollbars shown, so a classic one can take layout space
+test.before(async () => { browser = await chromium.launch({ ignoreDefaultArgs: ['--hide-scrollbars'] }); });
 test.after(async () => { await browser.close(); });
 
 const APPS = [
@@ -187,6 +188,67 @@ test('down-end: below the trigger, right-aligned, height capped to the room belo
   await open(page);
   const s = await page.$eval('.fleet-panel', (p) => [p.style.top, p.style.right, p.style.maxBlockSize]);
   assert.deepStrictEqual(s, ['64px', '36px', (420 - 56 - 24) + 'px']);
+  await page.close();
+});
+
+// A styled ::-webkit-scrollbar takes layout space, like a classic desktop one
+const CLASSIC_SCROLLBAR = 'html{overflow-y:scroll}::-webkit-scrollbar{width:15px}';
+
+test('a classic scrollbar: the popover right edge meets the trigger, the sheet spans the page', async () => {
+  const page = await mount(base);
+  await page.addStyleTag({ content: CLASSIC_SCROLLBAR + '#slot{position:fixed;top:12px;right:16px}' });
+  await open(page);
+  const pop = await page.evaluate(() => [document.querySelector('.fleet-trigger').getBoundingClientRect().right,
+    document.querySelector('.fleet-panel').getBoundingClientRect().right, document.documentElement.clientWidth]);
+  assert.ok(pop[2] < 1280, 'scrollbar takes layout space: clientWidth ' + pop[2]);
+  assert.strictEqual(pop[1], pop[0]);
+  await page.close();
+  const phone = await mount(base, { width: 400 });
+  await phone.addStyleTag({ content: CLASSIC_SCROLLBAR });
+  await open(phone);
+  const sheet = await phone.evaluate(() => [document.querySelector('.fleet-panel').getBoundingClientRect().width, document.documentElement.clientWidth]);
+  assert.strictEqual(sheet[0], sheet[1]);
+  await phone.close();
+});
+
+test('320px phone sheet: every live app name wraps between words, never inside one', async () => {
+  const live = JSON.parse(fs.readFileSync(path.join(root, 'apps.json'), 'utf8')).filter((a) => a.status === 'live');
+  const page = await mount({ ...base, apps: live }, { width: 320 });
+  // A wide face, as an app's own --fleet-font can be; the default serif hides the break
+  await page.addStyleTag({ content: ':root{--fleet-font:Verdana,system-ui,sans-serif}' });
+  await open(page);
+  const broken = await page.evaluate(() => [...document.querySelectorAll('.fleet-app span')].flatMap((s) => {
+    const t = s.firstChild;
+    let i = 0;
+    return t.data.split(' ').filter((word) => {
+      const r = document.createRange();
+      r.setStart(t, i); r.setEnd(t, i + word.length); i += word.length + 1;
+      return new Set([...r.getClientRects()].map((x) => Math.round(x.top))).size > 1;
+    });
+  }));
+  assert.deepStrictEqual(broken, []);
+  await page.close();
+});
+
+test('a blank or whitespace label: grid glyph, no dangling comma, no email line, rows kept', async () => {
+  for (const label of ['', '   ']) {
+    const page = await mount({ ...signedIn, user: { label } });
+    assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.getAttribute('aria-label'), t.textContent, !!t.querySelector('svg')]),
+      ['Apps and account', '', true]);
+    await open(page);
+    assert.strictEqual(await page.$('.fleet-email'), null);
+    assert.deepStrictEqual(await page.$$eval('.fleet-account .fleet-row', (r) => r.map((n) => n.textContent)), ['Settings']);
+    await page.close();
+  }
+  const page = await mount({ ...signedIn, user: { label: ' esther ' } });
+  assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.getAttribute('aria-label'), t.textContent]), ['Apps and account, esther', 'E']);
+  await page.close();
+});
+
+test('app icons load eagerly and decode off the main thread', async () => {
+  const page = await mount(base);
+  await open(page);
+  assert.deepStrictEqual(await page.$$eval('.fleet-app img', (i) => [...new Set(i.map((n) => n.getAttribute('loading') + '/' + n.decoding))]), ['eager/async']);
   await page.close();
 });
 

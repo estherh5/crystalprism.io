@@ -83,16 +83,21 @@
     trigger.setAttribute("aria-expanded", "false");
     container.appendChild(trigger);
 
+    // The user's label, trimmed; "" when blank, so nothing renders an empty initial or line
+    function who() {
+      return user && typeof user.label === "string" ? user.label.trim() : "";
+    }
+
     function paintTrigger() {
       while (trigger.firstChild) trigger.removeChild(trigger.firstChild);
-      if (user && user.label) {
-        var initial = el("span", null, user.label.charAt(0).toUpperCase());
+      if (who()) {
+        var initial = el("span", null, who().charAt(0).toUpperCase());
         initial.setAttribute("aria-hidden", "true");
         trigger.appendChild(initial);
-        trigger.setAttribute("aria-label", "Apps and account, " + user.label);
+        trigger.setAttribute("aria-label", "Apps and account, " + who());
       } else {
         trigger.appendChild(gridGlyph());
-        trigger.setAttribute("aria-label", "Apps and sign in");
+        trigger.setAttribute("aria-label", user ? "Apps and account" : "Apps and sign in");
       }
     }
 
@@ -100,7 +105,7 @@
       while (panel.firstChild) panel.removeChild(panel.firstChild);
       if (user || rows.length) {
         var account = el("div", "fleet-account");
-        if (user) account.appendChild(el("p", "fleet-email", user.label));
+        if (who()) account.appendChild(el("p", "fleet-email", who()));
         rows.forEach(function (row) {
           var node;
           if (row.href) {
@@ -129,7 +134,8 @@
         img.alt = "";
         img.width = 40;
         img.height = 40;
-        img.loading = "lazy";
+        img.loading = "eager";
+        img.decoding = "async";
         a.appendChild(img);
         a.appendChild(el("span", null, app.name));
         li.appendChild(a);
@@ -157,9 +163,13 @@
 
     function show() {
       var r = trigger.getBoundingClientRect();
+      // clientWidth/Height, not innerWidth/Height: a fixed panel's offsets are
+      // measured from the viewport inside a classic scrollbar (0 where there is no layout)
+      var vw = document.documentElement.clientWidth || window.innerWidth;
+      var vh = document.documentElement.clientHeight || window.innerHeight;
       pos = placement === "up-start"
-        ? { bottom: window.innerHeight - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
-        : { top: r.bottom + 8, right: Math.max(16, window.innerWidth - r.right), maxBlockSize: Math.max(160, Math.min(640, window.innerHeight - r.bottom - 24)) };
+        ? { bottom: vh - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
+        : { top: r.bottom + 8, right: Math.max(16, vw - r.right), maxBlockSize: Math.max(160, Math.min(640, vh - r.bottom - 24)) };
       scrim = el("div", "fleet-scrim");
       scrim.setAttribute("aria-hidden", "true");
       panel = el("div", "fleet-panel");

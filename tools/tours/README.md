@@ -23,7 +23,7 @@ existing at all, rather than filming once by hand.
   is what a visitor stares at. The harness times the handover to the tour script
   and trims all page-load frames off the head.
 - **Videos display at 175–345px wide** (`../../style.css`). Tours favour big
-  colour and motion over dense screens, because fine text is unreadable there.
+  color and motion over dense screens, because fine text is unreadable there.
 
 ## Running one
 
@@ -234,7 +234,7 @@ pixels a 13px stack line lands under four physical pixels in a 345px player.
 Note that Playwright only ever scales a page DOWN into `recordVideo.size`, so
 the harness records at the viewport's own size and lets ffmpeg do the upscale;
 asking Playwright for a frame bigger than the viewport parks the page in the
-top-left corner of a grey canvas.
+top-left corner of a gray canvas.
 
 Every queue row is a real anchor to `/g/<id>` wrapping the whole row, so the step
 from the list to a group's detail page is an actual click on the row — it used to
@@ -340,9 +340,9 @@ Copy the result into `../../videos/`. The filename must equal the
 Each entry also needs `images/<app>.png` (the projects-page tile) and
 `images/<app>-icon.png`.
 
-**The tile must be exactly 458x376.** The grid centres each item in its flex
+**The tile must be exactly 458x376.** The grid centers each item in its flex
 row, so any image with a different aspect ratio sits with visible gaps above and
-below it while its neighbours fill their cells — which is exactly how nexus,
+below it while its neighbors fill their cells — which is exactly how nexus,
 space, savor and vitals first shipped. With the app running:
 
 ```sh

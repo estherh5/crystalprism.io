@@ -90,8 +90,8 @@ Committed doc, not scratch. Kept current by hand as work ships.
     regression test for the `RICH_TEXT_SRC` image allowlist and the username validator, proven to
     go red. Commit 91ae13b.
 
-- **2026-09** **Stored XSS fixed — other users' rich text is sanitised.** Post/comment content and
-  titles, drawing titles, and about/name/email were written to `innerHTML` unsanitised on public
+- **2026-09** **Stored XSS fixed — other users' rich text is sanitized.** Post/comment content and
+  titles, drawing titles, and about/name/email were written to `innerHTML` unsanitized on public
   pages, so a `<font>`/`<img>`-carrying post could run script in any reader's session, including
   reading the auth token. Rich text now passes through DOMPurify on read (this repo) and on write
   (api.crystalprism.io) against a shared allowlist; plain fields (names, about) render via

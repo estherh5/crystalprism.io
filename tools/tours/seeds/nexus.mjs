@@ -22,7 +22,7 @@ const CIRCLES = [
   ['c-family', 'Family', 0],
   ['c-friends', 'Friends', 1],
   ['c-work', 'Work', 2],
-  ['c-neighbours', 'Neighbourhood', 3],
+  ['c-neighbours', 'Neighborhood', 3],
 ];
 
 const now = Math.floor(Date.now() / 1000);

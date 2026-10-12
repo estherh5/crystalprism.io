@@ -178,7 +178,7 @@ await db.batch([
   ...[
     ['demo-fb-1', 'idea', 'Could the doll hold a little tape measure? It would make the figure feel like a sewing room.', 'in-progress', 3,
       [['admin', 'Lovely idea, sketching it for the studio step.', 2]]],
-    ['demo-fb-2', 'bug', 'The checklist ticks went grey for a moment after adding a swatch.', 'addressed', 6,
+    ['demo-fb-2', 'bug', 'The checklist ticks went gray for a moment after adding a swatch.', 'addressed', 6,
       [['admin', 'Fixed, the tick now lands straight away.', 5]]],
   // feedback.message IS the opening message; feedback_messages holds only the
   // replies after it, or the thread renders the opener twice.

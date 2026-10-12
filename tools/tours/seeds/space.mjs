@@ -56,7 +56,7 @@ const IDEAS = [
     'Twelve people, one thread, four salads and no bread.',
     'One link to share\nClaim a dish\nNo sign-up'],
   ['Side Project Dashboard', 'Every project you started, and which are still alive.', 'orbit', 3, 'blue', 'tools',
-    'Green for shipped, amber for stalled, and an honest grey for the ones that quietly died.',
+    'Green for shipped, amber for stalled, and an honest gray for the ones that quietly died.',
     'Half a dozen half-finished apps, and no single place that says which are alive.',
     'Reads deploys\nFlags what is stale\nOne screen only'],
   ['Wardrobe Wear Tracker', 'Track what you actually wear, not what you own.', 'spark', 2, 'pink', 'closet',

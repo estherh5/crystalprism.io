@@ -203,12 +203,13 @@ function createPageHeader() {
     'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
     'Hacker News Stats', 'Pause', 'Marian', 'Vroom', 'Account'];
 
-  for (var i = 0; i < projectLinks.length; i++) {
+  // One row per menu entry; used by both the fallback list and apps.json
+  function addMenuRow(link, title, iconSrc, isAccount) {
     var menuRow = document.createElement('tr');
     menuRow.classList.add('site-menu-row');
 
-    menuRow.dataset.link = projectLinks[i];
-    if (i == projectLinks.length - 1) {
+    menuRow.dataset.link = link;
+    if (isAccount) {
       menuRow.id = 'site-menu-account';
     }
 
@@ -222,15 +223,14 @@ function createPageHeader() {
 
     var menuImage = document.createElement('img');
     menuImage.classList.add('site-menu-image');
-    menuImage.src = (i == projectLinks.length - 1 ? homeUrl()
-      : projectLinks[i]) + 'favicon.ico';
+    menuImage.src = iconSrc;
 
     var menuTextCell = document.createElement('td');
     menuTextCell.classList.add('site-menu-text-cell');
 
     var menuText = document.createElement('div');
     menuText.classList.add('site-menu-text');
-    menuText.innerHTML = projectTitles[i];
+    menuText.innerHTML = title;
 
     menuRow.appendChild(menuImageCell);
     menuImageCell.appendChild(menuImage);
@@ -238,6 +238,54 @@ function createPageHeader() {
     menuTextCell.appendChild(menuText);
     siteMenu.appendChild(menuRow);
   }
+
+  // Home first, the given apps, Account last
+  function buildMenuRows(apps) {
+    // Keep a corrected Account link (see setAccountMenuRow) across a rebuild
+    var current = document.getElementById('site-menu-account');
+    if (current) {
+      apps[apps.length - 1].link = current.dataset.link;
+    }
+    var rows = siteMenu.querySelectorAll('.site-menu-row');
+    for (var r = 0; r < rows.length; r++) {
+      siteMenu.removeChild(rows[r]);
+    }
+    for (var i = 0; i < apps.length; i++) {
+      var isAccount = i == apps.length - 1;
+      addMenuRow(apps[i].link, apps[i].title,
+        (isAccount ? homeUrl() : apps[i].link) + 'favicon.ico', isAccount);
+    }
+  }
+
+  var fallbackApps = [];
+  for (var i = 0; i < projectLinks.length; i++) {
+    fallbackApps.push({ link: projectLinks[i], title: projectTitles[i] });
+  }
+  buildMenuRows(fallbackApps);
+
+  // The hosted app list is the source of truth; the arrays above are the
+  // fallback if it cannot be fetched
+  fetch('/apps.json').then(function(response) {
+    if (!response.ok) {
+      throw new Error('apps.json ' + response.status);
+    }
+    return response.json();
+  }).then(function(list) {
+    var live = list.filter(function(app) {
+      return app.status === 'live';
+    }).map(function(app) {
+      // Legacy apps stay on this origin in dev, as appUrl does
+      var sub = app.url.replace(/^https:\/\/([a-z0-9-]+)\.crystalprism\.io\/$/,
+        '$1');
+      var local = !onCrystalPrism && Object.hasOwn(APP_DIRS, sub);
+      return { link: local ? appUrl(sub) : app.url, title: app.name };
+    });
+    if (!live.length) {
+      return;
+    }
+    buildMenuRows([fallbackApps[0]].concat(live,
+      [fallbackApps[fallbackApps.length - 1]]));
+  }).catch(function() {});
 
   // Toggle site menu when user clicks menu icon
   menuIcon.onmousedown = toggleSiteMenu;

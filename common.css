@@ -120,27 +120,38 @@
 legacy pages' bare a/button rules: a:hover, button:active, .night-view button
 and the homepage's `color: #808080 !important` outrank its single-class
 selectors and would recolor, re-letter or shift its controls. `html body`
-lifts these above any element+pseudo rule without touching the kit's own
-values (each !important answers a legacy !important: the homepage's hover
-color, Shapes In Rain's button:active shadow) */
+lifts these above any element+pseudo rule. Only properties those rules
+actually set are re-declared; background, border and font stay fleet.css's.
+Each !important answers a legacy !important: the homepage's hover color,
+Shapes In Rain's button:active shadow */
 html body .fleet-trigger,
 html body .fleet-trigger:hover,
 html body .fleet-trigger:active,
 html body .fleet-trigger:focus {
   color: var(--fleet-on-accent) !important;
-  background: var(--fleet-accent);
-  border: 1px solid var(--fleet-line);
   margin: 0;
   padding: 0;
   min-width: 0;
   min-height: 0;
-  font: 600 1rem/1 var(--fleet-font);
   text-shadow: none;
   text-transform: none;
   letter-spacing: normal;
   box-shadow: none !important;
   opacity: 1;
   transform: none;
+  transition: none;
+}
+
+/* Hover/active/focus only: Shapes In Rain and Rhythm of Life repaint a
+pressed or hovered button's background, the homepage and Thought Writer
+bold it, the account pages give a focused one a 2px green border. At rest
+these are fleet.css's alone */
+html body .fleet-trigger:hover,
+html body .fleet-trigger:active,
+html body .fleet-trigger:focus {
+  background-color: var(--fleet-accent);
+  border: 1px solid var(--fleet-line);
+  font-weight: 600;
 }
 
 html body .fleet-panel a,
@@ -150,7 +161,6 @@ html body .fleet-panel button,
 html body .fleet-panel button:hover,
 html body .fleet-panel button:active {
   color: var(--fleet-ink) !important;
-  font-weight: normal;
   text-decoration: none;
   text-shadow: none;
   text-transform: none;
@@ -164,6 +174,20 @@ html body .fleet-panel button:active {
   margin: 0;
   min-width: 0;
   box-shadow: none !important;
+  transition: none;
+}
+
+/* The account pages' `button:focus { outline: none !important }` would hide
+the kit's focus ring */
+html body .fleet-trigger:focus-visible {
+  outline: 2px solid var(--fleet-accent) !important;
+  outline-offset: 3px;
+}
+
+/* The account pages' button:active/:focus border, as on the trigger */
+html body .fleet-panel button:active,
+html body .fleet-panel button:focus {
+  border: 0;
 }
 
 html body .fleet-panel {

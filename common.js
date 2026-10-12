@@ -349,6 +349,8 @@ function showSignedIn(username) {
   menuUsername = username;
   if (fleetMenu) {
     fleetMenu.setUser({ label: username }, [
+      { label: 'Profile',
+        href: appUrl('account', '?username=' + encodeURIComponent(username)) },
       { label: 'Settings', href: appUrl('account', 'my-account/') },
       signingOut ? { label: 'Signing out…', onSelect: function() {} }
         : { label: 'Sign out', onSelect: signOut }
@@ -442,7 +444,7 @@ function verifySession() {
       }
 
       /* If server verifies the session, the menu shows the username with
-      Settings (My Account) and Sign Out */
+      Profile, Settings (My Account) and Sign Out */
       if (response.ok) {
         return response.json().then(function(payload) {
           // Set localStorage username to payload username

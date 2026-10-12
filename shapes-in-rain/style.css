@@ -222,3 +222,9 @@ table a {
     font-size: 30px;
   }
 }
+
+/* The fleet footer sits on the painted wall: full-strength ink, as the old
+footer had (token defaults in common.css) */
+:root {
+  --fleet-muted: #000000;
+}

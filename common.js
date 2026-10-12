@@ -25,12 +25,13 @@ function homeUrl(path) {
 
 /* Static HTML links to the legacy apps and the apex by their production URLs;
 off crystalprism.io, point them at this origin so a dev session stays local.
-Runs at load: every page includes common.js at the end of <body> */
-function localizeAppLinks() {
+Runs at load (every page includes common.js at the end of <body>), and again
+over the footer, which is built later */
+function localizeAppLinks(scope) {
   if (onCrystalPrism) {
     return;
   }
-  var links = document.querySelectorAll('a[href^="https://"]');
+  var links = (scope || document).querySelectorAll('a[href^="https://"]');
   for (var i = 0; i < links.length; i++) {
     var url = new URL(links[i].href);
     var rest = url.pathname.slice(1) + url.search + url.hash;
@@ -77,13 +78,9 @@ var domain = window.location.host;
 var currentPath = logicalPath == '/' ? domain
   : logicalPath.split('/').slice(-2)[0];
 var root = homeUrl().replace(/\/$/, '');
-var profileLink;
-var accountLink;
-var signInLink;
 var repinged = false // If Retry button was clicked for pingServer function
 var scrolled = false // Stores if user scrolled down page with infinite scroll
 var mobile = false; // Used to determine if user is on mobile device or desktop
-var siteMenuOpen = false; // Stores if site menu is open or closed
 
 
 var api = onCrystalPrism ? 'https://api.crystalprism.io/api'
@@ -146,194 +143,107 @@ function setRichText(element, html) {
 }
 
 
-// Create header with navigation and account menus
+/* The fleet's app list, shaped like crystalprism.io/apps.json (the source of
+truth, fetched by createPageHeader); this copy only covers an outage */
+var FLEET_FALLBACK = [
+  ['methods', 'Methods'], ['giftme', 'GiftMe'], ['passage', 'Passage'],
+  ['restock', 'Restock'], ['nexus', 'Nexus'], ['space', 'Space'],
+  ['savor', 'Savor'], ['idreamofneon', 'i dream of neon'],
+  ['vantage', 'Vantage'], ['vitals', 'Vitals'], ['tide', 'Tide'],
+  ['flare', 'flare'], ['glimpse', 'Glimpse'], ['menagerie', 'Menagerie'],
+  ['toile', 'Toile'], ['timespace', 'Timespace'],
+  ['shapes-in-rain', 'Shapes In Rain'], ['rhythm-of-life', 'Rhythm of Life'],
+  ['canvashare', 'CanvaShare'], ['thought-writer', 'Thought Writer'],
+  ['vicarious', 'Vicarious'], ['hn-stats', 'Hacker News Stats'],
+  ['pause', 'Pause'], ['marian', 'Marian'], ['vroom', 'Vroom']
+].map(function(app) {
+  return { key: app[0], name: app[1], tagline: '', status: 'live',
+    url: 'https://' + app[0] + '.crystalprism.io/',
+    icon: 'https://crystalprism.io/images/' + app[0] + '-icon.png' };
+});
+
+// This page's apps.json key: the legacy app it belongs to, or none (apex)
+var fleetKey = (function() {
+  var dir = logicalPath.split('/')[1];
+  for (var app in APP_DIRS) {
+    if (APP_DIRS[app] == dir) {
+      return app;
+    }
+  }
+  return 'crystalprism';
+})();
+
+var fleetMenu = null; // FleetKit.mountMenu handle, set by createPageHeader
+var signingOut = false;
+var menuUsername = null; // The signed-in username the menu shows
+
+// Legacy apps stay on this origin in dev, as appUrl does
+function localizeFleet(apps) {
+  return apps.map(function(app) {
+    var sub = app.url.replace(/^https:\/\/([a-z0-9-]+)\.crystalprism\.io\/$/,
+      '$1');
+    if (!onCrystalPrism && Object.hasOwn(APP_DIRS, sub)) {
+      app.url = appUrl(sub);
+    }
+    return app;
+  });
+}
+
+
+/* Header: the diamond home mark at the leading end, the homepage's theme
+toggle, and the fleet apps + account menu at the trailing end */
 function createPageHeader() {
   var header = document.createElement('div');
   header.id = 'header';
+  header.dataset.session = 'pending';
   var headerContainer = document.createElement('div');
   headerContainer.id = 'header-container';
   header.appendChild(headerContainer);
 
-  // Create project navigation menu
-  var iconContainer = document.createElement('div');
-  iconContainer.id = 'site-menu-icon-container';
-
-  var menuIcon = document.createElement('img');
-  menuIcon.id = 'site-menu-icon';
-  menuIcon.title = 'Site menu';
-  menuIcon.src = root + '/images/site-menu-icon-shadow.svg';
-
-  headerContainer.appendChild(iconContainer);
-  iconContainer.appendChild(menuIcon);
-
-  // Create site menu table
-  var siteMenu = document.createElement('table');
-  siteMenu.id = 'site-menu';
-  siteMenu.classList.add('closed');
-
-  var siteMenuSpacer = document.createElement('tr');
-  siteMenuSpacer.id = 'site-menu-spacer-row';
-
-  headerContainer.appendChild(siteMenu);
-  siteMenu.appendChild(siteMenuSpacer);
-
-  // Create menu rows with icons and links to each project
-  var projectLinks = [homeUrl(),
-    'https://methods.crystalprism.io/', 'https://giftme.crystalprism.io/',
-    'https://passage.crystalprism.io/', 'https://restock.crystalprism.io/',
-    'https://nexus.crystalprism.io/', 'https://space.crystalprism.io/',
-    'https://savor.crystalprism.io/', 'https://idreamofneon.crystalprism.io/',
-    'https://vantage.crystalprism.io/', 'https://vitals.crystalprism.io/',
-    'https://tide.crystalprism.io/', 'https://flare.crystalprism.io/',
-    'https://glimpse.crystalprism.io/', 'https://menagerie.crystalprism.io/',
-    'https://toile.crystalprism.io/',
-    appUrl('timespace'), appUrl('shapes-in-rain'),
-    appUrl('rhythm-of-life'), appUrl('canvashare'), appUrl('thought-writer'),
-    appUrl('vicarious'),
-    'https://hn-stats.crystalprism.io/', 'https://pause.crystalprism.io/',
-    'https://marian.crystalprism.io/', 'https://vroom.crystalprism.io/',
-    appUrl('account', localStorage.getItem('username') ? 'my-account/'
-      : 'sign-in/')];
-
-  var projectTitles = ['Home',
-    'Methods', 'GiftMe', 'Passage', 'Restock', 'Nexus', 'Space', 'Savor',
-    'i dream of neon', 'Vantage', 'Vitals', 'Tide', 'flare', 'Glimpse',
-    'Menagerie', 'Toile',
-    'Timespace', 'Shapes In Rain',
-    'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
-    'Hacker News Stats', 'Pause', 'Marian', 'Vroom', 'Account'];
-
-  // One row per menu entry; used by both the fallback list and apps.json
-  function addMenuRow(link, title, iconSrc, isAccount) {
-    var menuRow = document.createElement('tr');
-    menuRow.classList.add('site-menu-row');
-
-    menuRow.dataset.link = link;
-    if (isAccount) {
-      menuRow.id = 'site-menu-account';
-    }
-
-    menuRow.addEventListener('click', function() {
-      window.location = this.dataset.link;
-      return;
-    }, false);
-
-    var menuImageCell = document.createElement('td');
-    menuImageCell.classList.add('site-menu-image-cell');
-
-    var menuImage = document.createElement('img');
-    menuImage.classList.add('site-menu-image');
-    menuImage.src = iconSrc;
-
-    var menuTextCell = document.createElement('td');
-    menuTextCell.classList.add('site-menu-text-cell');
-
-    var menuText = document.createElement('div');
-    menuText.classList.add('site-menu-text');
-    menuText.textContent = title;
-
-    menuRow.appendChild(menuImageCell);
-    menuImageCell.appendChild(menuImage);
-    menuRow.appendChild(menuTextCell);
-    menuTextCell.appendChild(menuText);
-    siteMenu.appendChild(menuRow);
-  }
-
-  // Home first, the given apps, Account last
-  function buildMenuRows(apps) {
-    // Keep a corrected Account link (see setAccountMenuRow) across a rebuild
-    var current = document.getElementById('site-menu-account');
-    if (current) {
-      apps[apps.length - 1].link = current.dataset.link;
-    }
-    var rows = siteMenu.querySelectorAll('.site-menu-row');
-    for (var r = 0; r < rows.length; r++) {
-      siteMenu.removeChild(rows[r]);
-    }
-    for (var i = 0; i < apps.length; i++) {
-      var isAccount = i == apps.length - 1;
-      addMenuRow(apps[i].link, apps[i].title,
-        (isAccount ? homeUrl() : apps[i].link) + 'favicon.ico', isAccount);
-    }
-  }
-
-  var fallbackApps = [];
-  for (var i = 0; i < projectLinks.length; i++) {
-    fallbackApps.push({ link: projectLinks[i], title: projectTitles[i] });
-  }
-  buildMenuRows(fallbackApps);
-
-  // The hosted app list is the source of truth; the arrays above are the
-  // fallback if it cannot be fetched
-  fetch('/apps.json').then(function(response) {
-    if (!response.ok) {
-      throw new Error('apps.json ' + response.status);
-    }
-    return response.json();
-  }).then(function(list) {
-    var live = list.filter(function(app) {
-      return app.status === 'live';
-    }).map(function(app) {
-      // Legacy apps stay on this origin in dev, as appUrl does
-      var sub = app.url.replace(/^https:\/\/([a-z0-9-]+)\.crystalprism\.io\/$/,
-        '$1');
-      var local = !onCrystalPrism && Object.hasOwn(APP_DIRS, sub);
-      return { link: local ? appUrl(sub) : app.url, title: app.name };
-    });
-    if (!live.length) {
-      return;
-    }
-    buildMenuRows([fallbackApps[0]].concat(live,
-      [fallbackApps[fallbackApps.length - 1]]));
-  }).catch(function() {});
-
-  // Toggle site menu when user clicks menu icon
-  menuIcon.onmousedown = toggleSiteMenu;
+  var home = document.createElement('a');
+  home.id = 'site-home';
+  home.href = homeUrl();
+  home.setAttribute('aria-label', 'Crystal Prism home');
+  var homeIcon = document.createElement('img');
+  homeIcon.src = root + '/images/site-menu-icon-shadow.svg';
+  homeIcon.alt = '';
+  home.appendChild(homeIcon);
+  headerContainer.appendChild(home);
 
   // Add theme container to header on homepage
   if (currentPath == domain) {
     headerContainer.appendChild(document.getElementById('theme-container'));
   }
 
-  /* Create account menu with links to profile, create account page, and sign
-  in page */
-  var accountMenu = document.createElement('div');
-  accountMenu.id = 'account-menu';
-  profileLink = document.createElement('a');
-  profileLink.id = 'profile-link';
-  accountLink = document.createElement('a');
-  accountLink.id = 'account-link';
-  accountLink.href = 'https://auth.crystalprism.io/register';
-  signInLink = document.createElement('a');
-  signInLink.id = 'sign-in-link';
-  signInLink.href = appUrl('account', 'sign-in/');
-  headerContainer.appendChild(accountMenu);
-  accountMenu.appendChild(profileLink);
-  accountMenu.appendChild(accountLink);
-  accountMenu.appendChild(signInLink);
+  var slot = document.createElement('div');
+  slot.id = 'fleet-menu';
+  headerContainer.appendChild(slot);
 
   // Insert header before first element in body
   document.body.insertAdjacentElement('afterbegin', header);
+
+  fleetMenu = FleetKit.mountMenu(slot, {
+    apps: localizeFleet(FleetKit.shapeFleet(null, fleetKey, FLEET_FALLBACK)),
+    user: null,
+    rows: signedOutRows(),
+    placement: 'down-end'
+  });
+
+  // Same-origin: every app host proxies /apps.json to the apex copy
+  FleetKit.getFleetApps(fleetKey, { url: '/apps.json', fallback: FLEET_FALLBACK })
+    .then(function(apps) {
+      fleetMenu.setApps(localizeFleet(apps));
+    });
 
   return;
 }
 
 
-// Create page footer with copyright and contact information
+// Create page footer: the fleet footer, in flow at the end of the page
 function createPageFooter() {
-  // Create copyright display
-  var copyright = document.createElement('div');
-  copyright.innerHTML = '&copy; Copyright 2017-' + new Date().getFullYear() +
-    ' <a href="' + root + '">Crystal Prism</a>';
-
-  // Create footer to contain copyright information
-  var footer = document.createElement('div');
+  var footer = FleetKit.renderFooter(document.body);
   footer.id = 'footer';
-  footer.appendChild(copyright);
-
-  // Insert footer at end of body element
-  document.body.insertAdjacentElement('beforeend', footer);
-
+  localizeAppLinks(footer);
   return;
 }
 
@@ -412,34 +322,54 @@ function pingServer(action) {
 }
 
 
-// Show the signed-out account menu
-function showSignedOut() {
-  setAccountMenuRow(false);
-  accountLink.innerHTML = 'Create Account';
-  signInLink.innerHTML = 'Sign In';
-
-  /* Store current window for user to return to after logging in, if current
-  window is not homepage, Create Account, or Sign In pages */
-  signInLink.href = appUrl('account', 'sign-in/');
+/* The menu's signed-out rows: Sign In, carrying the current page as ?next=
+unless this is the homepage or an account entry page */
+function signedOutRows() {
+  var href = appUrl('account', 'sign-in/');
   if (currentPath != domain && currentPath != 'create-account'
     && currentPath != 'sign-in') {
-      signInLink.href += '?next=' + encodeURIComponent(window.location.href);
+      href += '?next=' + encodeURIComponent(window.location.href);
     }
-  signInLink.onclick = null;
+  return [{ label: 'Sign in', href: href }];
+}
 
+
+// Show the signed-out account menu
+function showSignedOut() {
+  if (fleetMenu) {
+    fleetMenu.setUser(null, signedOutRows());
+  }
   return;
 }
 
 
-/* Point the site menu's Account row at My Account or Sign In. The header is
-built from the stored username, which a first visit to a subdomain lacks, so
-the session check corrects it */
-function setAccountMenuRow(signedIn) {
-  var row = document.getElementById('site-menu-account');
-  if (row) {
-    row.dataset.link = appUrl('account', signedIn ? 'my-account/' : 'sign-in/');
+// Show `username` as signed in (also after My Account renames them). While a
+// sign-out is in flight the last row says so, and choosing it does nothing
+function showSignedIn(username) {
+  menuUsername = username;
+  if (fleetMenu) {
+    fleetMenu.setUser({ label: username }, [
+      { label: 'Settings', href: appUrl('account', 'my-account/') },
+      signingOut ? { label: 'Signing out…', onSelect: function() {} }
+        : { label: 'Sign out', onSelect: signOut }
+    ]);
   }
+  return;
+}
 
+
+/* Record the settled session on the header (data-session), once the server
+has answered or the check was abandoned */
+function settleSession(username) {
+  var header = document.getElementById('header');
+  if (header) {
+    header.dataset.session = username ? 'signed-in' : 'signed-out';
+  }
+  if (username) {
+    showSignedIn(username);
+  } else {
+    showSignedOut();
+  }
   return;
 }
 
@@ -502,7 +432,7 @@ function verifySession() {
 
     // Set account menu to default if server is down
     .catch(function(error) {
-      showSignedOut();
+      settleSession(null);
       return false;
     })
 
@@ -511,25 +441,13 @@ function verifySession() {
         return false;
       }
 
-      /* If server verifies the session, display link to profile, My Account
-      page, and Sign In page (with "Sign Out" title) */
+      /* If server verifies the session, the menu shows the username with
+      Settings (My Account) and Sign Out */
       if (response.ok) {
         return response.json().then(function(payload) {
           // Set localStorage username to payload username
           localStorage.setItem('username', payload['username']);
-
-          profileLink.textContent = payload['username'];
-          profileLink.href = appUrl('account', '?username=' + encodeURIComponent(payload['username']));
-          setAccountMenuRow(true);
-          accountLink.innerHTML = 'My Account';
-          accountLink.href = appUrl('account', 'my-account/');
-          signInLink.innerHTML = 'Sign Out';
-
-          /* Sign out from this page with a POST, so no link anywhere can
-          sign a visitor out; the Sign In page then says how it went */
-          signInLink.href = appUrl('account', 'sign-in/');
-          signInLink.onclick = signOut;
-
+          settleSession(payload['username']);
           return true;
         });
       }
@@ -538,14 +456,17 @@ function verifySession() {
       default and remove username from localStorage */
       if (response.status == 401) {
         localStorage.removeItem('username');
-        showSignedOut();
+        settleSession(null);
 
         // Redirect to Sign In page if user is on My Account page
         if (currentPath == 'my-account') {
           window.location = appUrl('account', 'sign-in/');
         }
+        return false;
       }
 
+      // Any other answer (a 5xx): signed out for this page
+      settleSession(null);
       return false;
     })
 
@@ -553,7 +474,7 @@ function verifySession() {
     page) rejects response.json(): settle to signed out so every caller's
     .then still runs */
     .catch(function(error) {
-      showSignedOut();
+      settleSession(null);
       return false;
     })
 
@@ -596,15 +517,16 @@ function requestLogout() {
 }
 
 
-// The account menu's Sign Out: ask the server to end the session, then show
-// the Sign In page, which reads the outcome from the session check itself
-function signOut(event) {
-  event.preventDefault();
-  if (signInLink.getAttribute('aria-disabled') == 'true') {
+/* The menu's Sign Out: a POST from this page, so no link anywhere can sign a
+visitor out. Ask the server to end the session, then show the Sign In page,
+which reads the outcome from the session check itself */
+function signOut() {
+  if (signingOut) {
     return;
   }
-  signInLink.setAttribute('aria-disabled', 'true');
-  signInLink.textContent = 'Signing Out…';
+  signingOut = true;
+  showSignedIn(menuUsername);
+  document.body.style.cursor = 'progress';
 
   requestLogout().then(function() {
     window.location = appUrl('account', 'sign-in/?signed-out');
@@ -665,57 +587,3 @@ function assessMobile() {
 
   return;
 }
-
-
-// Open/close site menu
-function toggleSiteMenu() {
-  var siteMenu = document.getElementById('site-menu');
-
-  // Close menu if it is open
-  if (siteMenuOpen) {
-    siteMenu.classList.remove('opened');
-    siteMenu.classList.add('closed');
-
-    // Set menu icon back to shadow version
-    document.getElementById('site-menu-icon')
-      .src = root + '/images/site-menu-icon-shadow.svg';
-
-    // Set theme container color back to initial on homepage so it is visible
-    if (currentPath == domain) {
-      document.getElementById('theme-container').style.color = 'inherit';
-    }
-
-    siteMenuOpen = false;
-
-    return;
-  }
-
-  // Otherwise, open menu
-  siteMenu.classList.remove('closed');
-  siteMenu.classList.add('opened');
-
-  // Set menu icon to non-shadow version
-  document.getElementById('site-menu-icon')
-    .src = root + '/images/site-menu-icon.svg';
-
-  // Set theme container color to black on homepage so it is visible
-  if (currentPath == domain) {
-    document.getElementById('theme-container').style.color = '#000000';
-  }
-
-  siteMenuOpen = true;
-
-  return;
-}
-
-
-// Close site menu when user clicks outside of it
-window.addEventListener('click', function(e) {
-  if (siteMenuOpen && e.target != document.getElementById('site-menu-icon') &&
-    !document.getElementById('site-menu').contains(e.target)) {
-      toggleSiteMenu();
-    }
-
-  return;
-
-}, false);

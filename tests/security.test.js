@@ -58,6 +58,7 @@ async function profile(query) {
   const html = '<body><div id="header"></div><div id="footer"></div>' +
     '<h1 id="profile-title"></h1></body>';
   const page = await open(SITE + '/user/' + query, html);
+  await page.addScriptTag({ path: path.join(root, 'fleet-menu.js') });
   await page.addScriptTag({ path: path.join(root, 'common.js') });
   await page.addScriptTag({ path: path.join(root, 'user', 'main.js') });
   // The load event already fired, so run the page's own onload handler

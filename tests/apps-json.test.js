@@ -18,9 +18,12 @@ test('apps.json entries are well-formed and unique', () => {
   }
 });
 
-test('every live app has its icon file', () => {
-  for (const a of apps.filter((x) => x.status === 'live')) {
-    assert.ok(fs.existsSync(path.join(root, 'images', `${a.key}-icon.png`)), `${a.key} icon`);
+test('every app, hidden ones too, has its 512px icon file', () => {
+  for (const a of apps) {
+    const file = path.join(root, 'images', `${a.key}-icon.png`);
+    assert.ok(fs.existsSync(file), `${a.key} icon`);
+    const png = fs.readFileSync(file);
+    assert.strictEqual(png.toString('latin1', 1, 4), 'PNG', `${a.key} is a PNG`);
   }
 });
 
@@ -28,4 +31,11 @@ test('ration is hidden; almanac and hearsay are listed', () => {
   const by = Object.fromEntries(apps.map((a) => [a.key, a]));
   assert.strictEqual(by.ration.status, 'hidden');
   assert.ok(by.almanac && by.hearsay);
+});
+
+test('/apps.json answers cross-origin reads (fleet apps fetch it from their own hosts)', () => {
+  const headers = fs.readFileSync(path.join(root, '_headers'), 'utf8');
+  const block = headers.split(/\n(?=\S)/).find((b) => b.split('\n')[0].trim() === '/apps.json');
+  assert.ok(block, 'no /apps.json block in _headers');
+  assert.match(block, /^\s+Access-Control-Allow-Origin: \*$/m);
 });

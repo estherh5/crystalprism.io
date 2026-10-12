@@ -85,21 +85,36 @@ async function open(url, { session = null, localUsername = null, header = true, 
   }
   await page.goto(url);
   if (!header) return { page, apiCalls };
-  await page.waitForSelector('#sign-in-link', { state: 'attached' });
-  if (session) await page.waitForFunction(() => document.querySelector('#sign-in-link').textContent === 'Sign Out');
-  else await page.waitForFunction(() => document.querySelector('#sign-in-link').textContent === 'Sign In');
+  await page.waitForSelector('.fleet-trigger', { state: 'attached' });
+  if (session) await page.waitForFunction(() => document.getElementById('header').dataset.session === 'signed-in');
+  else await page.waitForFunction(() => document.querySelector('.fleet-trigger').getAttribute('aria-label') === 'Apps and sign in');
   return { page, apiCalls };
 }
 
 const href = (page, id) => page.$eval('#' + id, (a) => a.href);
-const menu = (page) => page.$$eval('.site-menu-row', (rows) =>
-  Object.fromEntries(rows.map((r) => [r.querySelector('.site-menu-text').textContent, r.dataset.link])));
+
+// Open the fleet menu and read it: account rows (label -> href, or BUTTON),
+// app tiles (name -> href) and the current tile, then close it again
+async function menu(page) {
+  await page.click('.fleet-trigger');
+  const m = await page.evaluate(() => ({
+    rows: Object.fromEntries([...document.querySelectorAll('.fleet-account .fleet-row')]
+      .map((n) => [n.textContent, n.tagName === 'A' ? n.href : n.tagName])),
+    label: document.querySelector('.fleet-email')?.textContent ?? null,
+    apps: Object.fromEntries([...document.querySelectorAll('.fleet-app')].map((a) => [a.textContent, a.href])),
+    current: [...document.querySelectorAll('.fleet-app[aria-current="page"]')].map((a) => a.textContent),
+    home: document.getElementById('site-home').href,
+  }));
+  await page.keyboard.press('Escape');
+  return m;
+}
 
 test('signed in on a subdomain with an empty localStorage: header, links, not the homepage', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/', { session: 'esther' });
-  assert.strictEqual(await page.$eval('#profile-link', (a) => a.textContent), 'esther');
-  assert.strictEqual(await href(page, 'profile-link'), 'https://account.crystalprism.io/?username=esther');
-  assert.strictEqual(await href(page, 'account-link'), 'https://account.crystalprism.io/my-account/');
+  assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and account, esther');
+  const m = await menu(page);
+  assert.strictEqual(m.label, 'esther');
+  assert.deepStrictEqual(m.rows, { Settings: 'https://account.crystalprism.io/my-account/', 'Sign out': 'BUTTON' });
   // currentPath == domain would move the theme toggle into the header
   assert.strictEqual(await page.evaluate(() => currentPath), 'canvashare');
   assert.strictEqual(await page.$('#header-container #theme-container'), null);
@@ -109,25 +124,34 @@ test('signed in on a subdomain with an empty localStorage: header, links, not th
 test('signed out: Sign In carries the current page as ?next=', async () => {
   const url = 'https://thought-writer.crystalprism.io/post/?post=3';
   const { page } = await open(url);
-  assert.strictEqual(await href(page, 'sign-in-link'),
-    'https://account.crystalprism.io/sign-in/?next=' + encodeURIComponent(url));
+  assert.deepStrictEqual((await menu(page)).rows,
+    { 'Sign in': 'https://account.crystalprism.io/sign-in/?next=' + encodeURIComponent(url) });
   await page.close();
 });
 
-test('signed in: Sign Out points at sign-in, with no sign-out in the URL', async () => {
+test('signed in: Sign out is a button, never a link', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/', { session: 'esther' });
-  assert.strictEqual(await href(page, 'sign-in-link'), 'https://account.crystalprism.io/sign-in/');
+  assert.strictEqual((await menu(page)).rows['Sign out'], 'BUTTON');
   await page.close();
 });
 
-test('site menu points at each app subdomain', async () => {
+test('site menu points at each app subdomain and marks this one', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/');
   const m = await menu(page);
-  assert.strictEqual(m['CanvaShare'], 'https://canvashare.crystalprism.io/');
-  assert.strictEqual(m['Timespace'], 'https://timespace.crystalprism.io/');
-  assert.strictEqual(m['Home'], 'https://crystalprism.io/');
-  assert.strictEqual(m['Account'], 'https://account.crystalprism.io/sign-in/');
+  assert.strictEqual(m.apps['CanvaShare'], 'https://canvashare.crystalprism.io/');
+  assert.strictEqual(m.apps['Timespace'], 'https://timespace.crystalprism.io/');
+  assert.deepStrictEqual(m.current, ['CanvaShare']);
+  assert.strictEqual(m.home, 'https://crystalprism.io/');
+  assert.strictEqual(m.apps['Ration'], undefined);
   await page.close();
+});
+
+test('the account pages and the apex mark no app current', async () => {
+  for (const url of ['https://account.crystalprism.io/sign-in/', 'https://crystalprism.io/']) {
+    const { page } = await open(url);
+    assert.deepStrictEqual((await menu(page)).current, [], url);
+    await page.close();
+  }
 });
 
 test('the API base on a crystalprism.io host is api.crystalprism.io', async () => {
@@ -175,7 +199,7 @@ test('dev host: static links to legacy apps stay on the dev origin', async () =>
 test('dev host keeps the single-site layout', async () => {
   const { page } = await open(DEV + '/canvashare/');
   assert.strictEqual(await page.evaluate(() => appUrl('account', '?username=a')), DEV + '/user/?username=a');
-  assert.strictEqual((await menu(page))['CanvaShare'], DEV + '/canvashare/');
+  assert.strictEqual((await menu(page)).apps['CanvaShare'], DEV + '/canvashare/');
   assert.strictEqual(await page.evaluate(() => currentPath), 'canvashare');
   await page.close();
 });
@@ -316,9 +340,9 @@ test('own likes show as liked on a first profile visit', async () => {
   await page.close();
 });
 
-test('the Account menu row follows the verified session on a first visit', async () => {
+test('the account rows follow the verified session on a first visit', async () => {
   const { page } = await open('https://canvashare.crystalprism.io/', { session: 'esther', verifyDelay: 200 });
-  assert.strictEqual((await menu(page))['Account'], 'https://account.crystalprism.io/my-account/');
+  assert.strictEqual((await menu(page)).rows['Settings'], 'https://account.crystalprism.io/my-account/');
   await page.close();
 });
 
@@ -358,7 +382,8 @@ for (const [name, verifyRaw] of [
     await page.waitForSelector('#post-content', { state: 'attached', timeout: 5000 });
     await page.waitForSelector('#comment10', { state: 'attached', timeout: 5000 });
     assert.strictEqual(await page.$eval('#edit', (b) => b.classList.contains('hidden')), true);
-    assert.strictEqual(await page.$eval('#sign-in-link', (a) => a.textContent), 'Sign In');
+    await page.waitForFunction(() => document.getElementById('header').dataset.session === 'signed-out');
+    assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and sign in');
     await page.close();
   });
 }

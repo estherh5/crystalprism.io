@@ -368,10 +368,6 @@ function openCarousel(number) {
   // Start carousel cycle on specified image number
   carouselItems[number].classList.add('active');
 
-  // Make account menu links white font for visibility
-  document.getElementById('profile-link').style.color = '#ffffff';
-  document.getElementById('account-link').style.color = '#ffffff';
-  document.getElementById('sign-in-link').style.color = '#ffffff';
   carousel.classList.add('d-flex');
   $('.carousel').carousel('cycle');
 
@@ -405,10 +401,6 @@ function closeCarousel() {
     carouselItems[i].classList.remove('active');
   }
 
-  // Return account menu links to original font color
-  document.getElementById('profile-link').style.color = '#000000';
-  document.getElementById('account-link').style.color = '#000000';
-  document.getElementById('sign-in-link').style.color = '#000000';
   carousel.classList.remove('d-flex');
 
   return;

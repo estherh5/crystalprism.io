@@ -1,3 +1,27 @@
+:root {
+  /* The fleet apps + account menu and footer (fleet-menu.js, fleet.css) take
+  their look from these; an app's own stylesheet may override them */
+  --fleet-accent: #000000;
+  --fleet-on-accent: #ffffff;
+  --fleet-surface: #ffffff;
+  --fleet-ink: #000000;
+  --fleet-muted: #4d4d4d;
+  --fleet-line: #d9d9d9;
+  --fleet-font: 'Rajdhani', sans-serif;
+  --fleet-radius: 14px;
+  --fleet-footer-clear: 0px;
+}
+
+/* The homepage's night view */
+.night-view {
+  --fleet-accent: #ffffff;
+  --fleet-on-accent: #000000;
+  --fleet-surface: #111111;
+  --fleet-ink: #ffffff;
+  --fleet-muted: #b3b3b3;
+  --fleet-line: #3a3a3a;
+}
+
 .hidden {
   position: absolute !important;
   top: -9999px !important;
@@ -46,168 +70,107 @@
   -webkit-justify-content: space-between;
   -ms-flex-pack: justify;
   justify-content: space-between;
-}
-
-#site-menu-icon-container {
-  width: 50px;
-  margin-top: 7px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-align-self: center;
-  -ms-flex-item-align: center;
-  -ms-grid-row-align: center;
-  align-self: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  cursor: pointer;
+  flex: 1 0 auto;
+  /* 4px + the 44px controls fill the account pages' 48px divider header and
+  hang 5px below the 43px one, which has no background */
+  padding: 4px 8px 0;
+  box-sizing: border-box;
 }
 
-#site-menu-icon {
+/* The diamond home mark, leading end */
+#site-home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+}
+
+#site-home img {
   height: 30px;
-  left: 0px;
   opacity: 0.7;
   filter: grayscale(1);
-  z-index: 10;
 }
 
-#site-menu-icon-container:hover #site-menu-icon {
+#site-home:hover img, #site-home:focus-visible img {
   opacity: 1;
   filter: grayscale(0);
 }
 
-#site-menu {
-  position: fixed;
-  width: 130px;
-  padding-bottom: 6px;
-  padding-left: 6px;
-  box-shadow: 1px 1px 1px #989898;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
+#site-home:focus-visible {
+  outline: 2px solid var(--fleet-accent);
+  outline-offset: 2px;
+  border-radius: 8px;
+}
+
+/* The fleet menu trigger, trailing end */
+#fleet-menu {
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -webkit-flex-direction: column;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  background-color: #ffffff;
-  opacity: 0;
-  transition: all 0.5s;
-  z-index: 3;
 }
 
-#site-menu.closed {
-  opacity: 0 !important;
-  visibility: hidden;
-  transition: all 0.5s;
-}
-
-#site-menu.opened {
-  opacity: 1 !important;
-  transition: all 0.5s;
-}
-
-#site-menu-spacer-row {
-  height: 44px;
-}
-
-.site-menu-row {
-  height: 20px;
-  opacity: 0.5;
-  cursor: pointer;
-}
-
-.site-menu-row:hover {
-  opacity: 1;
-}
-
-.site-menu-row td {
-  padding-top: 0px;
-  padding-bottom: 0px;
-  line-height: 1;
-}
-
-.site-menu-image-cell {
-  width: 18px;
-}
-
-.site-menu-image {
-  height: 12px;
-  filter: grayscale(1);
-}
-
-.site-menu-row:hover .site-menu-image {
-  filter: grayscale(0);
-}
-
-.site-menu-text {
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  font-weight: 100;
-  color: #000000 !important;
-}
-
-#account-menu {
-  margin-right: 3px;
-  top: 0px;
-  right: 0px;
-  display: -webkit-box;
-  display: -webkit-flex;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -webkit-align-items: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -webkit-justify-content: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  z-index: 10;
-}
-
-#profile-link, #account-link {
-  margin-right: 7px;
-}
-
-#footer {
-  margin-top: 5px;
-  margin-bottom: 5px;
-  font-family: 'Rajdhani', sans-serif;
-  font-size: 12px;
-  text-align: center;
-  line-height: 1.3;
+/* The fleet footer stays above page-level overlays (Vicarious's fixed
+#dimmer), as the old #footer did; still below modals and the fleet panel */
+#footer.fleet-footer {
+  position: relative;
   z-index: 100;
 }
 
-@media only screen and (min-width: 768px) {
-  #site-menu {
-    width: 150px;
-  }
+/* Shield the fleet kit (fleet.css, byte-identical across the fleet) from the
+legacy pages' bare a/button rules: a:hover, button:active, .night-view button
+and the homepage's `color: #808080 !important` outrank its single-class
+selectors and would recolor, re-letter or shift its controls. `html body`
+lifts these above any element+pseudo rule without touching the kit's own
+values (each !important answers a legacy !important: the homepage's hover
+color, Shapes In Rain's button:active shadow) */
+html body .fleet-trigger,
+html body .fleet-trigger:hover,
+html body .fleet-trigger:active,
+html body .fleet-trigger:focus {
+  color: var(--fleet-on-accent) !important;
+  background: var(--fleet-accent);
+  border: 1px solid var(--fleet-line);
+  margin: 0;
+  padding: 0;
+  min-width: 0;
+  min-height: 0;
+  font: 600 1rem/1 var(--fleet-font);
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  box-shadow: none !important;
+  opacity: 1;
+  transform: none;
+}
 
-  .site-menu-text, #account-menu {
-    font-size: 14px;
-  }
+html body .fleet-panel a,
+html body .fleet-panel a:hover,
+html body .fleet-panel a:active,
+html body .fleet-panel button,
+html body .fleet-panel button:hover,
+html body .fleet-panel button:active {
+  color: var(--fleet-ink) !important;
+  font-weight: normal;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  opacity: 1;
+  transform: none;
+}
 
-  .site-menu-row {
-    height: 23px;
-  }
+html body .fleet-panel button,
+html body .fleet-panel button:active {
+  margin: 0;
+  min-width: 0;
+  box-shadow: none !important;
+}
 
-  .site-menu-image-cell {
-    width: 22px;
-  }
+html body .fleet-panel {
+  text-align: start;
+}
 
-  .site-menu-image {
-    height: 15px;
-  }
+html body .fleet-panel ul {
+  margin: 0;
+  padding: 0;
 }

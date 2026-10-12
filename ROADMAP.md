@@ -7,6 +7,17 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **The fleet apps + account menu and footer on the homepage and all six legacy apps.**
+  The homepage, Timespace, Shapes In Rain, Rhythm of Life, CanvaShare, Thought Writer and
+  Vicarious (and the account pages) now carry the fleet kit: the old top-left diamond dropdown
+  table and the Create Account / Sign In / Sign Out text links are gone, the diamond stays as the
+  leading home mark, and a trailing trigger opens the shared panel (username, Settings, Sign out
+  or Sign in, then the apps grid; a bottom sheet on phones). `fleet-menu.js` is a vanilla port of
+  the React kit with a byte-identical `fleet.css`; `common.js` reads `/apps.json` with
+  `FLEET_FALLBACK` for an outage and waits on `verifySession()` before showing an account
+  (`#header[data-session]`). The footer is the kit's, in flow. `/apps.json` answers with
+  `Access-Control-Allow-Origin: *` so the fleet apps can read it, and the hidden apps (almanac,
+  hearsay, ration) have their icons. `tests/fleet-menu.test.js`, `tests/common-apps-json.test.js`.
 - **2026-10** **Static links to the legacy apps stay local in dev.** Off crystalprism.io,
   `common.js#localizeAppLinks` rewrites every static `<a>` to a legacy-app subdomain or the apex
   through `appUrl`/`homeUrl` at load, so a localhost session no longer leaves for prod on click.

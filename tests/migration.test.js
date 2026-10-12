@@ -64,7 +64,7 @@ async function visit(pagePath, { username = 'esther' } = {}) {
   const visited = [];
   page.on('framenavigated', (f) => { if (f === page.mainFrame()) visited.push(new URL(f.url()).pathname); });
   await page.goto(SITE + pagePath);
-  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  await page.waitForFunction(() => document.getElementById('header')?.dataset.session === 'signed-in');
   await page.waitForTimeout(300);
 
   const state = await page.evaluate(() => ({

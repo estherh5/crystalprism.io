@@ -151,9 +151,10 @@ test('a hostile stored next is ignored after the Google round trip', async () =>
 
 test('Sign Out on an app subdomain signs out, then lands on account sign-in', async () => {
   const { page, calls } = await open('https://canvashare.crystalprism.io/', { session: 'esther' });
-  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  await page.waitForFunction(() => document.getElementById('header')?.dataset.session === 'signed-in');
+  await page.click('.fleet-trigger');
   await Promise.all([page.waitForURL('https://account.crystalprism.io/sign-in/?signed-out'),
-    page.click('#sign-in-link')]);
+    page.click('.fleet-account button.fleet-row:has-text("Sign out")')]);
   assert.ok(calls.includes('/logout'), calls.join());
   await page.close();
 });

@@ -2559,14 +2559,11 @@ function submitEdits() {
 
         if (response.status == 200) {
           /* If response is successful, update localStorage username
-          and profile link (in case user updated username) */
+          and the menu (in case user updated username) */
           response.text().then(function() {
             localStorage.removeItem('username');
             localStorage.setItem('username', usernameInput.value);
-            document.getElementById('profile-link').textContent = localStorage
-              .getItem('username');
-            document.getElementById('profile-link')
-              .href = '../?username=' + encodeURIComponent(localStorage.getItem('username'));
+            showSignedIn(localStorage.getItem('username'));
 
             // Return Personal menu fields to view-only mode and disable inputs
             profileBackground.classList.remove('editing');

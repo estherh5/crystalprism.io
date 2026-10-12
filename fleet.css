@@ -1,0 +1,54 @@
+/* Copied byte-identical across the fleet. Per-app look comes ONLY from the
+   --fleet-* tokens each app defines in its globals. */
+.fleet-trigger {
+  inline-size: 44px; block-size: 44px; flex: none;
+  display: inline-grid; place-items: center;
+  border-radius: 999px; border: 1px solid var(--fleet-line);
+  background: var(--fleet-accent); color: var(--fleet-on-accent);
+  font: 600 1rem/1 var(--fleet-font); cursor: pointer;
+}
+.fleet-trigger:focus-visible { outline: 2px solid var(--fleet-accent); outline-offset: 3px; }
+.fleet-scrim { position: fixed; inset: 0; z-index: 1000; background: transparent; }
+.fleet-panel {
+  position: fixed; z-index: 1001;
+  inline-size: min(360px, calc(100vw - 32px)); max-block-size: min(80dvh, 640px); overflow: auto;
+  padding: 16px; border-radius: var(--fleet-radius);
+  background: var(--fleet-surface); color: var(--fleet-ink);
+  border: 1px solid var(--fleet-line); box-shadow: 0 12px 40px rgb(0 0 0 / 0.18);
+  font-family: var(--fleet-font);
+}
+.fleet-apps { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px; }
+.fleet-app {
+  display: grid; justify-items: center; gap: 4px; padding: 8px 2px; min-block-size: 44px;
+  border-radius: calc(var(--fleet-radius) * 0.6); color: inherit; text-decoration: none;
+  font-size: 0.75rem; text-align: center; overflow-wrap: anywhere;
+}
+.fleet-app img { border-radius: 10px; inline-size: 36px; block-size: 36px; }
+.fleet-app:hover, .fleet-app:focus-visible { background: color-mix(in srgb, var(--fleet-accent) 12%, transparent); }
+.fleet-app[aria-current="page"] { box-shadow: inset 0 0 0 2px var(--fleet-accent); }
+.fleet-account { margin-block-end: 12px; padding-block-end: 12px; border-block-end: 1px solid var(--fleet-line); display: grid; }
+.fleet-email { margin: 0 0 6px; color: var(--fleet-muted); font-size: 0.8125rem; overflow-wrap: anywhere; }
+.fleet-row {
+  display: flex; align-items: center; min-block-size: 44px; padding: 0 8px; inline-size: 100%;
+  border: 0; background: none; color: inherit; font: inherit; text-align: start; text-decoration: none;
+  border-radius: 8px; cursor: pointer;
+}
+.fleet-row:hover, .fleet-row:focus-visible { background: color-mix(in srgb, var(--fleet-accent) 12%, transparent); }
+@media (max-width: 639px) {
+  .fleet-scrim { background: rgb(0 0 0 / 0.35); }
+  .fleet-panel {
+    inset: auto 0 0 0 !important; inline-size: auto;
+    max-block-size: 85dvh !important; border-radius: var(--fleet-radius) var(--fleet-radius) 0 0;
+    padding-block-end: calc(16px + env(safe-area-inset-bottom));
+  }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .fleet-panel { animation: fleet-in 140ms ease-out; }
+  @keyframes fleet-in { from { opacity: 0; transform: translateY(6px); } }
+}
+.fleet-footer {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 8px;
+  padding: 32px 16px calc(24px + var(--fleet-footer-clear, 0px));
+  color: var(--fleet-muted); font: 0.8125rem/1.4 var(--fleet-font);
+}
+.fleet-footer a { color: inherit; text-underline-offset: 3px; }

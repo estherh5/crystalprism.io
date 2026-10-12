@@ -63,24 +63,30 @@ async function openPage(url, { logout = 200, session = true, username = 'esther'
 }
 
 async function state(page) {
-  await page.waitForFunction(() => ['Sign In', 'Sign Out']
-    .includes(document.querySelector('#sign-in-link')?.textContent));
+  await page.waitForFunction(() => ['signed-in', 'signed-out']
+    .includes(document.getElementById('header')?.dataset.session));
   // Let a redirect to My Account start, if one is coming
   await page.waitForTimeout(200);
   return page.evaluate(() => ({
     path: location.pathname,
     signedOut: getComputedStyle(document.getElementById('logout')).display,
     failed: getComputedStyle(document.getElementById('logout-failed')).display,
-    menu: document.querySelector('#sign-in-link').textContent,
+    menu: document.getElementById('header').dataset.session,
   }));
+}
+
+// Open the fleet menu and choose Sign out
+async function menuSignOut(page) {
+  await page.click('.fleet-trigger');
+  await page.click('.fleet-account button.fleet-row:has-text("Sign out")');
 }
 
 // Click Sign Out in the menu of an ordinary app page, signed in
 async function signOut(logout) {
   const { page, calls } = await openPage(SITE + '/canvashare/', { logout });
-  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
+  await page.waitForFunction(() => document.getElementById('header')?.dataset.session === 'signed-in');
   await page.evaluate(() => localStorage.setItem('username', 'esther'));
-  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), page.click('#sign-in-link')]);
+  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), menuSignOut(page)]);
   return { page, calls, s: await state(page) };
 }
 
@@ -89,7 +95,7 @@ test('Sign Out POSTs the logout from the menu, then confirms it', async () => {
   assert.ok(calls.includes('POST /logout'), calls.join());
   assert.strictEqual(s.signedOut, 'block');
   assert.strictEqual(s.failed, 'none');
-  assert.strictEqual(s.menu, 'Sign In');
+  assert.strictEqual(s.menu, 'signed-out');
   assert.strictEqual(s.path, '/user/sign-in/');
   assert.strictEqual(await page.evaluate(() => localStorage.getItem('username')), null);
   await page.close();
@@ -99,7 +105,7 @@ test('a network error keeps the visitor signed in and warns them', async () => {
   const { page, s } = await signOut('abort');
   assert.strictEqual(s.failed, 'block');
   assert.strictEqual(s.signedOut, 'none');
-  assert.strictEqual(s.menu, 'Sign Out');
+  assert.strictEqual(s.menu, 'signed-in');
   // Stays put so the warning is read, rather than bouncing to My Account
   assert.strictEqual(s.path, '/user/sign-in/');
   await page.close();
@@ -108,7 +114,7 @@ test('a network error keeps the visitor signed in and warns them', async () => {
 test('a server error keeps the visitor signed in and warns them', async () => {
   const { page, s } = await signOut(500);
   assert.strictEqual(s.failed, 'block');
-  assert.strictEqual(s.menu, 'Sign Out');
+  assert.strictEqual(s.menu, 'signed-in');
   assert.strictEqual(s.path, '/user/sign-in/');
   await page.close();
 });
@@ -116,19 +122,20 @@ test('a server error keeps the visitor signed in and warns them', async () => {
 test('a stalled logout is abandoned and reported as failed', async () => {
   const { page, s } = await signOut('hang');
   assert.strictEqual(s.failed, 'block');
-  assert.strictEqual(s.menu, 'Sign Out');
+  assert.strictEqual(s.menu, 'signed-in');
   await page.close();
 });
 
 test('Sign Out on the failure banner tries again', async () => {
   const { page, calls } = await signOut([500, 200]);
-  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), page.click('#sign-in-link')]);
+  await page.waitForFunction(() => document.getElementById('header')?.dataset.session === 'signed-in');
+  await Promise.all([page.waitForURL('**/user/sign-in/?signed-out'), menuSignOut(page)]);
   // Same URL, so wait for the reloaded page's banner rather than the URL
   await page.waitForFunction(() => getComputedStyle(document.getElementById('logout')).display === 'block');
   const s = await state(page);
   assert.strictEqual(calls.filter((c) => c === 'POST /logout').length, 2);
   assert.strictEqual(s.failed, 'none');
-  assert.strictEqual(s.menu, 'Sign In');
+  assert.strictEqual(s.menu, 'signed-out');
   await page.close();
 });
 
@@ -152,10 +159,12 @@ for (const query of ['?request=logout', '?signed-out', '?request=logout&signed-o
   });
 }
 
-test('the menu Sign Out is no longer a sign-out URL', async () => {
+test('the menu Sign Out is a button, not a sign-out URL', async () => {
   const { page } = await openPage(SITE + '/canvashare/');
-  await page.waitForFunction(() => document.querySelector('#sign-in-link')?.textContent === 'Sign Out');
-  assert.strictEqual(await page.$eval('#sign-in-link', (a) => a.getAttribute('href')),
-    SITE + '/user/sign-in/');
+  await page.waitForFunction(() => document.getElementById('header')?.dataset.session === 'signed-in');
+  await page.click('.fleet-trigger');
+  assert.strictEqual(await page.$eval('.fleet-account .fleet-row:last-child', (b) => b.tagName + ':' + b.textContent),
+    'BUTTON:Sign out');
+  assert.ok(await page.$$eval('.fleet-panel a', (as) => as.every((a) => !/logout|sign-?out/i.test(a.href))));
   await page.close();
 });

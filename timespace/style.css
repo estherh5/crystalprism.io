@@ -155,3 +155,13 @@ a:focus, button:focus {
     width: 3000px;
   }
 }
+
+/* Fleet menu + footer on the night sky (tokens defaults in common.css) */
+:root {
+  --fleet-accent: #ffffff;
+  --fleet-on-accent: #000000;
+  --fleet-surface: #111111;
+  --fleet-ink: #ffffff;
+  --fleet-muted: #b3b3b3;
+  --fleet-line: #3a3a3a;
+}

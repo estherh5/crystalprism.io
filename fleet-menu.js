@@ -231,13 +231,7 @@
     var footer = el("footer", "fleet-footer");
     var home = el("a", null, "© 2017–" + new Date().getFullYear() + " Crystal Prism");
     home.href = "https://crystalprism.io";
-    var dot = el("span", null, "·");
-    dot.setAttribute("aria-hidden", "true");
-    var all = el("a", null, "All apps");
-    all.href = "https://crystalprism.io/#projects";
     footer.appendChild(home);
-    footer.appendChild(dot);
-    footer.appendChild(all);
     parent.appendChild(footer);
     return footer;
   }

@@ -2,7 +2,6 @@
   /* The fleet apps + account menu and footer (fleet-menu.js, fleet.css) take
   their look from these; an app's own stylesheet may override them */
   --fleet-accent: #000000;
-  --fleet-on-accent: #ffffff;
   --fleet-surface: #ffffff;
   --fleet-ink: #000000;
   --fleet-muted: #4d4d4d;
@@ -15,7 +14,6 @@
 /* The homepage's night view */
 .night-view {
   --fleet-accent: #ffffff;
-  --fleet-on-accent: #000000;
   --fleet-surface: #111111;
   --fleet-ink: #ffffff;
   --fleet-muted: #b3b3b3;
@@ -116,42 +114,48 @@
   z-index: 100;
 }
 
-/* Shield the fleet kit (fleet.css, byte-identical across the fleet) from the
-legacy pages' bare a/button rules: a:hover, button:active, .night-view button
-and the homepage's `color: #808080 !important` outrank its single-class
-selectors and would recolor, re-letter or shift its controls. `html body`
-lifts these above any element+pseudo rule. Only properties those rules
-actually set are re-declared; background, border and font stay fleet.css's.
-Each !important answers a legacy !important: the homepage's hover color,
-Shapes In Rain's button:active shadow */
-html body .fleet-trigger,
-html body .fleet-trigger:hover,
-html body .fleet-trigger:active,
-html body .fleet-trigger:focus {
-  color: var(--fleet-on-accent) !important;
+/* The fleet trigger (createPageHeader passes triggerClass 'cp-fleet-trigger')
+wears the header's own icon-button look, the diamond home mark's at the other
+end: no border, fill, shadow or press, ink dimmed to 0.7 and full on hover,
+the same 2px focus ring on an 8px radius. Every legacy page shares this one
+header, so one class serves them all. `html body` lifts these above the
+legacy pages' bare a/button rules (a:hover, button:active, .night-view
+button, the account pages' button:focus border and hover scale); each
+!important answers a legacy !important: the homepage's hover color, Shapes
+In Rain's button:active shadow, the account pages' focus outline */
+html body .cp-fleet-trigger,
+html body .cp-fleet-trigger:hover,
+html body .cp-fleet-trigger:active,
+html body .cp-fleet-trigger:focus {
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   margin: 0;
   padding: 0;
-  min-width: 0;
-  min-height: 0;
-  text-shadow: none;
-  text-transform: none;
-  letter-spacing: normal;
+  display: inline-grid;
+  place-items: center;
+  border: 0;
+  border-radius: 0;
+  background: none;
+  color: var(--fleet-ink) !important;
   box-shadow: none !important;
-  opacity: 1;
+  text-shadow: none;
+  opacity: 0.7;
   transform: none;
   transition: none;
+  cursor: pointer;
 }
 
-/* Hover/active/focus only: Shapes In Rain and Rhythm of Life repaint a
-pressed or hovered button's background, the homepage and Thought Writer
-bold it, the account pages give a focused one a 2px green border. At rest
-these are fleet.css's alone */
-html body .fleet-trigger:hover,
-html body .fleet-trigger:active,
-html body .fleet-trigger:focus {
-  background-color: var(--fleet-accent);
-  border: 1px solid var(--fleet-line);
-  font-weight: 600;
+html body .cp-fleet-trigger:hover,
+html body .cp-fleet-trigger:focus-visible {
+  opacity: 1;
+}
+
+html body .cp-fleet-trigger:focus-visible {
+  outline: 2px solid var(--fleet-accent) !important;
+  outline-offset: 2px;
+  border-radius: 8px;
 }
 
 html body .fleet-panel a,
@@ -177,14 +181,7 @@ html body .fleet-panel button:active {
   transition: none;
 }
 
-/* The account pages' `button:focus { outline: none !important }` would hide
-the kit's focus ring */
-html body .fleet-trigger:focus-visible {
-  outline: 2px solid var(--fleet-accent) !important;
-  outline-offset: 3px;
-}
-
-/* The account pages' button:active/:focus border, as on the trigger */
+/* The account pages' button:active/:focus border */
 html body .fleet-panel button:active,
 html body .fleet-panel button:focus {
   border: 0;

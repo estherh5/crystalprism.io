@@ -226,7 +226,8 @@ function createPageHeader() {
     apps: localizeFleet(FleetKit.shapeFleet(null, fleetKey, FLEET_FALLBACK)),
     user: null,
     rows: signedOutRows(),
-    placement: 'down-end'
+    placement: 'down-end',
+    triggerClass: 'cp-fleet-trigger'
   });
 
   // Same-origin: every app host proxies /apps.json to the apex copy

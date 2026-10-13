@@ -256,6 +256,28 @@ test('triggerClass joins the kit class and outranks the kit look', async () => {
   await plain.close();
 });
 
+// The kit's look (radius, fill, transition, press) is for a bare trigger only: with an app
+// class on it, a property that class leaves unset must not fall through to the kit's value.
+test('the kit look stays off a classed trigger and on a bare one', async () => {
+  const look = async (page) => {
+    const b = await page.$eval('.fleet-trigger', (t) => { const r = t.getBoundingClientRect(); return [r.x + r.width / 2, r.y + r.height / 2]; });
+    const rest = await page.$eval('.fleet-trigger', (t) => [getComputedStyle(t).borderTopLeftRadius, getComputedStyle(t).transitionDuration, getComputedStyle(t).inlineSize]);
+    await page.mouse.move(b[0], b[1]);
+    await page.mouse.down();
+    await page.waitForTimeout(250);
+    const pressed = await page.$eval('.fleet-trigger', (t) => getComputedStyle(t).transform);
+    await page.mouse.up();
+    return [...rest, pressed];
+  };
+  const page = await mount({ ...base, triggerClass: 'appbtn' });
+  await page.addStyleTag({ content: '.appbtn { border: 3px solid rgb(1, 2, 3); }' });
+  assert.deepStrictEqual(await look(page), ['0px', '0s', '44px', 'none']);
+  await page.close();
+  const plain = await mount(base);
+  assert.deepStrictEqual(await look(plain), ['999px', '0.12s', '44px', 'matrix(0.94, 0, 0, 0.94, 0, 0)']);
+  await plain.close();
+});
+
 test('app icons load eagerly and decode off the main thread', async () => {
   const page = await mount(base);
   await open(page);

@@ -329,18 +329,17 @@ test('getFleetApps never rejects: 500, bad JSON, network error and timeout fall 
   await page.close();
 });
 
-test('renderFooter appends the kit footer with both links', async () => {
+test('renderFooter appends the kit footer with only the Crystal Prism link', async () => {
   const page = await mount(base);
   const f = await page.evaluate(() => {
     FleetKit.renderFooter(document.body);
     const el = document.body.lastElementChild;
     return { tag: el.tagName, cls: el.className, links: [...el.querySelectorAll('a')].map((a) => [a.textContent, a.href]),
-      sep: el.querySelector('span[aria-hidden="true"]').textContent };
+      sep: el.querySelector('span[aria-hidden="true"]'), text: el.textContent };
   });
   const year = new Date().getFullYear();
-  assert.deepStrictEqual(f, { tag: 'FOOTER', cls: 'fleet-footer', sep: '·', links: [
-    ['© 2017–' + year + ' Crystal Prism', 'https://crystalprism.io/'],
-    ['All apps', 'https://crystalprism.io/#projects']] });
+  assert.deepStrictEqual(f, { tag: 'FOOTER', cls: 'fleet-footer', sep: null, text: '© 2017–' + year + ' Crystal Prism', links: [
+    ['© 2017–' + year + ' Crystal Prism', 'https://crystalprism.io/']] });
   await page.close();
 });
 

@@ -50,21 +50,17 @@
     return node;
   }
 
-  function gridGlyph() {
+  // The Crystal Prism gem (favicon.svg): a table, three crown facets, three pavilion
+  // facets. Stroked in currentColor so it takes the host button's ink.
+  function prismGlyph() {
     var svg = document.createElementNS(SVG, "svg");
-    svg.setAttribute("width", "18");
-    svg.setAttribute("height", "18");
-    svg.setAttribute("viewBox", "0 0 18 18");
-    svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("fill", "currentColor");
-    [2, 8, 14].forEach(function (y) {
-      [2, 8, 14].forEach(function (x) {
-        var c = document.createElementNS(SVG, "circle");
-        c.setAttribute("cx", String(x + 1));
-        c.setAttribute("cy", String(y + 1));
-        c.setAttribute("r", "1.6");
-        svg.appendChild(c);
-      });
+    [["width", "20"], ["height", "20"], ["viewBox", "0 0 24 24"], ["aria-hidden", "true"], ["fill", "none"],
+      ["stroke", "currentColor"], ["stroke-width", "1.75"], ["stroke-linejoin", "round"], ["stroke-linecap", "round"]]
+      .forEach(function (kv) { svg.setAttribute(kv[0], kv[1]); });
+    ["M7 3.5h10l5 5.5-10 12L2 9z", "M2 9h20M9.5 3.5 7.5 9 12 21l4.5-12-2-5.5"].forEach(function (d) {
+      var path = document.createElementNS(SVG, "path");
+      path.setAttribute("d", d);
+      svg.appendChild(path);
     });
     return svg;
   }
@@ -75,7 +71,9 @@
     var rows = opts.rows || [];
     var placement = opts.placement === "up-start" ? "up-start" : "down-end";
     var panelId = "fleet-panel-" + (++panelCount);
-    var trigger = el("button", "fleet-trigger");
+    // opts.triggerClass: the app's own icon-button class, so the trigger presses, borders and
+    // hovers like its neighbors; fleet.css keeps the kit look at zero specificity beneath it
+    var trigger = el("button", opts.triggerClass ? "fleet-trigger " + opts.triggerClass : "fleet-trigger");
     var scrim = null;
     var panel = null;
     var pos = {};
@@ -83,22 +81,15 @@
     trigger.setAttribute("aria-expanded", "false");
     container.appendChild(trigger);
 
-    // The user's label, trimmed; "" when blank, so nothing renders an empty initial or line
+    // The user's label, trimmed; "" when blank, so nothing renders an empty line or dangling comma
     function who() {
       return user && typeof user.label === "string" ? user.label.trim() : "";
     }
 
     function paintTrigger() {
       while (trigger.firstChild) trigger.removeChild(trigger.firstChild);
-      if (who()) {
-        var initial = el("span", null, who().charAt(0).toUpperCase());
-        initial.setAttribute("aria-hidden", "true");
-        trigger.appendChild(initial);
-        trigger.setAttribute("aria-label", "Apps and account, " + who());
-      } else {
-        trigger.appendChild(gridGlyph());
-        trigger.setAttribute("aria-label", user ? "Apps and account" : "Apps and sign in");
-      }
+      trigger.appendChild(prismGlyph());
+      trigger.setAttribute("aria-label", who() ? "Apps and account, " + who() : user ? "Apps and account" : "Apps and sign in");
     }
 
     function fillPanel() {

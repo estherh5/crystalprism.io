@@ -1,13 +1,17 @@
 /* Copied byte-identical across the fleet. Per-app look comes ONLY from the
-   --fleet-* tokens each app defines in its globals. */
-.fleet-trigger {
+   --fleet-* tokens each app defines in its globals, plus the app's own button class on
+   the trigger. :where() keeps the trigger's look below here at zero specificity, so that
+   class (FleetMenu triggerClassName) wins outright; this is the fallback without one. */
+:where(.fleet-trigger) {
   inline-size: 44px; block-size: 44px; flex: none;
-  display: inline-grid; place-items: center;
+  display: inline-grid; place-items: center; padding: 0;
   border-radius: 999px; border: 1px solid var(--fleet-line);
   background: var(--fleet-accent); color: var(--fleet-on-accent);
   font: 600 1rem/1 var(--fleet-font); cursor: pointer;
+  transition: transform 120ms ease-out;
 }
-.fleet-trigger:focus-visible { outline: 2px solid var(--fleet-accent); outline-offset: 3px; }
+:where(.fleet-trigger:active) { transform: scale(0.94); }
+:where(.fleet-trigger:focus-visible) { outline: 2px solid var(--fleet-accent); outline-offset: 3px; }
 .fleet-scrim { position: fixed; inset: 0; z-index: 1000; background: transparent; }
 .fleet-panel {
   position: fixed; z-index: 1001;

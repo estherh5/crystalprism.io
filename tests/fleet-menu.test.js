@@ -42,9 +42,9 @@ const signedIn = { ...base, user: { label: 'esther' }, rows: [{ label: 'Settings
 const rowTexts = (page) => page.$$eval('.fleet-account .fleet-row', (n) => n.map((x) => x.textContent));
 const open = (page) => page.click('.fleet-trigger');
 
-test('signed in: initial on the trigger, label + rows in order before every app', async () => {
+test('signed in: prism on the trigger, label + rows in order before every app', async () => {
   const page = await mount(signedIn, { signOut: true });
-  assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.textContent), 'E');
+  assert.deepStrictEqual(await page.$eval('.fleet-trigger', (b) => [b.textContent, b.querySelectorAll('svg path').length]), ['', 2]);
   assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and account, esther');
   await open(page);
   assert.strictEqual(await page.$eval('.fleet-email', (p) => p.textContent), 'esther');
@@ -59,10 +59,10 @@ test('signed in: initial on the trigger, label + rows in order before every app'
   await page.close();
 });
 
-test('signed out with a Sign in row: grid glyph trigger, Sign in only', async () => {
+test('signed out with a Sign in row: prism glyph trigger, Sign in only', async () => {
   const page = await mount({ ...base, rows: [{ label: 'Sign in', href: '/sign-in/' }] });
   assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and sign in');
-  assert.strictEqual(await page.$$eval('.fleet-trigger svg circle', (c) => c.length), 9);
+  assert.strictEqual(await page.$$eval('.fleet-trigger svg path', (c) => c.length), 2);
   await open(page);
   assert.deepStrictEqual(await rowTexts(page), ['Sign in']);
   assert.strictEqual(await page.$('.fleet-email'), null);
@@ -230,7 +230,7 @@ test('320px phone sheet: every live app name wraps between words, never inside o
   await page.close();
 });
 
-test('a blank or whitespace label: grid glyph, no dangling comma, no email line, rows kept', async () => {
+test('a blank or whitespace label: prism glyph, no dangling comma, no email line, rows kept', async () => {
   for (const label of ['', '   ']) {
     const page = await mount({ ...signedIn, user: { label } });
     assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.getAttribute('aria-label'), t.textContent, !!t.querySelector('svg')]),
@@ -241,8 +241,19 @@ test('a blank or whitespace label: grid glyph, no dangling comma, no email line,
     await page.close();
   }
   const page = await mount({ ...signedIn, user: { label: ' esther ' } });
-  assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.getAttribute('aria-label'), t.textContent]), ['Apps and account, esther', 'E']);
+  assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.getAttribute('aria-label'), t.textContent]), ['Apps and account, esther', '']);
   await page.close();
+});
+
+test('triggerClass joins the kit class and outranks the kit look', async () => {
+  const page = await mount({ ...base, triggerClass: 'appbtn' });
+  await page.addStyleTag({ content: '.appbtn { border: 3px solid rgb(1, 2, 3); }' });
+  assert.deepStrictEqual(await page.$eval('.fleet-trigger', (t) => [t.className, getComputedStyle(t).borderTopWidth, getComputedStyle(t).borderTopColor]),
+    ['fleet-trigger appbtn', '3px', 'rgb(1, 2, 3)']);
+  await page.close();
+  const plain = await mount(base);
+  assert.strictEqual(await plain.$eval('.fleet-trigger', (t) => t.className), 'fleet-trigger');
+  await plain.close();
 });
 
 test('app icons load eagerly and decode off the main thread', async () => {
@@ -268,7 +279,7 @@ test('setApps and setUser update the trigger and an open panel', async () => {
     window.menu.setUser({ label: 'zed' }, [{ label: 'Settings', href: '/s' }]);
     window.menu.setApps([{ key: 'x', name: 'Only', url: 'https://x.crystalprism.io/', icon: '/i.png', tagline: 't', status: 'live', current: false }]);
   });
-  assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.textContent), 'Z');
+  assert.strictEqual(await page.$eval('.fleet-trigger', (b) => b.getAttribute('aria-label')), 'Apps and account, zed');
   assert.deepStrictEqual(await rowTexts(page), ['Settings']);
   assert.deepStrictEqual(await page.$$eval('.fleet-app', (a) => a.map((x) => x.textContent)), ['Only']);
   await page.evaluate(() => window.menu.close());

@@ -103,12 +103,19 @@ Note vitals is **not** on the crystalprism SSO ring: its cookie is
 
 ### tide
 
-Its migrations replay cleanly onto an empty file, so no `drizzle-kit push` is
-needed. The env var is `DATABASE_URL`, not `TURSO_DATABASE_URL`.
+Build `demo.db` from scratch with tide's OWN migrator (`npm run db:migrate`),
+not `lib/apply-migrations.mjs`. The generic runner dies on 0031, whose only
+statement is a `/* */` comment, and it writes no `__drizzle_migrations` ledger
+either way. A `demo.db` with no ledger, or one that predates the newest
+migration, fails sign-in with "admission lookup failed" because the `user`
+table lacks the newer columns. Delete the old file first; the seed dates every
+row relative to today, so a re-seed also keeps current-month figures off $0.
+The env var is `DATABASE_URL`, not `TURSO_DATABASE_URL`.
 
 ```sh
 cd ~/Developer/tide
-node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs ./db/migrations "file:$(pwd)/demo.db"
+rm -f demo.db
+DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN= npm run db:migrate
 DATABASE_URL="file:$(pwd)/demo.db" node ~/Developer/crystalprism.io/tools/tours/seeds/tide.mjs
 DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN="" AUTH_TRUST_HOST=true npm run build
 DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN="" AUTH_TRUST_HOST=true PORT=3260 npm run start

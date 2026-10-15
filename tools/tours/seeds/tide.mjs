@@ -592,8 +592,8 @@ function pushTxn({ at, payee, raw, amountCents, accountId, categoryId, isPending
   stmts.push({
     sql: `INSERT INTO "transaction"
       (id, userId, accountId, externalId, postedAt, amountCents, payee, rawDescription,
-       bankPayee, categoryId, isPending, transferPairId, note, createdAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, NULL, ?)`,
+       bankPayee, categoryId, isPending, note, createdAt)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?)`,
     args: [
       id, USER.id, accountId, `demo-${id}-${randomUUID().slice(0, 8)}`,
       at.getTime(), amountCents, payee, raw, payee, splits ? null : categoryId,

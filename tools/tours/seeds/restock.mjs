@@ -116,6 +116,19 @@ const ITEMS = [
   ['paper-trash', 'Kitchen Trash Bags 13-Gal', 'Paper Goods', 'boxes', '\u{1F5D1}', 2, 1, 0.045, 2, 45, 999, null],
 ];
 
+// Product links for a handful of items, so the demo shows "Buy ↗" (the
+// item has somewhere to buy from) next to "Add link" (it doesn't). Most of
+// the links sit on low-stock items, because that is where the action shows.
+const PRODUCT_URLS = {
+  'sup-vitd': 'https://example.com/vitamin-d3-5000-iu',
+  'sup-omega': 'https://example.com/omega-3-fish-oil',
+  'pan-oliveoil': 'https://example.com/extra-virgin-olive-oil',
+  'bath-toothpaste': 'https://example.com/fluoride-free-toothpaste',
+  'clean-sponges': 'https://example.com/scrub-sponges-multipack',
+  'pet-dogfood': 'https://example.com/salmon-rice-dog-food-30lb',
+  'paper-towels': 'https://example.com/select-a-size-paper-towels',
+};
+
 // ---------------------------------------------------------------------------
 // Adjustment history — deterministic per item (seeded on its id), so re-runs
 // of this script produce the same demo data.
@@ -243,11 +256,11 @@ for (const [
       (id, householdId, name, category, unit, qty, reorderAt, imageKind, emoji, photoUrl, url,
        defaultPerDay, snsEnabled, snsIntervalDays, snsNextAt, expiresAt, deliveryQty, priceCents,
        createdAt, updatedAt)
-      VALUES (?, ?, ?, ?, ?, ?, ?, 'emoji', ?, NULL, NULL,
+      VALUES (?, ?, ?, ?, ?, ?, ?, 'emoji', ?, NULL, ?,
        NULL, ?, NULL, ?, NULL, ?, ?,
        ?, ?)`,
     args: [
-      id, HOUSEHOLD_ID, name, category, unit, qty, reorderAt, emoji,
+      id, HOUSEHOLD_ID, name, category, unit, qty, reorderAt, emoji, PRODUCT_URLS[id] ?? null,
       snsEnabled ? 1 : 0, snsNextAt, deliveryQty, priceCents,
       now - 180 * DAY, now - Math.round((1 + hashSeed(id) % 5) * DAY),
     ],

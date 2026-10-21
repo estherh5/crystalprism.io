@@ -33,6 +33,8 @@ const OWNER = 'demo@crystalprism.io';
 const now = Date.now();
 const day = 86_400_000;
 const sec = (ms) => Math.floor(ms / 1000);
+// toile scopes designs, swatches and inspirations by owner_email (multi-user since
+// 2026-10); a row without it belongs to no one and the signed-in home reads empty.
 // designs.library_version: the value every row in a current toile DB carries.
 const LIBRARY_VERSION = 1;
 
@@ -161,18 +163,18 @@ await db.batch([
   'DELETE FROM feedback_messages', 'DELETE FROM feedback', 'DELETE FROM design_pins', 'DELETE FROM designs',
   'DELETE FROM swatches', 'DELETE FROM inspirations',
   ...SWATCHES.map((s) => ({
-    sql: `INSERT INTO swatches (id, photo_key, status, name, price_cents, amount, amount_unit, fibre, fabric_type, notes, created_at)
-          VALUES (?, ?, ?, ?, ?, ?, 'm', ?, ?, ?, ?)`,
-    args: [s.id, s.key, s.status, s.name, s.price, s.amount, s.fibre, s.fabricType, 'Synthetic demo swatch: pattern drawn in SVG.', s.at],
+    sql: `INSERT INTO swatches (id, owner_email, photo_key, status, name, price_cents, amount, amount_unit, fibre, fabric_type, notes, created_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, 'm', ?, ?, ?, ?)`,
+    args: [s.id, OWNER, s.key, s.status, s.name, s.price, s.amount, s.fibre, s.fabricType, 'Synthetic demo swatch: pattern drawn in SVG.', s.at],
   })),
   ...INSPIRATIONS.map((r) => ({
-    sql: `INSERT INTO inspirations (id, photo_key, note, created_at) VALUES (?, ?, ?, ?)`,
-    args: [r.id, r.key, r.note, r.at],
+    sql: `INSERT INTO inspirations (id, owner_email, photo_key, note, created_at) VALUES (?, ?, ?, ?, ?)`,
+    args: [r.id, OWNER, r.key, r.note, r.at],
   })),
   ...DESIGNS.map((d) => ({
-    sql: `INSERT INTO designs (id, title, status, notes, library_version, layers, created_at, updated_at)
-          VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-    args: [d.id, d.title, d.status, 'Synthetic demo design.', LIBRARY_VERSION, JSON.stringify(d.layers),
+    sql: `INSERT INTO designs (id, owner_email, title, status, notes, library_version, layers, created_at, updated_at)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    args: [d.id, OWNER, d.title, d.status, 'Synthetic demo design.', LIBRARY_VERSION, JSON.stringify(d.layers),
       sec(now - (d.age + 3) * day), sec(now - d.age * day)],
   })),
   ...[

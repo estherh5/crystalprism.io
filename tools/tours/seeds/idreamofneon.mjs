@@ -95,26 +95,43 @@ const REFS = [
   [21, 5], [21, 1],
 ];
 
-// name, kind, dream indexes it appears in
+// name, kind, dream indexes it appears in, other wordings the dreams use for it.
+// The wordings become entity_mentions.forms, which is what an element page
+// windows its excerpts on and marks, so "the bridge near Kelvin Street" lights
+// up under "Kelvin Street bridge". The app's recompute writes them from its
+// extraction; this seed cannot run that pass, because it rebuilds the elements
+// from scratch and would throw away the curated list below.
 const ENTITIES = [
-  ['Sofia', 'person', [1, 5, 13, 21, 23, 25]],
-  ['Marguerite', 'person', [6, 12, 17]],
-  ['Callum', 'person', [9, 15, 18]],
-  ['my grandmother\'s house', 'place', [0, 2, 7, 11, 16, 19, 24]],
-  ['Kelvin Street bridge', 'place', [4, 10, 14, 22]],
-  ['the reservoir', 'place', [9, 18]],
-  ['the old flat', 'place', [3, 20]],
-  ['the theater', 'place', [6, 12, 17]],
-  ['the supermarket', 'place', [8, 13, 25]],
-  ['owls', 'thing', [3, 8, 16, 20, 25]],
-  ['green carpet', 'thing', [0, 2, 7, 16, 19, 24]],
-  ['rising water', 'thing', [1, 5, 9, 15, 23]],
-  ['tea', 'thing', [1, 23]],
-  ['a door I do not open', 'situation', [0, 11, 21, 24]],
-  ['being unprepared', 'situation', [6, 12]],
-  ['something that keeps extending', 'situation', [4, 10, 14, 22]],
-  ['a place that is longer inside', 'situation', [0, 2, 19, 24]],
+  ['Sofia', 'person', [1, 5, 13, 21, 23, 25], []],
+  ['Marguerite', 'person', [6, 12, 17], []],
+  ['Callum', 'person', [9, 15, 18], []],
+  ['my grandmother\'s house', 'place', [0, 2, 7, 11, 16, 19, 24], ['my grandmother\'s', 'the house', 'the airing cupboard', 'the extra corridor']],
+  ['Kelvin Street bridge', 'place', [4, 10, 14, 22], ['the bridge near Kelvin Street', 'bridge near Kelvin Street', 'the Kelvin Street bridge']],
+  ['the reservoir', 'place', [9, 18], ['black water']],
+  ['the old flat', 'place', [3, 20], []],
+  ['the theater', 'place', [6, 12, 17], ['theater']],
+  ['the supermarket', 'place', [8, 13, 25], ['supermarket']],
+  ['owls', 'thing', [3, 8, 16, 20, 25], ['six owls']],
+  ['green carpet', 'thing', [0, 2, 7, 16, 19, 24], []],
+  ['rising water', 'thing', [1, 5, 9, 15, 23], ['water was rising', 'the tide', 'the water']],
+  ['tea', 'thing', [1, 23], []],
+  ['a door I do not open', 'situation', [0, 11, 21, 24], ['a door I did not open', 'the door I do not open', 'the far door']],
+  ['being unprepared', 'situation', [6, 12], ['a play I had never read', 'had not read the play']],
+  ['something that keeps extending', 'situation', [4, 10, 14, 22], ['kept extending', 'extend above me']],
+  ['a place that is longer inside', 'situation', [0, 2, 19, 24], ['further than the house could possibly go', 'longer on the inside']],
 ];
+
+// The wordings of an element that this night's body actually contains, as
+// written, for entity_mentions.forms. NULL when none do (the night only implies
+// it), which an element page reads as "mark the name alone".
+const formsIn = (body, names) => {
+  const found = [];
+  for (const n of names) {
+    const at = body.toLowerCase().indexOf(n.toLowerCase());
+    if (at !== -1) found.push(body.slice(at, at + n.length));
+  }
+  return found.length ? JSON.stringify([...new Set(found)]) : null;
+};
 
 const stmts = [];
 for (const t of ['entity_mentions', 'entities', 'dream_refs', 'dream_entries', 'dreams', 'users']) {
@@ -135,6 +152,12 @@ DREAMS.forEach(([title, daysAgo, mood, body], i) => {
       VALUES (?, 1, ?, ?, ?, ?, NULL, NULL, NULL, NULL, ?, ?, ?)`,
     args: [i + 1, title, body, dstr(daysAgo), mood, now - daysAgo * day, now - daysAgo * day, refCount],
   });
+  // The dream page and element excerpts read the night's text from its
+  // entries, not dreams.body: one entry per night, as insertDream writes it.
+  stmts.push({
+    sql: 'INSERT INTO dream_entries (dream_id, position, body, song_checked) VALUES (?, 0, ?, 0)',
+    args: [i + 1, body],
+  });
 });
 
 REFS.forEach(([s, t]) => {
@@ -144,22 +167,22 @@ REFS.forEach(([s, t]) => {
   });
 });
 
-ENTITIES.forEach(([name, kind, dreamIdx], i) => {
+ENTITIES.forEach(([name, kind, dreamIdx, wordings], i) => {
   stmts.push({
     sql: 'INSERT INTO entities (id, user_id, name, kind, dream_count, hidden, created_at) VALUES (?, 1, ?, ?, ?, 0, ?)',
     args: [i + 1, name, kind, dreamIdx.length, now - 400 * day],
   });
   for (const d of dreamIdx) {
     stmts.push({
-      sql: 'INSERT INTO entity_mentions (entity_id, dream_id, count) VALUES (?, ?, ?)',
-      args: [i + 1, d + 1, 1 + (d % 2)],
+      sql: 'INSERT INTO entity_mentions (entity_id, dream_id, count, forms) VALUES (?, ?, ?, ?)',
+      args: [i + 1, d + 1, 1 + (d % 2), formsIn(DREAMS[d][3], [name, ...wordings])],
     });
   }
 });
 
 await db.batch(stmts, 'write');
 
-for (const t of ['dreams', 'dream_refs', 'entities', 'entity_mentions']) {
+for (const t of ['dreams', 'dream_entries', 'dream_refs', 'entities', 'entity_mentions']) {
   const { rows } = await db.execute(`SELECT COUNT(*) AS n FROM ${t}`);
   console.log(`  ${t}: ${rows[0].n}`);
 }

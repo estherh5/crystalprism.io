@@ -64,4 +64,10 @@
   padding: 32px 16px calc(24px + var(--fleet-footer-clear, 0px));
   color: var(--fleet-muted); font: 0.8125rem/1.4 var(--fleet-font);
 }
-.fleet-footer a { color: inherit; text-underline-offset: 3px; }
+/* A 44px tap band. The negative block margin hands back what it adds, (1lh - 44px) / 2 a side,
+   so the footer keeps its height and the text its baseline. */
+.fleet-footer a {
+  display: inline-flex; align-items: center; min-height: 44px; padding-inline: 8px;
+  margin-block: calc((1lh - 44px) / 2);
+  color: inherit; text-underline-offset: 3px;
+}

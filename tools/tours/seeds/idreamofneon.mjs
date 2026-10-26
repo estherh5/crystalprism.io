@@ -144,7 +144,9 @@ stmts.push({
 });
 
 DREAMS.forEach(([title, daysAgo, mood, body], i) => {
-  const refCount = REFS.filter(([s, t]) => s === i || t === i).length;
+  // Incoming only, as the app's ref-counts.mjs writes it: how many other nights
+  // call back to this one.
+  const refCount = REFS.filter(([, t]) => t === i).length;
   stmts.push({
     sql: `INSERT INTO dreams
       (id, user_id, title, body, dream_date, mood, song, source_id, source_modified,

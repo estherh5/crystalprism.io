@@ -77,6 +77,9 @@
     var scrim = null;
     var panel = null;
     var pos = {};
+    // A busyLabel row's action in flight, and the failLabel left by a rejected one
+    var busy = false;
+    var failed = null;
     trigger.type = "button";
     trigger.setAttribute("aria-expanded", "false");
     container.appendChild(trigger);
@@ -106,11 +109,13 @@
             node = el("button", "fleet-row", row.label);
             node.type = "button";
             node.addEventListener("click", function () {
+              if (row.busyLabel) return run(row, node);
               hide(false);
               if (row.onSelect) row.onSelect();
             });
           }
           account.appendChild(node);
+          if (row.busyLabel) paintBusy(row, node);
         });
         panel.appendChild(account);
       }
@@ -135,6 +140,45 @@
       panel.appendChild(list);
     }
 
+    // The row stays and reads its busyLabel until the action lands; a redirect replaces the
+    // page, a resolve closes the menu, a rejection keeps it open with failLabel as an alert
+    function run(row, node) {
+      if (busy) return;
+      busy = true;
+      failed = null;
+      paintBusy(row, node);
+      new Promise(function (resolve) { resolve(row.onSelect && row.onSelect()); }).then(function () {
+        busy = false;
+        hide(true);
+      }, function () {
+        busy = false;
+        failed = row.failLabel || null;
+        if (node.parentNode) paintBusy(row, node);
+      });
+    }
+
+    // Paints a busyLabel row in place, so focus stays on it, with its alert after it
+    function paintBusy(row, node) {
+      while (node.firstChild) node.removeChild(node.firstChild);
+      if (busy) {
+        var spinner = el("span", "fleet-spinner");
+        spinner.setAttribute("aria-hidden", "true");
+        node.appendChild(spinner);
+        node.appendChild(document.createTextNode(row.busyLabel));
+        node.setAttribute("aria-disabled", "true");
+      } else {
+        node.textContent = row.label;
+        node.removeAttribute("aria-disabled");
+      }
+      var next = node.nextSibling;
+      if (next && next.className === "fleet-alert") next.parentNode.removeChild(next);
+      if (failed) {
+        var alert = el("p", "fleet-alert", failed);
+        alert.setAttribute("role", "alert");
+        node.parentNode.insertBefore(alert, node.nextSibling);
+      }
+    }
+
     function onKey(e) {
       if (e.key === "Escape") return hide(true);
       if (e.key !== "Tab" || !panel) return;
@@ -146,11 +190,12 @@
     }
 
     function onDown(e) {
+      if (busy) return;
       if ((panel && panel.contains(e.target)) || trigger.contains(e.target)) return;
       hide(true);
     }
 
-    function onResize() { hide(false); }
+    function onResize() { if (!busy) hide(false); }
 
     function show() {
       var r = trigger.getBoundingClientRect();
@@ -161,6 +206,7 @@
       pos = placement === "up-start"
         ? { bottom: vh - r.top + 8, left: Math.max(16, r.left), maxBlockSize: Math.max(160, Math.min(640, r.top - 24)) }
         : { top: r.bottom + 8, right: Math.max(16, vw - r.right), maxBlockSize: Math.max(160, Math.min(640, vh - r.bottom - 24)) };
+      failed = null;
       scrim = el("div", "fleet-scrim");
       scrim.setAttribute("aria-hidden", "true");
       panel = el("div", "fleet-panel");

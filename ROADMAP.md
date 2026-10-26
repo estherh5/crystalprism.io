@@ -7,6 +7,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **Sign out stays in the open menu until it lands.** The vanilla fleet kit (`fleet-menu.js` + `fleet.css`, recopied byte-identical to marian and hn-stats) gained the React kit's busy state: a row with a `busyLabel` keeps the panel open reading "Signing out…" beside a spinner, `aria-disabled`, and outside presses and scroll no longer close it mid-sign-out; a rejected action shows its `failLabel` as a `role="alert"` line. Before, the panel closed first, so the "Signing out…" row `common.js` swapped in was never seen.
 - **2026-10** **The fleet apps + account menu and footer on the homepage and all six legacy apps.**
   The homepage, Timespace, Shapes In Rain, Rhythm of Life, CanvaShare, Thought Writer and
   Vicarious (and the account pages) now carry the fleet kit: the old top-left diamond dropdown

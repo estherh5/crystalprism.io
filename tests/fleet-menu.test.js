@@ -182,6 +182,50 @@ test('an onSelect row closes the panel and runs its action', async () => {
   await page.close();
 });
 
+// A Sign out row with a busyLabel; window.land / window.fail settle its action
+async function mountBusy() {
+  const page = await mount(signedIn);
+  await page.evaluate(() => {
+    window.menu.setUser({ label: 'esther' }, [{ label: 'Sign out', busyLabel: 'Signing out…', failLabel: 'Couldn’t sign out.',
+      onSelect: () => { window.signedOut++; return new Promise((res, rej) => { window.land = res; window.fail = rej; }); } }]);
+  });
+  await open(page);
+  return page;
+}
+
+test('a busyLabel row stays open reading its busyLabel until the action lands, then closes', async () => {
+  const page = await mountBusy();
+  await page.click('text=Sign out');
+  const row = await page.$eval('.fleet-account .fleet-row', (r) => [r.textContent, r.getAttribute('aria-disabled'),
+    r.querySelector('.fleet-spinner')?.getAttribute('aria-hidden'), document.activeElement === r]);
+  assert.deepStrictEqual(row, ['Signing out…', 'true', 'true', true]);
+  await page.click('.fleet-account .fleet-row', { force: true });
+  await page.dispatchEvent('main', 'pointerdown');
+  await page.evaluate(() => window.dispatchEvent(new Event('scroll')));
+  assert.strictEqual(await page.evaluate(() => window.signedOut), 1);
+  assert.ok(await page.$('.fleet-panel'));
+  await page.evaluate(() => window.land());
+  await page.waitForSelector('.fleet-panel', { state: 'detached' });
+  assert.strictEqual(await page.evaluate(() => document.activeElement.className), 'fleet-trigger');
+  await page.close();
+});
+
+test('a rejected busyLabel row keeps the menu open with its failLabel alert and retries', async () => {
+  const page = await mountBusy();
+  await page.click('text=Sign out');
+  await page.evaluate(() => window.fail(new Error('offline')));
+  await page.waitForSelector('[role="alert"]');
+  assert.strictEqual(await page.$eval('[role="alert"]', (a) => a.className + ':' + a.textContent), 'fleet-alert:Couldn’t sign out.');
+  assert.deepStrictEqual(await page.$eval('.fleet-account .fleet-row', (r) => [r.textContent, r.getAttribute('aria-disabled')]), ['Sign out', null]);
+  await page.click('text=Sign out');
+  assert.strictEqual(await page.evaluate(() => window.signedOut), 2);
+  assert.strictEqual(await page.$('[role="alert"]'), null);
+  await page.keyboard.press('Escape');
+  await open(page);
+  assert.strictEqual(await page.$('[role="alert"]'), null);
+  await page.close();
+});
+
 test('down-end: below the trigger, right-aligned, height capped to the room below', async () => {
   const page = await mount(base, { height: 420 });
   await page.addStyleTag({ content: '#slot{position:fixed;top:12px;right:36px}' });

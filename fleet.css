@@ -43,6 +43,13 @@
   border-radius: 8px; cursor: pointer;
 }
 .fleet-row:hover, .fleet-row:focus-visible { background: color-mix(in srgb, var(--fleet-accent) 12%, transparent); }
+.fleet-row[aria-disabled="true"] { cursor: progress; }
+/* Sign out in flight; a still ring where motion is reduced, the label carries the state */
+.fleet-spinner {
+  flex: none; inline-size: 1em; block-size: 1em; margin-inline-end: 8px; box-sizing: border-box;
+  border: 2px solid currentColor; border-block-start-color: transparent; border-radius: 999px;
+}
+.fleet-alert { margin: 4px 8px 0; color: var(--fleet-ink); font-size: 0.8125rem; line-height: 1.4; }
 @media (max-width: 639px) {
   .fleet-scrim { background: rgb(0 0 0 / 0.35); }
   .fleet-panel {
@@ -57,6 +64,8 @@
 }
 @media (prefers-reduced-motion: no-preference) {
   .fleet-panel { animation: fleet-in 140ms ease-out; }
+  .fleet-spinner { animation: fleet-spin 800ms linear infinite; }
+  @keyframes fleet-spin { to { transform: rotate(360deg); } }
   @keyframes fleet-in { from { opacity: 0; transform: translateY(6px); } }
 }
 .fleet-footer {

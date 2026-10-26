@@ -345,7 +345,7 @@ function showSignedOut() {
 
 
 // Show `username` as signed in (also after My Account renames them). While a
-// sign-out is in flight the last row says so, and choosing it does nothing
+// sign-out is in flight the kit keeps the menu open on "Signing out…"
 function showSignedIn(username) {
   menuUsername = username;
   if (fleetMenu) {
@@ -353,8 +353,7 @@ function showSignedIn(username) {
       { label: 'Profile',
         href: appUrl('account', '?username=' + encodeURIComponent(username)) },
       { label: 'Settings', href: appUrl('account', 'my-account/') },
-      signingOut ? { label: 'Signing out…', onSelect: function() {} }
-        : { label: 'Sign out', onSelect: signOut }
+      { label: 'Sign out', busyLabel: 'Signing out…', onSelect: signOut }
     ]);
   }
   return;
@@ -528,10 +527,9 @@ function signOut() {
     return;
   }
   signingOut = true;
-  showSignedIn(menuUsername);
   document.body.style.cursor = 'progress';
 
-  requestLogout().then(function() {
+  return requestLogout().then(function() {
     window.location = appUrl('account', 'sign-in/?signed-out');
   });
 }

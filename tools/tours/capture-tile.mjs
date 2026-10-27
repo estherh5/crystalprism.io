@@ -157,6 +157,23 @@ const APPS = {
     // ends there; scrollY cannot help a page that short.
     cssWidth: 1180,
   },
+  passage: {
+    // Minting runs against the real checkout's next-auth (read-only); the
+    // SERVER runs from a copy, because launchd's passage-web serves
+    // ~/Developer/passage/.next and a build there would replace her live one.
+    dir: 'Developer/passage', appPort: 3330, proxyPort: 3331,
+    userId: 'demo-user-passage', route: '/trips/trip-lisbon',
+    wait: '.maplibregl-canvas',
+    // On the SSO ring. Stamping all three of passage's own claims keeps every
+    // session read local: without `ringCheckedAt` the server asks the ring
+    // endpoint on crystalprism.io whether this invented session is current.
+    extraClaims: { 'checkedAt:passage': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    // 1100 keeps the masthead stamp and the trip map side by side with the
+    // page's own max-w-5xl column filling the frame. scrollY 110 lifts the
+    // app header off the top so the itinerary map lands whole under the title.
+    cssWidth: 1100,
+    scrollY: 110,
+  },
 };
 
 const name = process.argv[2];

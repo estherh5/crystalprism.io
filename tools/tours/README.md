@@ -331,6 +331,36 @@ Pins reveal on HOVER (`onMouseEnter`), so the tour glides onto `.photo-frame`
 and holds — it must not click, because on a hover-capable device the click
 toggles the reveal straight back off.
 
+### passage
+
+**Build in a COPY, never in `~/Developer/passage`.** launchd's
+`com.esther.passage-web` serves that checkout's `.next` on :4700, so a demo
+build there replaces her live one. Its `.env.local` DATABASE_URL is production
+too; `git archive` leaves every env file behind, so the copy has no
+credentials at all. Every trip is invented and every photo is a drawing the
+seed renders into the copy's `public/uploads/demo/`, which must happen before
+the build (a production server only serves what `public/` held at build time).
+
+```sh
+C=/tmp/passage-demo && rm -rf $C && mkdir -p $C
+git -C ~/Developer/passage archive origin/main | tar -x -C $C
+cp -Rc ~/Developer/passage/node_modules $C/          # APFS clone, ~free
+node ~/Developer/crystalprism.io/tools/tours/lib/apply-migrations.mjs $C/db/migrations "file:$C/demo.db"
+(cd ~/Developer/crystalprism.io/tools/tours && DATABASE_URL="file:$C/demo.db" PASSAGE_APP_DIR=$C node seeds/passage.mjs)
+export AUTH_SECRET="$(openssl rand -base64 32)"
+export DATABASE_URL="file:$C/demo.db" DATABASE_AUTH_TOKEN= ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true
+cd $C && npm run build && (npx next start -H 127.0.0.1 -p 3330 &)
+```
+
+Keep `AUTH_SECRET` exported for `capture-tile.mjs passage` and `run.mjs passage`.
+The session is minted by the real checkout's `next-auth` (read-only). It
+carries `checkedAt:passage`, `signedInAt` and `ringCheckedAt`, so no session
+read calls the ring endpoint on crystalprism.io.
+
+The trip page runs six maplibre maps, which keep headless Chromium's main
+thread busy for seconds. So the tour scrolls with one in-page smooth
+`scrollBy` per move instead of `glideScroll`. Queued wheel events crawl, and
+any that land on a map zoom the map instead of scrolling the page.
 
 ### then
 

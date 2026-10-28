@@ -3,7 +3,7 @@
   "private": true,
   "scripts": { "test": "node --test" },
   "devDependencies": {
-    "dompurify": "3.4.16",
+    "dompurify": "3.4.17",
     "playwright": "1.62.1"
   }
 }

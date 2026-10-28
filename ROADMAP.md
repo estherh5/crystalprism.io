@@ -122,6 +122,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
+- **Whole-app impeccable critique + audit.** Not yet run on this app (checked 2026-10-27). One session, in its own worktree: (1) polish every route; (2) critique A (design) and critique B (detector + browser) in parallel, on desktop and phone, per the impeccable skill's `critique.md`; (3) fix every P0 and P1; (4) re-run the critique to confirm it is clean; (5) persist the snapshot with `critique-storage.mjs` and add a Shipped line `impeccable <n>/40, <date>`. Steps: the `new-app` skill, Shipping section. Almanac's pass (2026-10-19, 24/40) still found P1s that ~65 per-feature passes had missed. **Loading states, part of step (1):** hand-written static site, so there is no `loading.tsx`: check every fetch-on-mount fills its own slot and ends in content, empty or a visible failure with Retry. Candidates (checked 2026-10-27): `vicarious/main.js` has a loading animation but no Retry; `main.js`, `thought-writer/main.js`, `thought-writer/post/main.js`, `canvashare/main.js`, `user/main.js`, `rhythm-of-life/main.js` and `shapes-in-rain/main.js` already have loading and retry, so confirm only. `thought-writer/editor`, `canvashare/easel` and the `user/` sign-in, create-account and my-account forms are the network-bound controls to check. Then check every network-bound control shows a busy state on itself. Rule: "Async actions & progress" in `~/Developer/DESIGN.md`; nexus's Past chats sheet (`web/components/PersonChat.tsx`) is the reference for an in-sheet list.
 
 ## Declined
 

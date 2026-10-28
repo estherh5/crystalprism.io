@@ -29,7 +29,7 @@ header {
   margin: 0 -16px;
   padding: 12px 16px;
 }
-header a { display: inline-block; line-height: 0; }
+header a { display: inline-block; line-height: 0; padding: 6px; margin: -6px; } /* a 44px target around the 32px mark */
 header img { height: 32px; width: 32px; }
 main { max-width: 38rem; margin: 0 auto; }
 h1 {

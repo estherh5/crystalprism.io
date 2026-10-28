@@ -59,3 +59,27 @@ function moveThroughTime() {
 
   return;
 }
+
+
+/* The soundtrack toggle (built by audio-embed.js inside #audio-container, now
+a button): name its icon and report on/off as the button's pressed state */
+new MutationObserver(function() {
+  var container = document.getElementById('audio-container');
+  var icon = document.getElementById('audio-icon');
+
+  if (icon) {
+    icon.alt = '';
+    container.setAttribute('aria-pressed',
+      /on\.svg$/.test(icon.getAttribute('src') || '') ? 'true' : 'false');
+  }
+
+  // The hidden player frame is not a stop on the tab order
+  var frame = container.getElementsByTagName('iframe')[0];
+  if (frame && frame.tabIndex != -1) {
+    frame.tabIndex = -1;
+    frame.setAttribute('aria-hidden', 'true');
+  }
+
+  return;
+}).observe(document.getElementById('audio-container'), {childList: true,
+  subtree: true, attributes: true, attributeFilter: ['src']});

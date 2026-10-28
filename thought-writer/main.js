@@ -3,6 +3,7 @@ var errorMessage;
 var requestStart = 0; // Range start for number of posts to request from server
 var requestEnd = 12; // Range end for number of posts to request from server
 var morePostsToDisplay = false;
+var loadingPosts = false; // True while a request for posts is in flight
 var postBoard = document.getElementById('post-board');
 
 
@@ -31,6 +32,8 @@ window.onload = function() {
 function retryFunctions() {
   // Clear post board to display most up-to-date server posts
   postBoard.innerHTML = '';
+  requestStart = 0;
+  requestEnd = 12;
 
   checkIfLoggedIn();
   loadPosts();
@@ -41,124 +44,110 @@ function retryFunctions() {
 
 // Load posts from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/posts?start=' + requestStart + '&end=' +
-    requestEnd)
+  var start = requestStart;
+  loadingPosts = true;
+  morePostsToDisplay = false;
 
-      /* Display error message if server is down and error isn't already
-      displayed (i.e., prevent multiple errors when scrolling to load more
-      posts) */
-      .catch(function(error) {
-        // Add server down banner to page (from common.js script)
-        pingServer(retryFunctions);
+  // Remove the empty-board message if it is displayed
+  if (errorMessage && errorMessage.parentNode == postBoard) {
+    postBoard.removeChild(errorMessage);
+  }
 
-        // Display cached posts if they are stored in localStorage
-        if (localStorage.getItem('thought-writer-post-board-posts')) {
-          var posts = JSON.parse(localStorage
-            .getItem('thought-writer-post-board-posts'));
+  // Loading shows in the board from the first frame, below any posts
+  slotLoading(postBoard, start == 0 ? 'Loading posts…' : 'Loading more posts…');
 
-          /* Assess if there are more than requested posts - 1 (number of
-          loaded posts) */
-          if (posts.length > (requestEnd - 1)) {
-            morePostsToDisplay = true;
-            var loadNumber = requestEnd - 1;
-          }
+  return fetchWithTimeout(api + '/thought-writer/posts?start=' + start +
+    '&end=' + requestEnd)
 
-          // If there are not, load all posts
-          else {
-            morePostsToDisplay = false;
-            var loadNumber = posts.length;
-          }
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
+      }
 
-          displayPosts(posts.slice(requestStart, loadNumber));
-        }
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        // Otherwise, display error message
-        else if (!errorMessage || errorMessage.parentNode != postBoard) {
+      return response.json();
+    })
+
+    .then(function(posts) {
+      loadingPosts = false;
+      clearSlotStatus(postBoard);
+
+      // An empty board says so, and how to fill it
+      if (posts.length == 0) {
+        if (start == 0) {
           errorMessage = document.createElement('text');
           errorMessage.id = 'error-message';
-          errorMessage.innerHTML = 'There was an error loading the post ' +
-            'board. Please refresh the page.';
+          errorMessage.textContent = 'There are no posts on the post board. ' +
+            'Click the yellow paper icon to create one.';
           postBoard.appendChild(errorMessage);
         }
 
         return;
-      })
+      }
 
-      .then(function(response) {
-        if (response) {
-          // Remove server down banner from page (from common.js script)
-          pingServer();
+      /* Assess if there are more than requested posts - 1 (number of loaded
+      posts) on server */
+      if (posts.length > (requestEnd - start - 1)) {
+        morePostsToDisplay = true;
+        var loadNumber = requestEnd - start - 1;
+      }
 
-          // Display posts on post board if server responds without error
-          if (response.ok) {
-            response.json().then(function(posts) {
-              if (posts.length != 0) {
+      // If there are not, load all posts sent from server
+      else {
+        var loadNumber = posts.length;
+      }
 
-                // Remove error message from post board if it is displayed
-                if (errorMessage && errorMessage.parentNode == postBoard) {
-                  postBoard.removeChild(errorMessage);
-                }
+      displayPosts(posts.slice(0, loadNumber));
 
-                /* Assess if there are more than requested posts - 1 (number of
-                loaded posts) on server */
-                if (posts.length > (requestEnd - requestStart - 1)) {
-                  morePostsToDisplay = true;
-                  var loadNumber = requestEnd - requestStart - 1;
-                }
+      /* Remove locally stored posts if this is the initial request to replace
+      with latest posts from server */
+      try {
+        var localPosts = start == 0 ? [] : JSON.parse(localStorage
+          .getItem('thought-writer-post-board-posts')) || [];
 
-                // If there are not, load all posts sent from server
-                else {
-                  morePostsToDisplay = false;
-                  var loadNumber = posts.length;
-                }
+        /* Add each post to locally stored posts list based on request start
+        value */
+        for (var i = 0; i < posts.length; i++) {
+          localPosts[start + i] = posts[i];
+        }
 
-                displayPosts(posts.slice(0, loadNumber));
+        // Store posts in localStorage for offline loading
+        localStorage.setItem('thought-writer-post-board-posts', JSON
+          .stringify(localPosts));
+      } catch (e) {}
 
-                /* Remove locally stored posts if this is the initial request
-                to replace with latest posts from server */
-                if (requestStart == 0) {
-                  localStorage.removeItem('thought-writer-post-board-posts');
-                  var localPosts = [];
-                }
+      return;
+    })
 
-                // Otherwise, get locally stored posts list
-                else {
-                  var localPosts = JSON.parse(localStorage
-                    .getItem('thought-writer-post-board-posts'));
-                }
+    .catch(function() {
+      loadingPosts = false;
 
-                /* Add each post to locally stored posts list based on
-                requestStart and requestEnd values */
-                for (var i = 0; i < posts.length; i++) {
-                  localPosts[requestStart + i] = posts[i];
-                }
+      // On first load, cached posts stand in if they are stored in localStorage
+      if (start == 0 && !postBoard.getElementsByClassName('post-container')
+        .length) {
+          try {
+            var posts = JSON.parse(localStorage
+              .getItem('thought-writer-post-board-posts') || '[]');
+          } catch (e) {
+            var posts = [];
+          }
 
-                // Store posts in localStorage for offline loading
-                localStorage.setItem('thought-writer-post-board-posts', JSON
-                  .stringify(localPosts));
-              }
-
-              // If there are no posts sent from server, set variable to false
-              else {
-                morePostsToDisplay = false;
-              }
-            });
-
+          if (posts.length) {
+            clearSlotStatus(postBoard);
+            displayPosts(posts.slice(0, requestEnd - 1));
             return;
           }
-
-          // Display error message if the server sends an error
-          if (!errorMessage || errorMessage.parentNode != postBoard) {
-            errorMessage = document.createElement('text');
-            errorMessage.id = 'error-message';
-            errorMessage.innerHTML = 'There are no posts on the post board. ' +
-              'Click the yellow paper icon to create one.';
-            postBoard.appendChild(errorMessage);
-          }
-
-          return;
         }
-      });
+
+      /* Otherwise the failure shows where the posts would be, below any
+      already on the board, and Retry asks for the same posts again */
+      slotFailure(postBoard, start == 0 ? "Couldn't load the post board." :
+        "Couldn't load more posts.", loadPosts);
+
+      return;
+    });
 }
 
 
@@ -231,7 +220,7 @@ function requestMorePosts() {
   if (scrolled) {
     /* If user has scrolled more than 90% of way down page and the server has
     more posts, update request numbers */
-    if (percentScrolled() > 90 && morePostsToDisplay) {
+    if (percentScrolled() > 90 && morePostsToDisplay && !loadingPosts) {
       // Set post request start number to previous end number - 1
       requestStart = requestEnd - 1;
 

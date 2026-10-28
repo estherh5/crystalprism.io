@@ -22,12 +22,9 @@ a:active, button:active {
 }
 
 a:hover, button:hover {
-  color: #808080;
+  color: #595959;
 }
 
-a:focus, button:focus {
-  outline: none;
-}
 
 #warning, #warning-mobile {
   display: none;
@@ -130,7 +127,7 @@ h1 {
 }
 
 #systolic, #diastolic {
-  color: #56d056;
+  color: #307430; /* 4.7:1 on the #e8e8e8 bar */
 }
 
 #lifespan {
@@ -212,7 +209,7 @@ table {
   visibility: visible;
 }
 
-#start-title {
+.start-title {
   font-family: 'Tangerine', cursive;
   font-size: 55px;
   line-height: 105px;
@@ -235,7 +232,7 @@ table {
   opacity: 0.85;
 }
 
-#pause-title {
+.pause-title {
   margin-top: 10%;
   font-family: 'Poiret One', cursive;
   font-size: 55px;
@@ -317,11 +314,6 @@ table {
   text-overflow: ellipsis;
 }
 
-#error-cell {
-  font-style: italic;
-  color: #ff8600;
-  line-height: normal !important;
-}
 
 #game-over-screen {
   font-weight: bold;
@@ -380,7 +372,7 @@ input {
     line-height: 38px;
   }
 
-  #start-title {
+  .start-title {
     margin-top: 2%;
     font-size: 65px;
   }
@@ -476,7 +468,7 @@ input {
     justify-content: center;
   }
 
-  body *:not(#warning-mobile) {
+  body > *:not(#warning-mobile):not(#header):not([class*="fleet-"]) {
     display: none;
   }
 
@@ -492,4 +484,34 @@ input {
     font-weight: bold;
     cursor: default;
   }
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Score status on the Game Over screen: saving, saved, failed or sign in */
+#score-status {
+  margin: 16px 0 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#score-status:empty {
+  display: none;
+}
+
+#score-status a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }

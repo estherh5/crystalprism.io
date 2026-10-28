@@ -245,81 +245,212 @@ function createPageFooter() {
   var footer = FleetKit.renderFooter(document.body);
   footer.id = 'footer';
   localizeAppLinks(footer);
+
+  /* --footer-height: what a fixed pane (My Account's menu) stops above, so
+  the in-flow footer never sits over its content */
+  if (window.ResizeObserver) {
+    new ResizeObserver(function() {
+      document.documentElement.style.setProperty('--footer-height',
+        footer.offsetHeight + 'px');
+    }).observe(footer);
+  }
   return;
 }
 
 
 /* Check if API is online and run optional action function if so (and if
-Retry button was clicked) */
+Retry button was clicked). While the server-down banner shows, the page is
+pushed down by its height (body.has-banner, --banner-height) so it covers no
+title, wordmark or avatar */
 function pingServer(action) {
-  // Remove server down banner if it is already displayed
-  if (header.contains(document.getElementById('banner'))) {
-    document.getElementById('header').removeChild(document
-      .getElementById('banner'));
-  }
-
-  /* Remove audio container margin (added if banner is added when server is
-  down) */
-  if (document.body.contains(document.getElementById('audio-container'))) {
-    document.getElementById('audio-container').style.marginTop = '';
-  }
-
-  /* Remove Vicarious title link margin (added if banner is added when server
-  is down) */
-  if (currentPath == 'vicarious') {
-    document.getElementById('title-link').style.marginTop = '';
-  }
+  var existing = document.getElementById('banner');
+  var retry = document.getElementById('retry');
+  var done = retry ? setBusy(retry, 'Retrying…') : null;
 
   return fetch(api + '/ping')
 
     // Display error banner if server is down
     .catch(function(error) {
-      if (!header.contains(document.getElementById('banner'))) {
-        var banner = document.createElement('div');
-        banner.id = 'banner';
-        var bannerText = document.createElement('div');
-        bannerText.id = 'banner-text';
-        bannerText.innerHTML = 'The server could not be reached. Some ' +
-          'content may be unavailable. ';
-        banner.appendChild(bannerText);
-
-        // Display Retry button to allow user to re-ping the server
-        var retry = document.createElement('text');
-        retry.id = 'retry';
-        retry.innerHTML = 'Retry.';
-        retry.onclick = function() {
-          repinged = true;
-          pingServer(action);
-          return;
-        }
-        bannerText.appendChild(retry);
-
-        // Add audio container margin to allow space for banner
-        if (document.body.contains(document
-          .getElementById('audio-container'))) {
-            document.getElementById('audio-container').style
-              .marginTop = '20px';
-        }
-
-        // Add Vicarious title link margin to allow space for banner
-        if (currentPath == 'vicarious') {
-          document.getElementById('title-link').style.marginTop = '11px';
-        }
-
-        document.getElementById('header')
-          .insertAdjacentElement('afterbegin', banner);
+      if (done) {
+        done();
+      }
+      if (!existing) {
+        showServerBanner(action);
       }
     })
 
     // Run action function if server is online and Retry button was clicked
     .then(function(response) {
       if (response) {
+        removeServerBanner();
         if (response.ok && repinged) {
-          action();
           repinged = false;
+          if (action) {
+            action();
+          }
         }
       }
     });
+}
+
+function showServerBanner(action) {
+  var banner = document.createElement('div');
+  banner.id = 'banner';
+  var bannerText = document.createElement('div');
+  bannerText.id = 'banner-text';
+  bannerText.textContent = 'The server could not be reached. Some ' +
+    'content may be unavailable. ';
+  banner.appendChild(bannerText);
+
+  // Display Retry button to allow user to re-ping the server
+  var retry = document.createElement('button');
+  retry.type = 'button';
+  retry.id = 'retry';
+  retry.textContent = 'Retry';
+  retry.onclick = function() {
+    repinged = true;
+    pingServer(action);
+    return;
+  }
+  bannerText.appendChild(retry);
+
+  document.getElementById('header').insertAdjacentElement('afterbegin', banner);
+  reserveBannerHeight();
+  window.addEventListener('resize', reserveBannerHeight);
+}
+
+function reserveBannerHeight() {
+  var banner = document.getElementById('banner');
+  if (!banner) {
+    return;
+  }
+  document.documentElement.style.setProperty('--banner-height',
+    banner.offsetHeight + 'px');
+  document.body.classList.add('has-banner');
+}
+
+function removeServerBanner() {
+  var banner = document.getElementById('banner');
+  if (banner) {
+    banner.parentNode.removeChild(banner);
+  }
+  window.removeEventListener('resize', reserveBannerHeight);
+  document.body.classList.remove('has-banner');
+  document.documentElement.style.removeProperty('--banner-height');
+}
+
+
+/* fetch() that gives up: a request that never answers rejects after `ms`
+instead of leaving its slot loading forever */
+function fetchWithTimeout(url, options, ms) {
+  options = options || {};
+  if (typeof AbortController == 'undefined') {
+    return fetch(url, options);
+  }
+  var controller = new AbortController();
+  var timer = setTimeout(function() { controller.abort(); }, ms || 15000);
+  options.signal = controller.signal;
+  return fetch(url, options).finally(function() { clearTimeout(timer); });
+}
+
+
+/* A fetch that fills part of a page shows it in that part: slotLoading paints
+a "Loading…" row from the first frame, slotFailure swaps it for the message
+and a Retry button, and clearSlotStatus removes either once content arrives */
+function clearSlotStatus(slot) {
+  var statuses = slot.querySelectorAll(':scope > .slot-status');
+  for (var i = 0; i < statuses.length; i++) {
+    slot.removeChild(statuses[i]);
+  }
+}
+
+/* Retry keeps the keyboard where it was: the slot whose Retry was pressed
+hands focus to its Loading status, and a failure that replaces a focused
+status hands it to the new Retry */
+var slotAwaitingFocus = null;
+
+function slotStatusHasFocus(slot) {
+  var active = document.activeElement;
+  return !!(active && active != document.body && slot.contains(active) &&
+    active.closest('.slot-status'));
+}
+
+function slotLoading(slot, label) {
+  var refocus = slotAwaitingFocus == slot || slotStatusHasFocus(slot);
+  slotAwaitingFocus = null;
+  clearSlotStatus(slot);
+  var status = document.createElement('p');
+  status.className = 'slot-status slot-loading';
+  status.setAttribute('role', 'status');
+  var spinner = document.createElement('span');
+  spinner.className = 'slot-spinner';
+  spinner.setAttribute('aria-hidden', 'true');
+  status.appendChild(spinner);
+  status.appendChild(document.createTextNode(label || 'Loading…'));
+  slot.appendChild(status);
+  if (refocus) {
+    status.tabIndex = -1;
+    status.focus();
+  }
+  return status;
+}
+
+function slotFailure(slot, message, retry) {
+  var refocus = slotStatusHasFocus(slot);
+  clearSlotStatus(slot);
+  var status = document.createElement('div');
+  status.className = 'slot-status slot-failure';
+  status.setAttribute('role', 'alert');
+  var text = document.createElement('p');
+  text.textContent = message;
+  status.appendChild(text);
+  if (retry) {
+    var button = document.createElement('button');
+    button.type = 'button';
+    button.className = 'slot-retry';
+    button.textContent = 'Retry';
+    button.onclick = function() {
+      slotAwaitingFocus = slot;
+      clearSlotStatus(slot);
+      retry();
+      slotAwaitingFocus = null;
+    };
+    status.appendChild(button);
+  }
+  slot.appendChild(status);
+  if (refocus && button) {
+    button.focus();
+  }
+  return status;
+}
+
+
+/* Busy state on the control that was pressed: disabled, aria-busy and a
+"…ing" label until the returned function restores it */
+function setBusy(button, busyLabel) {
+  var label = button.textContent;
+  var wasDisabled = button.disabled;
+  button.disabled = true;
+  button.setAttribute('aria-busy', 'true');
+  button.classList.add('is-busy');
+  if (busyLabel && button.tagName != 'INPUT') {
+    button.textContent = busyLabel;
+  }
+  else if (busyLabel) {
+    label = button.value;
+    button.value = busyLabel;
+  }
+  return function() {
+    button.disabled = wasDisabled;
+    button.removeAttribute('aria-busy');
+    button.classList.remove('is-busy');
+    if (busyLabel && button.tagName != 'INPUT') {
+      button.textContent = label;
+    }
+    else if (busyLabel) {
+      button.value = label;
+    }
+  };
 }
 
 
@@ -378,10 +509,7 @@ function settleSession(username) {
 
 /* The API throttles /api/login and account creation with a 429; show its
 message rather than the wrong-credentials warning */
-function showRateLimited() {
-  window.alert('Too many attempts. Try again later.');
-  return;
-}
+var RATE_LIMITED_MESSAGE = 'Too many attempts. Try again later.';
 
 
 /* Check if user is logged in. The session is an HttpOnly cookie

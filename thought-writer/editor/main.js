@@ -42,7 +42,10 @@ window.onload = function() {
 
   /* Check if user is logged in (from common.js script), then request posts:
   until any one-time token migration lands, the session cookie may not exist */
+  updatePostAccess();
   Promise.resolve(checkIfLoggedIn()).then(function() {
+    updatePostAccess();
+
     if (postId) {
       loadPost(postId);
     }
@@ -99,6 +102,23 @@ function displayDraft() {
 
   // Display appropriate editing buttons for in-progress post
   toggleButtons();
+
+  return;
+}
+
+
+/* Submit shows only to signed-in writers; anyone else gets a link to sign in
+and come back to this draft (it stays saved in this browser) */
+function updatePostAccess() {
+  var signedIn = !!localStorage.getItem('username');
+  var signIn = document.getElementById('post-sign-in');
+
+  signIn.href = signInHref();
+  document.body.classList.toggle('signed-out', !signedIn);
+
+  if (!signedIn) {
+    clearInlineError(document.getElementById('submit-post'));
+  }
 
   return;
 }
@@ -265,6 +285,7 @@ function displayPosts(posts) {
       loadPost(this.dataset.postid);
       return;
     }
+    keyboardButton(previousPost, 'Open ' + posts[i].title);
   }
 
   // If cabinet is open, display/hide right/left arrows
@@ -301,44 +322,65 @@ function displayPosts(posts) {
 
 // Load post that has passed post id
 function loadPost(postId) {
-  return fetch(api + '/thought-writer/post/' + postId, {
+  var actions = document.getElementById('action-buttons');
+  clearInlineError(post);
+
+  return fetchWithTimeout(api + '/thought-writer/post/' + postId, {
       credentials: 'include',
     })
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Display cached post if it is stored in localStorage
-      if (localStorage.getItem('thought-writer-personal-post-' + postId)) {
-        displayPost(JSON.parse(localStorage
-          .getItem('thought-writer-personal-post-' + postId)));
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
       }
 
-      // Otherwise, display error message
-      else {
-        window.alert('The post could not be loaded. Please try again soon.');
-      }
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      return response.json();
+    })
+
+    .then(function(requestedPost) {
+      displayPost(requestedPost);
+
+      /* Store post in localStorage for offline loading and checking for
+      edits */
+      try {
+        localStorage.setItem('thought-writer-personal-post-' + postId, JSON
+          .stringify(requestedPost));
+      } catch (e) {}
 
       return;
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display post in editor
-        response.json().then(function(requestedPost) {
-          displayPost(requestedPost);
-
-          /* Store post in localStorage for offline loading and checking for
-          edits */
-          localStorage.setItem('thought-writer-personal-post-' + postId, JSON
-            .stringify(requestedPost));
-        });
+    .catch(function() {
+      // Display cached post if it is stored in localStorage
+      try {
+        var cached = JSON.parse(localStorage
+          .getItem('thought-writer-personal-post-' + postId));
+      } catch (e) {
+        var cached = null;
       }
+
+      if (cached) {
+        displayPost(cached);
+        return;
+      }
+
+      // Otherwise say so under the post board, with a way to try again
+      var note = inlineError(post, "Couldn't open that post.", actions);
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'inline-retry';
+      retry.textContent = 'Retry';
+      retry.onclick = function() {
+        loadPost(postId);
+        return;
+      };
+      note.appendChild(document.createTextNode(' '));
+      note.appendChild(retry);
+
+      return;
     });
 }
 
@@ -435,17 +477,7 @@ function formatContent() {
 
   // Prompt for URL and insert image or link if those buttons are clicked
   if (command == 'insertImage' || command == 'createLink') {
-    var url = prompt('Specify link here: ', 'https:\/\/');
-
-    // If URL is not blank, add image/link to post
-    if (url) {
-      document.execCommand(command, false, url);
-      return;
-    }
-
-    // Refocus on post otherwise
-    post.focus();
-
+    openAddressForm(this, command);
     return;
   }
 
@@ -466,8 +498,104 @@ function formatContent() {
 }
 
 
+/* Ask for a link or image address in the page, under the toolbar: the
+selection is kept so the link lands on the words that were selected */
+function openAddressForm(button, command) {
+  var existing = document.getElementById('address-form');
+  if (existing) {
+    existing.parentNode.removeChild(existing);
+  }
+
+  var selection = window.getSelection();
+  var range = selection.rangeCount ? selection.getRangeAt(0).cloneRange() :
+    null;
+  var isImage = command == 'insertImage';
+
+  var form = document.createElement('form');
+  form.id = 'address-form';
+  var label = document.createElement('label');
+  label.htmlFor = 'address-input';
+  label.textContent = isImage ? 'Image address' : 'Link address';
+  var input = document.createElement('input');
+  input.id = 'address-input';
+  input.type = 'url';
+  input.value = 'https://';
+  input.required = true;
+  var add = document.createElement('button');
+  add.type = 'submit';
+  add.textContent = isImage ? 'Insert image' : 'Add link';
+  var cancel = document.createElement('button');
+  cancel.type = 'button';
+  cancel.textContent = 'Cancel';
+  form.appendChild(label);
+  form.appendChild(input);
+  form.appendChild(add);
+  form.appendChild(cancel);
+
+  function close() {
+    if (form.parentNode) {
+      form.parentNode.removeChild(form);
+    }
+    return;
+  }
+
+  function restoreSelection() {
+    post.focus();
+    if (range) {
+      selection.removeAllRanges();
+      selection.addRange(range);
+    }
+    return;
+  }
+
+  form.onsubmit = function(e) {
+    e.preventDefault();
+    var url = input.value.trim();
+    close();
+    restoreSelection();
+
+    // Add image/link to post if an address was given
+    if (url && url != 'https://') {
+      document.execCommand(command, false, url);
+    }
+    return;
+  };
+
+  cancel.onclick = function() {
+    close();
+    restoreSelection();
+    return;
+  };
+
+  form.addEventListener('keydown', function(e) {
+    if (e.key == 'Escape') {
+      e.preventDefault();
+      cancel.click();
+    }
+    return;
+  }, false);
+
+  toolbar.insertAdjacentElement('afterend', form);
+  input.focus();
+  input.select();
+  return;
+}
+
+
 // Toggle post's public status when user clicks Public checkbox or public text
 publicCheckbox.onclick = togglePublic;
+
+// The drawn checkbox works from the keyboard and reads as a checkbox
+keyboardButton(publicCheckbox);
+publicCheckbox.setAttribute('role', 'checkbox');
+publicCheckbox.setAttribute('aria-labelledby', 'public-text');
+publicCheckbox.setAttribute('aria-checked',
+  String(publicCheckbox.classList.contains('checked')));
+new MutationObserver(function() {
+  publicCheckbox.setAttribute('aria-checked',
+    String(publicCheckbox.classList.contains('checked')));
+  return;
+}).observe(publicCheckbox, {attributes: true, attributeFilter: ['class']});
 document.getElementById('public-text').onclick = togglePublic;
 
 function togglePublic() {
@@ -491,15 +619,14 @@ function togglePublic() {
 /* Clear in-progress post when user clicks Clear button or when called from
 another function */
 document.getElementById('clear-post').onclick = function() {
-  // Prompt for confirmation to clear post
-  var confirmDelete = confirm('Are you sure you want to clear your post?');
-
-  if (confirmDelete == true) {
+  // Ask in the page before clearing the post
+  inlineConfirm(this, 'Clear your post?', 'Clear', function() {
     clearPost();
 
     // Save cleared state to localStorage
     savePost();
-  }
+    return;
+  }, document.getElementById('action-buttons'));
 
   return;
 }
@@ -520,37 +647,30 @@ function clearPost() {
 document.getElementById('submit-post').onclick = submitPost;
 
 function submitPost() {
+  var submitButton = document.getElementById('submit-post');
   // If user is not logged in, warn user that login is required to submit post
+  clearInlineError(submitButton);
+  clearInlineError(postTitle);
+
   if (!localStorage.getItem('username')) {
-    window.alert('You must log in to create a post.');
+    updatePostAccess();
     return;
   }
 
   /* If post is blank, warn user that blank post cannot be submitted (excludes
   empty elements) */
   if (!/\S/.test(post.textContent)) {
-    window.alert('Your post must contain text.');
+    inlineError(submitButton, 'Write your post first, then submit it.',
+      document.getElementById('action-buttons'));
+    post.focus();
     return;
   }
 
-  /* While post title has no non-space characters, prompt user for title until
-  they enter one or cancel */
-  while (!/\S/.test(postTitle.value)) {
-    var enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
-      '"[title]" to enter a title at any time.');
-
-    if (!/\S/.test(enteredTitle.value)) {
-      enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
-        '"[title]" to enter a title at any time.');
-    }
-
-    else if (!enteredTitle) {
-      return;
-    }
-
-    else {
-      postTitle.value = enteredTitle;
-    }
+  // A post needs a title: ask for one at the title field
+  if (!/\S/.test(postTitle.value)) {
+    inlineError(postTitle, 'Give your post a title, then submit it.');
+    postTitle.focus();
+    return;
   }
 
   // Otherwise, submit post to server
@@ -559,11 +679,13 @@ function submitPost() {
 
   /* Disable menu buttons and set cursor style to waiting until server request
   goes through */
+  var restoreBusy = setBusy(document.getElementById('submit-post'),
+    'Submitting…');
   document.getElementById('clear-post').disabled = true;
   document.getElementById('submit-post').disabled = true;
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/thought-writer/post', {
+  return fetchWithTimeout(api + '/thought-writer/post', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
@@ -575,12 +697,14 @@ function submitPost() {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      window.alert('Your post did not go through. Please try again soon.');
+      inlineError(submitButton, "Your post didn't go through. Check your " +
+        'connection and try again.', document.getElementById('action-buttons'));
 
       // Reset menu buttons and cursor style
       document.getElementById('clear-post').disabled = false;
       document.getElementById('submit-post').disabled = false;
       document.body.style.cursor = '';
+      restoreBusy();
 
       return;
     })
@@ -620,6 +744,7 @@ function submitPost() {
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
+          restoreBusy();
 
           return;
         }
@@ -627,19 +752,26 @@ function submitPost() {
         // If server rejects the post (e.g. HTML in title), display its reason
         if (response.status == 400) {
           response.text().then(function(reason) {
-            window.alert(reason);
+            inlineError(submitButton, reason, document.getElementById('action-buttons'));
           });
         }
 
         // Otherwise, display error message
         else {
-          window.alert('You must log in to create a post.');
+          if (response.status == 401 || response.status == 403) {
+            localStorage.removeItem('username');
+            updatePostAccess();
+          } else {
+            inlineError(submitButton, "Your post didn't go through. Try " +
+              'again in a moment.', document.getElementById('action-buttons'));
+          }
         }
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
         document.getElementById('submit-post').disabled = false;
         document.body.style.cursor = '';
+        restoreBusy();
 
         return;
       }
@@ -649,15 +781,20 @@ function submitPost() {
 
 // Close previous post in post editor
 document.getElementById('close-post').onclick = function() {
-  // Prompt for confirmation to close post if it was edited from original
+  // Ask in the page before closing a post with unsaved changes
   if (post.innerHTML != post.dataset.original) {
-    var confirmDelete = confirm('Are you sure you want to close this post? ' +
-      'Your changes will not be saved unless you click the Modify button.');
-
-    if (!confirmDelete) {
-      return;
-    }
+    inlineConfirm(this, 'Close without saving? Modify saves your changes.',
+      'Close', closePost, document.getElementById('action-buttons'));
+    return;
   }
+
+  closePost();
+  return;
+}
+
+function closePost() {
+  clearInlineError(document.getElementById('modify-post'));
+  clearInlineError(document.getElementById('delete-post'));
 
   // Clear post in post editor
   clearPost();
@@ -681,6 +818,9 @@ document.getElementById('modify-post').onclick = modifyPost;
 
 function modifyPost() {
   var postId = post.dataset.postid;
+  var modifyButton = document.getElementById('modify-post');
+  clearInlineError(modifyButton);
+  clearInlineError(postTitle);
 
   // If post is blank, ask if user wants to delete post
   if (!/\S/.test(post.textContent)) {
@@ -690,27 +830,16 @@ function modifyPost() {
 
   /* While post title has no non-space characters, prompt user for title until
   they enter one or cancel */
-  while (!/\S/.test(postTitle.value)) {
-    var enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
-      '"[title]" to enter a title at any time.');
-
-    if (!/\S/.test(enteredTitle.value)) {
-      enteredTitle = prompt('Enter a title for your post. Tip: Click ' +
-        '"[title]" to enter a title at any time.');
-    }
-
-    else if (!enteredTitle) {
-      return;
-    }
-
-    else {
-      postTitle.value = enteredTitle;
-    }
+  if (!/\S/.test(postTitle.value)) {
+    inlineError(postTitle, 'Give your post a title, then save it.');
+    postTitle.focus();
+    return;
   }
 
   // If user is not logged in, warn user that login is required to modify post
   if (!localStorage.getItem('username')) {
-    window.alert('You must log in to edit a post.');
+    inlineError(modifyButton, 'Sign in to save changes to this post.',
+      document.getElementById('action-buttons'));
     return;
   }
 
@@ -725,7 +854,8 @@ function modifyPost() {
   if (previousPostTitle == postTitle.value &&
     previousPostContent == post.innerHTML &&
     previousPostPublic == publicInput.checked) {
-      window.alert('You did not make any changes to your post.');
+      inlineError(modifyButton, "You haven't changed anything yet.",
+        document.getElementById('action-buttons'));
       return;
   }
 
@@ -735,11 +865,13 @@ function modifyPost() {
 
   /* Disable menu buttons and set cursor style to waiting until server request
   goes through */
+  var restoreBusy = setBusy(document.getElementById('modify-post'),
+    'Saving…');
   document.getElementById('clear-post').disabled = true;
   document.getElementById('submit-post').disabled = true;
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/thought-writer/post/' + postId, {
+  return fetchWithTimeout(api + '/thought-writer/post/' + postId, {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -751,12 +883,14 @@ function modifyPost() {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      window.alert('Your post did not go through. Please try again soon.');
+      inlineError(modifyButton, "Your changes didn't save. Check your " +
+        'connection and try again.', document.getElementById('action-buttons'));
 
       // Reset menu buttons and cursor style
       document.getElementById('clear-post').disabled = false;
       document.getElementById('submit-post').disabled = false;
       document.body.style.cursor = '';
+      restoreBusy();
 
       return;
     })
@@ -796,18 +930,21 @@ function modifyPost() {
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
+          restoreBusy();
 
           return;
         }
 
         // Display error message if user made no changes
         else if (response.status == 409) {
-          window.alert('You did not make any changes to your post.');
+          inlineError(modifyButton, "You haven't changed anything yet.",
+            document.getElementById('action-buttons'));
 
           // Reset menu buttons and cursor style
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
+          restoreBusy();
 
           return;
         }
@@ -815,19 +952,22 @@ function modifyPost() {
         // If server rejects the post (e.g. HTML in title), display its reason
         else if (response.status == 400) {
           response.text().then(function(reason) {
-            window.alert(reason);
+            inlineError(modifyButton, reason, document.getElementById('action-buttons'));
           });
         }
 
         // Otherwise, display login error message
         else {
-          window.alert('You must log in to edit a post.');
+          inlineError(modifyButton, response.status == 401 ||
+            response.status == 403 ? 'Sign in again to save your changes.' :
+            "Your changes didn't save. Try again in a moment.", document.getElementById('action-buttons'));
         }
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
         document.getElementById('submit-post').disabled = false;
         document.body.style.cursor = '';
+        restoreBusy();
 
         return;
       }
@@ -839,17 +979,28 @@ function modifyPost() {
 document.getElementById('delete-post').onclick = deletePost;
 
 function deletePost() {
-  // Prompt for confirmation to delete post
-  var confirmDelete = confirm('Are you sure you want to delete this post?');
+  var deleteButton = document.getElementById('delete-post');
+  clearInlineError(deleteButton);
 
-  if (confirmDelete == true) {
+  // Ask in the page, under the post, before deleting it
+  inlineConfirm(deleteButton, 'Delete this post?', 'Delete',
+    confirmedDeletePost, document.getElementById('action-buttons'));
+  return;
+}
+
+function confirmedDeletePost() {
+  var deleteButton = document.getElementById('delete-post');
+
+  {
     /* Disable menu buttons and set cursor style to waiting until server
     request goes through */
+    var restoreBusy = setBusy(document.getElementById('delete-post'),
+      'Deleting…');
     document.getElementById('clear-post').disabled = true;
     document.getElementById('submit-post').disabled = true;
     document.body.style.cursor = 'wait';
 
-    return fetch(api + '/thought-writer/post/' + post.dataset.postid, {
+    return fetchWithTimeout(api + '/thought-writer/post/' + post.dataset.postid, {
       credentials: 'include',
       headers: {'Content-Type': 'application/json'},
       method: 'DELETE',
@@ -860,12 +1011,14 @@ function deletePost() {
         // Add server down banner to page (from common.js script)
         pingServer(retryFunctions);
 
-        window.alert('Your request did not go through. Please try again soon.');
+        inlineError(deleteButton, "The post wasn't deleted. Check your " +
+          'connection and try again.', document.getElementById('action-buttons'));
 
         // Reset menu buttons and cursor style
         document.getElementById('clear-post').disabled = false;
         document.getElementById('submit-post').disabled = false;
         document.body.style.cursor = '';
+        restoreBusy();
 
         return;
       })
@@ -899,17 +1052,21 @@ function deletePost() {
             document.getElementById('clear-post').disabled = false;
             document.getElementById('submit-post').disabled = false;
             document.body.style.cursor = '';
+            restoreBusy();
 
             return;
           }
 
           // Otherwise, display error message
-          window.alert('You must log in to delete a post.');
+          inlineError(deleteButton, response.status == 401 ||
+            response.status == 403 ? 'Sign in again to delete this post.' :
+            "The post wasn't deleted. Try again in a moment.", document.getElementById('action-buttons'));
 
           // Reset menu buttons and cursor style
           document.getElementById('clear-post').disabled = false;
           document.getElementById('submit-post').disabled = false;
           document.body.style.cursor = '';
+          restoreBusy();
 
           return;
         }
@@ -1058,6 +1215,7 @@ document.getElementById('new-post').onclick = function() {
 
 // Open/close cabinet when user clicks cabinet handle
 document.getElementById('handle').onclick = toggleCabinet;
+keyboardButton(document.getElementById('handle'));
 
 function toggleCabinet() {
   var previousPosts = document.getElementsByClassName('previous-post');
@@ -1115,6 +1273,8 @@ function toggleCabinet() {
 // Request more posts when user clicks left and right arrows in cabinet
 document.getElementById('left-arrow').onclick = requestMorePosts;
 document.getElementById('right-arrow').onclick = requestMorePosts;
+keyboardButton(document.getElementById('left-arrow'), 'Previous posts');
+keyboardButton(document.getElementById('right-arrow'), 'More posts');
 
 function requestMorePosts() {
   // If arrow is displayed, update post request numbers

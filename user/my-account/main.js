@@ -32,6 +32,7 @@ var accountButtons = document.getElementsByClassName('account-button');
 var editButton = document.getElementById('edit');
 var saveButton = document.getElementById('save');
 var cancelButton = document.getElementById('cancel');
+var buttonRow = document.getElementById('button-row');
 var submitButton = document.getElementById('submit');
 var verifyPassInput = document.getElementById('verify-password-input');
 var editingPersonal = false; // If user is editing information in Personal menu
@@ -47,14 +48,12 @@ var moreScoresToDisplay = false; // If there are more scores to display in array
 var rhythmLink = document.getElementById('rhythm-link');
 var rhythmHeader = document.getElementById('rhythm-header');
 var rhythmNoScores = document.getElementById('rhythm-no-scores');
-var rhythmError = document.getElementById('rhythm-error');
 var rhythmScoreData = document.getElementById('rhythm-score-data');
 var rhythmUpArrow = document.getElementById('rhythm-up-arrow');
 var rhythmDownArrow = document.getElementById('rhythm-down-arrow');
 var shapesLink = document.getElementById('shapes-link');
 var shapesHeader = document.getElementById('shapes-header');
 var shapesNoScores = document.getElementById('shapes-no-scores');
-var shapesError = document.getElementById('shapes-error');
 var shapesScoreData = document.getElementById('shapes-score-data');
 var shapesUpArrow = document.getElementById('shapes-up-arrow');
 var shapesDownArrow = document.getElementById('shapes-down-arrow');
@@ -65,7 +64,6 @@ var drawingRequestStart = 0; // Range start for number of drawings to request/di
 var drawingRequestEnd = 7; // Range end for number of drawings to request/display
 var moreDrawingsToDisplay = false; // If there are more drawings to display in array
 var csMainLink = document.getElementById('canvashare-main-link');
-var csErrorLink = document.getElementById('canvashare-link-error');
 var csDrawLink = document.getElementById('canvashare-link-draw');
 var csLikeLink = document.getElementById('canvashare-link-like');
 var gallery = document.getElementById('gallery');
@@ -77,7 +75,6 @@ var liked = document.getElementById('liked');
 
 // Define global variables for Posts menu
 var twMainLink = document.getElementById('thought-writer-main-link');
-var twErrorLink = document.getElementById('thought-writer-link-error');
 var twEditorLink = document.getElementById('thought-writer-link-editor');
 var twBoardLink = document.getElementById('thought-writer-link-post-board');
 var postRequestStart = 0; // Range start for number of posts to request/display
@@ -134,10 +131,8 @@ function loadAccount() {
     }, 0);
 
     // Flip specified menu to back view
-    document.getElementById(window.location.hash.split('#')[1]).classList
-      .add('flip');
-    document.getElementById(window.location.hash.split('#')[1]).dataset.
-      flipped = 'true';
+    setFlipped(document.getElementById(window.location.hash.split('#')[1]),
+      true);
   }
 
   // Display profile link in Personal menu
@@ -216,10 +211,11 @@ function confirmCreation() {
 
 // Load user's personal information from server
 function loadPersonalInfo() {
-  return fetch(api + '/user/' + encodeURIComponent(localStorage.getItem('username')), {
-    credentials: 'include',
-    method: 'GET',
-  })
+  return slotFetch(buttonRow, 'Loading your info…', api + '/user/' +
+    encodeURIComponent(localStorage.getItem('username')), {
+      credentials: 'include',
+      method: 'GET',
+    })
 
     .catch(function(error) {
       // Add server down banner to page (from common.js script)
@@ -229,6 +225,11 @@ function loadPersonalInfo() {
       if (localStorage.getItem('my-account-personal-info')) {
         displayPersonalInfo(JSON.parse(localStorage
           .getItem('my-account-personal-info')));
+      }
+
+      // Otherwise, say so in the Personal menu, with Retry
+      else {
+        personalInfoFailed();
       }
 
       return;
@@ -248,14 +249,35 @@ function loadPersonalInfo() {
             localStorage.setItem('my-account-personal-info', JSON
               .stringify(info));
           });
+          return;
+        }
+
+        // A server error with nothing cached says so too
+        if (!localStorage.getItem('my-account-personal-info')) {
+          personalInfoFailed();
         }
       }
     });
 }
 
 
+/* Personal info failed with nothing cached: say so under the card, with Retry,
+in place of Edit (an unloaded form must not be edited and saved blank) */
+function personalInfoFailed() {
+  editButton.style.display = 'none';
+  slotFailure(buttonRow, "Couldn't load your info.", loadPersonalInfo);
+
+  return;
+}
+
+
 // Display passed info in Personal and Stats menus
 function displayPersonalInfo(info) {
+  // Edit comes back once there is info to edit (personalInfoFailed hid it)
+  if (!editingPersonal) {
+    editButton.style.display = '';
+  }
+
   /* Fill in user's personal information to Personal menu and stats to
   Stats menu */
   aboutInput.value = info['about'];
@@ -320,7 +342,8 @@ function loadScores(game) {
     scoreEnd = shapesRequestEnd;
   }
 
-  return fetch(api + '/' + game + '/scores/' +
+  return slotFetch(game == 'rhythm-of-life' ? rhythmScoreData : shapesScoreData,
+    'Loading scores…', api + '/' + game + '/scores/' +
     encodeURIComponent(localStorage.getItem('username')) + '?start=' + scoreStart + '&end=' +
     scoreEnd, {
       credentials: 'include',
@@ -341,14 +364,7 @@ function loadScores(game) {
 
       // Otherwise, display error message
       else {
-        rhythmLink.classList.add('hidden');
-        rhythmHeader.classList.add('hidden');
-        rhythmNoScores.classList.add('hidden');
-        rhythmError.classList.remove('hidden');
-        shapesLink.classList.add('hidden');
-        shapesHeader.classList.add('hidden');
-        shapesNoScores.classList.add('hidden');
-        shapesError.classList.remove('hidden');
+        scoresFailed(game);
       }
 
       return;
@@ -391,18 +407,41 @@ function loadScores(game) {
         }
 
         // If server responds with error, display error banners in Scores menu
-        rhythmLink.classList.add('hidden');
-        rhythmHeader.classList.add('hidden');
-        rhythmNoScores.classList.add('hidden');
-        rhythmError.classList.remove('hidden');
-        shapesLink.classList.add('hidden');
-        shapesHeader.classList.add('hidden');
-        shapesNoScores.classList.add('hidden');
-        shapesError.classList.remove('hidden');
+        scoresFailed(game);
 
         return;
       }
     });
+}
+
+
+/* A list fetch shows Loading in its own slot from the first frame and clears
+it on any answer; the caller decides between content, cache and failure */
+function slotFetch(slot, label, url, options) {
+  slotLoading(slot, label);
+
+  return fetchWithTimeout(url, options).then(function(response) {
+    clearSlotStatus(slot);
+    return response;
+  }, function(error) {
+    clearSlotStatus(slot);
+    throw error;
+  });
+}
+
+
+// A game's scores failed with nothing cached: say so there, with Retry
+function scoresFailed(game) {
+  var rhythm = game == 'rhythm-of-life';
+  (rhythm ? rhythmLink : shapesLink).classList.add('hidden');
+  (rhythm ? rhythmHeader : shapesHeader).classList.add('hidden');
+  (rhythm ? rhythmNoScores : shapesNoScores).classList.add('hidden');
+  slotFailure(rhythm ? rhythmScoreData : shapesScoreData,
+    "Couldn't load your scores.", function() {
+      loadScores(game);
+    });
+
+  return;
 }
 
 
@@ -415,7 +454,6 @@ function displayScores(scores, game) {
     if (scores.length == 0) {
       rhythmLink.classList.add('hidden');
       rhythmHeader.classList.add('hidden');
-      rhythmError.classList.add('hidden');
       rhythmNoScores.classList.remove('hidden');
       return;
     }
@@ -430,7 +468,6 @@ function displayScores(scores, game) {
     no score banners */
     rhythmLink.classList.remove('hidden');
     rhythmHeader.classList.remove('hidden');
-    rhythmError.classList.add('hidden');
     rhythmNoScores.classList.add('hidden');
 
     var scoreData = rhythmScoreData;
@@ -445,7 +482,6 @@ function displayScores(scores, game) {
     if (scores.length == 0) {
       shapesLink.classList.add('hidden');
       shapesHeader.classList.add('hidden');
-      shapesError.classList.add('hidden');
       shapesNoScores.classList.remove('hidden');
       return;
     }
@@ -460,7 +496,6 @@ function displayScores(scores, game) {
     no score banners */
     shapesLink.classList.remove('hidden');
     shapesHeader.classList.remove('hidden');
-    shapesError.classList.add('hidden');
     shapesNoScores.classList.add('hidden');
 
     var scoreData = shapesScoreData;
@@ -611,7 +646,7 @@ function displayScores(scores, game) {
 /* Load user's drawings from server, specifying type ('drawings' for
 user-created drawings or 'drawing-likes/user' for drawings the user liked) */
 function loadDrawings(type) {
-  return fetch(api + '/canvashare/' + type + '/' +
+  return slotFetch(gallery, 'Loading drawings…', api + '/canvashare/' + type + '/' +
     encodeURIComponent(localStorage.getItem('username')) + '?start=' + drawingRequestStart +
     '&end=' + drawingRequestEnd)
 
@@ -629,12 +664,10 @@ function loadDrawings(type) {
 
         // Otherwise, display error message
         else {
-          gallery.innerHTML = '';
-          drawingLeftArrow.classList.remove('display');
-          drawingRightArrow.classList.remove('display');
 
-          // Display error banner with CanvaShare link
-          csErrorLink.classList.remove('hidden');
+          // The failure shows in the list, below any page already showing
+          slotFailure(gallery, "Couldn't load your drawings.", function() { loadDrawings(type); });
+
           csMainLink.classList.add('hidden');
           csDrawLink.classList.add('hidden');
           csLikeLink.classList.add('hidden');
@@ -681,12 +714,10 @@ function loadDrawings(type) {
 
           /* Otherwise, if server responds with error, clear drawing area and
           hide navigation arrows */
-          gallery.innerHTML = '';
-          drawingLeftArrow.classList.remove('display');
-          drawingRightArrow.classList.remove('display');
 
-          // Display error banner with CanvaShare link
-          csErrorLink.classList.remove('hidden');
+          // The failure shows in the list, below any page already showing
+          slotFailure(gallery, "Couldn't load your drawings.", function() { loadDrawings(type); });
+
           csMainLink.classList.add('hidden');
           csDrawLink.classList.add('hidden');
           csLikeLink.classList.add('hidden');
@@ -714,7 +745,6 @@ function displayDrawings(type, drawings) {
     create drawings */
     if (mine.classList.contains('selected')) {
       csMainLink.classList.add('hidden');
-      csErrorLink.classList.add('hidden');
       csDrawLink.classList.remove('hidden');
       csLikeLink.classList.add('hidden');
       return;
@@ -722,7 +752,6 @@ function displayDrawings(type, drawings) {
 
     // Otherwise, display link to like drawings
     csMainLink.classList.add('hidden');
-    csErrorLink.classList.add('hidden');
     csDrawLink.classList.add('hidden');
     csLikeLink.classList.remove('hidden');
 
@@ -731,7 +760,6 @@ function displayDrawings(type, drawings) {
 
   // Otherwise, hide CanvaShare error links and display main link
   csMainLink.classList.remove('hidden');
-  csErrorLink.classList.add('hidden');
   csDrawLink.classList.add('hidden');
   csLikeLink.classList.add('hidden');
 
@@ -929,6 +957,8 @@ function displayDrawingLikes(drawingId, likers) {
 
       // Update like count when user clicks heart
       likedHeart.onclick = updateLikes;
+      keyboardButton(likedHeart, 'Like');
+      likedHeart.setAttribute('aria-pressed', 'true');
 
       return;
     }
@@ -944,6 +974,8 @@ function displayDrawingLikes(drawingId, likers) {
 
   // Update like count when user clicks heart
   unlikedHeart.onclick = updateLikes;
+  keyboardButton(unlikedHeart, 'Like');
+  unlikedHeart.setAttribute('aria-pressed', 'false');
 
   return;
 }
@@ -952,6 +984,13 @@ function displayDrawingLikes(drawingId, likers) {
 // Update drawing's like count
 function updateLikes() {
   var heart = this;
+  var container = heart.closest('.drawing-container');
+  clearInlineError(heart);
+
+  // Ignore clicks while this heart's last request is still in flight
+  if (heart.dataset.pending) {
+    return;
+  }
 
   // Add click animation to create pop effect
   heart.classList.add('clicked');
@@ -963,111 +1002,150 @@ function updateLikes() {
     return;
   }, false);
 
-  /* If heart is already filled in, delete drawing like and decrease drawing
-  like count */
-  if (this.classList.contains('fas')) {
+  var likeText = heart.nextSibling;
+  var previousCount = likeText.textContent;
+  var wasLiked = heart.classList.contains('fas');
 
-    return fetch(api + '/canvashare/drawing-like/' + this.dataset
+  // The heart and count change at once, and change back if the request fails
+  heart.dataset.pending = 'true';
+  setHeart(heart, !wasLiked);
+  likeText.textContent = (parseInt(previousCount) || 0) + (wasLiked ? -1 : 1);
+
+  function settle() {
+    delete heart.dataset.pending;
+    return;
+  }
+
+  function revert(message) {
+    setHeart(heart, wasLiked);
+    likeText.textContent = previousCount;
+    settle();
+    inlineError(heart, message, container);
+    return;
+  }
+
+  function networkFailure() {
+    // Add server down banner to page (from common.js script)
+    pingServer(retryFunctions);
+    revert("Your like didn't go through. Try again in a moment.");
+    return;
+  }
+
+  // If heart was filled in, delete drawing like and decrease like count
+  if (wasLiked) {
+    return fetchWithTimeout(api + '/canvashare/drawing-like/' + heart.dataset
       .drawinglike, {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
-        method: 'DELETE',
+        method: 'DELETE'
       })
 
-        // Display error message if server is down
-        .catch(function(error) {
-          // Add server down banner to page (from common.js script)
-          pingServer(retryFunctions);
+      .then(function(response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          window.alert('Your like did not go through. Please try again soon.');
-
+        if (response.ok) {
+          delete heart.dataset.drawinglike;
+          settle();
           return;
-        })
+        }
 
-        /* If server responds without error, remove heart fill and decrease
-        like count user sees */
-        .then(function(response) {
-          if (response) {
-            // Remove server down banner from page (from common.js script)
-            pingServer();
-
-            if (response.ok) {
-              response.text().then(function(drawingLikeId) {
-                var likeText = heart.nextSibling;
-                var currentLikes = likeText.innerHTML;
-                heart.classList.remove('fas');
-                heart.classList.add('far');
-                delete heart.dataset.drawinglike;
-                likeText.innerHTML = parseInt(currentLikes) - 1;
-
-                // Reload personal information to update user stats
-                loadPersonalInfo();
-              });
-              return;
-            }
-
-            // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
-          }
-        });
+        revert("Your like didn't go through. Sign in again and retry.");
+        return;
+      }, networkFailure);
   }
 
   // Otherwise, send request to server to increase like count
-  var data = JSON.stringify({'drawing_id': this.dataset.drawing});
+  var data = JSON.stringify({'drawing_id': heart.dataset.drawing});
 
-  return fetch(api + '/canvashare/drawing-like', {
+  return fetchWithTimeout(api + '/canvashare/drawing-like', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your like did not go through. Please try again soon.');
-
-      return;
-    })
-
-    /* If server responds without error, fill in heart and increase like count
-    user sees */
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        if (response.ok) {
-          response.text().then(function(drawingLikeId) {
-            var likeText = heart.nextSibling;
-            var currentLikes = likeText.innerHTML;
-            likeText.innerHTML = parseInt(currentLikes) + 1;
-            heart.classList.remove('far');
-            heart.classList.add('fas');
-            heart.dataset.drawinglike = drawingLikeId;
-
-            // Reload personal information to update user stats
-            loadPersonalInfo();
-          });
+      if (response.ok) {
+        return response.text().then(function(drawingLikeId) {
+          heart.dataset.drawinglike = drawingLikeId;
+          settle();
           return;
-        }
-
-        // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        });
       }
+
+      revert("Your like didn't go through. Sign in again and retry.");
+      return;
+    }, networkFailure)
+
+    .catch(function() {
+      settle();
+      return;
     });
+}
+
+
+// Show a heart as liked (filled red) or not (outline), for sight and sound
+function setHeart(heart, liked) {
+  heart.classList.toggle('fas', liked);
+  heart.classList.toggle('far', !liked);
+  heart.setAttribute('aria-pressed', liked ? 'true' : 'false');
+  return;
+}
+
+
+// A clickable icon that keyboards and screen readers can use too
+function keyboardButton(element, label) {
+  element.setAttribute('role', 'button');
+  element.tabIndex = 0;
+
+  if (label) {
+    element.setAttribute('aria-label', label);
+  }
+
+  element.addEventListener('keydown', function(e) {
+    if (e.key == 'Enter' || e.key == ' ') {
+      e.preventDefault();
+      element.click();
+    }
+
+    return;
+  }, false);
+
+  return;
+}
+
+
+/* A failure shows next to the control that failed, as a role="alert" line,
+and the next attempt clears it */
+function inlineError(control, message, anchor, position) {
+  clearInlineError(control);
+  var note = document.createElement('p');
+  note.className = 'inline-error';
+  note.setAttribute('role', 'alert');
+  note.textContent = message;
+  (anchor || control).insertAdjacentElement(position ||
+    (anchor ? 'beforeend' : 'afterend'), note);
+  control.inlineErrorNote = note;
+  return note;
+}
+
+function clearInlineError(control) {
+  var note = control.inlineErrorNote;
+  if (note && note.parentNode) {
+    note.parentNode.removeChild(note);
+  }
+  control.inlineErrorNote = null;
+  return;
 }
 
 
 // Load user's posts from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/posts/' +
+  return slotFetch(postList, 'Loading posts…', api + '/thought-writer/posts/' +
     encodeURIComponent(localStorage.getItem('username')) + '?start=' + postRequestStart + '&end=' +
     postRequestEnd, {
       credentials: 'include',
@@ -1101,12 +1179,10 @@ function loadPosts() {
 
         // Otherwise, display error message
         else {
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
-          twErrorLink.classList.remove('hidden');
+          // The failure shows in the list, below any page already showing
+          slotFailure(postList, "Couldn't load your posts.", loadPosts);
+
           twMainLink.classList.add('hidden');
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
@@ -1132,7 +1208,6 @@ function loadPosts() {
 
                 // Display Thought Writer link to create posts
                 twMainLink.classList.add('hidden');
-                twErrorLink.classList.add('hidden');
                 twBoardLink.classList.add('hidden');
                 twEditorLink.classList.remove('hidden');
 
@@ -1183,12 +1258,10 @@ function loadPosts() {
 
           /* Otherwise, if server responds with other error, clear post area
           and hide navigation arrows */
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
-          twErrorLink.classList.remove('hidden');
+          // The failure shows in the list, below any page already showing
+          slotFailure(postList, "Couldn't load your posts.", loadPosts);
+
           twMainLink.classList.add('hidden');
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
@@ -1206,7 +1279,6 @@ function displayPosts(posts) {
 
   // Hide Thought Writer error links and display main link
   twMainLink.classList.remove('hidden');
-  twErrorLink.classList.add('hidden');
   twEditorLink.classList.add('hidden');
   twBoardLink.classList.add('hidden');
 
@@ -1347,7 +1419,7 @@ function displayPosts(posts) {
 
 // Load user's comments from server
 function loadComments() {
-  return fetch(api + '/thought-writer/comments/user/' +
+  return slotFetch(postList, 'Loading comments…', api + '/thought-writer/comments/user/' +
     encodeURIComponent(localStorage.getItem('username')) + '?start=' + commentRequestStart +
     '&end=' + commentRequestEnd)
 
@@ -1379,12 +1451,10 @@ function loadComments() {
 
         // Otherwise, display error message
         else {
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
-          twErrorLink.classList.remove('hidden');
+          // The failure shows in the list, below any page already showing
+          slotFailure(postList, "Couldn't load your comments.", loadComments);
+
           twMainLink.classList.add('hidden');
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
@@ -1409,7 +1479,6 @@ function loadComments() {
                 postRightArrow.classList.remove('display');
 
                 // Display Thought Writer link to create comments
-                twErrorLink.classList.add('hidden');
                 twMainLink.classList.add('hidden');
                 twEditorLink.classList.add('hidden');
                 twBoardLink.classList.remove('hidden');
@@ -1462,13 +1531,10 @@ function loadComments() {
 
           /* Otherwise, if server responds with other error, clear post area
           and hide navigation arrows */
-          postList.innerHTML = '';
-          postLeftArrow.classList.remove('display');
-          postRightArrow.classList.remove('display');
 
-          // Display error banner with Thought Writer link
+          // The failure shows in the list, below any page already showing
+          slotFailure(postList, "Couldn't load your comments.", loadComments);
           twMainLink.classList.add('hidden');
-          twErrorLink.classList.remove('hidden');
           twEditorLink.classList.add('hidden');
           twBoardLink.classList.add('hidden');
 
@@ -1485,7 +1551,6 @@ function displayComments(comments) {
 
   // Hide Thought Writer error links and display main link
   twMainLink.classList.remove('hidden');
-  twErrorLink.classList.add('hidden');
   twEditorLink.classList.add('hidden');
   twBoardLink.classList.add('hidden');
 
@@ -1600,8 +1665,7 @@ $('#navbar li a[href^="#"]').on('click', function(e) {
   var menuHash = this.hash;
 
   // Flip specified menu to back view
-  document.getElementById(menuHash.split('#')[1]).classList.add('flip');
-  document.getElementById(menuHash.split('#')[1]).dataset.flipped = 'true';
+  setFlipped(document.getElementById(menuHash.split('#')[1]), true);
 
   // Set scroll position in menu scrolling area to top of specified menu
   $('#menu-scroll-area').animate({
@@ -1624,6 +1688,9 @@ for (var i = 0; i < document.getElementsByClassName('front-menu')
   .length; i++) {
     document.getElementsByClassName('front-menu')[i].addEventListener('click',
       flipMenu, false);
+    keyboardButton(document.getElementsByClassName('front-menu')[i],
+      'Open ' + document.getElementsByClassName('front-menu')[i].textContent +
+      ' menu');
   }
 
 for (var i = 0; i < document.getElementsByClassName('back-button')
@@ -1633,19 +1700,43 @@ for (var i = 0; i < document.getElementsByClassName('back-button')
   }
 
 function flipMenu() {
-  // If menu is not already flipped, flip it to back view
-  if (document.getElementById(this.dataset.section).dataset
-    .flipped == 'false') {
-      document.getElementById(this.dataset.section).classList.add('flip');
-      document.getElementById(this.dataset.section).dataset.flipped = 'true';
-      return;
-    }
+  var section = document.getElementById(this.dataset.section);
+  var toBack = section.dataset.flipped == 'false';
+  setFlipped(section, toBack);
 
-  // Otherwise, flip menu to front view
-  document.getElementById(this.dataset.section).classList.remove('flip');
-  document.getElementById(this.dataset.section).dataset.flipped = 'false';
+  /* The face just turned away is inert, so focus follows the card: to the
+  back's Back button, or to the front face */
+  var target = toBack ? section.querySelector('.back-menu .back-button') :
+    section.querySelector('.front-menu');
+  if (target) {
+    target.focus();
+  }
 
   return;
+}
+
+/* Turn a menu card to its back (true) or front (false). The face turned away
+is opacity 0 and inert: nothing on it can be tabbed to or read out */
+function setFlipped(section, flipped) {
+  section.classList.toggle('flip', flipped);
+  section.dataset.flipped = flipped ? 'true' : 'false';
+  var front = section.querySelector(':scope > .front-menu');
+  var back = section.querySelector(':scope > .back-menu');
+  if (front) {
+    front.inert = flipped;
+  }
+  if (back) {
+    back.inert = !flipped;
+  }
+  return;
+}
+
+// Every card starts on its front
+var menuSections = document.getElementsByClassName('menu-section');
+for (var i = 0; i < menuSections.length; i++) {
+  if (menuSections[i].dataset.flipped != 'true') {
+    setFlipped(menuSections[i], false);
+  }
 }
 
 
@@ -1808,7 +1899,9 @@ function toggleDrawings() {
   liked drawings from server */
   if (this == liked) {
     liked.classList.add('selected');
+    liked.setAttribute('aria-pressed', 'true');
     mine.classList.remove('selected');
+    mine.setAttribute('aria-pressed', 'false');
     loadDrawings('drawing-likes/user');
     return;
   }
@@ -1816,7 +1909,9 @@ function toggleDrawings() {
   /* Otherwise, set the Mine button as selected and request user drawings from
   server */
   mine.classList.add('selected');
+  mine.setAttribute('aria-pressed', 'true');
   liked.classList.remove('selected');
+  liked.setAttribute('aria-pressed', 'false');
   loadDrawings('drawings');
 
   return;
@@ -1839,14 +1934,18 @@ function togglePosts() {
   comments from server */
   if (this == commentsButton) {
     commentsButton.classList.add('selected');
+    commentsButton.setAttribute('aria-pressed', 'true');
     postsButton.classList.remove('selected');
+    postsButton.setAttribute('aria-pressed', 'false');
     loadComments();
     return;
   }
 
   // Otherwise, set the Posts button as selected and request posts from server
   postsButton.classList.add('selected');
+  postsButton.setAttribute('aria-pressed', 'true');
   commentsButton.classList.remove('selected');
+  commentsButton.setAttribute('aria-pressed', 'false');
   loadPosts();
 
   return;
@@ -1858,121 +1957,152 @@ function togglePosts() {
 // Suspend account when user confirms suspension in modal
 document.getElementById('confirm-suspend-account-button')
   .addEventListener('click', function() {
-    deleteAccount();
+    deleteAccount('', this, 'Suspending…');
     return;
   }, false);
 
 // Delete account when user confirms deletion in modal
 document.getElementById('confirm-delete-account-button')
   .addEventListener('click', function() {
-    deleteAccount('data/');
+    deleteAccount('data/', this, 'Deleting…');
     return;
   }, false);
 
-// Delete account, including user's data if specified ('/data')
-function deleteAccount(data) {
-  return fetch(api + '/user/' + data + encodeURIComponent(localStorage.getItem('username')), {
-    credentials: 'include',
-    headers: {'Content-Type': 'application/json'},
-    method: 'DELETE',
-  })
+/* Delete account, including user's data if specified ('data/'): the confirm
+button that was pressed stays busy (its modal open) until the server answers,
+and a failure says so in that modal */
+function deleteAccount(data, button, busyLabel) {
+  var modal = button.closest('.modal');
+  var footer = modal.querySelector('.modal-footer');
+  var noButton = footer.querySelector('button:not([id])');
+  clearInlineError(button);
+  var restoreButton = setBusy(button, busyLabel);
+  noButton.disabled = true;
 
-    // Display warning if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+  function failed(message) {
+    restoreButton();
+    noButton.disabled = false;
+    inlineError(button, message, footer, 'beforebegin');
+    return;
+  }
 
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
+  return fetchWithTimeout(api + '/user/' + data + encodeURIComponent(localStorage
+    .getItem('username')), {
+      credentials: 'include',
+      headers: {'Content-Type': 'application/json'},
+      method: 'DELETE',
     })
 
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        /* Take user to Create Account page with request to delete account if
-        server responds without error */
-        if (response.ok) {
-          sessionStorage.setItem('account-request', 'delete');
-          window.location.href = '../create-account/';
-          return;
-        }
-
-        // Otherwise, display warning if server responds with error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
+      /* Take user to Create Account page with request to delete account if
+      server responds without error */
+      if (response.ok) {
+        sessionStorage.setItem('account-request', 'delete');
+        window.location.href = '../create-account/';
         return;
       }
+
+      failed("That didn't go through. Sign in again and retry.");
+      return;
+    }, function() {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+      failed("Couldn't reach the server. Try again in a moment.");
+      return;
     });
 }
 
-
-// Download all user data in zip file when user clicks Download Data button
-document.getElementById('download-data')
-  .addEventListener('click', function() {
-    // Show zip modal to tell user that data is being retrieved
-    $(zip).modal('show');
-
-    downloadData();
+// A confirm modal opens clean: no failure left from an earlier attempt
+$('#confirm-suspend-account, #confirm-delete-account, #confirm-delete-content, #verify')
+  .on('show.bs.modal', function() {
+    var buttons = this.querySelectorAll('button[id]');
+    for (var i = 0; i < buttons.length; i++) {
+      clearInlineError(buttons[i]);
+    }
 
     return;
-  }, false);
+  });
+
+
+/* Download all user data in zip file when user clicks Download Data button.
+One request at a time: the button is busy until it answers */
+var downloadButton = document.getElementById('download-data');
+
+downloadButton.addEventListener('click', function() {
+  if (downloadButton.getAttribute('aria-busy')) {
+    return;
+  }
+
+  clearInlineError(downloadButton);
+
+  // Show zip modal to tell user that data is being retrieved
+  $(zip).modal('show');
+
+  downloadData();
+
+  return;
+}, false);
 
 function downloadData() {
-  return fetch(api + '/user/data/' + encodeURIComponent(localStorage.getItem('username')) +
-    '?preventCache=' + new Date().getTime(), {
+  var restoreDownload = setBusy(downloadButton, 'Preparing…');
+
+  // A failure closes the modal and says so under Download Data
+  function failed() {
+    restoreDownload();
+    $(zip).modal('hide');
+    inlineError(downloadButton, "Your data couldn't be downloaded. Try " +
+      'again in a moment.');
+    return;
+  }
+
+  return fetchWithTimeout(api + '/user/data/' + encodeURIComponent(localStorage
+    .getItem('username')) + '?preventCache=' + new Date().getTime(), {
       credentials: 'include',
       method: 'GET',
+    }, 60000)
+
+    .then(function(response) {
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      if (!response.ok) {
+        failed();
+        return;
+      }
+
+      // Download zip file if server responds without error
+      return response.blob().then(function(file) {
+        restoreDownload();
+
+        // Create anchor tag with link to zip file
+        var fileLink = document.createElement('a');
+        fileLink.innerHTML = '<i class="far fa-file-archive" aria-hidden="true"></i>';
+        fileLink.setAttribute('aria-label', 'Download ' +
+          localStorage.getItem('username') + '.zip');
+
+        var url = window.URL.createObjectURL(file);
+        fileLink.href = url;
+        fileLink.download = localStorage.getItem('username') + '.zip';
+
+        // Add link to modal
+        document.getElementById('zip-container')
+          .innerHTML = 'Click here to download your data: ';
+        document.getElementById('zip-container').appendChild(fileLink);
+
+        document.getElementById('zip-button').innerHTML = 'Close';
+        return;
+      });
     })
 
-      .catch(function(error) {
-        // Add server down banner to page (from common.js script)
-        pingServer(retryFunctions);
-
-        // Add error message to zip modal
-        document.getElementById('zip-container')
-          .innerHTML = 'Your data could not be downloaded at this time. ' +
-            'Please try again soon.';
-
-        return;
-      })
-
-      .then(function(response) {
-        if (response) {
-          // Remove server down banner from page (from common.js script)
-          pingServer();
-
-          // Download zip file if server responds without error
-          if (response.ok) {
-            response.blob().then(function(file) {
-              // Create anchor tag with link to zip file
-              var fileLink = document.createElement('a');
-              fileLink.innerHTML = '<i class="far fa-file-archive"></i>';
-
-              var url = window.URL.createObjectURL(file);
-              fileLink.href = url;
-              fileLink.download = localStorage.getItem('username') + '.zip';
-
-              // Add link to modal
-              document.getElementById('zip-container')
-                .innerHTML = 'Click here to download your data: ';
-              document.getElementById('zip-container').appendChild(fileLink);
-
-              document.getElementById('zip-button').innerHTML = 'Close';
-            });
-          }
-        }
-
-        else {
-          // Add error message to zip modal
-          document.getElementById('zip-container')
-            .innerHTML = 'Your data could not be downloaded at this time. ' +
-              'Please try again soon.';
-        }
-      });
+    .catch(function() {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+      failed();
+      return;
+    });
 }
 
 // Reset zip modal text when modal is closed
@@ -2421,61 +2551,63 @@ edits to personal information */
 submitButton.onclick = checkPassword;
 
 function checkPassword() {
+  // One check at a time
+  if (submitButton.getAttribute('aria-busy')) {
+    return;
+  }
+
   verifyPassword = verifyPassInput.value;
+  clearInlineError(submitButton);
 
   // Clear verify password input in case user needs to verify edits again
   verifyPassInput.value = '';
 
-  return fetch(api + '/login', {
+  var restoreSubmit = setBusy(submitButton, 'Checking…');
+
+  return fetchWithTimeout(api + '/login', {
     headers: {'Authorization': 'Basic ' + btoa(localStorage
       .getItem('username') + ':' + verifyPassword)},
     credentials: 'include',
     method: 'GET',
   })
 
-    // Display warning if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
-    })
-
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+      restoreSubmit();
 
-        /* If user's password was incorrect, display modal with verify password
-        field to try again */
-        if (response.status == 401) {
-          document.getElementById('verify-title')
-            .innerHTML = 'Password incorrect. Please try again:';
-          $(verify).modal('show');
-          verifyPassInput.focus();
-          return;
-        }
-
-        // If server responds successfully, submit edits to server
-        if (response.status == 200) {
-          submitEdits();
-          return;
-        }
-
-        // Too many password attempts: show the server's rate-limit message
-        if (response.status == 429) {
-          showRateLimited();
-          return;
-        }
-
-        // Otherwise, display warning if server responds with other error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
+      /* If user's password was incorrect, keep the modal open to try again */
+      if (response.status == 401) {
+        document.getElementById('verify-title')
+          .innerHTML = 'Password incorrect. Please try again:';
+        verifyPassInput.focus();
         return;
       }
+
+      // If server responds successfully, close the modal and submit edits
+      if (response.status == 200) {
+        $(verify).modal('hide');
+        submitEdits();
+        return;
+      }
+
+      // Too many password attempts: show the server's rate-limit message
+      if (response.status == 429) {
+        inlineError(submitButton, RATE_LIMITED_MESSAGE, verifyPassInput);
+        return;
+      }
+
+      // Otherwise the failure shows in the modal, which stays open
+      inlineError(submitButton, "Couldn't check your password. Try again " +
+        'in a moment.', verifyPassInput);
+      return;
+    }, function() {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+      restoreSubmit();
+      inlineError(submitButton, "Couldn't reach the server. Try again in a " +
+        'moment.', verifyPassInput);
+      return;
     });
 }
 
@@ -2484,7 +2616,8 @@ function checkPassword() {
 function submitEdits() {
   /* Disable Save and Cancel buttons and set cursor style to waiting until
   server request goes through */
-  saveButton.disabled = true;
+  clearInlineError(saveButton);
+  var restoreSave = setBusy(saveButton, 'saving…');
   cancelButton.disabled = true;
   document.body.style.cursor = 'wait';
 
@@ -2508,7 +2641,7 @@ function submitEdits() {
     'username': usernameInput.value
   });
 
-  return fetch(api + '/user/' + encodeURIComponent(localStorage.getItem('username')), {
+  return fetchWithTimeout(api + '/user/' + encodeURIComponent(localStorage.getItem('username')), {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'PATCH',
@@ -2520,12 +2653,12 @@ function submitEdits() {
       // Add server down banner to page (from common.js script)
       pingServer(retryFunctions);
 
-      window.alert('Your request did not go through. Please try again soon.');
-
       // Reset Save and Cancel buttons and cursor style
-      saveButton.disabled = false;
+      restoreSave();
       cancelButton.disabled = false;
       document.body.style.cursor = '';
+      inlineError(saveButton, "Couldn't reach the server. Your changes " +
+        "weren't saved; try again in a moment.", document.getElementById('button-row'));
 
       return;
     })
@@ -2550,7 +2683,7 @@ function submitEdits() {
           });
 
           // Reset Save and Cancel buttons and cursor style
-          saveButton.disabled = false;
+          restoreSave();
           cancelButton.disabled = false;
           document.body.style.cursor = '';
 
@@ -2612,7 +2745,7 @@ function submitEdits() {
           });
 
           // Reset Save and Cancel buttons and cursor style
-          saveButton.disabled = false;
+          restoreSave();
           cancelButton.disabled = false;
           document.body.style.cursor = '';
 
@@ -2623,25 +2756,23 @@ function submitEdits() {
         server's reason */
         if (response.status == 400) {
           response.text().then(function(reason) {
-            window.alert(reason);
+            inlineError(saveButton, reason, document.getElementById('button-row'));
           });
 
           // Reset Save and Cancel buttons and cursor style
-          saveButton.disabled = false;
+          restoreSave();
           cancelButton.disabled = false;
           document.body.style.cursor = '';
 
           return;
         }
 
-        // Otherwise, display warning if server responds with other error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
-        // Reset Save and Cancel buttons and cursor style
-        saveButton.disabled = false;
+        // Otherwise the failure shows under Save
+        restoreSave();
         cancelButton.disabled = false;
         document.body.style.cursor = '';
+        inlineError(saveButton, "Your changes weren't saved. Try again in a " +
+          'moment.', document.getElementById('button-row'));
 
         return;
       }
@@ -2661,6 +2792,9 @@ $(verify).on('hidden.bs.modal', function () {
 cancelButton.onclick = cancelEdits;
 
 function cancelEdits() {
+  // A failed save's message goes with the edits it was about
+  clearInlineError(saveButton);
+
   /* Return Personal menu fields to initial values set when user clicked Edit
   button */
   iconColorPicker.value = iconColor;
@@ -2750,72 +2884,62 @@ document.getElementById('confirm-delete-content-button')
 /* Delete content by specifying type (e.g., 'thought-writer/post'), id, and
 function to run after deletion */
 function deleteContent(contentType, contentId, afterFunction) {
-  /* Disable Delete buttons and set cursor style to waiting until server
+  var yesButton = document.getElementById('confirm-delete-content-button');
+  var footer = yesButton.parentNode;
+  var noButton = footer.querySelector('button:not([id])');
+  clearInlineError(yesButton);
+
+  /* Busy state on Yes, and the Delete buttons disabled, until the server
   request goes through */
-  for (var i = 0; i < document.getElementsByClassName('delete-button')
-    .length; i++) {
-      document.getElementsByClassName('delete-button')[i].disabled = true;
-    }
+  var restoreYes = setBusy(yesButton, 'Deleting…');
+  noButton.disabled = true;
+  var deleteButtons = document.getElementsByClassName('delete-button');
+  for (var i = 0; i < deleteButtons.length; i++) {
+    deleteButtons[i].disabled = true;
+  }
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/' + contentType + '/' + contentId, {
+  function settle() {
+    restoreYes();
+    noButton.disabled = false;
+    for (var i = 0; i < deleteButtons.length; i++) {
+      deleteButtons[i].disabled = false;
+    }
+    document.body.style.cursor = '';
+    return;
+  }
+
+  return fetchWithTimeout(api + '/' + contentType + '/' + contentId, {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'DELETE',
   })
 
-    // Display warning if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Reset Delete buttons and cursor style
-      for (var i = 0; i < document.getElementsByClassName('delete-button')
-        .length; i++) {
-          document.getElementsByClassName('delete-button')[i].disabled = false;
-        }
-      document.body.style.cursor = '';
-
-      window.alert('Your request did not go through. Please try again soon.');
-
-      return;
-    })
-
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+      settle();
 
-        /* Call specified function and reload personal info to refresh user
-        stats if server responds without error */
-        if (response.ok) {
-          // Reset Delete buttons and cursor style
-          for (var i = 0; i < document.getElementsByClassName('delete-button')
-            .length; i++) {
-              document.getElementsByClassName('delete-button')[i]
-                .disabled = false;
-            }
-          document.body.style.cursor = '';
-
-          afterFunction();
-          loadPersonalInfo();
-          return;
-        }
-
-        // Otherwise, display warning if server responds with error
-        window.alert('Your request did not go through. Please try again ' +
-          'soon.');
-
-        // Reset Delete buttons and cursor style
-        for (var i = 0; i < document.getElementsByClassName('delete-button')
-          .length; i++) {
-            document.getElementsByClassName('delete-button')[i]
-              .disabled = false;
-        }
-        document.body.style.cursor = '';
-
+      /* Close the modal, call specified function and reload personal info to
+      refresh user stats if server responds without error */
+      if (response.ok) {
+        $('#confirm-delete-content').modal('hide');
+        afterFunction();
+        loadPersonalInfo();
         return;
       }
+
+      // Otherwise the failure shows in the modal, which stays open
+      inlineError(yesButton, "That wasn't deleted. Sign in again and retry.",
+        footer, 'beforebegin');
+      return;
+    }, function() {
+      // Add server down banner to page (from common.js script)
+      pingServer(retryFunctions);
+      settle();
+      inlineError(yesButton, "Couldn't reach the server. Try again in a " +
+        'moment.', footer, 'beforebegin');
+      return;
     });
 }
 

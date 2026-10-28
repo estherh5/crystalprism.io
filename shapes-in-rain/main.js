@@ -54,76 +54,74 @@ function retryFunctions() {
 // Load leaders from server to display on game screen
 function loadLeaders() {
   var leaders = document.getElementsByClassName('leader');
+  var slot = document.getElementById('leaders-slot');
+
+  // The game screen shows from the first frame, Loading in the leaders' slot
+  document.getElementById('game-screen').classList.remove('hidden');
+
+  if (leaders[0].children.length == 0) {
+    slotLoading(slot, 'Loading scores…');
+  }
 
   // Request top 5 game leaders from server
-  return fetch(api + '/shapes-in-rain/scores')
+  return fetchWithTimeout(api + '/shapes-in-rain/scores')
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Display cached leaders list if it is stored in localStorage
-      if (localStorage.getItem('shapes-leaders-list')) {
-        displayLeaders(JSON.parse(localStorage
-          .getItem('shapes-leaders-list')));
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
       }
 
-      // Otherwise, add error to leaders display
-      else {
-        // Clear leaders list
-        for (var i = 0; i < leaders.length; i++) {
-          leaders[i].innerHTML = '';
-        }
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        // Display error
-        var errorCell = document.createElement('td');
-        errorCell.id = 'error-cell';
-        errorCell.colSpan = "2";
-        errorCell.innerHTML = 'The leaderboard could not be loaded.';
-        leaders[0].appendChild(errorCell);
+      return response.json();
+    })
 
-        // Display game screen
-        document.getElementById('game-screen').classList.remove('hidden');
+    .then(function(leadersList) {
+      clearSlotStatus(slot);
+      displayLeaders(leadersList);
+
+      // An empty leaderboard says so
+      if (leadersList.length == 0) {
+        var empty = document.createElement('p');
+        empty.className = 'slot-status';
+        empty.textContent = 'No scores yet.';
+        slot.appendChild(empty);
       }
+
+      // Store leaders in localStorage for offline loading
+      try {
+        localStorage.setItem('shapes-leaders-list', JSON
+          .stringify(leadersList));
+      } catch (e) {}
 
       return;
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display leaders in game screen if server responds without error
-        if (response.ok) {
-          response.json().then(function(leadersList) {
-            displayLeaders(leadersList);
-
-            // Store leaders in localStorage for offline loading
-            localStorage.setItem('shapes-leaders-list', JSON
-              .stringify(leadersList));
-          });
-
-          return;
-        }
-
-        // Clear leaders list and display error otherwise
-        for (var i = 0; i < leaders.length; i++) {
-          leaders[i].innerHTML = '';
-        }
-
-        var errorCell = document.createElement('td');
-        errorCell.id = 'error-cell';
-        errorCell.colSpan = "2";
-        errorCell.innerHTML = 'The leaderboard could not be loaded.';
-        leaders[0].appendChild(errorCell);
-
-        // Display game screen
-        document.getElementById('game-screen').classList.remove('hidden');
-
+    .catch(function() {
+      // A refresh that fails leaves the list already on screen
+      if (leaders[0].children.length > 0) {
+        clearSlotStatus(slot);
         return;
       }
+
+      // Display cached leaders list if it is stored in localStorage
+      try {
+        var cached = JSON.parse(localStorage.getItem('shapes-leaders-list'));
+      } catch (e) {
+        var cached = null;
+      }
+
+      if (cached && cached.length) {
+        clearSlotStatus(slot);
+        displayLeaders(cached);
+        return;
+      }
+
+      // Otherwise the failure shows in the leaders' slot, with Retry
+      slotFailure(slot, "Couldn't load scores.", loadLeaders);
+
+      return;
     });
 }
 
@@ -177,19 +175,50 @@ function resizeGame() {
 }
 
 
+/* Run fn once an SVG <object> has its document. Its load event can fire
+before this script runs (the scripts above it block parsing), so an object
+that has already loaded is handled at once */
+function whenSvgLoads(object, fn) {
+  function run() {
+    var svg = object.contentDocument &&
+      object.contentDocument.getElementsByTagName('svg')[0];
+
+    if (svg && !object.dataset.svgReady) {
+      object.dataset.svgReady = 'true';
+      fn(svg);
+    }
+
+    return;
+  }
+
+  object.addEventListener('load', run, false);
+  run();
+
+  return;
+}
+
+
 // Store SVG shapes in array when their containing objects load
 for (var i = 0; i < shapeObjects.length; i++) {
-  shapeObjects[i].addEventListener('load', function() {
-    shapes.push(this.contentDocument.getElementsByTagName('svg')[0]);
+  whenSvgLoads(shapeObjects[i], function(svg) {
+    shapes.push(svg);
     return;
-  }, false);
+  });
 }
 
 
 // Start game when user clicks game screen
 document.getElementById('game-screen').onclick = startGame;
 
-function startGame() {
+function startGame(e) {
+  // Links, Retry and the score status act on their own, not as a start tap
+  if (e && e.target.closest && e.target.closest('a, .slot-retry, #score-status')) {
+    return;
+  }
+
+  // Clear the last game's score status
+  setScoreStatus('');
+
   // Hide game screen
   document.getElementById('game-screen').classList.add('hidden');
 
@@ -206,12 +235,11 @@ function startGame() {
   shapeInterval = setInterval(createRandomShape, 2000);
 
   // Turn audio back on if user had started playing it last game
-  if (audioStarted) {
-    audioiFrame.playVideo();
-
-    // Set audio icon to on
-    document.getElementById('audio-icon').src = 'images/on.svg';
-  }
+  if (audioStarted && typeof audioiFrame != 'undefined' &&
+    audioiFrame.playVideo) {
+      audioiFrame.playVideo();
+      setAudioIcon(true);
+    }
 
   started = true;
 
@@ -221,8 +249,14 @@ function startGame() {
 
 // Clone heart SVG and append it to game space
 function cloneHeart() {
-  var heart = document.getElementById('heart').contentDocument
-    .getElementsByTagName('svg')[0];
+  var heartDocument = document.getElementById('heart').contentDocument;
+  var heart = heartDocument && heartDocument.getElementsByTagName('svg')[0];
+
+  // Nothing to draw until the heart SVG has loaded
+  if (!heart) {
+    return null;
+  }
+
   var heartClone = heart.cloneNode(true);
   heartClone.classList.add('heart');
   heartClone.setAttribute('height', '6%');
@@ -246,6 +280,11 @@ function multiplyHeart() {
   for (var i = 0; i < 6; i++) {
     // Clone heart SVG and set x-coordinate
     var heartClone = cloneHeart();
+
+    if (!heartClone) {
+      return;
+    }
+
     heartClone.setAttribute('x', i * 18.8 + '%');
   }
 
@@ -295,6 +334,11 @@ function createRandomShape() {
   x-coordinate between 10 and 90 */
   else {
     var randomXCoordinate = Math.random() * 80 + 10;
+  }
+
+  // Nothing to draw until the shape SVGs have loaded
+  if (shapes.length == 0) {
+    return;
   }
 
   // Create random shape from shapes array and append to game space
@@ -369,11 +413,11 @@ document.getElementById('restart').onclick = function() {
 }
 
 function resetGame() {
-  // Stop music player
-  audioiFrame.stopVideo(0);
-
-  // Set audio icon to off
-  document.getElementById('audio-icon').src = 'images/off.svg';
+  // Stop music player (once the YouTube player exists)
+  if (typeof audioiFrame != 'undefined' && audioiFrame.stopVideo) {
+    audioiFrame.stopVideo(0);
+    setAudioIcon(false);
+  }
 
   // Clear heart rain and shapes from game
   clearInterval(heartInterval);
@@ -413,6 +457,91 @@ document.getElementById('end').onclick = function() {
   return;
 }
 
+// Score status on the game screen: saving, failed, or sign in to save
+var scoreStatus = document.getElementById('score-status');
+
+function setScoreStatus(text, role) {
+  scoreStatus.innerHTML = '';
+  scoreStatus.setAttribute('role', role || 'status');
+  scoreStatus.textContent = text;
+  return;
+}
+
+function showScoreSignIn() {
+  setScoreStatus('');
+  var link = document.createElement('a');
+  link.href = signedOutRows()[0].href;
+  link.textContent = 'Sign in to save your score';
+  scoreStatus.appendChild(link);
+  return;
+}
+
+function showScoreFailure(finalScore) {
+  setScoreStatus("Your score couldn't be saved.", 'alert');
+  var retry = document.createElement('button');
+  retry.type = 'button';
+  retry.className = 'slot-retry';
+  retry.textContent = 'Retry';
+  retry.onclick = function() {
+    saveScore(finalScore, retry);
+    return;
+  };
+  scoreStatus.appendChild(retry);
+  return;
+}
+
+
+// Send a finished game's score; the pressed control shows it is saving
+function saveScore(finalScore, button) {
+  var restore = setBusy(button, 'Saving…');
+
+  return fetchWithTimeout(api + '/shapes-in-rain/score', {
+    credentials: 'include',
+    headers: {'Content-Type': 'application/json'},
+    method: 'POST',
+    body: JSON.stringify(finalScore),
+  })
+
+    .then(function(response) {
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      if (response.ok) {
+        return true;
+      }
+
+      // The session ended while playing: sign in again to save
+      if (response.status == 401) {
+        localStorage.removeItem('username');
+        return 'signed-out';
+      }
+
+      return false;
+    }, function() {
+      return false;
+    })
+
+    .then(function(saved) {
+      restore();
+
+      if (saved === true) {
+        setScoreStatus('Score saved.');
+      } else if (saved == 'signed-out') {
+        showScoreSignIn();
+      } else {
+        showScoreFailure(finalScore);
+      }
+
+      if (started) {
+        resetGame();
+      }
+
+      loadLeaders();
+      return;
+    });
+}
+
+
 function endGame() {
   // Hide starting instructions and unhide ending text based on device
   document.getElementById('body-end').classList.remove('hidden');
@@ -427,61 +556,52 @@ function endGame() {
     document.getElementById('desktop-start').classList.add('hidden');
   }
 
-  /* Disable menu buttons and set cursor style to waiting until server request
-  goes through */
-  document.getElementById('restart').disabled = true;
-  document.getElementById('end').disabled = true;
-  document.body.style.cursor = 'wait';
-
   // If user is logged in, send score to server and display leaders
   if (localStorage.getItem('username')) {
-    var finalScore = {'score': parseInt(score.innerHTML.split(' ')[1])};
-    data = JSON.stringify(finalScore);
-
-    return fetch(api + '/shapes-in-rain/score', {
-      credentials: 'include',
-      headers: {'Content-Type': 'application/json'},
-      method: 'POST',
-      body: data,
-    })
-
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your score could not be saved. Please play again later.');
-
-      loadLeaders();
-
-      resetGame();
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        if (!response.ok) {
-          window.alert('Your score could not be saved. Please play again ' +
-            'later.');
-          return;
-        }
-
-        loadLeaders();
-
-        resetGame();
-      }
-    });
+    // Restart waits too, so the game isn't reset under the save
+    document.getElementById('restart').disabled = true;
+    return saveScore({'score': parseInt(score.innerHTML.split(' ')[1])},
+      document.getElementById('end'));
   }
 
-  else {
-    loadLeaders();
+  // Otherwise offer the sign-in that would have saved it
+  showScoreSignIn();
+  resetGame();
+  loadLeaders();
 
-    resetGame();
+  return;
+}
+
+
+/* The soundtrack toggle (built by audio-embed.js inside #audio-container, now
+a button): name its icon and report on/off as the button's pressed state */
+function setAudioIcon(on) {
+  var icon = document.getElementById('audio-icon');
+
+  if (icon) {
+    icon.src = 'images/' + (on ? 'on.svg' : 'off.svg');
   }
 
   return;
 }
+
+new MutationObserver(function() {
+  var container = document.getElementById('audio-container');
+  var icon = document.getElementById('audio-icon');
+
+  if (icon) {
+    icon.alt = '';
+    container.setAttribute('aria-pressed',
+      /on\.svg$/.test(icon.getAttribute('src') || '') ? 'true' : 'false');
+  }
+
+  // The hidden player frame is not a stop on the tab order
+  var frame = container.getElementsByTagName('iframe')[0];
+  if (frame && frame.tabIndex != -1) {
+    frame.tabIndex = -1;
+    frame.setAttribute('aria-hidden', 'true');
+  }
+
+  return;
+}).observe(document.getElementById('audio-container'), {childList: true,
+  subtree: true, attributes: true, attributeFilter: ['src']});

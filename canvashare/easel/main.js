@@ -30,6 +30,68 @@ var mauve = ['#413e4a', '#73626e', '#b38184', '#f0b49e', '#f7e4be', '#bce4bf'];
 var grayscale = ['#ffffff', '#999999', '#666666', '#333333', '#111111',
   '#000000'];
 
+/* Each paint's spoken name: a screen reader says "Paint red", not a hex */
+var PAINT_NAMES = {
+  '#ff0000': 'red',
+  '#ffa500': 'orange',
+  '#ffff00': 'yellow',
+  '#008000': 'green',
+  '#0000ff': 'blue',
+  '#800080': 'purple',
+  '#ffe4e7': 'pale pink',
+  '#ffc5a7': 'peach',
+  '#fff0a5': 'pale yellow',
+  '#ffffa9': 'pale lemon',
+  '#d2ffc5': 'mint',
+  '#cffeff': 'pale aqua',
+  '#594f4f': 'slate brown',
+  '#547980': 'slate teal',
+  '#45ada8': 'teal',
+  '#9de0ad': 'seafoam',
+  '#e5fcc2': 'pale lime',
+  '#f9ebc2': 'sand',
+  '#00a0b0': 'turquoise',
+  '#6a4a3c': 'brown',
+  '#cc333f': 'crimson',
+  '#eb6841': 'coral',
+  '#edc951': 'mustard',
+  '#a1ad1a': 'olive',
+  '#ca8484': 'dusty rose',
+  '#ff3d7f': 'hot pink',
+  '#ff9e9d': 'salmon',
+  '#8484ca': 'periwinkle',
+  '#3fb8af': 'teal',
+  '#7fc7af': 'sage',
+  '#e3d1ff': 'lavender',
+  '#cbe86b': 'lime',
+  '#f2e9e1': 'linen',
+  '#1c140d': 'espresso',
+  '#f9abab': 'light pink',
+  '#95d8e5': 'sky blue',
+  '#f5f5c7': 'ivory',
+  '#dce9be': 'pale green',
+  '#555152': 'dark gray',
+  '#2e2633': 'aubergine',
+  '#99173c': 'burgundy',
+  '#46c2dd': 'cerulean',
+  '#413e4a': 'charcoal',
+  '#73626e': 'mauve',
+  '#b38184': 'old rose',
+  '#f0b49e': 'apricot',
+  '#f7e4be': 'wheat',
+  '#bce4bf': 'celadon',
+  '#ffffff': 'white',
+  '#999999': 'light gray',
+  '#666666': 'gray',
+  '#333333': 'dark gray',
+  '#111111': 'off black',
+  '#000000': 'black'
+};
+
+function paintLabel(color) {
+  return 'Paint ' + (PAINT_NAMES[color] || color);
+}
+
 
 // Define load functions
 window.onload = function() {
@@ -77,8 +139,10 @@ window.onload = function() {
   // Create page header (from common.js script)
   createPageHeader();
 
-  // Check if user is logged in (from common.js script)
-  checkIfLoggedIn();
+  /* Check if user is logged in (from common.js script), then offer Post or
+  a sign-in link */
+  updatePostAccess();
+  Promise.resolve(checkIfLoggedIn()).then(updatePostAccess);
 
   // Check if Crystal Prism API is online (from common.js script)
   pingServer(checkIfLoggedIn);
@@ -92,55 +156,75 @@ window.onload = function() {
 
 // Load drawing if specified in URL hash
 function loadDrawing() {
-  return fetch(api + '/canvashare/drawing/' + drawingId)
+  var canvasSlot = document.getElementById('canvas-slot');
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(checkIfLoggedIn);
+  // Loading shows under the canvas from the first frame
+  slotLoading(canvasSlot, 'Loading drawing…');
 
-      // Display cached drawing if it is stored in localStorage
-      if (localStorage.getItem('drawing-' + drawingId)) {
-        assembleEasel(JSON.parse(localStorage
-          .getItem('drawing-' + drawingId)).url, '');
+  return fetchWithTimeout(api + '/canvashare/drawing/' + drawingId)
+
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
       }
 
-      // Otherwise, display error message
-      else {
-        window.alert('The drawing could not be loaded. Please try again ' +
-          'soon.');
-      }
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      return response.json();
+    })
+
+    .then(function(drawing) {
+      clearSlotStatus(canvasSlot);
+
+      // Load initial drawing with URL from server
+      assembleEasel(drawing.url, '');
+
+      // Store drawing in localStorage for offline loading
+      try {
+        localStorage.setItem('drawing-' + drawingId, JSON.stringify(drawing));
+      } catch (e) {}
 
       return;
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display drawing if server responds without error
-        if (response.ok) {
-          response.json().then(function(drawing) {
-            // Load initial drawing with URL from server
-            assembleEasel(drawing.url, '');
-
-            // Store drawing in localStorage for offline loading
-            localStorage.setItem('drawing-' + drawingId, JSON
-              .stringify(drawing));
-          });
-        }
-
-        // Otherwise, display error message
-        else {
-          window.alert('The drawing could not be loaded. Please try again ' +
-            'soon.');
-
-          // Remove localStorage item
-          localStorage.removeItem('drawing-' + drawingId);
-        }
+    .catch(function() {
+      // Display cached drawing if it is stored in localStorage
+      try {
+        var cached = JSON.parse(localStorage.getItem('drawing-' + drawingId));
+      } catch (e) {
+        var cached = null;
       }
+
+      if (cached) {
+        clearSlotStatus(canvasSlot);
+        assembleEasel(cached.url, '');
+        return;
+      }
+
+      // Otherwise the failure shows under the canvas, with Retry
+      slotFailure(canvasSlot, "Couldn't load this drawing.", loadDrawing);
+
+      return;
     });
+}
+
+
+// Post shows only to a signed-in artist; anyone else gets a way to sign in
+function updatePostAccess() {
+  var signedIn = !!localStorage.getItem('username');
+  var post = document.getElementById('post');
+  var signIn = document.getElementById('post-sign-in');
+
+  post.hidden = !signedIn;
+  signIn.hidden = signedIn;
+  signIn.href = signInHref();
+
+  if (!signedIn) {
+    clearInlineError(post);
+  }
+
+  return;
 }
 
 
@@ -198,13 +282,29 @@ function assembleEasel(drawingSrc, title) {
 
   // Create colored circles for each color in the palette
   for (var i = 0; i < currentPalette.length; i++) {
-    var paint = svgPalette.circle(30 + (8 * i) + '%', '50%', '4%')
+    // Paints sit 15% apart so each one's 44px tap circle has room
+    var paint = svgPalette.circle(12.5 + (15 * i) + '%', '50%', '4%')
       .attr({fill: currentPalette[i], 'data-color': currentPalette[i]}).node;
     paint.classList.add('paint');
     svgPalette.append(paint);
 
+    // A transparent 44px circle on top takes the tap for the small paint
+    var paintHit = svgPalette.circle(12.5 + (15 * i) + '%', '50%', 22)
+      .attr({fill: 'transparent'}).node;
+    paintHit.classList.add('paint-hit');
+    paintHit.setAttribute('aria-hidden', 'true');
+    paintHit.onclick = (function(target) {
+      return function() {
+        target.dispatchEvent(new MouseEvent('click', {bubbles: true}));
+        return;
+      };
+    })(paint);
+    svgPalette.append(paintHit);
+
     // Update user's paint color on canvas when color is clicked
     paint.onclick = updatePaint;
+    keyboardButton(paint, paintLabel(currentPalette[i]));
+    paint.setAttribute('aria-pressed', i == 0 ? 'true' : 'false');
   }
 
   // Set user's current paint color as first color in palette
@@ -217,6 +317,7 @@ function assembleEasel(drawingSrc, title) {
   // Display current palette's button as selected
   currentPaletteButton = document.getElementsByClassName('palette')[0];
   currentPaletteButton.classList.add('selected');
+  currentPaletteButton.setAttribute('aria-pressed', 'true');
 
   // Update drawing's view count after drawing loads
   if (drawingId) {
@@ -234,11 +335,18 @@ for (var i = 0; i < document.getElementsByClassName('palette').length; i++) {
 }
 
 function updatePalette() {
+  // Nothing to act on until the easel has a drawing (its load can fail)
+  if (!drawingCanvas) {
+    return;
+  }
+
   /* Remove selected class from previous palette button and add it to clicked
   palette button */
   currentPaletteButton.classList.remove('selected');
+  currentPaletteButton.setAttribute('aria-pressed', 'false');
   currentPaletteButton = this;
   currentPaletteButton.classList.add('selected');
+  currentPaletteButton.setAttribute('aria-pressed', 'true');
 
   /* Set current palette as data-palette item from clicked button (looked up by
   name; eval would need 'unsafe-eval' in the Content-Security-Policy) */
@@ -255,6 +363,10 @@ function updatePalette() {
       currentPalette[i]);
     document.getElementsByClassName('paint')[i].setAttribute('data-color',
       currentPalette[i]);
+    document.getElementsByClassName('paint')[i].setAttribute('aria-label',
+      paintLabel(currentPalette[i]));
+    document.getElementsByClassName('paint')[i].setAttribute('aria-pressed',
+      i == 0 ? 'true' : 'false');
     document.getElementsByClassName('paint')[i].classList.remove('outline');
     // Add outline around white color in palette
     if (currentPalette[i] == '#ffffff') {
@@ -277,8 +389,10 @@ function updatePaint() {
   /* Remove selected class from previously selected paint color and add it to
   clicked paint color */
   currentPaint.classList.remove('selected');
+  currentPaint.setAttribute('aria-pressed', 'false');
   currentPaint = this;
   currentPaint.classList.add('selected');
+  currentPaint.setAttribute('aria-pressed', 'true');
 
   // Update user's cursor on canvas to reflect color
   updateBrush();
@@ -432,15 +546,14 @@ function clearEmptyTitle(e) {
 }
 
 
-// Clear drawing when user clicks Clear button
+// Clear drawing when user clicks Clear button, after an in-page confirmation
 document.getElementById('clear').onclick = function() {
-  // Prompt for confirmation to clear drawing
-  var confirmDelete = confirm('Are you sure you want to clear your drawing?');
-
-  if (confirmDelete == true) {
-    clearDrawing();
+  if (!drawingCanvas) {
+    return;
   }
 
+  inlineConfirm(this, 'Clear your drawing?', 'Clear', clearDrawing,
+    document.getElementById('drawing-actions'));
   return;
 }
 
@@ -466,39 +579,35 @@ function clearDrawing() {
 document.getElementById('post').onclick = postDrawing;
 
 function postDrawing() {
-  /* If user is not logged in, warn user that login is required to post to
-  gallery */
+  // Nothing to act on until the easel has a drawing (its load can fail)
+  if (!drawingCanvas) {
+    return;
+  }
+
+  var post = document.getElementById('post');
+  var actions = document.getElementById('drawing-actions');
+  clearInlineError(post);
+  clearInlineError(drawingTitle);
+
+  /* If user is not logged in, swap Post for the sign-in link (the button
+  only shows to signed-in artists, but a session can end in another tab) */
   if (!localStorage.getItem('username')) {
-    window.alert('You must log in to post your drawing to the gallery.');
+    updatePostAccess();
     return;
   }
 
-  // If drawing is blank, warn user that blank drawing cannot be posted
+  // If drawing is blank, say so beside the button
   if (drawingCanvas.toDataURL() == blankCanvas.toDataURL()) {
-    window.alert('Your drawing cannot be blank.');
+    inlineError(post, 'Your drawing is blank. Draw something, then post it.',
+      actions);
     return;
   }
 
-  /* While drawing title has no non-space characters, prompt user for title
-  until they enter one or cancel */
-  while (!/\S/.test(drawingTitle.value)) {
-    enteredTitle = prompt('Enter a title for your drawing. Tip: Click ' +
-      '"[title]" to enter a title at any time.');
-
-    if (!/\S/.test(enteredTitle)) {
-      enteredTitle = prompt('Enter a title for your drawing. Tip: Click ' +
-        '"[title]" to enter a title at any time.');
-    }
-
-    else if (!enteredTitle) {
-      return;
-    }
-
-    else {
-      drawingTitle.value = enteredTitle;
-      // Save new drawing title to localStorage
-      saveData();
-    }
+  // A drawing needs a title: ask for one at the title field
+  if (!/\S/.test(drawingTitle.value)) {
+    inlineError(drawingTitle, 'Give your drawing a title, then post it.');
+    drawingTitle.focus();
+    return;
   }
 
   // Otherwise, send data URI of drawing to server
@@ -507,87 +616,75 @@ function postDrawing() {
 
   /* Disable menu buttons and set cursor style to waiting until server request
   goes through */
+  var restorePost = setBusy(post, 'Posting…');
   document.getElementById('clear').disabled = true;
-  document.getElementById('post').disabled = true;
   document.getElementById('download').disabled = true;
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/canvashare/drawing', {
+  function reset() {
+    restorePost();
+    document.getElementById('clear').disabled = false;
+    document.getElementById('download').disabled = false;
+    document.body.style.cursor = '';
+    return;
+  }
+
+  return fetchWithTimeout(api + '/canvashare/drawing', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
 
-    // Display error message if server is down
-    .catch(function(error) {
+    .then(function(response) {
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      /* If drawing was posted successfully, clear drawing from easel and
+      storage items and redirect to gallery page */
+      if (response.status == 201) {
+        clearDrawing();
+        window.location = '../';
+        reset();
+        return;
+      }
+
+      reset();
+
+      // If drawing is not unique, say so beside the button
+      if (response.status == 409) {
+        inlineError(post, 'This drawing is already in the gallery. Change ' +
+          'something and post again.', actions);
+        return;
+      }
+
+      // If server rejects the drawing (e.g. HTML in title), show its reason
+      if (response.status == 400) {
+        return response.text().then(function(reason) {
+          inlineError(post, reason, actions);
+          return;
+        });
+      }
+
+      // A signed-out answer means the session ended: offer sign-in instead
+      if (response.status == 401 || response.status == 403) {
+        localStorage.removeItem('username');
+        updatePostAccess();
+        return;
+      }
+
+      // Any other answer is the server's fault: say so beside the button
+      inlineError(post, "Your drawing didn't post. Try again in a moment.",
+        actions);
+      return;
+    }, function() {
       // Add server down banner to page (from common.js script)
       pingServer(checkIfLoggedIn);
 
-      window.alert('Your drawing did not get posted. Please try again soon.');
-
-      // Reset menu buttons and cursor style
-      document.getElementById('clear').disabled = false;
-      document.getElementById('post').disabled = false;
-      document.getElementById('download').disabled = false;
-      document.body.style.cursor = '';
-
+      reset();
+      inlineError(post, "Your drawing didn't post. Check your connection " +
+        'and try again.', actions);
       return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        /* If drawing was posted successfully, clear drawing from easel and
-        storage items and redirect to gallery page */
-        if (response.status == 201) {
-          clearDrawing();
-          window.location = '../';
-
-          // Reset menu buttons and cursor style
-          document.getElementById('clear').disabled = false;
-          document.getElementById('post').disabled = false;
-          document.getElementById('download').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
-        }
-
-        // If drawing is not unique, display error message
-        if (response.status == 409) {
-          window.alert('Your drawing must be unique.');
-
-          // Reset menu buttons and cursor style
-          document.getElementById('clear').disabled = false;
-          document.getElementById('post').disabled = false;
-          document.getElementById('download').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
-        }
-
-        // If server rejects the drawing (e.g. HTML in title), display its reason
-        if (response.status == 400) {
-          response.text().then(function(reason) {
-            window.alert(reason);
-          });
-        }
-
-        // Otherwise, display login error message
-        else {
-          window.alert('You must log in to post your drawing to the gallery.');
-        }
-
-        // Reset menu buttons and cursor style
-        document.getElementById('clear').disabled = false;
-        document.getElementById('post').disabled = false;
-        document.getElementById('download').disabled = false;
-        document.body.style.cursor = '';
-
-        return;
-      }
     });
 }
 
@@ -595,25 +692,23 @@ function postDrawing() {
 // Download drawing when user clicks Download button
 document.getElementById('download').onclick = downloadDrawing;
 
-function downloadDrawing() {
-  /* While drawing title has no non-space characters, prompt user for title
-  until they enter one or cancel */
-  while (!/\S/.test(drawingTitle.value)) {
-    enteredTitle = prompt('Enter a title for your drawing.');
+function downloadDrawing(e) {
+  // Nothing to act on until the easel has a drawing (its load can fail)
+  if (!drawingCanvas) {
+    return;
+  }
 
-    if (!/\S/.test(enteredTitle)) {
-      enteredTitle = prompt('Enter a title for your drawing.');
-    }
+  clearInlineError(drawingTitle);
 
-    else if (!enteredTitle) {
-      return;
+  // A download needs a file name: ask for a title at the title field
+  if (!/\S/.test(drawingTitle.value)) {
+    if (e) {
+      e.preventDefault();
     }
-
-    else {
-      drawingTitle.value = enteredTitle;
-      // Save new drawing title to localStorage
-      saveData();
-    }
+    document.getElementById('download-link').removeAttribute('href');
+    inlineError(drawingTitle, 'Give your drawing a title, then download it.');
+    drawingTitle.focus();
+    return;
   }
 
   // Set download URL to data URI of drawing and file name to drawing title

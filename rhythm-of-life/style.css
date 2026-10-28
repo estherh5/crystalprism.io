@@ -27,7 +27,7 @@ html, body {
 
 /* Screens that are too small */
 @media only screen and (max-width: 719px), screen and (max-height: 744px) {
-  body *:not(#warning) {
+  body > *:not(#warning):not(#header):not([class*="fleet-"]) {
     display: none;
   }
 
@@ -43,6 +43,21 @@ html, body {
     font-weight: bold;
     cursor: default;
   }
+
+  /* The way out of a game this screen can't play */
+  #warning-home {
+    min-height: 44px;
+    margin-top: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 18px;
+    font-weight: 600;
+    color: #000000;
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
 }
 
 /* Laptop and desktop screens */
@@ -57,13 +72,11 @@ html, body {
     text-shadow: 0.1px -0.1px 0px #000000;
   }
 
+  /* #595959: 4.7:1 on a hovered button's #d4d4d4, 7:1 on white */
   a:hover, button:hover {
-    color: #808080;
+    color: #595959;
   }
 
-  a:focus, button:focus {
-    outline: none;
-  }
 
   #warning, #warning-mobile {
     display: none;
@@ -164,7 +177,7 @@ html, body {
   }
 
   #systolic, #diastolic {
-    color: #56d056;
+    color: #307430; /* 4.7:1 on the #e8e8e8 bar */
   }
 
   #lifespan {
@@ -205,15 +218,22 @@ html, body {
     flex-direction: column;
   }
 
+  /* At rest the boards recede behind the game by their fills alone
+  (--board-alpha, --row-alpha); the text stays full ink, so the legend reads
+  at 4.5:1 without a hover */
   .side-board {
+    --board-alpha: 0.5;
+    --row-alpha: 0.35;
     height: 297.5px;
-    background-color: #e8e8e8;
-    opacity: 0.5;
+    background-color: rgb(232 232 232 / var(--board-alpha));
     cursor: default;
   }
 
-  .side-board:hover {
-    opacity: 1;
+  /* Full fills on hover, on keyboard focus inside, and while it shows a
+  status */
+  .side-board:hover, .side-board:focus-within, .side-board:has(.slot-status) {
+    --board-alpha: 1;
+    --row-alpha: 0.7;
   }
 
   #stressboard, #ranges {
@@ -291,7 +311,7 @@ html, body {
     visibility: visible;
   }
 
-  #start-title {
+  .start-title {
     margin-top: 20%;
     font-family: 'Tangerine', cursive;
     font-size: 55px;
@@ -315,7 +335,7 @@ html, body {
     opacity: 0.85;
   }
 
-  #pause-title {
+  .pause-title {
     margin-top: 30%;
     font-family: 'Poiret One', cursive;
     font-size: 55px;
@@ -415,23 +435,19 @@ html, body {
   }
 
   #green {
-    background-color: #56d056;
-    opacity: 0.7;
+    background-color: rgb(86 208 86 / var(--row-alpha));
   }
 
   #yellow {
-    background-color: #ffff00;
-    opacity: 0.7;
+    background-color: rgb(255 255 0 / var(--row-alpha));
   }
 
   #orange {
-    background-color: #ffc107;
-    opacity: 0.7;
+    background-color: rgb(255 193 7 / var(--row-alpha));
   }
 
   #red {
-    background-color: #ff2020;
-    opacity: 0.7;
+    background-color: rgb(255 32 32 / var(--row-alpha));
   }
 
   #leaderboard td {
@@ -439,11 +455,6 @@ html, body {
     text-overflow: ellipsis;
   }
 
-  #error-cell {
-    font-style: italic;
-    color: #ff8600;
-    line-height: normal !important;
-  }
 }
 
 /* iPad portrait and larger */
@@ -477,7 +488,7 @@ html, body {
     font-size: 35px;
   }
 
-  #start-title, #pause-title {
+  .start-title, .pause-title {
     margin-top: 30%;
     font-size: 90px;
   }
@@ -563,7 +574,7 @@ html, body {
     line-height: 70px;
   }
 
-  #start-title, #pause-title {
+  .start-title, .pause-title {
     font-size: 130px;
     line-height: 200px;
   }
@@ -669,7 +680,7 @@ html, body {
     line-height: 65px;
   }
 
-  #start-title {
+  .start-title {
     margin-top: 10%;
     font-size: 120px;
     line-height: 185px;
@@ -691,7 +702,7 @@ html, body {
     width: 58px;
   }
 
-  #pause-title, #game-over-title {
+  .pause-title, #game-over-title {
     margin-top: 20%;
   }
 
@@ -717,4 +728,34 @@ html, body {
     font-size: 32px;
     line-height: 54px;
   }
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Score status on the Game Over screen: saving, saved, failed or sign in */
+#score-status {
+  margin: 16px 0 0;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#score-status:empty {
+  display: none;
+}
+
+#score-status a {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }

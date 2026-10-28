@@ -15,7 +15,6 @@ body {
 }
 
 :focus {
-  outline: none !important;
   text-decoration: none !important;
 }
 
@@ -73,7 +72,6 @@ body {
 .image-close {
   position: absolute;
   width: 25vw;
-  outline: none;
   top: 15px;
   right: 0px;
   font-size: 30px;
@@ -103,7 +101,6 @@ a:hover, button:hover {
 }
 
 a:focus, button:focus {
-  outline: none;
   color: #2d8e84;
   text-decoration: none !important;
 }
@@ -167,8 +164,8 @@ input {
   border-style: solid;
   border-width: 1px;
   border-radius: 2px;
-  outline: none;
   font-family: 'Bad Script', cursive;
+  min-height: 44px;
   font-size: 20px;
   line-height: normal;
   user-select: text;
@@ -190,7 +187,6 @@ input::placeholder {
 .btn {
   padding: 8px 5px 5px 5px;
   border: 1px solid #000000;
-  outline: none;
   background-color: #ffdb86;
   font-family: 'Bad Script', cursive;
   line-height: 1;
@@ -344,4 +340,23 @@ ul {
   .image-title {
     font-size: 15px;
   }
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* 44px tap targets */
+#submit, #no-results-okay {
+  min-height: 44px;
+  min-width: 44px;
+  padding-left: 12px;
+  padding-right: 12px;
+}
+
+.modal .close {
+  min-height: 44px;
+  min-width: 44px;
 }

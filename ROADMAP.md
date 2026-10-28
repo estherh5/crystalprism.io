@@ -7,6 +7,7 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Shipped
 
+- **2026-10** **Whole-app critique + audit: every route keyboard-usable, every load visible, no native dialogs.** The homepage's splash facets, 27 project tiles (names now always shown) and project modal (a real dialog: focus moves in, is trapped, returns to the tile) work from the keyboard, and closed modals and inactive pages are `inert`. Every fetch-on-mount paints "Loading…" in its own slot and ends in content or a failure with Retry (`common.js` `slotLoading`/`slotFailure`/`fetchWithTimeout`); every network-bound control shows a busy label on itself (`setBusy`). All ~68 `alert`/`confirm` calls became inline errors and in-page confirms, and signed-out visitors get "Sign in to comment/post" prompts. Vicarious no longer locks under a stray backdrop, Rhythm of Life's per-load TypeErrors are gone, text contrast passes across all apps, tap targets are 44px on phones, `lang` + `<main>` on every page, no horizontal scroll, `browserstack.svg` 950KB → 6KB. — impeccable 27/40, 2026-10-28
 - **2026-10** **Sign out stays in the open menu until it lands.** The vanilla fleet kit (`fleet-menu.js` + `fleet.css`, recopied byte-identical to marian and hn-stats) gained the React kit's busy state: a row with a `busyLabel` keeps the panel open reading "Signing out…" beside a spinner, `aria-disabled`, and outside presses and scroll no longer close it mid-sign-out; a rejected action shows its `failLabel` as a `role="alert"` line. Before, the panel closed first, so the "Signing out…" row `common.js` swapped in was never seen.
 - **2026-10** **The fleet apps + account menu and footer on the homepage and all six legacy apps.**
   The homepage, Timespace, Shapes In Rain, Rhythm of Life, CanvaShare, Thought Writer and
@@ -122,9 +123,13 @@ Committed doc, not scratch. Kept current by hand as work ships.
 
 ## Next
 
-- **Whole-app impeccable critique + audit.** Not yet run on this app (checked 2026-10-27). One session, in its own worktree: (1) polish every route; (2) critique A (design) and critique B (detector + browser) in parallel, on desktop and phone, per the impeccable skill's `critique.md`; (3) fix every P0 and P1; (4) re-run the critique to confirm it is clean; (5) persist the snapshot with `critique-storage.mjs` and add a Shipped line `impeccable <n>/40, <date>`. Steps: the `new-app` skill, Shipping section. Almanac's pass (2026-10-19, 24/40) still found P1s that ~65 per-feature passes had missed. **Loading states, part of step (1):** hand-written static site, so there is no `loading.tsx`: check every fetch-on-mount fills its own slot and ends in content, empty or a visible failure with Retry. Candidates (checked 2026-10-27): `vicarious/main.js` has a loading animation but no Retry; `main.js`, `thought-writer/main.js`, `thought-writer/post/main.js`, `canvashare/main.js`, `user/main.js`, `rhythm-of-life/main.js` and `shapes-in-rain/main.js` already have loading and retry, so confirm only. `thought-writer/editor`, `canvashare/easel` and the `user/` sign-in, create-account and my-account forms are the network-bound controls to check. Then check every network-bound control shows a busy state on itself. Rule: "Async actions & progress" in `~/Developer/DESIGN.md`; nexus's Past chats sheet (`web/components/PersonChat.tsx`) is the reference for an in-sheet list.
+_Nothing outstanding._
 
 ## Declined
+
+- **Redirecting the legacy sign-in / my-account pages to auth.crystalprism.io.** Declined
+  2026-10-28: the pages stay and were fixed in place (labels, contrast, busy states, inline errors)
+  during the whole-app critique; only /create-account/ redirects.
 
 - **Carrying unsaved drafts across the subdomain move.** Thought Writer drafts and in-progress
   CanvaShare drawings kept in `crystalprism.io` localStorage are unreachable from the new

@@ -31,9 +31,14 @@ window.onload = function() {
     checkIfLoggedIn();
     createPageFooter();
     document.getElementById('profile-title').textContent = 'User does not exist';
-    document.title = 'Not found';
+    document.title = 'Not found · Crystal Prism';
     return;
   }
+
+  /* The tab and the heading name the profile from the first frame, so a
+  profile that fails to load still says whose it is */
+  document.title = username + ' · Crystal Prism';
+  document.getElementById('profile-title').textContent = username;
 
   // Create page header (from common.js script)
   createPageHeader();
@@ -84,51 +89,180 @@ function retryFunctions() {
 
 // Load profile user's personal information from server
 function loadPersonalInfo() {
-  return fetch(api + '/user/' + encodeURIComponent(username))
+  var infoSlot = document.getElementById('user-link-row').firstElementChild;
 
-    // Display error if server is down
-    .catch(function(error) {
+  // Loading shows under the name from the first frame, unless info is shown
+  if (!document.getElementById('profile-title').textContent) {
+    slotLoading(infoSlot, 'Loading profile…');
+  }
+
+  return fetchWithTimeout(api + '/user/' + encodeURIComponent(username))
+
+    .then(function(response) {
+      // Display error if server responds with error
+      if (!response.ok) {
+        clearSlotStatus(infoSlot);
+        document.getElementById('profile-title').textContent =
+          'User does not exist';
+        document.title = 'Not found · Crystal Prism';
+        return;
+      }
+
+      return response.json().then(function(info) {
+        clearSlotStatus(infoSlot);
+        displayPersonalInfo(info);
+
+        // Store info in localStorage for offline loading
+        try {
+          localStorage.setItem(username + '-profile', JSON.stringify(info));
+        } catch (e) {}
+
+        return;
+      });
+    })
+
+    .catch(function() {
       // Display cached information if it is stored in localStorage
-      if (localStorage.getItem(username + '-profile')) {
-        displayPersonalInfo(JSON.parse(localStorage
-          .getItem(username + '-profile')));
+      try {
+        var cached = JSON.parse(localStorage.getItem(username + '-profile'));
+      } catch (e) {
+        var cached = null;
       }
 
-      else {
-        document.getElementById('profile-title')
-          .innerHTML = 'Could not load page';
-        document.title = 'Not found';
+      if (cached) {
+        clearSlotStatus(infoSlot);
+        displayPersonalInfo(cached);
+        return;
       }
+
+      // Otherwise the failure shows where the profile would be, with Retry
+      slotFailure(infoSlot, "Couldn't load this profile.", loadPersonalInfo);
+      return;
+    });
+}
+
+
+/* Load one page of a profile list (drawings, posts or comments) into its
+slot: Loading from the first frame, the page on success, cached items if the
+first page fails and some are stored, and otherwise a failure with Retry
+below whatever page is already showing */
+function loadContent(list) {
+  var start = list.start();
+  var end = list.end();
+  list.loading = true;
+  slotLoading(list.slot, 'Loading ' + list.noun + '…');
+
+  return fetchWithTimeout(list.url(start, end), list.options)
+
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
+      }
+
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      return response.json();
+    })
+
+    .then(function(items) {
+      list.loading = false;
+      clearSlotStatus(list.slot);
+
+      // Display message if user has none
+      if (items.length == 0) {
+        list.slot.textContent = 'There are no ' + list.noun +
+          ' for this user.';
+        return;
+      }
+
+      /* Assess if there are more than requested items - 1 (number of loaded
+      items) on server */
+      var more = items.length > (end - start - 1);
+      list.setMore(more);
+      list.display(items.slice(0, more ? end - start - 1 : items.length));
+
+      // Store items in localStorage for offline loading
+      try {
+        var stored = start == 0 ? [] : JSON.parse(localStorage
+          .getItem(username + list.cacheKey)) || [];
+        for (var i = 0; i < items.length; i++) {
+          stored[start + i] = items[i];
+        }
+        localStorage.setItem(username + list.cacheKey, JSON.stringify(stored));
+      } catch (e) {}
 
       return;
     })
 
-    // Display user's information on profile if server responds without error
-    .then(function(response) {
-      // Nothing to do if the catch above already handled a server error
-      if (!response) {
-        return;
+    .catch(function() {
+      list.loading = false;
+
+      // On the first page, cached items stand in if they are stored
+      if (start == 0) {
+        try {
+          var cached = JSON.parse(localStorage
+            .getItem(username + list.cacheKey) || '[]');
+        } catch (e) {
+          var cached = [];
+        }
+
+        if (cached.length) {
+          clearSlotStatus(list.slot);
+          list.setMore(cached.length > end - 1);
+          list.display(cached.slice(0, end - 1));
+          return;
+        }
       }
 
-      if (response.ok) {
-        response.json().then(function(info) {
-          displayPersonalInfo(info);
-
-          // Store info in localStorage for offline loading
-          localStorage.setItem(username + '-profile', JSON.stringify(info));
-        });
-
-        return;
-      }
-
-      // Display error if server responds with error
-      document.getElementById('profile-title')
-        .innerHTML = 'User does not exist';
-      document.title = 'Not found';
-
+      slotFailure(list.slot, "Couldn't load " + list.noun + '.', function() {
+        loadContent(list);
+      });
       return;
     });
 }
+
+var drawingsList = {
+  noun: 'drawings',
+  slot: gallery,
+  cacheKey: '-profile-drawings',
+  start: function() { return drawingStart; },
+  end: function() { return drawingEnd; },
+  url: function(start, end) {
+    return api + '/canvashare/drawings/' + encodeURIComponent(username) +
+      '?start=' + start + '&end=' + end;
+  },
+  setMore: function(more) { moreDrawingsToDisplay = more; },
+  display: function(items) { displayDrawings(items); },
+};
+
+var postsList = {
+  noun: 'posts',
+  slot: postList,
+  cacheKey: '-profile-posts',
+  start: function() { return postStart; },
+  end: function() { return postEnd; },
+  url: function(start, end) {
+    return api + '/thought-writer/posts/' + encodeURIComponent(username) +
+      '?start=' + start + '&end=' + end;
+  },
+  setMore: function(more) { morePostsToDisplay = more; },
+  display: function(items) { displayPosts(items); },
+};
+
+var commentsList = {
+  noun: 'comments',
+  slot: commentList,
+  cacheKey: '-profile-comments',
+  start: function() { return commentStart; },
+  end: function() { return commentEnd; },
+  url: function(start, end) {
+    return api + '/thought-writer/comments/user/' +
+      encodeURIComponent(username) + '?start=' + start + '&end=' + end;
+  },
+  setMore: function(more) { moreCommentsToDisplay = more; },
+  display: function(items) { displayComments(items); },
+};
 
 
 // Display passed info on user's profile page
@@ -137,7 +271,7 @@ function displayPersonalInfo(info) {
   username */
   document.getElementById('user-link').href = '?username=' + encodeURIComponent(info['username']);
   document.getElementById('profile-title').textContent = info['username'];
-  document.title = info['username'];
+  document.title = info['username'] + ' · Crystal Prism';
 
   /* Populate user's about me blurb, name, email address, background
   color, and icon color */
@@ -192,6 +326,11 @@ function displayPersonalInfo(info) {
     ('0' + score_minutes).slice(-2) + ':' + ('0' + score_seconds).slice(-2);
   document.getElementById('rhythm-stat').textContent = lifespan_value;
 
+  /* The score rows show only once there are scores to show: a failed load
+  never passes a placeholder 0 off as a real score */
+  document.getElementById('rhythm-row').classList.remove('hidden');
+  document.getElementById('shapes-row').classList.remove('hidden');
+
   return;
 }
 
@@ -237,109 +376,7 @@ function updateFontColors(color) {
 
 // Load profile user's drawings from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/drawings/' + encodeURIComponent(username) + '?start=' +
-    drawingStart + '&end=' + drawingEnd)
-
-    // Add error message to gallery if server responds with error
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Display cached drawings if they are stored in localStorage
-      if (localStorage.getItem(username + '-profile-drawings')) {
-        var drawings = JSON.parse(localStorage
-          .getItem(username + '-profile-drawings'));
-
-        /* Assess if there are more than requested drawings - 1 (number
-        of loaded drawings) */
-        if (drawings.length > (drawingEnd - 1)) {
-          moreDrawingsToDisplay = true;
-          var loadNumber = drawingEnd - 1;
-        }
-
-        // If there are not, load all drawings
-        else {
-          moreDrawingsToDisplay = false;
-          var loadNumber = drawings.length;
-        }
-
-        displayDrawings(drawings.slice(drawingStart, loadNumber));
-      }
-
-      else {
-        gallery.innerHTML = 'There was an error loading the user\'s ' +
-          'drawings. Please refresh the page.';
-      }
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        /* Display user's drawings in profile gallery if server responds
-        without error */
-        if (response.ok) {
-          response.json().then(function(drawings) {
-            if (drawings.length > 0) {
-              /* Assess if there are more than requested drawings - 1 (number
-              of loaded drawings) on server */
-              if (drawings.length > (drawingEnd - drawingStart - 1)) {
-                moreDrawingsToDisplay = true;
-                var loadNumber = drawingEnd - drawingStart - 1;
-              }
-
-              // If there are not, load all drawings sent from server
-              else {
-                moreDrawingsToDisplay = false;
-                var loadNumber = drawings.length;
-              }
-
-              displayDrawings(drawings.slice(0, loadNumber));
-
-              /* Remove locally stored drawings if this is the initial request
-              to replace with latest drawings from server */
-              if (drawingStart == 0) {
-                localStorage.removeItem(username + '-profile-drawings');
-                var localDrawings = [];
-              }
-
-              // Otherwise, get locally stored drawings list
-              else {
-                var localDrawings = JSON.parse(localStorage
-                  .getItem(username + '-profile-drawings'));
-              }
-
-              /* Add each drawing to locally stored drawings list based on
-              drawingStart and drawingEnd values */
-              for (var i = 0; i < drawings.length; i++) {
-                localDrawings[drawingStart + i] = drawings[i];
-              }
-
-              // Store drawings in localStorage for offline loading
-              localStorage.setItem(username + '-profile-drawings', JSON
-                .stringify(localDrawings));
-            }
-
-            // Display message if user has no drawings
-            else {
-              gallery.innerHTML = 'There are no drawings for this user.';
-            }
-
-          });
-
-          return;
-        }
-
-        // Add error message to gallery if server responds with error
-        gallery.innerHTML = 'There was an error loading the user\'s ' +
-          'drawings. Please refresh the page.';
-
-        return;
-      }
-    });
+  return loadContent(drawingsList);
 }
 
 
@@ -478,6 +515,8 @@ function displayDrawingLikes(drawingId, likers) {
 
       // Update like count when user clicks heart
       likedHeart.onclick = updateLikes;
+      keyboardButton(likedHeart, 'Like');
+      likedHeart.setAttribute('aria-pressed', 'true');
 
       return;
     }
@@ -492,6 +531,8 @@ function displayDrawingLikes(drawingId, likers) {
 
   // Update like count when user clicks heart
   unlikedHeart.onclick = updateLikes;
+  keyboardButton(unlikedHeart, 'Like');
+  unlikedHeart.setAttribute('aria-pressed', 'false');
 
   return;
 }
@@ -500,6 +541,19 @@ function displayDrawingLikes(drawingId, likers) {
 // Update drawing's like count
 function updateLikes() {
   var heart = this;
+  var container = heart.closest('.drawing-container');
+  clearInlineError(heart);
+
+  // Ignore clicks while this heart's last request is still in flight
+  if (heart.dataset.pending) {
+    return;
+  }
+
+  // Liking needs an account: say so, with the way in
+  if (!localStorage.getItem('username')) {
+    signInPrompt(heart, 'Sign in to like drawings', container);
+    return;
+  }
 
   // Add click animation to create pop effect
   heart.classList.add('clicked');
@@ -511,204 +565,163 @@ function updateLikes() {
     return;
   }, false);
 
-  /* If heart is already filled in, delete drawing like and decrease drawing
-  like count */
-  if (this.classList.contains('fas')) {
+  var likeText = heart.nextSibling;
+  var previousCount = likeText.textContent;
+  var wasLiked = heart.classList.contains('fas');
 
-    return fetch(api + '/canvashare/drawing-like/' + this.dataset
+  // The heart and count change at once, and change back if the request fails
+  heart.dataset.pending = 'true';
+  setHeart(heart, !wasLiked);
+  likeText.textContent = (parseInt(previousCount) || 0) + (wasLiked ? -1 : 1);
+
+  function settle() {
+    delete heart.dataset.pending;
+    return;
+  }
+
+  function revert(message) {
+    setHeart(heart, wasLiked);
+    likeText.textContent = previousCount;
+    settle();
+    inlineError(heart, message, container);
+    return;
+  }
+
+  function networkFailure() {
+    // Add server down banner to page (from common.js script)
+    pingServer(retryFunctions);
+    revert("Your like didn't go through. Try again in a moment.");
+    return;
+  }
+
+  // If heart was filled in, delete drawing like and decrease like count
+  if (wasLiked) {
+    return fetchWithTimeout(api + '/canvashare/drawing-like/' + heart.dataset
       .drawinglike, {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE'
       })
 
-        // Display error message if server is down
-        .catch(function(error) {
-          // Add server down banner to page (from common.js script)
-          pingServer(retryFunctions);
+      .then(function(response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          window.alert('Your like did not go through. Please try again soon.');
-
+        if (response.ok) {
+          delete heart.dataset.drawinglike;
+          settle();
           return;
-        })
+        }
 
-        /* If server responds without error, remove heart fill and decrease
-        like count user sees */
-        .then(function(response) {
-          if (response) {
-            // Remove server down banner from page (from common.js script)
-            pingServer();
-
-            if (response.ok) {
-              var likeText = heart.nextSibling;
-              var currentLikes = likeText.innerHTML;
-              heart.classList.remove('fas');
-              heart.classList.add('far');
-              delete heart.dataset.drawinglike;
-              likeText.innerHTML = parseInt(currentLikes) - 1;
-              return;
-            }
-
-            // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
-          }
-        });
+        revert("Your like didn't go through. Sign in again and retry.");
+        return;
+      }, networkFailure);
   }
 
   // Otherwise, send request to server to increase like count
-  var data = JSON.stringify({'drawing_id': this.dataset.drawing});
+  var data = JSON.stringify({'drawing_id': heart.dataset.drawing});
 
-  return fetch(api + '/canvashare/drawing-like', {
+  return fetchWithTimeout(api + '/canvashare/drawing-like', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your like did not go through. Please try again soon.');
-
-      return;
-    })
-
-    /* If server responds without error, fill in heart and increase like count
-    user sees */
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        if (response.ok) {
-          response.text().then(function(drawingLikeId) {
-            var likeText = heart.nextSibling;
-            var currentLikes = likeText.innerHTML;
-            likeText.innerHTML = parseInt(currentLikes) + 1;
-            heart.classList.remove('far');
-            heart.classList.add('fas');
-            heart.dataset.drawinglike = drawingLikeId;
-          });
+      if (response.ok) {
+        return response.text().then(function(drawingLikeId) {
+          heart.dataset.drawinglike = drawingLikeId;
+          settle();
           return;
-        }
-
-        // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        });
       }
+
+      revert("Your like didn't go through. Sign in again and retry.");
+      return;
+    }, networkFailure)
+
+    .catch(function() {
+      settle();
+      return;
     });
+}
+
+
+// Show a heart as liked (filled red) or not (outline), for sight and sound
+function setHeart(heart, liked) {
+  heart.classList.toggle('fas', liked);
+  heart.classList.toggle('far', !liked);
+  heart.setAttribute('aria-pressed', liked ? 'true' : 'false');
+  return;
+}
+
+
+// A clickable icon that keyboards and screen readers can use too
+function keyboardButton(element, label) {
+  element.setAttribute('role', 'button');
+  element.tabIndex = 0;
+
+  if (label) {
+    element.setAttribute('aria-label', label);
+  }
+
+  element.addEventListener('keydown', function(e) {
+    if (e.key == 'Enter' || e.key == ' ') {
+      e.preventDefault();
+      element.click();
+    }
+
+    return;
+  }, false);
+
+  return;
+}
+
+
+/* A failure shows next to the control that failed, as a role="alert" line,
+and the next attempt clears it */
+function inlineError(control, message, anchor, position) {
+  clearInlineError(control);
+  var note = document.createElement('p');
+  note.className = 'inline-error';
+  note.setAttribute('role', 'alert');
+  note.textContent = message;
+  (anchor || control).insertAdjacentElement(position ||
+    (anchor ? 'beforeend' : 'afterend'), note);
+  control.inlineErrorNote = note;
+  return note;
+}
+
+function clearInlineError(control) {
+  var note = control.inlineErrorNote;
+  if (note && note.parentNode) {
+    note.parentNode.removeChild(note);
+  }
+  control.inlineErrorNote = null;
+  return;
+}
+
+// An action that needs an account offers the sign-in, back to this page
+function signInPrompt(control, text, anchor) {
+  var note = inlineError(control, '', anchor);
+  note.setAttribute('role', 'status');
+  var link = document.createElement('a');
+  link.className = 'sign-in-prompt';
+  link.href = appUrl('account', 'sign-in/?next=' +
+    encodeURIComponent(window.location.href));
+  link.textContent = text;
+  note.appendChild(link);
+  return note;
 }
 
 
 // Load user's posts from server
 function loadPosts() {
-  return fetch(api + '/thought-writer/posts/' + encodeURIComponent(username) + '?start=' +
-    postStart + '&end=' + postEnd)
-
-    // Add error message to post list if server responds with error
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Display cached posts if they are stored in localStorage
-      if (localStorage.getItem(username + '-profile-posts')) {
-        var posts = JSON.parse(localStorage
-          .getItem(username + '-profile-posts'));
-
-        /* Assess if there are more than requested posts - 1 (number of
-        loaded posts) */
-        if (posts.length > (postEnd - 1)) {
-          morePostsToDisplay = true;
-          var loadNumber = postEnd - 1;
-        }
-
-        // If there are not, load all posts
-        else {
-          morePostsToDisplay = false;
-          var loadNumber = posts.length;
-        }
-
-        displayPosts(posts.slice(postStart, loadNumber));
-      }
-
-      else {
-        postList.innerHTML = 'There was an error loading the user\'s posts. ' +
-          'Please refresh the page.';
-      }
-
-      return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display posts in user's posts list if server responds without error
-        if (response.ok) {
-          response.json().then(function(posts) {
-            if (posts.length > 0) {
-              /* Assess if there are more than requested posts - 1 (number of
-              loaded posts) on server */
-              if (posts.length > (postEnd - postStart - 1)) {
-                morePostsToDisplay = true;
-                var loadNumber = postEnd - postStart - 1;
-              }
-
-              // If there are not, load all posts sent from server
-              else {
-                morePostsToDisplay = false;
-                var loadNumber = posts.length;
-              }
-
-              displayPosts(posts.slice(0, loadNumber));
-
-              /* Remove locally stored posts if this is the initial request
-              to replace with latest posts from server */
-              if (postStart == 0) {
-                localStorage.removeItem(username + '-profile-posts');
-                var localPosts = [];
-              }
-
-              // Otherwise, get locally stored posts list
-              else {
-                var localPosts = JSON.parse(localStorage
-                  .getItem(username + '-profile-posts'));
-              }
-
-              /* Add each post to locally stored posts list based on
-              postStart and postEnd values */
-              for (var i = 0; i < posts.length; i++) {
-                localPosts[postStart + i] = posts[i];
-              }
-
-              // Store posts in localStorage for offline loading
-              localStorage.setItem(username + '-profile-posts', JSON
-                .stringify(localPosts));
-            }
-
-            // Display message if user has no posts
-            else {
-              postList.innerHTML = 'There are no posts for this user.';
-            }
-
-          });
-
-          return;
-        }
-
-        // Add error message to post list if server responds with error
-        postList.innerHTML = 'There was an error loading the user\'s posts. ' +
-          'Please refresh the page.';
-
-        return;
-      }
-    });
+  return loadContent(postsList);
 }
 
 
@@ -810,108 +823,7 @@ function displayPosts(posts) {
 
 // Load user's comments from server
 function loadComments() {
-  return fetch(api + '/thought-writer/comments/user/' + encodeURIComponent(username) + '?start=' +
-    commentStart + '&end=' + commentEnd)
-
-      // Add error message to comment list if server responds with error
-      .catch(function(error) {
-        // Add server down banner to page (from common.js script)
-        pingServer(retryFunctions);
-
-        // Display cached comments if they are stored in localStorage
-        if (localStorage.getItem(username + '-profile-comments')) {
-          var comments = JSON.parse(localStorage
-            .getItem(username + '-profile-comments'));
-
-          /* Assess if there are more than requested comments - 1 (number
-          of displayed comments) */
-          if (comments.length > (commentEnd - 1)) {
-            moreCommentsToDisplay = true;
-            var loadNumber = commentEnd - 1;
-          }
-
-          // If there are not, display all comments
-          else {
-            moreCommentsToDisplay = false;
-            var loadNumber = comments.length;
-          }
-
-          displayComments(comments.slice(commentStart, loadNumber));
-        }
-
-        // Otherwise, display error message
-        else {
-          commentList.innerHTML = 'There was an error loading the user\'s ' +
-            'comments. Please refresh the page.';
-        }
-
-        return;
-      })
-
-      .then(function(response) {
-        if (response) {
-          // Remove server down banner from page (from common.js script)
-          pingServer();
-
-          if (response.ok) {
-            response.json().then(function(comments) {
-              if (comments.length > 0) {
-                /* Assess if there are more than requested comments - 1 (number
-                of displayed comments) on server */
-                if (comments.length > (commentEnd - commentStart - 1)) {
-                  moreCommentsToDisplay = true;
-                  var loadNumber = commentEnd - commentStart - 1;
-                }
-
-                // If there are not, display all comments sent from server
-                else {
-                  moreCommentsToDisplay = false;
-                  var loadNumber = comments.length;
-                }
-
-                displayComments(comments.slice(0, loadNumber));
-
-                /* Remove locally stored comments if this is the initial request
-                to replace with latest comments from server */
-                if (commentStart == 0) {
-                  localStorage.removeItem(username + '-profile-comments');
-                  var localComments = [];
-                }
-
-                // Otherwise, get locally stored comments list
-                else {
-                  var localComments = JSON.parse(localStorage
-                    .getItem(username + '-profile-comments'));
-                }
-
-                /* Add each comment to locally stored comments list based on
-                commentStart and commentEnd values */
-                for (var i = 0; i < comments.length; i++) {
-                  localComments[commentStart + i] = comments[i];
-                }
-
-                // Store comments in localStorage for offline loading
-                localStorage.setItem(username + '-profile-comments', JSON
-                  .stringify(localComments));
-              }
-
-              // Display message if user has no comments
-              else {
-                commentList.innerHTML = 'There are no comments for this user.';
-              }
-
-            });
-
-            return;
-          }
-
-          // Add error message to comment list if server responds with error
-          commentList.innerHTML = 'There was an error loading the user\'s ' +
-            'comments. Please refresh the page.';
-
-          return;
-        }
-      });
+  return loadContent(commentsList);
 }
 
 
@@ -997,7 +909,7 @@ function displayComments(comments) {
 
 // Request lower-numbered drawings if left arrow is clicked in profile gallery
 document.getElementById('drawing-left-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !drawingsList.loading) {
     drawingStart = drawingStart - 3;
     drawingEnd = drawingEnd - 3;
     loadDrawings();
@@ -1010,7 +922,7 @@ document.getElementById('drawing-left-arrow').onclick = function() {
 /* Request higher-numbered drawings if right arrow is clicked in profile
 gallery */
 document.getElementById('drawing-right-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !drawingsList.loading) {
     drawingStart = drawingStart + 3;
     drawingEnd = drawingEnd + 3;
     loadDrawings();
@@ -1022,7 +934,7 @@ document.getElementById('drawing-right-arrow').onclick = function() {
 
 // Request lower-numbered posts if left arrow is clicked in profile post area
 document.getElementById('posts-left-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !postsList.loading) {
     postStart = postStart - 3;
     postEnd = postEnd - 3;
     loadPosts();
@@ -1034,7 +946,7 @@ document.getElementById('posts-left-arrow').onclick = function() {
 
 // Request higher-numbered posts if right arrow is clicked in profile post area
 document.getElementById('posts-right-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !postsList.loading) {
     postStart = postStart + 3;
     postEnd = postEnd + 3;
     loadPosts();
@@ -1047,7 +959,7 @@ document.getElementById('posts-right-arrow').onclick = function() {
 /* Request lower-numbered comments if left arrow is clicked in profile comment
 area */
 document.getElementById('comments-left-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !commentsList.loading) {
     commentStart = commentStart - 3;
     commentEnd = commentEnd - 3;
     loadComments();
@@ -1060,7 +972,7 @@ document.getElementById('comments-left-arrow').onclick = function() {
 /* Request higher-numbered comments if right arrow is clicked in profile
 comment area */
 document.getElementById('comments-right-arrow').onclick = function() {
-  if (this.classList.contains('display')) {
+  if (this.classList.contains('display') && !commentsList.loading) {
     commentStart = commentStart + 3;
     commentEnd = commentEnd + 3;
     loadComments();
@@ -1085,41 +997,42 @@ function toggleContent() {
   commentStart = 0;
   commentEnd = 4;
 
-  /* If the Drawings button is clicked, set the button as selected, hide posts
-  and comments, and request drawings from server */
+  // Exactly one tab is selected, and only it is in the tab order
+  var tabs = [drawingsButton, postsButton, commentsButton];
+  for (var i = 0; i < tabs.length; i++) {
+    var selected = tabs[i] == this;
+    tabs[i].classList.toggle('selected', selected);
+    tabs[i].setAttribute('aria-selected', selected ? 'true' : 'false');
+    tabs[i].tabIndex = selected ? 0 : -1;
+    document.getElementById(tabs[i].getAttribute('aria-controls')).classList
+      .toggle('hidden', !selected);
+  }
+
   if (this.id == 'drawings') {
-    postsButton.classList.remove('selected');
-    commentsButton.classList.remove('selected');
-    drawingsButton.classList.add('selected');
-    document.getElementById('post-list-row').classList.add('hidden');
-    document.getElementById('comment-list-row').classList.add('hidden');
-    document.getElementById('gallery-row').classList.remove('hidden');
     loadDrawings();
-    return;
   }
-
-  /* If the Posts button is clicked, set the button as selected, hide drawings
-  and comments, and request posts from server */
-  if (this.id == 'posts') {
-    drawingsButton.classList.remove('selected');
-    commentsButton.classList.remove('selected');
-    postsButton.classList.add('selected');
-    document.getElementById('gallery-row').classList.add('hidden');
-    document.getElementById('comment-list-row').classList.add('hidden');
-    document.getElementById('post-list-row').classList.remove('hidden');
+  else if (this.id == 'posts') {
     loadPosts();
-    return;
   }
-
-  /* Otherwise, set the Comments button as selected, hide drawings and posts,
-  and request comments from server */
-  drawingsButton.classList.remove('selected');
-  postsButton.classList.remove('selected');
-  commentsButton.classList.add('selected');
-  document.getElementById('gallery-row').classList.add('hidden');
-  document.getElementById('post-list-row').classList.add('hidden');
-  document.getElementById('comment-list-row').classList.remove('hidden');
-  loadComments();
+  else {
+    loadComments();
+  }
 
   return;
 }
+
+
+// Arrow keys move between the tabs, as a tablist does
+document.querySelector('.menu-options').addEventListener('keydown', function(e) {
+  var tabs = [drawingsButton, postsButton, commentsButton];
+  var index = tabs.indexOf(document.activeElement);
+  if (index == -1 || (e.key != 'ArrowRight' && e.key != 'ArrowLeft')) {
+    return;
+  }
+
+  e.preventDefault();
+  var next = tabs[(index + (e.key == 'ArrowRight' ? 1 : 2)) % 3];
+  next.focus();
+  next.click();
+  return;
+}, false);

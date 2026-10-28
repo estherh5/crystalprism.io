@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <script src="/slash.js"></script>
@@ -27,12 +27,13 @@
     </a>
 
     <!-- Main page container -->
-    <div id="editor-container">
+    <main id="editor-container">
 
       <!-- Post editing space -->
       <div id="edit-space">
 
         <!-- Input for post title -->
+        <label for="post-title" class="visually-hidden">Post title</label>
         <input id="post-title" placeholder="[title]" maxlength="25">
 
         <!-- Pink post background -->
@@ -40,70 +41,71 @@
 
           <!-- Toolbar for post editing (buttons with data-commands and icons) -->
           <div id="format-toolbar">
-            <button id="font-color-icon">
-              <input id="font-color-picker" class="jscolor" data-command="foreColor">
+            <button id="font-color-icon" type="button" aria-label="Text color" title="Text color">
+              <input id="font-color-picker" class="jscolor" data-command="foreColor" tabindex="-1" aria-hidden="true">
               <i class="material-icons">format_color_text</i>
             </button>
-            <button data-command="removeFormat">
+            <button type="button" data-command="removeFormat" aria-label="Clear formatting" title="Clear formatting">
               <i class="fas fa-times" aria-hidden="true"></i>
             </button>
-            <button data-command="bold">
+            <button type="button" data-command="bold" aria-label="Bold" title="Bold">
               <i class="fas fa-bold" aria-hidden="true"></i>
             </button>
-            <button data-command="italic">
+            <button type="button" data-command="italic" aria-label="Italic" title="Italic">
               <i class="fas fa-italic" aria-hidden="true"></i>
             </button>
-            <button data-command="underline">
+            <button type="button" data-command="underline" aria-label="Underline" title="Underline">
               <i class="fas fa-underline" aria-hidden="true"></i>
             </button>
-            <button data-command="strikeThrough">
+            <button type="button" data-command="strikeThrough" aria-label="Strikethrough" title="Strikethrough">
               <i class="fas fa-strikethrough" aria-hidden="true"></i>
             </button>
-            <button data-command="subscript">
+            <button type="button" data-command="subscript" aria-label="Subscript" title="Subscript">
               <i class="fas fa-subscript" aria-hidden="true"></i>
             </button>
-            <button data-command="superscript">
+            <button type="button" data-command="superscript" aria-label="Superscript" title="Superscript">
               <i class="fas fa-superscript" aria-hidden="true"></i>
             </button>
-            <button data-command="justifyLeft">
+            <button type="button" data-command="justifyLeft" aria-label="Align left" title="Align left">
               <i class="fas fa-align-left" aria-hidden="true"></i>
             </button>
-            <button data-command="justifyCenter">
+            <button type="button" data-command="justifyCenter" aria-label="Align center" title="Align center">
               <i class="fas fa-align-center" aria-hidden="true"></i>
             </button>
-            <button data-command="justifyRight">
+            <button type="button" data-command="justifyRight" aria-label="Align right" title="Align right">
               <i class="fas fa-align-right" aria-hidden="true"></i>
             </button>
-            <button data-command="justifyFull">
+            <button type="button" data-command="justifyFull" aria-label="Justify" title="Justify">
               <i class="fas fa-align-justify" aria-hidden="true"></i>
             </button>
-            <button data-command="insertOrderedList">
+            <button type="button" data-command="insertOrderedList" aria-label="Numbered list" title="Numbered list">
               <i class="fas fa-list-ol" aria-hidden="true"></i>
             </button>
-            <button data-command="insertUnorderedList">
+            <button type="button" data-command="insertUnorderedList" aria-label="Bulleted list" title="Bulleted list">
               <i class="fas fa-list-ul" aria-hidden="true"></i>
             </button>
-            <button data-command="createLink">
+            <button type="button" data-command="createLink" aria-label="Insert link" title="Insert link">
               <i class="fas fa-link" aria-hidden="true"></i>
             </button>
-            <button data-command="unlink">
+            <button type="button" data-command="unlink" aria-label="Remove link" title="Remove link">
               <i class="fas fa-unlink" aria-hidden="true"></i>
             </button>
-            <button data-command="insertImage">
+            <button type="button" data-command="insertImage" aria-label="Insert image" title="Insert image">
               <i class="far fa-file-image" aria-hidden="true"></i>
             </button>
           </div>
 
           <!-- Contenteditable div for post writing -->
-          <div id="post-content" contenteditable></div>
+          <div id="post-content" contenteditable role="textbox" aria-multiline="true" aria-label="Post"></div>
 
           <!-- Post action buttons -->
           <div id="action-buttons">
-            <button id="clear-post" class="action-button">Clear</button>
-            <button id="submit-post" class="action-button">Submit</button>
-            <button id="close-post" class="action-button">Close</button>
-            <button id="modify-post" class="action-button">Modify</button>
-            <button id="delete-post" class="action-button">Delete</button>
+            <button id="clear-post" class="action-button" type="button">Clear</button>
+            <button id="submit-post" class="action-button" type="button">Submit</button>
+            <a id="post-sign-in" class="action-button">Sign in to post</a>
+            <button id="close-post" class="action-button" type="button">Close</button>
+            <button id="modify-post" class="action-button" type="button">Modify</button>
+            <button id="delete-post" class="action-button" type="button">Delete</button>
             <!-- Custom checkbox for setting post to public -->
             <div id="public-checkbox"></div>
             <text id="public-text">Public?</text>
@@ -112,10 +114,10 @@
           </div>
 
           <!-- Post buttons that appear after post is written or modified -->
-          <button id="go-board" class="action-button">Go to Public Post Board</button>
-          <button id="go-back" class="action-button">Modify Last Post</button>
-          <button id="continue-post" class="action-button">Continue In-Progress Post</button>
-          <button id="new-post" class="action-button">New Post</button>
+          <button id="go-board" class="action-button" type="button">Go to Public Post Board</button>
+          <button id="go-back" class="action-button" type="button">Modify Last Post</button>
+          <button id="continue-post" class="action-button" type="button">Continue In-Progress Post</button>
+          <button id="new-post" class="action-button" type="button">New Post</button>
 
         </div>
       </div>
@@ -124,7 +126,7 @@
       <div id="cabinet">
         <div id="cabinet-back">
           <!-- Left arrow that appears when browsing through posts -->
-          <i id="left-arrow" class="fas fa-angle-double-left" aria-hidden="true"></i>
+          <i id="left-arrow" class="fas fa-angle-double-left"></i>
         </div>
         <!-- Container where previous posts are loaded from server -->
         <div id="posts-container"></div>
@@ -132,11 +134,11 @@
           <!-- Cabinet handle that user clicks to open/close cabinet -->
           <div id="handle" title="Click to see the posts you have written">My Posts</div>
           <!-- Right arrow that appears when browsing through posts -->
-          <i id="right-arrow" class="fas fa-angle-double-right" aria-hidden="true"></i>
+          <i id="right-arrow" class="fas fa-angle-double-right"></i>
         </div>
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
@@ -153,6 +155,7 @@
     <!-- Main and common JS scripts -->
     <script src="../../fleet-menu.js"></script>
     <script src="../../common.js"></script>
+    <script src="../ui.js"></script>
     <script src="main.js"></script>
 
   </body>

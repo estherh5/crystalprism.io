@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Contemplate life by watching the Timespace clock move colorfully through time and space, while listening to the soundtrack of Saturn's rings in the background.">
@@ -20,10 +20,10 @@
   </head>
   <body>
     <!-- Audio control button for embedded video -->
-    <div id="audio-container" data-video="lhonQGHFG44" data-autoplay="0" data-loop="1"></div>
+    <button id="audio-container" type="button" aria-label="Soundtrack" aria-pressed="false" data-video="lhonQGHFG44" data-autoplay="0" data-loop="1"></button>
 
     <!-- Main page container -->
-    <div id="container">
+    <main id="container">
 
       <!-- Moving circles -->
       <div id="circle-one" class="circle"></div>
@@ -44,7 +44,7 @@
       <!-- Stars that move in background -->
       <div id="stars"></div>
 
-    </div>
+    </main>
 
     <!-- YouTube video script -->
     <script src="https://www.youtube.com/iframe_api"></script>

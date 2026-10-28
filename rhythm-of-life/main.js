@@ -17,7 +17,7 @@ var svgGame = Snap('#svg-game'); // SVG game board
 var gameLength = document.getElementById('game-board').offsetHeight;
 var gameWidth = document.getElementById('game-board').offsetWidth;
 var scale = 60; // Length/width of one unit of game board
-var speed; // Frequency of game functions that run via setTimeout
+var speed = 200; // Frequency of game functions that run via setTimeout
 var hours;
 var minutes;
 var seconds;
@@ -82,56 +82,79 @@ function retryFunctions() {
 }
 
 
-// Add heart SVG to game board when heart SVG object loads
-document.getElementById('heart').onload = function() {
-  // Add heart to game board if it is not already there
-  if (!heartLoaded) {
-    heart = Snap(document.getElementById('heart').contentDocument
-      .getElementsByTagName('svg')[0]).attr({fill: '#56d056', 'x': 0, 'y': 0,
-      width: scale, height: scale});
+/* Run fn once an SVG <object> has its document. Its load event can fire
+before this script runs (the CDN scripts above it block parsing), so an object
+that has already loaded is handled at once instead of waiting for an event
+that will never come */
+function whenSvgLoads(object, fn) {
+  function run() {
+    var svg = object.contentDocument &&
+      object.contentDocument.getElementsByTagName('svg')[0];
 
-    svgGame.append(heart);
+    if (svg && !object.dataset.svgReady) {
+      object.dataset.svgReady = 'true';
+      fn(svg);
+    }
+
+    return;
   }
 
-  heartLoaded = true;
+  object.addEventListener('load', run, false);
+  run();
 
   return;
 }
 
 
+// Add heart SVG to game board when heart SVG object loads
+whenSvgLoads(document.getElementById('heart'), function(svg) {
+  heart = Snap(svg).attr({fill: '#56d056', 'x': 0, 'y': 0, width: scale,
+    height: scale});
+  svgGame.append(heart);
+  heartLoaded = true;
+  return;
+});
+
+
 // Add reliever SVG objects to relievers array when they load
 for (var i = 0; i < document.getElementsByClassName('reliever').length; i++) {
-  document.getElementsByClassName('reliever')[i]
-    .addEventListener('load', function() {
-      relievers.push(this.contentDocument.getElementsByTagName('svg')[0]);
+  whenSvgLoads(document.getElementsByClassName('reliever')[i], function(svg) {
+    relievers.push(svg);
 
-      // Place reliever on game board when all 4 relievers have loaded
-      if (relievers.length == 4) {
-        reliever = place(relievers);
-        relieversLoaded = true;
-      }
+    // Place reliever on game board when all 4 relievers have loaded
+    if (relievers.length == 4) {
+      reliever = place(relievers);
+      relieversLoaded = true;
+    }
 
-      return;
-    }, false);
+    return;
+  });
 }
 
 
 // Add stressor SVG objects to stressors array when they load
 for (var i = 0; i < document.getElementsByClassName('stressor').length; i++) {
-  document.getElementsByClassName('stressor')[i]
-    .addEventListener('load', function() {
-      stressors.push(this.contentDocument.getElementsByTagName('svg')[0]);
+  whenSvgLoads(document.getElementsByClassName('stressor')[i], function(svg) {
+    stressors.push(svg);
 
-      // Place stressor on game board when all 4 stressors have loaded
-      if (stressors.length == 4) {
-        stressor = place(stressors);
-        stressorsLoaded = true;
-      }
+    // Place stressor on game board when all 4 stressors have loaded
+    if (stressors.length == 4) {
+      stressor = place(stressors);
+      stressorsLoaded = true;
+    }
 
-      return;
-    }, false);
+    return;
+  });
 }
 
+
+/* The game's timers start with the page, before window.onload has set the
+starting screens (until then no screen reads as visible, so the game looked
+"in progress") and before the heart, stressor and reliever exist: they only
+act once every piece is on the board */
+function piecesReady() {
+  return heartLoaded && stressorsLoaded && relieversLoaded;
+}
 
 
 // Define game state functions
@@ -150,8 +173,7 @@ function reset() {
   speed = 200;
   systolicText.innerHTML = systolic;
   diastolicText.innerHTML = diastolic;
-  systolicText.style.color = '#56d056';
-  diastolicText.style.color = '#56d056';
+  setBloodPressureColor('green');
 
   if (heartLoaded && stressorsLoaded && relieversLoaded) {
     // Place heart at top left of game board
@@ -165,6 +187,9 @@ function reset() {
     reliever.remove();
     reliever = place(relievers);
   }
+
+  // Clear the last game's score status
+  document.getElementById('score-status').textContent = '';
 
   // Hide Game Over screen and Learn More screen
   gameOverScreen.style.visibility = 'hidden';
@@ -516,6 +541,10 @@ setTimeout(gameLoop, speed);
 function gameLoop() {
   setTimeout(gameLoop, speed);
 
+  if (!piecesReady()) {
+    return;
+  }
+
   // Pause game if screen is too small and game is in progress
   if (!largeEnoughScreen() && !(readyToStart() || paused() || gameOver())) {
     pause();
@@ -553,6 +582,10 @@ function gameLoop() {
 setInterval(updateLifespan, 1000);
 
 function updateLifespan() {
+  if (!piecesReady()) {
+    return;
+  }
+
   /* Do nothing if screen is too small or if game hasn't started yet, is
   paused, or is over */
   if (!largeEnoughScreen() || readyToStart() || paused() || gameOver()) {
@@ -635,6 +668,10 @@ setTimeout(orientStressor, speed * 1.5);
 
 function orientStressor() {
   setTimeout(orientStressor, speed * 1.5);
+
+  if (!piecesReady()) {
+    return;
+  }
 
   /* Do nothing if screen is too small or if game hasn't started yet, is
   paused, or is over */
@@ -748,6 +785,22 @@ function stressHeart() {
 }
 
 
+/* Color the BP numbers by range. The heart keeps its bright fill; text takes
+a darker shade of the same hue so it holds 4.6:1 or more on the #e8e8e8 bar */
+var bloodPressureColors = {
+  green: '#307430',
+  yellow: '#696900',
+  orange: '#826204',
+  red: '#c91919',
+};
+
+function setBloodPressureColor(range) {
+  systolicText.style.color = bloodPressureColors[range];
+  diastolicText.style.color = bloodPressureColors[range];
+  return;
+}
+
+
 // Set heart attributes (blood pressure, color, heartbeat speed)
 function setHeartAttr() {
   // Update systolic and diastolic values on screen
@@ -757,8 +810,7 @@ function setHeartAttr() {
   /* If systolic and diastolic values are in normal range, set heart and BP to
   green color and normal heartbeat speed */
   if (systolic < 120 && diastolic < 80) {
-    systolicText.style.color = '#56d056';
-    diastolicText.style.color = '#56d056';
+    setBloodPressureColor('green');
     heart.attr({fill: '#56d056'});
     heartbeat.rate(1.0);
     return;
@@ -767,8 +819,7 @@ function setHeartAttr() {
   /* If systolic and diastolic values are in prehypertension range, set heart
   and BP to yellow color and increase heartbeat speed */
   if (systolic >= 120 && systolic < 140 && diastolic >= 80 && diastolic < 90) {
-    systolicText.style.color = '#ffff00';
-    diastolicText.style.color = '#ffff00';
+    setBloodPressureColor('yellow');
     heart.attr({fill: '#ffff00'});
     heartbeat.rate(1.3);
     return;
@@ -777,8 +828,7 @@ function setHeartAttr() {
   /* If systolic and diastolic values are in hypertension stage 1 range, set
   heart and BP to orange color and increase heartbeat speed */
   if (systolic >= 140 && systolic < 160 && diastolic >= 90 && diastolic < 100) {
-    systolicText.style.color = '#ffc107';
-    diastolicText.style.color = '#ffc107';
+    setBloodPressureColor('orange');
     heart.attr({fill: '#ffc107'});
     heartbeat.rate(1.6);
     return;
@@ -787,8 +837,7 @@ function setHeartAttr() {
   /* If systolic and diastolic values are in hypertension stage 2 range, set
   heart and BP to red color and increase heartbeat speed */
   if (systolic >= 160 && diastolic >= 100) {
-    systolicText.style.color = '#ff2020';
-    diastolicText.style.color = '#ff2020';
+    setBloodPressureColor('red');
     heartbeat.rate(2.0);
     heart.attr({fill: '#ff2020'});
   }
@@ -796,9 +845,12 @@ function setHeartAttr() {
   // If blood pressure is >= 164/102, end game
   if (systolic >= 164 && diastolic >= 102) {
 
-    // Send game score to server if user is logged in
+    /* Send game score to server if user is logged in; otherwise offer the
+    sign-in that would have saved it */
     if (localStorage.getItem('username')) {
-      storeScore();
+      storeScore(parseInt(hours * 3600 + minutes * 60 + seconds));
+    } else {
+      showScoreSignIn();
     }
 
     // Display Game Over screen
@@ -815,135 +867,150 @@ function setHeartAttr() {
 }
 
 
-// Send score to server for logged-in users
-function storeScore() {
-  // Save score as time-based integer and lifespan in HH:MM:SS format
-  var data = JSON.stringify({
-    'score': parseInt(hours * 3600 + minutes * 60 + seconds)
-  });
+// Score status on the Game Over screen: saving, saved, failed or sign in
+var scoreStatus = document.getElementById('score-status');
 
-  return fetch(api + '/rhythm-of-life/score', {
+function setScoreStatus(text, role) {
+  scoreStatus.innerHTML = '';
+  scoreStatus.setAttribute('role', role || 'status');
+  scoreStatus.textContent = text;
+  return;
+}
+
+function showScoreSignIn() {
+  setScoreStatus('');
+  var link = document.createElement('a');
+  link.href = signedOutRows()[0].href;
+  link.textContent = 'Sign in to save your score';
+  scoreStatus.appendChild(link);
+  return;
+}
+
+
+// Send score to server for logged-in users
+function storeScore(score) {
+  setScoreStatus('Saving your score…');
+
+  return fetchWithTimeout(api + '/rhythm-of-life/score', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
-    body: data,
+    body: JSON.stringify({'score': score}),
   })
 
-    // Display warning if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+    .then(function(response) {
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-      window.alert('Your score could not be saved. Please play again later.');
+      if (response.ok) {
+        setScoreStatus('Score saved.');
+        loadLeaders();
+        return;
+      }
 
-      return;
+      // The session ended while playing: sign in again to save
+      if (response.status == 401) {
+        localStorage.removeItem('username');
+        showScoreSignIn();
+        return;
+      }
+
+      throw new Error('Server answered ' + response.status);
     })
 
-    // Display updated top 5 game leaders if server receives score successfully
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        if (response.ok) {
-          loadLeaders();
-        }
-      }
+    // The failure shows on the Game Over screen, with Retry
+    .catch(function() {
+      setScoreStatus("Your score couldn't be saved.", 'alert');
+      var retry = document.createElement('button');
+      retry.type = 'button';
+      retry.className = 'slot-retry';
+      retry.textContent = 'Retry';
+      retry.onclick = function() {
+        storeScore(score);
+        return;
+      };
+      scoreStatus.appendChild(retry);
+      return;
     });
+}
+
+
+// The leaderboard's own slot: the side board on desktop, the screen on mobile
+function leaderSlot() {
+  return mobile ? leaderScreen : document.getElementById('leaderboard');
 }
 
 
 // Load top 5 game leaders
 function loadLeaders() {
+  var slot = leaderSlot();
+  var rows = mobile ? leadersMobile : leaders;
+  var showing = rows[0].children.length > 0;
+
+  // A first load shows Loading in the board; a refresh keeps the list up
+  if (!showing) {
+    slotLoading(slot, 'Loading scores…');
+  }
+
   // Request top 5 game leaders from server
-  return fetch(api + '/rhythm-of-life/scores')
+  return fetchWithTimeout(api + '/rhythm-of-life/scores')
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      // Display cached leaders list if it is stored in localStorage
-      if (localStorage.getItem('rhythm-leaders-list')) {
-        displayLeaders(JSON.parse(localStorage
-          .getItem('rhythm-leaders-list')));
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
       }
 
-      // Otherwise, add error to leaders display
-      else {
-        if (mobile) {
-          // Clear leaders list
-          for (var i = 0; i < leadersMobile.length; i++) {
-            leadersMobile[i].innerHTML = '';
-          }
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-          // Display error
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = '2';
-          errorCell.innerHTML = 'The leaders list could not be loaded.';
-          leadersMobile[0].appendChild(errorCell);
-        } else {
-          // Clear leaders list
-          for (var i = 0; i < leaders.length; i++) {
-            leaders[i].innerHTML = '';
-          }
+      return response.json();
+    })
 
-          // Display error
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = '2';
-          errorCell.innerHTML = 'The leaderboard could not be loaded.';
-          leaders[0].appendChild(errorCell);
-        }
+    .then(function(leadersList) {
+      clearSlotStatus(slot);
+      displayLeaders(leadersList);
+
+      // An empty leaderboard says so
+      if (leadersList.length == 0) {
+        var empty = document.createElement('p');
+        empty.className = 'slot-status';
+        empty.textContent = 'No scores yet.';
+        slot.appendChild(empty);
       }
+
+      // Store leaders in localStorage for offline loading
+      try {
+        localStorage.setItem('rhythm-leaders-list', JSON
+          .stringify(leadersList));
+      } catch (e) {}
 
       return;
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Display leaders in game screen if server responds without error
-        if (response.ok) {
-          response.json().then(function(leadersList) {
-            displayLeaders(leadersList);
-
-            // Store leaders in localStorage for offline loading
-            localStorage.setItem('rhythm-leaders-list', JSON
-              .stringify(leadersList));
-          });
-
-          return;
-        }
-
-        // Clear leaders list and display error otherwise
-        if (mobile) {
-          for (var i = 0; i < leadersMobile.length; i++) {
-            leadersMobile[i].innerHTML = '';
-          }
-
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = '2';
-          errorCell.innerHTML = 'The leaders list could not be loaded.';
-          leadersMobile[0].appendChild(errorCell);
-        } else {
-          for (var i = 0; i < leaders.length; i++) {
-            leaders[i].innerHTML = '';
-          }
-
-          var errorCell = document.createElement('td');
-          errorCell.id = 'error-cell';
-          errorCell.colSpan = '2';
-          errorCell.innerHTML = 'The leaderboard could not be loaded.';
-          leaders[0].appendChild(errorCell);
-        }
-
+    .catch(function() {
+      // A refresh that fails leaves the list already on screen
+      if (rows[0].children.length > 0) {
+        clearSlotStatus(slot);
         return;
       }
+
+      // Display cached leaders list if it is stored in localStorage
+      try {
+        var cached = JSON.parse(localStorage.getItem('rhythm-leaders-list'));
+      } catch (e) {
+        var cached = null;
+      }
+
+      if (cached && cached.length) {
+        clearSlotStatus(slot);
+        displayLeaders(cached);
+        return;
+      }
+
+      // Otherwise the failure shows in the leaderboard, with Retry
+      slotFailure(slot, "Couldn't load scores.", loadLeaders);
+
+      return;
     });
 }
 
@@ -1093,6 +1160,7 @@ function toggleSound() {
     heartbeat.mute(false);
     document.getElementById('sound').style
       .backgroundImage = 'url("images/on.svg")';
+    document.getElementById('sound').setAttribute('aria-pressed', 'false');
     return;
   }
 
@@ -1100,6 +1168,7 @@ function toggleSound() {
   heartbeat.mute(true);
   document.getElementById('sound').style
     .backgroundImage = 'url("images/off.svg")';
+  document.getElementById('sound').setAttribute('aria-pressed', 'true');
 
   return;
 }

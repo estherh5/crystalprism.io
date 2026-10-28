@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <script src="/slash.js"></script>
@@ -26,14 +26,14 @@
     </a>
 
     <!-- Main page container -->
-    <div id="post-page-container">
+    <main id="post-page-container">
       <!-- Post container, with post title, content, timestamp, and writer -->
       <div id="post-container">
         <div id="post-title"></div>
         <div id="post-background"></div>
         <div id="post-info">
-          <div id="edit" class="hidden">Edit post</div>
-          <div id="delete" class="hidden">Delete post</div>
+          <button id="edit" class="hidden" type="button">Edit post</button>
+          <button id="delete" class="hidden" type="button">Delete post</button>
           <div id="post-timestamp"></div>
           <div id="post-modified-timestamp"></div>
           <a id="post-writer"></a>
@@ -42,17 +42,22 @@
 
       <!-- Comments container -->
       <div id="comment-area">
-        <h2>Leave a comment</h2>
-        <!-- Contenteditable div for writing comment -->
-        <div id="new-comment-box" contenteditable></div>
-        <button id="submit-comment">Submit</button>
+        <!-- Comment form, for signed-in visitors -->
+        <div id="new-comment-form">
+          <h2 id="new-comment-label">Leave a comment</h2>
+          <!-- Contenteditable div for writing comment -->
+          <div id="new-comment-box" contenteditable role="textbox" aria-multiline="true" aria-labelledby="new-comment-label"></div>
+          <button id="submit-comment" type="button">Submit</button>
+        </div>
+        <!-- Signed-out visitors get a way to sign in instead -->
+        <p id="comment-sign-in" hidden><a id="comment-sign-in-link">Sign in</a> to leave a comment.</p>
         <!-- Display of comment count -->
         <h2 id="comments"></h2>
         <!-- List of comments loaded from server -->
         <div id="comments-list"></div>
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
@@ -66,6 +71,7 @@
     <!-- Main and common JS scripts -->
     <script src="../../fleet-menu.js"></script>
     <script src="../../common.js"></script>
+    <script src="../ui.js"></script>
     <script src="main.js"></script>
 
   </body>

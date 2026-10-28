@@ -3,7 +3,6 @@
   font-family: 'logos';
   src: url('./fontello-logo-font/logos.eot?33511355');
   src: url('./fontello-logo-font/logos.eot?33511355#iefix') format('embedded-opentype'),
-       url('./fontello-logo-font/logos.woff2?33511355') format('woff2'),
        url('./fontello-logo-font/logos.woff?33511355') format('woff'),
        url('./fontello-logo-font/logos.ttf?33511355') format('truetype'),
        url('./fontello-logo-font/logos.svg?33511355#fontello') format('svg');
@@ -13,7 +12,7 @@
 
 html, body {
   height: 100vh;
-  width: 100vw;
+  width: 100%;
   padding: 0px;
   margin: 0px;
   top: 0px;
@@ -39,8 +38,51 @@ html, body {
   color: #ffffff;
 }
 
+/* Text tones of the section accents: the bright fills (#7fd13b, #1ebfe8,
+#d24cff, #eb84e2) stay on circles and decoration, and text takes these deeper
+steps of the same hues, >=4.5:1 on white. Night view keeps the bright ones,
+which already clear 4.5:1 on black. One focus ring for the page: the ink,
+inverted inside the modals, whose panel is the opposite ground */
+body {
+  --about-text: #3f7a14;
+  --projects-text: #05708d;
+  --ideas-text: #9d1fcf;
+  --post-title-text: #ad2f9f;
+  --focus-ring: var(--fleet-accent);
+}
+
+body.night-view {
+  --about-text: #7fd13b;
+  --projects-text: #1ebfe8;
+  --ideas-text: #d24cff;
+}
+
+.modal-body {
+  --focus-ring: #ffffff;
+}
+
+.night-view .modal-body {
+  --focus-ring: #000000;
+}
+
+/* The global .hidden only moves an element 9999px off screen, which leaves
+its links and buttons in the tab order; on this page a hidden element is also
+invisible to keyboard and assistive tech */
+.hidden {
+  visibility: hidden;
+}
+
+a:focus-visible, button:focus-visible, [role="button"]:focus-visible {
+  outline: 2px solid var(--focus-ring);
+  outline-offset: 2px;
+}
+
 .modal-background {
   position: fixed;
+  /* Pinned to the viewport: left to its static position, the overlay started
+  below the in-flow server banner and ran past the bottom edge */
+  top: 0px;
+  left: 0px;
   height: 100%;
   width: 100%;
   display: -webkit-box;
@@ -55,13 +97,16 @@ html, body {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  transition: all 1s;
-  z-index: 1;
+  transition: background-color 1s;
+  /* Above the fixed #header (3) and the fleet footer (100, common.css), so
+  the close and arrow chips are what a tap at their spot reaches; the fleet
+  panel (1000) still opens over it */
+  z-index: 200;
 }
 
 .modal-background.open {
   background-color: rgba(0, 0, 0, 0.15);
-  transition: all 1s;
+  transition: background-color 1s;
 }
 
 .night-view .modal-background.open {
@@ -82,22 +127,27 @@ html, body {
   display: -webkit-flex;
   display: -ms-flexbox;
   display: flex;
-  background-color: rgba(0, 0, 0, 0.85);
+  /* Opaque: a translucent panel let the tiles behind show through the text */
+  background-color: #262626;
   color: #ffffff;
   opacity: 0;
-  overflow: scroll;
-  transition: all 1s;
+  overflow-x: hidden;
+  overflow-y: auto;
+  /* Opacity only: an `all` transition also eased the visibility the body
+  inherits from its background, so the close button was still hidden (and
+  refused focus) in the frame the dialog opened */
+  transition: opacity 1s;
 }
 
 .night-view .modal-body {
-  background-color: rgba(255, 255, 255, 0.93);
+  background-color: #ededed;
   color: #000000;
 }
 
 .modal-body.open, .project-overview.open {
   opacity: 1;
   z-index: 2;
-  transition: all 1s;
+  transition: opacity 1s;
 }
 
 button {
@@ -112,7 +162,7 @@ button:active {
   font-weight: bold;
 }
 
-button:focus {
+button:focus:not(:focus-visible) {
   outline: none;
 }
 
@@ -122,6 +172,25 @@ button.selected {
 
 .night-view button, .night-view input {
   color: #ffffff;
+}
+
+.close, .control {
+  min-height: 44px;
+  min-width: 44px;
+  /* Over the open overview (2), whose text can run under the chips */
+  z-index: 3;
+  display: -webkit-inline-box;
+  display: -webkit-inline-flex;
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
 }
 
 .close {
@@ -147,6 +216,7 @@ button.selected {
   margin-left: 33px;
   margin-right: 33px;
   left: 0px;
+  right: 0px;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -170,6 +240,22 @@ button.selected {
   transition: all 1s;
   user-select: text;
   -webkit-user-select: text;
+}
+
+/* The description reads as prose: left-aligned, a 65ch measure, 16px */
+.project-overview > text {
+  display: block;
+  max-width: 65ch;
+  margin-bottom: 24px;
+  font-size: 16px;
+  line-height: 1.5;
+  text-align: left;
+}
+
+/* Only the overview on show is in the tab order; the others fade out, then
+hide */
+.project-overview:not(.open) {
+  visibility: hidden;
 }
 
 a {
@@ -259,6 +345,10 @@ a:hover, button:hover {
 
 .night-view .modal-project-title h2 {
   color: #000000;
+}
+
+.night-view .project-overview a, .night-view .project-overview a > .small-icon {
+  color: #05708d !important;
 }
 
 .night-view .modal-project-title:hover h2 {
@@ -482,7 +572,8 @@ video {
 
 #theme-container {
   position: absolute;
-  height: 37px;
+  height: 44px;
+  min-width: 44px;
   left: 53px;
   margin-top: 4px;
   display: -webkit-box;
@@ -506,13 +597,17 @@ video {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  opacity: 0.3;
+  opacity: 0.6;
   cursor: pointer;
   z-index: 10;
 }
 
-#theme-container:hover {
+#theme-container:hover, #theme-container:focus-visible {
   opacity: 1;
+}
+
+#theme-container:focus-visible {
+  border-radius: 8px;
 }
 
 #sky-icon {
@@ -538,6 +633,9 @@ video {
   -ms-flex-pack: center;
   justify-content: center;
   transition: filter 0.3s;
+  /* The wordmark sits in the header's row, between its icons: above the
+  header's ground (#header, 3), never hidden by it */
+  z-index: 4;
 }
 
 .grayscale {
@@ -573,7 +671,7 @@ h1 {
 }
 
 #projects-page-button.selected, #projects-page-button:hover {
-  color: #1ebfe8 !important;
+  color: var(--projects-text) !important;
 }
 
 #photos-page-button.selected, #photos-page-button:hover {
@@ -581,11 +679,11 @@ h1 {
 }
 
 #ideas-page-button.selected, #ideas-page-button:hover {
-  color: #d24cff !important;
+  color: var(--ideas-text) !important;
 }
 
 #about-page-button.selected, #about-page-button:hover {
-  color: #7fd13b !important;
+  color: var(--about-text) !important;
 }
 
 #pages-container {
@@ -701,7 +799,7 @@ h1 {
   z-index: 1;
 }
 
-#menu:hover #diamond-large, #menu.hover #diamond-large {
+#menu:hover #diamond-large, #menu.hover #diamond-large, #menu:focus-within #diamond-large {
   transform: rotateY(180deg) translateZ(1000px);
   -webkit-transform: rotateY(180deg) translateZ(1000px);
   transition: all 1s;
@@ -720,7 +818,7 @@ h1 {
   z-index: 2;
 }
 
-#circles svg:hover, #circles svg.hover {
+#circles svg:hover, #circles svg.hover, #circles svg:focus-within {
   opacity: 0.9;
   z-index: 2;
 }
@@ -729,25 +827,25 @@ h1 {
   transition: all 1s;
 }
 
-#menu:hover #purple g, #menu.hover #purple g {
+#menu:hover #purple g, #menu.hover #purple g, #menu:focus-within #purple g {
   transform: scale(0.89) translateX(242px) translateY(-59px);
   -webkit-transform: scale(0.89) translateX(242px) translateY(-59px);
   transition: all 1s;
 }
 
-#menu:hover #green g, #menu.hover #green g {
+#menu:hover #green g, #menu.hover #green g, #menu:focus-within #green g {
   transform: scale(1.11) translateX(6px) translateY(-163px);
   -webkit-transform: scale(1.11) translateX(6px) translateY(-163px);
   transition: all 1s;
 }
 
-#menu:hover #pink g, #menu.hover #pink g {
+#menu:hover #pink g, #menu.hover #pink g, #menu:focus-within #pink g {
   transform: scale(0.55) translateX(81px) translateY(187px);
   -webkit-transform: scale(0.55) translateX(81px) translateY(187px);
   transition: all 1s;
 }
 
-#menu:hover #teal g, #menu.hover #teal g {
+#menu:hover #teal g, #menu.hover #teal g, #menu:focus-within #teal g {
   transform: scale(1.7) translateX(-8.5px) translateY(-123px);
   -webkit-transform: scale(1.7) translateX(-8.5px) translateY(-123px);
   transition: all 1s;
@@ -762,6 +860,16 @@ h1 {
   cursor: pointer;
 }
 
+/* An SVG link draws no outline box: its circle takes the ring instead */
+.nav-link:focus {
+  outline: none;
+}
+
+.nav-link:focus-visible circle {
+  stroke: var(--focus-ring);
+  stroke-width: 4px;
+}
+
 .nav-text {
   visibility: hidden;
   dominant-baseline: central;
@@ -770,8 +878,25 @@ h1 {
   text-anchor: middle;
 }
 
-#menu:hover .nav-text, #menu.hover .nav-text {
+#menu:hover .nav-text, #menu.hover .nav-text, #menu:focus-within .nav-text {
   visibility: visible;
+}
+
+/* No hover on touch: the labels show at rest, or the circles are unnamed */
+@media (hover: none) {
+  .nav-text {
+    visibility: visible;
+  }
+}
+
+/* The fixed header carries the page's ground, so scrolled text never runs
+under its icons */
+#header-container {
+  background-color: #ffffff;
+}
+
+.night-view #header-container {
+  background-color: #000000;
 }
 
 #projects-list, #photos-list {
@@ -811,9 +936,29 @@ h1 {
 
 .project-listing, .photo-listing {
   position: relative;
+  width: 100%;
+  padding: 0px;
   display: block;
   overflow: hidden;
+  font: inherit;
+  color: inherit;
+  text-align: inherit;
   cursor: pointer;
+}
+
+.project-preview {
+  display: block;
+}
+
+/* The screenshot and its hover overlay share one cell; the app name is always
+shown in the row under it */
+.project-listing {
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+.project-listing > .project-image, .project-listing > .project-overlay {
+  grid-area: 1 / 1;
 }
 
 .project-image, .photo {
@@ -824,24 +969,21 @@ h1 {
   transition: all 0.5s;
 }
 
-#projects-list li:hover .project-image, #photos-list li:hover .photo {
+#projects-list li:hover .project-image, #photos-list li:hover .photo,
+#projects-list li:focus-within .project-image, #photos-list li:focus-within .photo {
   transform: scale(1);
   -webkit-transform: scale(1);
 }
 
 .project-overlay {
-  position: absolute;
-  top: 0px;
-  bottom: 0px;
-  left: 0px;
-  right: 0px;
+  position: relative;
   background: #e8e8e8 no-repeat center 20%;
   background-size: 50px 50px;
   opacity: 0;
   transition: all 0.3s;
 }
 
-#projects-list li:hover .project-overlay {
+#projects-list li:hover .project-overlay, #projects-list li:focus-within .project-overlay {
   opacity: 0.85;
 }
 
@@ -868,30 +1010,27 @@ h1 {
   left: 42%;
 }
 
-#projects-list li:hover .project-icon {
+#projects-list li:hover .project-icon, #projects-list li:focus-within .project-icon {
   transform: translateY(0px);
   -webkit-transform: translateY(0px);
 }
 
 .project-title {
-  position: absolute;
-  width: 100%;
-  top: 40%;
-  left: 0px;
+  position: relative;
+  padding: 8px 4px 6px;
+  display: block;
+  background-color: #ffffff;
   font-family: 'Poiret One', cursive;
-  font-size: 30px;
+  font-size: 22px;
   font-weight: bolder;
+  line-height: 1.2;
   color: #000000;
-  opacity: 0;
-  transform: translateY(-20px);
-  -webkit-transform: translateY(-20px);
-  transition: all 0.3s;
+  z-index: 1;
 }
 
-#projects-list li:hover .project-title {
-  opacity: 1;
-  transform: translateY(0px);
-  -webkit-transform: translateY(0px);
+.night-view .project-title {
+  background-color: #000000;
+  color: #ffffff;
 }
 
 #photos-error {
@@ -901,7 +1040,7 @@ h1 {
 
 #posts-error {
   font-size: 12px;
-  color: #d24cff;
+  color: var(--ideas-text);
 }
 
 .post {
@@ -929,7 +1068,7 @@ h1 {
   background-color: #f0f0f0;
   font-family: 'Shrikhand', cursive;
   font-size: 20px;
-  color: #eb84e2;
+  color: var(--post-title-text);
   text-align: left;
   vertical-align: bottom;
 }
@@ -1010,8 +1149,10 @@ h1 {
   position: relative;
 }
 
+/* Sections sit further from each other than a heading sits from its own
+content */
 #about-page tr, #about-page td {
-  padding-bottom: 20px;
+  padding-bottom: 32px;
 }
 
 .section-header {
@@ -1033,6 +1174,7 @@ h1 {
 }
 
 .section-content {
+  vertical-align: top;
   padding-left: 25px;
   padding-right: 10px;
   font-family: 'Rajdhani', sans-serif;
@@ -1045,7 +1187,7 @@ h1 {
 
 .contact-link > .text-small, .education > a > .subsection-location {
   margin-left: 0px;
-  color: #7fd13b;
+  color: var(--about-text);
   font-weight: bold;
   text-shadow: none;
   cursor: pointer;
@@ -1067,6 +1209,7 @@ h1 {
 }
 
 .skill-type {
+  flex-shrink: 0;
   margin-right: 10px;
   font-family: 'Rajdhani', sans-serif;
   font-size: 10px;
@@ -1090,11 +1233,16 @@ h1 {
   display: none !important;
 }
 
+/* Expand All only exists where sections collapse (768px and up) */
+.expand-parent {
+  display: none;
+}
+
 .subsection-title {
   margin-left: 0px;
   font-size: 11px;
   font-weight: bold;
-  color: #7fd13b;
+  color: var(--about-text);
 }
 
 .subsection-dates, .subsection-location {
@@ -1120,12 +1268,84 @@ h1 {
 
 .within-info-link {
   font-weight: bold;
-  color: #7fd13b;
+  color: var(--about-text);
   text-shadow: none;
 }
 
 .education > a {
   margin-left: 0px;
+}
+
+@media only screen and (max-width: 575px) {
+  .modal-body {
+    width: calc(100% - 24px);
+    height: calc(100% - 136px);
+  }
+
+  .project-overview {
+    margin-left: 16px;
+    margin-right: 16px;
+  }
+
+  /* Close and arrows leave the text: round chips in the panel's own fill,
+  above and below it */
+  .close, .control {
+    position: fixed;
+    height: 44px;
+    width: 44px;
+    border-radius: 50%;
+    background-color: #262626;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .night-view .close, .night-view .control {
+    background-color: #ededed;
+  }
+
+  .close {
+    top: 16px;
+    right: 12px;
+  }
+
+  .control {
+    top: auto;
+    bottom: 16px;
+  }
+
+  .previous {
+    left: 12px;
+  }
+
+  .next {
+    right: 12px;
+  }
+}
+
+@media only screen and (max-width: 767px) {
+  /* 44px tap targets on phone */
+  #nav-buttons button, #front-page-link, .github-repo, .contact-link {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  .github-repo, .contact-link {
+    display: -webkit-inline-box;
+    display: -webkit-inline-flex;
+    display: -ms-inline-flexbox;
+    display: inline-flex;
+    -webkit-box-align: center;
+    -webkit-align-items: center;
+    -ms-flex-align: center;
+    align-items: center;
+  }
+
+  /* An inline link's block padding grows its hit area to 44px without moving
+  the line it sits in: (44px - the 12px content box) / 2 a side */
+  .within-info-link {
+    padding-top: 16px;
+    padding-bottom: 16px;
+  }
 }
 
 @media only screen and (min-width: 576px) {
@@ -1279,7 +1499,7 @@ h1 {
   }
 
   #about-page tr, #about-page td {
-    padding-bottom: 30px;
+    padding-bottom: 48px;
   }
 
   .section-icon {

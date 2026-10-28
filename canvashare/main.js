@@ -3,6 +3,7 @@ var requestStart = 0; // Range start for number of drawings to request
 var requestEnd = 12; // Range end for number of drawings to request
 var errorMessage;
 var moreDrawingsToDisplay = false;
+var loadingDrawings = false; // True while a request for drawings is in flight
 var gallery = document.getElementById('gallery');
 var continueOption = document.getElementById('continue-option');
 var menuOpen = false;
@@ -63,6 +64,8 @@ window.onload = function() {
 function retryFunctions() {
   // Clear gallery to display most up-to-date server drawings
   gallery.innerHTML = '';
+  requestStart = 0;
+  requestEnd = 12;
 
   Promise.resolve(checkIfLoggedIn()).then(loadDrawings);
 
@@ -102,126 +105,108 @@ function setHoverTitle() {
 
 // Load drawings from server
 function loadDrawings() {
-  return fetch(api + '/canvashare/drawings?start=' + requestStart + '&end=' +
-    requestEnd)
+  var start = requestStart;
+  loadingDrawings = true;
+  moreDrawingsToDisplay = false;
 
-    /* Display error message if server is down and error isn't already
-    displayed (i.e., prevent multiple errors when scrolling to load more
-    drawings) */
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
+  // Remove the empty-gallery message if it is displayed
+  if (errorMessage && errorMessage.parentNode == gallery) {
+    gallery.removeChild(errorMessage);
+  }
 
-      // Display cached drawings if they are stored in localStorage
-      if (localStorage.getItem('canvashare-gallery-drawings')) {
-        var drawings = JSON.parse(localStorage
-          .getItem('canvashare-gallery-drawings'));
+  // Loading shows in the gallery from the first frame, below any drawings
+  slotLoading(gallery, start == 0 ? 'Loading drawings…' :
+    'Loading more drawings…');
 
-        /* Assess if there are more than requested drawings - 1 (number
-        of drawings that will be displayed in gallery) */
-        if (drawings.length > (requestEnd - 1)) {
-          moreDrawingsToDisplay = true;
-          var loadNumber = requestEnd - 1;
-        }
+  return fetchWithTimeout(api + '/canvashare/drawings?start=' + start +
+    '&end=' + requestEnd)
 
-        // If there are not, display all drawings
-        else {
-          moreDrawingsToDisplay = false;
-          var loadNumber = drawings.length;
-        }
-
-        displayDrawings(drawings.slice(requestStart, loadNumber));
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Server answered ' + response.status);
       }
 
-      // Otherwise, display error message
-      else if (!errorMessage || errorMessage.parentNode != gallery) {
-        errorMessage = document.createElement('text');
-        errorMessage.id = 'error-message';
-        errorMessage.innerHTML = 'There was an error loading the gallery. ' +
-          'Please refresh the page.';
-        gallery.appendChild(errorMessage);
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      return response.json();
+    })
+
+    .then(function(drawings) {
+      loadingDrawings = false;
+      clearSlotStatus(gallery);
+
+      // An empty gallery says so, and how to fill it
+      if (drawings.length == 0) {
+        if (start == 0) {
+          errorMessage = document.createElement('text');
+          errorMessage.id = 'error-message';
+          errorMessage.textContent = 'No drawings yet. Click the plus ' +
+            'button to make the first one.';
+          gallery.appendChild(errorMessage);
+        }
+
+        return;
       }
+
+      /* Assess if there are more than requested drawings - 1 (number of
+      drawings that will be displayed in gallery) on server */
+      if (drawings.length > (requestEnd - start - 1)) {
+        moreDrawingsToDisplay = true;
+        var loadNumber = requestEnd - start - 1;
+      }
+
+      // If there are not, display all drawings sent from server
+      else {
+        var loadNumber = drawings.length;
+      }
+
+      displayDrawings(drawings.slice(0, loadNumber));
+
+      /* Replace locally stored drawings if this is the initial request, or
+      add to them otherwise */
+      try {
+        var localDrawings = start == 0 ? [] : JSON.parse(localStorage
+          .getItem('canvashare-gallery-drawings')) || [];
+
+        for (var i = 0; i < drawings.length; i++) {
+          localDrawings[start + i] = drawings[i];
+        }
+
+        // Store drawings in localStorage for offline loading
+        localStorage.setItem('canvashare-gallery-drawings', JSON
+          .stringify(localDrawings));
+      } catch (e) {}
 
       return;
     })
 
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+    .catch(function() {
+      loadingDrawings = false;
 
-        // Display drawings in gallery if server responds without error
-        if (response.ok) {
-          response.json().then(function(drawings) {
-            if (drawings.length != 0) {
+      // On first load, cached drawings stand in if they are stored
+      if (start == 0 && !gallery.getElementsByClassName('drawing-container')
+        .length) {
+          try {
+            var drawings = JSON.parse(localStorage
+              .getItem('canvashare-gallery-drawings') || '[]');
+          } catch (e) {
+            var drawings = [];
+          }
 
-              // Remove error message from gallery if it is displayed
-              if (errorMessage && errorMessage.parentNode == gallery) {
-                gallery.removeChild(errorMessage);
-              }
-
-              /* Assess if there are more than requested drawings - 1 (number
-              of drawings that will be displayed in gallery) on server */
-              if (drawings.length > (requestEnd - requestStart - 1)) {
-                moreDrawingsToDisplay = true;
-                var loadNumber = requestEnd - requestStart - 1;
-              }
-
-              // If there are not, display all drawings sent from server
-              else {
-                moreDrawingsToDisplay = false;
-                var loadNumber = drawings.length;
-              }
-
-              displayDrawings(drawings.slice(0, loadNumber));
-
-              /* Remove locally stored drawings if this is the initial request
-              to replace with latest drawings from server */
-              if (requestStart == 0) {
-                localStorage.removeItem('canvashare-gallery-drawings');
-                var localDrawings = [];
-              }
-
-              // Otherwise, get locally stored drawings list
-              else {
-                var localDrawings = JSON.parse(localStorage
-                  .getItem('canvashare-gallery-drawings'));
-              }
-
-              /* Add each drawing to locally stored drawings list based on
-              requestStart and requestEnd values */
-              for (var i = 0; i < drawings.length; i++) {
-                localDrawings[requestStart + i] = drawings[i];
-              }
-
-              // Store drawings in localStorage for offline loading
-              localStorage.setItem('canvashare-gallery-drawings', JSON
-                .stringify(localDrawings));
-            }
-
-            // If there are no drawings sent from server, set variable to false
-            else {
-              moreDrawingsToDisplay = false;
-            }
-
-          });
-          return;
+          if (drawings.length) {
+            clearSlotStatus(gallery);
+            displayDrawings(drawings.slice(0, requestEnd - 1));
+            return;
+          }
         }
 
-        // Display error message if the server sends an error
-        if (!errorMessage || errorMessage.parentNode != gallery) {
-          errorMessage = document.createElement('text');
-          errorMessage.id = 'error-message';
-          errorMessage.innerHTML = 'There was an error loading the gallery. ' +
-            'Please refresh the page.';
-          gallery.appendChild(errorMessage);
-        }
+      /* Otherwise the failure shows below any drawings already in the
+      gallery, and Retry asks for the same drawings again */
+      slotFailure(gallery, start == 0 ? "Couldn't load the gallery." :
+        "Couldn't load more drawings.", loadDrawings);
 
-        // Remove localStorage item
-        localStorage.removeItem('canvashare-gallery-drawings');
-
-        return;
-      }
+      return;
     });
 }
 
@@ -336,6 +321,8 @@ function displayDrawingLikes(drawingId, likers) {
 
       // Update like count when user clicks heart
       likedHeart.onclick = updateLikes;
+      keyboardButton(likedHeart, 'Like');
+      likedHeart.setAttribute('aria-pressed', 'true');
 
       return;
     }
@@ -350,6 +337,8 @@ function displayDrawingLikes(drawingId, likers) {
 
   // Update like count when user clicks heart
   unlikedHeart.onclick = updateLikes;
+  keyboardButton(unlikedHeart, 'Like');
+  unlikedHeart.setAttribute('aria-pressed', 'false');
 
   return;
 }
@@ -358,6 +347,13 @@ function displayDrawingLikes(drawingId, likers) {
 // Update drawing's like count
 function updateLikes() {
   var heart = this;
+
+  // Ignore clicks while this heart's last request is still in flight
+  if (heart.dataset.pending) {
+    return;
+  }
+
+  clearInlineError(heart);
 
   // Add click animation to create pop effect
   heart.classList.add('clicked');
@@ -369,96 +365,108 @@ function updateLikes() {
     return;
   }, false);
 
-  // If heart is already filled in, decrease drawing like count
-  if (this.classList.contains('fas')) {
+  var likeText = heart.nextSibling;
+  var previousCount = likeText.textContent;
+  var wasLiked = heart.classList.contains('fas');
 
-    return fetch(api + '/canvashare/drawing-like/' + this.dataset
+  // The heart and count change at once, and change back if the request fails
+  heart.dataset.pending = 'true';
+  setHeart(heart, !wasLiked);
+  likeText.textContent = (parseInt(previousCount) || 0) + (wasLiked ? -1 : 1);
+
+  function settle() {
+    delete heart.dataset.pending;
+    return;
+  }
+
+  function revert(message, signInLink) {
+    setHeart(heart, wasLiked);
+    likeText.textContent = previousCount;
+    settle();
+
+    // The reason shows under this drawing's likes, with a way to sign in
+    var note = inlineError(heart, message, heart.parentNode.parentNode);
+    if (signInLink) {
+      var link = document.createElement('a');
+      link.href = signInHref();
+      link.textContent = 'Sign in';
+      note.appendChild(document.createTextNode(' '));
+      note.appendChild(link);
+    }
+    return;
+  }
+
+  function networkFailure() {
+    // Add server down banner to page (from common.js script)
+    pingServer(retryFunctions);
+    revert("Your like didn't go through. Check your connection and try again.");
+    return;
+  }
+
+  // If heart was filled in, decrease drawing like count
+  if (wasLiked) {
+    return fetchWithTimeout(api + '/canvashare/drawing-like/' + heart.dataset
       .drawinglike, {
         credentials: 'include',
         headers: {'Content-Type': 'application/json'},
         method: 'DELETE',
       })
 
-        // Display error message if server is down
-        .catch(function(error) {
-          // Add server down banner to page (from common.js script)
-          pingServer(retryFunctions);
+      .then(function(response) {
+        // Remove server down banner from page (from common.js script)
+        pingServer();
 
-          window.alert('Your like did not go through. Please try again soon.');
-
+        if (response.ok) {
+          delete heart.dataset.drawinglike;
+          settle();
           return;
-        })
+        }
 
-        .then(function(response) {
-          if (response) {
-            // Remove server down banner from page (from common.js script)
-            pingServer();
-
-            /* If server responds without error, remove heart fill and decrease
-            like count user sees */
-            if (response.ok) {
-              var likeText = heart.nextSibling;
-              var currentLikes = likeText.innerHTML;
-              heart.classList.remove('fas');
-              heart.classList.add('far');
-              delete heart.dataset.drawinglike;
-              likeText.innerHTML = parseInt(currentLikes) - 1;
-              return;
-            }
-
-            // Otherwise, display error message
-            window.alert('You must log in to like a drawing.');
-
-            return;
-          }
-        });
+        revert('Only signed-in visitors can like drawings.', true);
+        return;
+      }, networkFailure);
   }
 
   // Otherwise, send request to server to increase like count
-  var data = JSON.stringify({'drawing_id': this.dataset.drawing});
+  var data = JSON.stringify({'drawing_id': heart.dataset.drawing});
 
-  return fetch(api + '/canvashare/drawing-like', {
+  return fetchWithTimeout(api + '/canvashare/drawing-like', {
     credentials: 'include',
     headers: {'Content-Type': 'application/json'},
     method: 'POST',
     body: data,
   })
 
-    // Display error message if server is down
-    .catch(function(error) {
-      // Add server down banner to page (from common.js script)
-      pingServer(retryFunctions);
-
-      window.alert('Your like did not go through. Please try again soon.');
-
-      return;
-    })
-
     .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
+      // Remove server down banner from page (from common.js script)
+      pingServer();
 
-        /* If server responds without error, fill in heart and increase like
-        count user sees */
-        if (response.ok) {
-          response.text().then(function(drawingLikeId) {
-            var likeText = heart.nextSibling;
-            var currentLikes = likeText.innerHTML;
-            likeText.innerHTML = parseInt(currentLikes) + 1;
-            heart.classList.remove('far');
-            heart.classList.add('fas');
-            heart.dataset.drawinglike = drawingLikeId;
-          });
+      if (response.ok) {
+        return response.text().then(function(drawingLikeId) {
+          heart.dataset.drawinglike = drawingLikeId;
+          settle();
           return;
-        }
-
-        // Otherwise, display error message
-        window.alert('You must log in to like a drawing.');
-
-        return;
+        });
       }
+
+      revert('Only signed-in visitors can like drawings.', true);
+      return;
+    }, networkFailure)
+
+    .catch(function() {
+      // The like went through but its id did not arrive: ask again on reload
+      settle();
+      return;
     });
+}
+
+
+// Show a heart as liked (filled red) or not (outline), for sight and sound
+function setHeart(heart, liked) {
+  heart.classList.toggle('fas', liked);
+  heart.classList.toggle('far', !liked);
+  heart.setAttribute('aria-pressed', liked ? 'true' : 'false');
+  return;
 }
 
 
@@ -489,7 +497,7 @@ window.addEventListener('scroll', function() {
 function requestMoreDrawings() {
   /* If user has scrolled more than 90% of way down page and the server has
   more drawings, update request numbers */
-  if (percentScrolled() > 90 && moreDrawingsToDisplay) {
+  if (percentScrolled() > 90 && moreDrawingsToDisplay && !loadingDrawings) {
     // Set drawing request start number to previous end number - 1
     requestStart = requestEnd - 1;
 
@@ -508,6 +516,14 @@ function requestMoreDrawings() {
 
 // Toggle drawing menu when user clicks plus icon
 document.getElementById('plus-icon').onclick = toggleMenu;
+keyboardButton(document.getElementById('plus-icon'), 'Drawing menu');
+document.getElementById('plus-icon').setAttribute('aria-expanded', 'false');
+document.getElementById('plus-icon').setAttribute('aria-controls', 'menu');
+keyboardButton(document.getElementById('new-option'), 'Create new drawing');
+keyboardButton(continueOption, 'Continue drawing');
+
+// The closed menu sits off screen: keep it out of the tab order too
+document.getElementById('menu').inert = true;
 
 // Close drawing menu when user leaves page, if it is open
 window.onbeforeunload = function() {
@@ -531,6 +547,8 @@ function toggleMenu() {
     // Set icon back to unopened view (plus sign)
     plusIcon.innerHTML = 'add_circle';
     menuOpen = false;
+    plusIcon.setAttribute('aria-expanded', 'false');
+    menu.inert = true;
 
     /* Remove clicked class from icon to allow animation to play when clicked
     again */
@@ -567,6 +585,8 @@ function toggleMenu() {
   // Set icon to opened view (minus sign)
   plusIcon.innerHTML = 'remove_circle';
   menuOpen = true;
+  plusIcon.setAttribute('aria-expanded', 'true');
+  menu.inert = false;
 
   /* Remove clicked class from icon to allow animation to play when clicked
   again */

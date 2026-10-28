@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Want to travel somewhere but can't right now? Or are you not sure where to go? Use Vicarious to search for inspiring travel photos.">
@@ -46,26 +46,6 @@
       </div>
     </div>
 
-    <!-- Modal that displays when there is a server error -->
-    <div id="error" class="modal fade" data-keyboard="false">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h3 class="modal-title">Error loading page</h3>
-            <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-            <p>There was an error loading the images. Please refresh the page.</p>
-          </div>
-          <div class="modal-footer">
-            <button id="error-okay" class="btn" type="button" data-dismiss="modal">Okay</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
     <!-- Carousel that displays all images on the page -->
     <div id="carousel" class="carousel slide" data-ride="carousel" data-keyboard="true" tabindex="-1" data-wrap="true" data-pause="hover">
       <div id="carousel-inner" class="carousel-inner" role="listbox">
@@ -89,29 +69,29 @@
     </div>
 
     <!-- Main page container -->
-    <div class="container-fluid w-100">
+    <main class="container-fluid w-100">
       <div class="row justify-content-center">
         <!-- Left panel, with search input -->
         <div id="left-panel" class="col d-flex flex-column align-items-center">
           <div class="row">
             <div class="col">
-              <h2 class="my-3">Where do you want to go?</h2>
+              <h2 id="location-label" class="my-3">Where do you want to go?</h2>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <input id="location-input" class="mb-3" type="text" spellcheck="true" autocomplete="on" autofocus>
+              <input id="location-input" aria-labelledby="location-label" class="mb-3" type="text" spellcheck="true" autocomplete="on" autofocus>
             </div>
           </div>
           <div class="row">
             <div class="col">
-              <button id="submit" class="btn mb-3">Submit</button>
+              <button id="submit" class="btn mb-3" type="button">Submit</button>
             </div>
           </div>
         </div>
         <!-- Right panel, with 5 image containers to display search results -->
         <div id="right-panel" class="cleared col d-flex flex-column">
-          <img id="loading-image" class="loading" src="images/loading.svg">
+          <img id="loading-image" class="loading" src="images/loading.svg" alt="Loading photos">
           <div id="images-container">
             <ul class="list-unstyled">
               <li class="media align-items-center">
@@ -156,7 +136,7 @@
           </div>
         </div>
       </div>
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

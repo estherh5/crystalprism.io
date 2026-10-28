@@ -20,6 +20,7 @@ var carousel = document.getElementById('carousel');
 var carouselCloseButton = document.getElementById('carousel-close');
 var carouselPrev = document.getElementById('carousel-prev');
 var carouselNext = document.getElementById('carousel-next');
+var loadingImages = false; // True while pages are still coming from Reddit
 
 
 // Define load functions
@@ -28,7 +29,7 @@ window.onload = function() {
   $('.carousel').carousel('pause');
 
   // Store images from Reddit's API in an array
-  storeImages();
+  loadImages();
 
   // Set random location as location search input placeholder
   setLocationPlaceholder();
@@ -52,77 +53,133 @@ window.onload = function() {
 // Store all travel images from Reddit's API in an array
 function storeImages() {
   // Retrieve 100 images from Reddit's Travel subreddit
-  return fetch('https://www.reddit.com/r/travelphotos.json?limit=1000&after=' + after)
-
-    // Display error modal if server is down
-    .catch(function(error) {
-      $(error).modal('show');
-
-      // Focus on okay button after modal displays
-      $(error).on('shown.bs.modal', function () {
-        document.getElementById('error-okay').focus();
-        return;
-      });
-
-      // Use cached images if they are stored in localStorage
-      if (localStorage.getItem('vicarious-images')) {
-        allImages = JSON.parse(localStorage.getItem('vicarious-images'));
+  return fetchWithTimeout('https://www.reddit.com/r/travelphotos.json?limit=1000&after=' + after, {}, 15000)
+    .then(function(response) {
+      if (!response.ok) {
+        throw new Error('Reddit answered ' + response.status);
       }
-
-      return;
+      return response.json();
     })
 
-    .then(function(response) {
-      if (response.ok) {
-        response.json().then(function(info) {
-          /* Get "after" value, which Reddit's API uses to retrieve next set of
-          images */
-          after = info['data']['after'];
+    .then(function(info) {
+      /* Get "after" value, which Reddit's API uses to retrieve next set of
+      images */
+      after = info['data']['after'];
 
-          for (var i = 0; i < info['data']['children'].length; i++) {
+      for (var i = 0; i < info['data']['children'].length; i++) {
 
-            /* When 5 images have been found, get their data (URL, title, etc.)
-            and display them on page */
-            if (allImages.length == 5) {
-              findImages('');
-            }
+        /* When 5 images have been found, get their data (URL, title, etc.)
+        and display them on page */
+        if (allImages.length == 5) {
+          findImages('');
+        }
 
-            /* If the URL item in the Reddit data contains an image file
-            extension, store the URL in the allImages array */
-            if (info['data']['children'][i]['data']['url']
-              .match(/(.jpg|.jpeg|.png|.tif)/)) {
-                allImages.push(info['data']['children'][i]['data']);
-            }
+        /* If the URL item in the Reddit data contains an image file
+        extension, store the URL in the allImages array */
+        if (info['data']['children'][i]['data']['url']
+          .match(/(.jpg|.jpeg|.png|.tif)/)) {
+            allImages.push(info['data']['children'][i]['data']);
+        }
+      }
 
-            if (i == info['data']['children'].length - 1) {
-              /* If this is the last object from the Reddit data and the "after"
-              value is null, store images in localStorage */
-              if (!after) {
-                localStorage.setItem('vicarious-images', JSON
-                  .stringify(allImages));
+      /* If the "after" value is null, every page is in: store images in
+      localStorage */
+      if (!after) {
+        loadingImages = false;
+        try {
+          localStorage.setItem('vicarious-images', JSON.stringify(allImages));
+        } catch (e) {}
 
-                return;
-              }
-
-              /* Otherwise, run the function again using a fetch request with
-              the new "after" value */
-              storeImages();
-            }
-          }
-        });
+        // Fewer than 5 images in all: show whatever there is
+        if (allImages.length <= 5) {
+          findImages('');
+        }
 
         return;
       }
 
-      // Display error modal if server throws error
-      $(error).modal('show');
-      $(error).on('shown.bs.modal', function () {
-        document.getElementById('error-okay').focus();
-        return;
-      });
+      /* Otherwise, run the function again using a fetch request with the new
+      "after" value */
+      return storeImages();
+    })
 
+    .catch(function() {
+      imagesLoadFailed();
       return;
     });
+}
+
+
+/* A failed load ends visibly: the loading dimmer and animation stop, cached
+images stand in if there are any, and otherwise the results panel says so and
+offers Retry */
+function imagesLoadFailed() {
+  loadingImages = false;
+
+  // A later page failing after images are already on screen changes nothing
+  if (allImages.length > 5) {
+    return;
+  }
+
+  if (allImages.length == 0) {
+    try {
+      var cached = JSON.parse(localStorage.getItem('vicarious-images') || '[]');
+      if (cached.length) {
+        allImages = cached;
+      }
+    } catch (e) {}
+  }
+
+  if (allImages.length) {
+    findImages('');
+    return;
+  }
+
+  showLoadError();
+  return;
+}
+
+function showLoadError() {
+  document.getElementById('dimmer').style.display = 'none';
+  loadingImage.classList.remove('loading');
+  loadingImage.style.animationPlayState = 'paused';
+  submitButton.disabled = false;
+  document.body.style.cursor = '';
+  // Said in the results panel, beside the search it blocks, with Retry
+  slotFailure(rightPanel, "Couldn't load travel photos: Reddit didn't " +
+    'answer. Check your connection and try again.', loadImages);
+  return;
+}
+
+/* Results replace the slot's status; a keyboard that waited on it moves to
+the first result */
+function showResults() {
+  var hadFocus = slotStatusHasFocus(rightPanel);
+  clearSlotStatus(rightPanel);
+  rightPanel.classList.remove('cleared');
+  loadingImage.classList.remove('loading');
+  document.getElementById('dimmer').style.display = 'none';
+  if (hadFocus) {
+    rightPanel.querySelector('.image-title').focus();
+  }
+  return;
+}
+
+function loadImages() {
+  /* A Loading status in the results slot: a Retry pressed there hands it the
+  keyboard rather than dropping focus to the page. Screen readers only: the
+  spinning globe already shows loading, and text under the dimmer would not
+  read */
+  slotLoading(rightPanel, 'Loading travel photos…').classList.add('sr-only');
+  after = '';
+  allImages = [];
+  loadingImages = true;
+  rightPanel.classList.add('cleared');
+  loadingImage.classList.add('loading');
+  loadingImage.style.animationPlayState = 'running';
+  document.getElementById('dimmer').style.display = 'block';
+  storeImages();
+  return;
 }
 
 
@@ -175,7 +232,7 @@ function findImages(input) {
   /* If input is 'random', generate a random list of 5 images from the API
   results */
   if (input == 'random') {
-    randomNumber = Math.floor(Math.random() * (allImages.length - 6));
+    randomNumber = Math.max(0, Math.floor(Math.random() * (allImages.length - 6)));
     searchList = allImages.slice(randomNumber, randomNumber + 5);
 
     // Clear location input for user to search for something new
@@ -192,15 +249,22 @@ function findImages(input) {
     searchList = allImages;
   }
 
+  /* Nothing to search yet: the first page is still loading (it calls
+  findImages itself when it lands), or the load failed */
+  if (searchList.length == 0) {
+    if (!loadingImages) {
+      showLoadError();
+    }
+    return;
+  }
+
   for (var i = 0; i < searchList.length; i++) {
     /* Remove loading style and animation, populate carousel, and display
     images on page when 5 images are found */
     if (imageURLs.length == 5) {
-      rightPanel.classList.remove('cleared');
-      loadingImage.classList.remove('loading');
-      document.getElementById('dimmer').style.display = 'none';
       populateCarousel();
       displayImages();
+      showResults();
       return;
     }
 
@@ -241,9 +305,7 @@ function findImages(input) {
       style and animation */
       populateCarousel();
       displayImages();
-      rightPanel.classList.remove('cleared');
-      loadingImage.classList.remove('loading');
-      document.getElementById('dimmer').style.display = 'none';
+      showResults();
     }
   }
 
@@ -268,6 +330,7 @@ function displayImages() {
       // Display link to image's Reddit post as title for image
       displayedImageTitles[i].href = imageTitleLinks[i];
       displayedImageTitles[i].textContent = htmlToText(imageTitleTexts[i]);
+      displayedImages[i].alt = displayedImageTitles[i].textContent;
     } else {
       displayedImages[i].classList.add('hidden');
     }

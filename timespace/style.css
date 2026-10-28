@@ -32,9 +32,6 @@ a:hover, button:hover {
   opacity: 1;
 }
 
-a:focus, button:focus {
-  outline: none;
-}
 
 #container {
   width: 100%;
@@ -59,8 +56,15 @@ a:focus, button:focus {
 }
 
 #audio-container {
-  height: 30px;
-  width: 30px;
+  height: 44px;
+  width: 44px;
+  margin: -7px 0px; /* the 44px target keeps the 30px icon where it was */
+  padding: 0px;
+  border: 0px;
+  background: none;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -69,12 +73,22 @@ a:focus, button:focus {
 }
 
 #audio-icon {
+  width: 30px;
+  height: 30px;
   opacity: 0.5;
   cursor: pointer;
 }
 
-#audio-icon:hover {
+#audio-container:hover #audio-icon, #audio-container:focus-visible #audio-icon {
   opacity: 1;
+}
+
+/* The hidden player stays out of the button's layout */
+#audio-player, #audio-container iframe {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border: 0px;
 }
 
 .circle {
@@ -100,7 +114,7 @@ a:focus, button:focus {
 #quote {
   margin-top: 10px;
   font-family: 'Cutive Mono', monospace;
-  font-size: 10px;
+  font-size: 12px;
   font-weight: bold;
   color: white;
   opacity: 0.8;
@@ -163,4 +177,16 @@ a:focus, button:focus {
   --fleet-ink: #ffffff;
   --fleet-muted: #b3b3b3;
   --fleet-line: #3a3a3a;
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* The footer link reads at full strength on the night sky: the page's dimmed
+`a` (0.7) put #b3b3b3 near 2:1 where a colored circle passes beneath it */
+#footer a {
+  opacity: 1;
 }

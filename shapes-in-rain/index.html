@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Relax your mind by clearing the shapes that appear on the screen while listening to calming piano music in the background. The perfect game for a reflective, rainy day!">
@@ -20,39 +20,40 @@
   </head>
   <body>
     <!-- Load SVG shapes into object elements -->
-    <object id="heart" class="hidden" type="image/svg+xml" data="images/heart.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/triangle.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/square.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/circle.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/pentagon.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/rectangle.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/diamond.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/rhombus.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/star.svg"></object>
-    <object class="hidden shape" type="image/svg+xml" data="images/hexagon.svg"></object>
+    <object id="heart" class="hidden" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/heart.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/triangle.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/square.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/circle.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/pentagon.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/rectangle.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/diamond.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/rhombus.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/star.svg"></object>
+    <object class="hidden shape" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/hexagon.svg"></object>
 
     <!-- Audio control button for embedded video -->
-    <div id="audio-container" data-video="i6StbRRE4eo" data-autoplay="0" data-loop="1"></div>
+    <button id="audio-container" type="button" aria-label="Soundtrack" aria-pressed="false" data-video="i6StbRRE4eo" data-autoplay="0" data-loop="1"></button>
 
     <!-- Main page container -->
-    <div id="container">
+    <main id="container">
 
       <!-- Game control buttons -->
       <div id="controls" class="hidden">
-        <button id="restart">Restart</button>
-        <button id="end">End</button>
+        <button id="restart" type="button">Restart</button>
+        <button id="end" type="button">End</button>
       </div>
 
-      <!-- Game information screen -->
-      <button id="game-screen" class="hidden">
+      <!-- Game information screen (a click anywhere on it starts the game) -->
+      <div id="game-screen" class="hidden">
         <div class="title">Shapes in Rain</div>
         <div id="desktop-body-start" class="body hidden">Welcome to Shapes in Rain! Click the shapes to increase your score. If you have an account, click "End" when you're done to save your score.</div>
         <div id="mobile-body-start" class="body hidden">Welcome to Shapes in Rain! Tap the shapes to increase your score. If you have an account, tap "End" when you're done to save your score.</div>
         <div id="body-end" class="body hidden">Good game!</div>
-        <div id="desktop-start" class="start hidden">Click here to start.</div>
-        <div id="mobile-start" class="start hidden">Tap here to start.</div>
-        <div id="desktop-end" class="start hidden">Click here to play again.</div>
-        <div id="mobile-end" class="start hidden">Tap here to play again.</div>
+        <button id="desktop-start" class="start hidden" type="button">Click here to start.</button>
+        <button id="mobile-start" class="start hidden" type="button">Tap here to start.</button>
+        <button id="desktop-end" class="start hidden" type="button">Click here to play again.</button>
+        <button id="mobile-end" class="start hidden" type="button">Tap here to play again.</button>
+        <div id="leaders-slot">
         <table id="leaders-table">
           <thead>
             <caption class="title">Leaders</caption>
@@ -69,7 +70,10 @@
             <tr class="leader"></tr>
           </tbody>
         </table>
-      </button>
+        </div>
+        <!-- Saving, failed, or sign in to save -->
+        <p id="score-status" role="status"></p>
+      </div>
 
       <!-- SVG game space -->
       <svg id="game" class="hidden"></svg>
@@ -77,7 +81,7 @@
       <!-- Game score -->
       <text id="score" class="hidden">Score: 0</text>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

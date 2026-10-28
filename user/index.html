@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Want to learn more about a Crystal Prism user? Check out the user's profile page to see Thought Writer posts, CanvaShare drawings, and game scores.">
@@ -22,7 +22,7 @@
   </head>
   <body class="d-flex flex-column">
     <!-- Main page container -->
-    <div id="profile-container" class="container-fluid w-100 d-flex flex-column">
+    <main id="profile-container" class="container-fluid w-100 d-flex flex-column">
 
       <!-- User's profile icon -->
       <div id="profile-icon-row" class="row no-gutters d-flex justify-content-center align-self-center">
@@ -60,15 +60,15 @@
         </div>
 
         <!-- User's high score in Rhythm of Life -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="rhythm-row" class="hidden row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <i class="fas fa-star" aria-hidden="true"></i>
-          <div class="col-auto personal-info"><a href="https://rhythm-of-life.crystalprism.io/">Rhythm of Life</a> high score: <b id="rhythm-stat">00:00:00</b></div>
+          <div class="col-auto personal-info"><a href="https://rhythm-of-life.crystalprism.io/">Rhythm of Life</a> high score: <b id="rhythm-stat">—</b></div>
         </div>
 
         <!-- User's high score in Shapes in Rain -->
-        <div class="row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
+        <div id="shapes-row" class="hidden row no-gutters my-1 my-lg-2 d-flex justify-content-center align-items-center">
           <i class="fas fa-star" aria-hidden="true"></i>
-          <div class="col-auto personal-info"><a href="https://shapes-in-rain.crystalprism.io/">Shapes in Rain</a> high score: <b id="shapes-stat">0</b></div>
+          <div class="col-auto personal-info"><a href="https://shapes-in-rain.crystalprism.io/">Shapes in Rain</a> high score: <b id="shapes-stat">—</b></div>
         </div>
 
         <!-- User's about me blurb -->
@@ -78,37 +78,37 @@
 
         <div id="content-area" class="row w-100 no-gutters d-flex justify-content-center align-items-center">
           <!-- Menu options to toggle user's content -->
-          <div class="menu-options">
-            <button id="drawings" class="selected">Drawings</button>
-            <button id="posts">Posts</button>
-            <button id="comments">Comments</button>
+          <div class="menu-options" role="tablist" aria-label="Content">
+            <button id="drawings" class="selected" type="button" role="tab" aria-selected="true" aria-controls="gallery-row">Drawings</button>
+            <button id="posts" type="button" role="tab" aria-selected="false" aria-controls="post-list-row" tabindex="-1">Posts</button>
+            <button id="comments" type="button" role="tab" aria-selected="false" aria-controls="comment-list-row" tabindex="-1">Comments</button>
           </div>
 
           <!-- User's CanvaShare drawings -->
-          <div id="gallery-row" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center">
-            <i id="drawing-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+          <div id="gallery-row" role="tabpanel" aria-labelledby="drawings" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center">
+            <button id="drawing-left-arrow" type="button" class="arrow-button left" aria-label="Previous drawings"><i class="material-icons" aria-hidden="true">keyboard_arrow_left</i></button>
             <div id="gallery" class="content-display w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
-            <i id="drawing-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+            <button id="drawing-right-arrow" type="button" class="arrow-button right" aria-label="More drawings"><i class="material-icons" aria-hidden="true">keyboard_arrow_right</i></button>
           </div>
 
           <!-- User's public Thought Writer posts -->
-          <div id="post-list-row" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center hidden">
-            <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+          <div id="post-list-row" role="tabpanel" aria-labelledby="posts" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center hidden">
+            <button id="posts-left-arrow" type="button" class="arrow-button left" aria-label="Previous posts"><i class="material-icons" aria-hidden="true">keyboard_arrow_left</i></button>
             <div id="post-list" class="content-display w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
-            <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+            <button id="posts-right-arrow" type="button" class="arrow-button right" aria-label="More posts"><i class="material-icons" aria-hidden="true">keyboard_arrow_right</i></button>
           </div>
 
           <!-- User's Thought Writer comments -->
-          <div id="comment-list-row" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center hidden">
-            <i id="comments-left-arrow" class="material-icons left">keyboard_arrow_left</i>
+          <div id="comment-list-row" role="tabpanel" aria-labelledby="comments" class="content-row row no-gutters my-1 my-lg-2 w-100 d-flex flex-nowrap align-items-center justify-content-center hidden">
+            <button id="comments-left-arrow" type="button" class="arrow-button left" aria-label="Previous comments"><i class="material-icons" aria-hidden="true">keyboard_arrow_left</i></button>
             <div id="comment-list" class="content-display w-100 my-3 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
-            <i id="comments-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+            <button id="comments-right-arrow" type="button" class="arrow-button right" aria-label="More comments"><i class="material-icons" aria-hidden="true">keyboard_arrow_right</i></button>
           </div>
         </div>
 
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

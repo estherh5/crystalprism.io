@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="CanvaShare is a community drawing gallery with drawings created by people like you. Share your vision with the world by clicking another drawing to make it your own, or create a new one from scratch.">
@@ -27,11 +27,11 @@
     </a>
 
     <!-- Main page container -->
-    <div id="container">
+    <main id="container">
 
       <!-- Gallery where drawings are loaded from server -->
       <div id="gallery"></div>
-    </div>
+    </main>
 
     <!-- Plus icon that opens drawing menu -->
     <i id="plus-icon" class="material-icons">add_circle</i>
@@ -41,13 +41,13 @@
       <!-- Continue in-progress drawing option -->
       <div id="continue-option" class="menu-option hidden" title="Continue drawing">
         <!-- Preview of in-progress drawing -->
-        <img id="drawing-draft" class="menu-image">
+        <img id="drawing-draft" class="menu-image" alt="">
         <i class="fas fa-sign-in-alt"></i>
       </div>
       <!-- Create new drawing option -->
       <div id="new-option" class="menu-option" title="Create new">
         <!-- Preview of blank canvas -->
-        <img id="fresh-canvas" class="menu-image" src="images/blank-drawing.png">
+        <img id="fresh-canvas" class="menu-image" src="images/blank-drawing.png" alt="">
         <i class="fas fa-plus"></i>
       </div>
     </div>
@@ -58,6 +58,7 @@
     <!-- Main and common JS scripts -->
     <script src="../fleet-menu.js"></script>
     <script src="../common.js"></script>
+    <script src="ui.js"></script>
     <script src="main.js"></script>
 
   </body>

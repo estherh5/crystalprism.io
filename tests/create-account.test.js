@@ -88,14 +88,15 @@ test('a signed-in new account lands on My Account', async () => {
 test('a throttled sign-in sends the new account to Sign In', async () => {
   const s = await createAccount({ login: 429 });
   assert.strictEqual(s.path, '/user/sign-in/');
-  assert.deepStrictEqual(s.dialogs, ['Too many attempts. Try again later.']);
+  // Sign In says so in its own banner (account-created), not a dialog
+  assert.deepStrictEqual(s.dialogs, []);
 });
 
 for (const login of [500, 401, 'abort']) {
   test(`a sign-in answering ${login} sends the new account to Sign In`, async () => {
     const s = await createAccount({ login });
     assert.strictEqual(s.path, '/user/sign-in/');
-    assert.deepStrictEqual(s.dialogs,
-      ['Your account was created, but signing in did not go through. Please sign in.']);
+    // Sign In says so in its own banner (account-created), not a dialog
+    assert.deepStrictEqual(s.dialogs, []);
   });
 }

@@ -25,6 +25,14 @@ window.onload = function() {
   /* Populate page header based on logged in status (from common.js), and
   redirect to My Account page if user is logged in - unless a sign-out just
   failed, so the warning stays on screen */
+  // Create Account made the account but could not sign in: say so here
+  try {
+    if (sessionStorage.getItem('account-request') == 'created-signed-out') {
+      sessionStorage.removeItem('account-request');
+      document.getElementById('account-created').style.display = 'block';
+    }
+  } catch (e) {}
+
   Promise.resolve(checkIfLoggedIn()).then(function(loggedIn) {
     if (justSignedOut) {
       document.getElementById(loggedIn ? 'logout-failed' : 'logout')
@@ -123,13 +131,14 @@ function checkRingSession() {
       button.textContent = 'Continue';
 
       button.onclick = function() {
-        button.disabled = true;
+        clearInlineError(button);
+        var restoreButton = setBusy(button, 'Continuing…');
         document.body.style.cursor = 'wait';
 
         /* The minted token is exchanged once for the API's HttpOnly session
         cookie and then dropped: script never keeps it. `username` is the
         claim its payload carries, stored as requestLogin() stores it. */
-        fetch(api + '/session', {
+        fetchWithTimeout(api + '/session', {
           credentials: 'include',
           headers: {'Authorization': 'Bearer ' + data.token},
           method: 'POST',
@@ -141,10 +150,10 @@ function checkRingSession() {
 
           .then(function(response) {
             if (!response || !response.ok) {
-              window.alert('Your request did not go through. Please try ' +
-                'again soon.');
-              button.disabled = false;
+              restoreButton();
               document.body.style.cursor = '';
+              inlineError(button, "Couldn't reach the server. Try again " +
+                'in a moment.');
               return;
             }
 
@@ -518,9 +527,13 @@ document.getElementById('submit').onclick = requestLogin;
 
 // Send request to log into account to server
 function requestLogin() {
-  // Hide logout banners
+  var submitButton = document.getElementById('submit');
+  var submitRow = submitButton.parentNode.parentNode;
+
+  // Hide logout banners and any earlier failure
   document.getElementById('logout').style.display = 'none';
   document.getElementById('logout-failed').style.display = 'none';
+  clearInlineError(submitButton);
   var username = usernameInput.value;
   var password = passwordInput.value;
 
@@ -529,90 +542,99 @@ function requestLogin() {
     return;
   }
 
-  /* Disable Submit button and set cursor style to waiting until server request
-  goes through */
-  document.getElementById('submit').disabled = true;
+  /* Busy state on Sign in and a waiting cursor until the server request goes
+  through */
+  var restoreSubmit = setBusy(submitButton, 'Signing in…');
   document.body.style.cursor = 'wait';
 
-  return fetch(api + '/login', {
+  function settle() {
+    restoreSubmit();
+    document.body.style.cursor = '';
+    return;
+  }
+
+  return fetchWithTimeout(api + '/login', {
     credentials: 'include',
     headers: {'Authorization': 'Basic ' + btoa(username + ':' + password)},
     method: 'GET',
   })
 
-    // Display warning if server is down
-    .catch(function(error) {
+    .then(function(response) {
+      // Remove server down banner from page (from common.js script)
+      pingServer();
+
+      // Too many attempts: say so beside Submit (message from common.js)
+      if (response.status == 429) {
+        settle();
+        inlineError(submitButton, RATE_LIMITED_MESSAGE, submitRow);
+        return;
+      }
+
+      /* If server responds with error, display warning that credentials are
+      incorrect */
+      if (response.status != 200) {
+        $(incorrect).modal('show');
+
+        // Focus on Okay button to close modal
+        document.getElementById('incorrect-okay').focus();
+
+        // Clear username and password inputs
+        usernameInput.value = '';
+        passwordInput.value = '';
+        settle();
+        return;
+      }
+
+      /* Otherwise, the server has set the HttpOnly session cookie; save the
+      token payload's username (its canonical casing) to localStorage and
+      discard the token itself */
+      return response.text().then(function(token) {
+        localStorage.removeItem('username');
+        var payload = JSON.parse(atob(token.split('.')[1]));
+        localStorage.setItem('username', payload['username']);
+        settle();
+
+        // Take user to the page they came from, if ?next= names a safe one
+        var previousWindow = nextTarget();
+        if (previousWindow) {
+          window.location = previousWindow;
+          return;
+        }
+
+        // Otherwise, take user to My Account page
+        window.location = '../my-account/';
+
+        return;
+      });
+    }, function() {
       // Add server down banner to page (from common.js script)
       pingServer(checkIfLoggedIn);
-
-      window.alert('Your request did not go through. Please try again soon.');
-
-      // Reset Submit button and cursor style
-      document.getElementById('submit').disabled = false;
-      document.body.style.cursor = '';
-
+      settle();
+      inlineError(submitButton, "Couldn't reach the server. Check your " +
+        'connection and try again.', submitRow);
       return;
-    })
-
-    .then(function(response) {
-      if (response) {
-        // Remove server down banner from page (from common.js script)
-        pingServer();
-
-        // Too many attempts: show the rate-limit message (from common.js)
-        if (response.status == 429) {
-          showRateLimited();
-
-          // Reset Submit button and cursor style
-          document.getElementById('submit').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
-        }
-
-        /* If server responds with error, display warning that credentials are
-        incorrect */
-        if (response.status != 200) {
-          $(incorrect).modal('show');
-
-          // Focus on Okay button to close modal
-          document.getElementById('incorrect-okay').focus();
-
-          // Clear username and password inputs
-          usernameInput.value = '';
-          passwordInput.value = '';
-
-          // Reset Submit button and cursor style
-          document.getElementById('submit').disabled = false;
-          document.body.style.cursor = '';
-
-          return;
-        }
-
-        /* Otherwise, the server has set the HttpOnly session cookie; save
-        the token payload's username (its canonical casing) to localStorage
-        and discard the token itself */
-        response.text().then(function(token) {
-          localStorage.removeItem('username');
-          var payload = JSON.parse(atob(token.split('.')[1]));
-          localStorage.setItem('username', payload['username']);
-
-          // Reset Submit button and cursor style
-          document.getElementById('submit').disabled = false;
-          document.body.style.cursor = '';
-
-          // Take user to the page they came from, if ?next= names a safe one
-          var previousWindow = nextTarget();
-          if (previousWindow) {
-            window.location = previousWindow;
-            return;
-          }
-
-          // Otherwise, take user to My Account page
-          window.location = '../my-account/';
-
-          return;
-        });
-      }
     });
+}
+
+
+/* A failure shows next to the control that failed, as a role="alert" line,
+and the next attempt clears it */
+function inlineError(control, message, anchor) {
+  clearInlineError(control);
+  var note = document.createElement('p');
+  note.className = 'inline-error';
+  note.setAttribute('role', 'alert');
+  note.textContent = message;
+  (anchor || control).insertAdjacentElement('afterend', note);
+  control.inlineErrorNote = note;
+  return note;
+}
+
+function clearInlineError(control) {
+  var note = control.inlineErrorNote;
+  if (note && note.parentNode) {
+    note.parentNode.removeChild(note);
+  }
+  control.inlineErrorNote = null;
+  return;
 }

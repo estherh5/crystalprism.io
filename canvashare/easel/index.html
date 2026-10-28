@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <script src="/slash.js"></script>
@@ -23,7 +23,7 @@
   <body>
     <!-- Blank drawing and canvas -->
     <div class="hidden">
-      <img id="blank" src="../images/blank-drawing.png">
+      <img id="blank" src="../images/blank-drawing.png" alt="">
       <canvas id="blank-canvas" width="400" height="400"></canvas>
     </div>
 
@@ -39,52 +39,54 @@
     <a id="gallery-link" href="../" title="Return to gallery">
       <h1 id="gallery-title" class="small">CanvaShare</h1>
       <!-- Back arrow that displays next to gallery link -->
-      <i class="fas fa-undo-alt"></i>
+      <i class="fas fa-undo-alt" aria-hidden="true"></i>
     </a>
 
     <!-- Easel container -->
-    <div id="easel-container">
+    <main id="easel-container">
       <!-- Drawing title input -->
       <div id="title-input">
+        <label for="drawing-title" class="visually-hidden">Drawing title</label>
         <input id="drawing-title" placeholder="[title]" maxlength="25">
       </div>
 
       <!-- Drawing canvas -->
-      <div>
-        <canvas id="canvas" width="400" height="400"></canvas>
+      <div id="canvas-slot">
+        <canvas id="canvas" width="400" height="400" aria-label="Drawing canvas"></canvas>
       </div>
 
       <!-- Current drawing palette -->
       <div>
-        <svg id="current-palette" width="400" height="40"></svg>
+        <svg id="current-palette" width="400" height="48" role="group" aria-label="Paints"></svg>
       </div>
 
       <!-- Palette option buttons -->
       <div id="palette-options">
-        <button class="palette" data-palette="basic">Basic</button>
-        <button class="palette" data-palette="pastel">Pastel</button>
-        <button class="palette" data-palette="seashore">Seashore</button>
-        <button class="palette" data-palette="bold">Bold</button>
-        <button class="palette" data-palette="oblique">Oblique</button>
-        <button class="palette" data-palette="contrast">Contrast</button>
-        <button class="palette" data-palette="calico">Calico</button>
-        <button class="palette" data-palette="mauve">Mauve</button>
-        <button class="palette" data-palette="grayscale">Grayscale</button>
+        <button type="button" class="palette" data-palette="basic">Basic</button>
+        <button type="button" class="palette" data-palette="pastel">Pastel</button>
+        <button type="button" class="palette" data-palette="seashore">Seashore</button>
+        <button type="button" class="palette" data-palette="bold">Bold</button>
+        <button type="button" class="palette" data-palette="oblique">Oblique</button>
+        <button type="button" class="palette" data-palette="contrast">Contrast</button>
+        <button type="button" class="palette" data-palette="calico">Calico</button>
+        <button type="button" class="palette" data-palette="mauve">Mauve</button>
+        <button type="button" class="palette" data-palette="grayscale">Grayscale</button>
       </div>
 
       <!-- Drawing option buttons -->
-      <div>
+      <div id="drawing-actions">
         <!-- Clear drawing -->
-        <button id="clear" class="action">Clear</button>
-        <!-- Post drawing to gallery -->
-        <button id="post" class="action">Post</button>
+        <button id="clear" class="action" type="button">Clear</button>
+        <!-- Post drawing to gallery (signed in), or a way to sign in -->
+        <button id="post" class="action" type="button">Post</button>
+        <a id="post-sign-in" class="action" hidden>Sign in to post</a>
         <!-- Download drawing -->
         <a id="download-link">
-          <button id="download" class="action">Download</button>
+          <button id="download" class="action" type="button">Download</button>
         </a>
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>
@@ -101,6 +103,7 @@
     <!-- Main and common JS scripts -->
     <script src="../../fleet-menu.js"></script>
     <script src="../../common.js"></script>
+    <script src="../ui.js"></script>
     <script src="main.js"></script>
 
   </body>

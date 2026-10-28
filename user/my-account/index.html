@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <script src="/slash.js"></script>
@@ -33,11 +33,11 @@
             </button>
           </div>
           <div class="modal-body">
-            <input id="verify-password-input" type="password" spellcheck="false" autofocus>
+            <input id="verify-password-input" type="password" spellcheck="false" autocomplete="current-password" aria-labelledby="verify-title" autofocus>
           </div>
           <div class="modal-footer">
             <button type="button" class="btn-secondary" data-dismiss="modal">Cancel</button>
-            <button id="submit" type="button" data-dismiss="modal">Submit</button>
+            <button id="submit" type="button">Submit</button>
           </div>
         </div>
       </div>
@@ -58,7 +58,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal">No</button>
-            <button id="confirm-suspend-account-button" type="button" data-dismiss="modal">Yes</button>
+            <button id="confirm-suspend-account-button" type="button">Yes</button>
           </div>
         </div>
       </div>
@@ -79,7 +79,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal">No</button>
-            <button id="confirm-delete-account-button" type="button" data-dismiss="modal">Yes</button>
+            <button id="confirm-delete-account-button" type="button">Yes</button>
           </div>
         </div>
       </div>
@@ -117,14 +117,14 @@
           </div>
           <div class="modal-footer">
             <button type="button" data-dismiss="modal">No</button>
-            <button id="confirm-delete-content-button" type="button" data-dismiss="modal">Yes</button>
+            <button id="confirm-delete-content-button" type="button">Yes</button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- Main page container -->
-    <div id="my-account-container" class="container-fluid w-100">
+    <main id="my-account-container" class="container-fluid w-100">
 
       <!-- Successful account creation banner -->
       <div id="success" class="banner">
@@ -179,7 +179,7 @@
 
               <!-- Clickable profile background -->
               <div id="profile-background" class="container-fluid d-flex flex-column align-items-center justify-content-center">
-                <input id="background-color-picker" class="jscolor" disabled>
+                <input id="background-color-picker" class="jscolor" aria-label="Profile background color" disabled>
 
                 <div id="account-buttons" class="d-flex flex-column justify-content-center">
                   <!-- Suspend Account button -->
@@ -195,7 +195,7 @@
                 <!-- Profile icon -->
                 <div id="profile-icon-container" class="row my-row d-flex align-items-center justify-content-center">
                   <div id="profile-icon" class="d-flex align-items-center justify-content-center">
-                    <input id="icon-color-picker" class="jscolor" disabled>
+                    <input id="icon-color-picker" class="jscolor" aria-label="Profile icon color" disabled>
                     <svg id="diamond" xmlns="http://www.w3.org/2000/svg" viewBox="5 15 90 70">
                       <path d="m28 16c-0.1 0-0.1 0-0.2 0-0.5 0.1-1 0.3-1.3 0.7l-20 22c-0.7 0.7-0.6 2 0.1 2.8l42 42c0.7 0.7 2.1 0.7 2.8 0l42-42c0.7-0.7 0.7-2 0.1-2.7l-20-22C73.1 16.2 72.6 16 72 16zm0.9 4 10.4 0-8.6 18L12.5 38zm14.8 0 12.6 0 8.6 18-29.7 0zm17 0L71.1 20 87.5 38 69.3 38zm-47.9 22 17.8 0 13.4 31.2zm22.2 0 29.9 0L50 76.9zM69.3 42 87.2 42 55.9 73.2z"/>
                     </svg>
@@ -205,15 +205,15 @@
                 <!-- About me blurb -->
                 <div class="row my-row d-flex justify-content-center">
                   <div class="col-7 col-sm-6 user-data d-flex flex-column">
-                    <textarea id="about-input" class="form-control" type="text" maxlength="110" placeholder="Write something about yourself for others to see" disabled></textarea>
+                    <textarea id="about-input" aria-label="About me" class="form-control" type="text" maxlength="110" placeholder="Write something about yourself for others to see" disabled></textarea>
                   </div>
                 </div>
 
                 <!-- Change username input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
-                  <div class="field-title">Username:</div>
+                  <label class="field-title" for="username-input">Username:</label>
                   <div class="col-5 user-data d-flex flex-column">
-                    <input id="username-input" class="form-control" type="text" spellcheck="false" maxlength="50" disabled>
+                    <input id="username-input" class="form-control" type="text" spellcheck="false" maxlength="50" autocomplete="username" disabled>
                     <!-- Warnings that display if username has errors -->
                     <div id="user-blank" class="warning">Username cannot be blank</div>
                     <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
@@ -224,9 +224,9 @@
 
                 <!-- Change password input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
-                  <div class="field-title">Password:</div>
+                  <label class="field-title" for="password-input">Password:</label>
                   <div class="col-5 user-data d-flex flex-column">
-                    <input id="password-input" class="form-control" type="password" spellcheck="false" maxlength="70" disabled>
+                    <input id="password-input" class="form-control" type="password" spellcheck="false" maxlength="70" autocomplete="new-password" disabled>
                     <!-- Warning that displays when user submits password that is too short -->
                     <div id="pass-short" class="warning">Password must be at least 8 characters long</div>
                   </div>
@@ -235,9 +235,9 @@
 
                 <!-- Confirm changed password input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
-                  <div class="field-title">Confirm password:</div>
+                  <label class="field-title" for="confirm-password-input">Confirm password:</label>
                   <div class="col-5 user-data d-flex flex-column">
-                    <input id="confirm-password-input" class="form-control" type="password" spellcheck="false" maxlength="70" disabled>
+                    <input id="confirm-password-input" class="form-control" type="password" spellcheck="false" maxlength="70" autocomplete="new-password" disabled>
                     <!-- Warning that displays if confirm password does not match original password -->
                     <div id="pass-mismatch" class="warning">Passwords do not match</div>
                   </div>
@@ -246,14 +246,14 @@
 
                 <!-- First and last name input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
-                  <div class="field-title">Name:</div>
+                  <label class="field-title" for="first-name-input">Name:</label>
                   <div class="col-2 user-data d-flex flex-column">
                     <input id="first-name-input" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="First" disabled>
                     <!-- Warning that displays if name is blank and marked as public -->
                     <div id="first-name-blank" class="warning">Public name cannot be blank</div>
                   </div>
                   <div class="col-3 user-data d-flex flex-column">
-                    <input id="last-name-input" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="Last" disabled>
+                    <input id="last-name-input" aria-label="Last name" class="form-control" type="text" spellcheck="false" maxlength="50" placeholder="Last" disabled>
                     <!-- Warning that displays if name is blank and marked as public -->
                     <div id="last-name-blank" class="warning">&nbsp;</div>
                   </div>
@@ -262,7 +262,7 @@
                   <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
                     <text id="name-public-text" class="public-text">Public?</text>
                     <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
-                      <input id="name-public-input" type="checkbox" class="custom-control-input" disabled>
+                      <input id="name-public-input" type="checkbox" class="custom-control-input" aria-label="Show name publicly" disabled>
                       <span class="custom-control-indicator public" data-input="name-public-input"></span>
                     </label>
                   </div>
@@ -270,9 +270,9 @@
 
                 <!-- Email address input -->
                 <div class="row my-row d-flex justify-content-center align-items-center">
-                  <div class="field-title">Email address:</div>
+                  <label class="field-title" for="email-input">Email address:</label>
                   <div class="col-5 user-data d-flex flex-column">
-                    <input id="email-input" class="form-control" type="email" spellcheck="false" disabled>
+                    <input id="email-input" class="form-control" type="email" spellcheck="false" autocomplete="email" disabled>
                     <!-- Warning that displays if email address does not contain correct character -->
                     <div id="email-chars" class="warning">Email address should include "@" symbol</div>
                     <!-- Warning that displays if email address is already claimed -->
@@ -283,7 +283,7 @@
                   <div class="col-1 user-data d-flex flex-column align-items-center justify-content-center">
                     <text id="email-public-text" class="public-text">Public?</text>
                     <label class="custom-control custom-checkbox d-flex align-items-center justify-content-center">
-                      <input id="email-public-input" type="checkbox" class="custom-control-input" disabled>
+                      <input id="email-public-input" type="checkbox" class="custom-control-input" aria-label="Show email address publicly" disabled>
                       <span class="custom-control-indicator public" data-input="email-public-input"></span>
                     </label>
                   </div>
@@ -293,16 +293,16 @@
               <div id="button-row" class="row d-flex justify-content-center align-items-center">
                 <div class="col-1 d-flex align-items-center justify-content-center">
                   <!-- Cancel edits button -->
-                  <button id="cancel" class="form-button">cancel</button>
+                  <button id="cancel" class="form-button" type="button">cancel</button>
                   <!-- Edit content button -->
-                  <button id="edit" class="form-button">edit</button>
+                  <button id="edit" class="form-button" type="button">edit</button>
                   <!-- Save content button -->
-                  <button id="save" class="form-button">save</button>
+                  <button id="save" class="form-button" type="button">save</button>
                 </div>
               </div>
 
               <!-- Back button to flip menu to front side -->
-              <i class="material-icons back-button" data-section="personal-menu">undo</i>
+              <button type="button" class="back-button" data-section="personal-menu" aria-label="Back"><i class="material-icons" aria-hidden="true">undo</i></button>
 
             </div>
 
@@ -319,8 +319,8 @@
 
               <!-- Up and down navigation arrows -->
               <div class="arrow-container">
-                <i id="rhythm-up-arrow" class="material-icons up">keyboard_arrow_up</i>
-                <i id="rhythm-down-arrow" class="material-icons down">keyboard_arrow_down</i>
+                <button id="rhythm-up-arrow" type="button" class="arrow-button up" aria-label="Earlier Rhythm of Life scores"><i class="material-icons" aria-hidden="true">keyboard_arrow_up</i></button>
+                <button id="rhythm-down-arrow" type="button" class="arrow-button down" aria-label="More Rhythm of Life scores"><i class="material-icons" aria-hidden="true">keyboard_arrow_down</i></button>
               </div>
 
               <!-- Rhythm of Life scores header -->
@@ -338,14 +338,6 @@
                   </div>
                 </div>
 
-                <!-- Error loading scores banner -->
-                <div id="rhythm-error" class="row h-100 my-row d-flex justify-content-center align-items-center hidden">
-                  <div class="col">
-                    There was an error loading your scores. Please refresh the page.
-                    <br>
-                    <a href="https://rhythm-of-life.crystalprism.io/" title="Rhythm of Life">Rhythm of Life</a>
-                  </div>
-                </div>
 
                 <!-- No scores to display banner -->
                 <div id="rhythm-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center hidden">
@@ -376,14 +368,6 @@
                   </div>
                 </div>
 
-                <!-- Error loading scores banner -->
-                <div id="shapes-error" class="row h-100 my-row d-flex justify-content-center align-items-center hidden">
-                  <div class="col">
-                    There was an error loading your scores. Please refresh the page.
-                    <br>
-                    <a href="https://shapes-in-rain.crystalprism.io/" title="Shapes in Rain">Shapes in Rain</a>
-                  </div>
-                </div>
 
                 <!-- No scores to display banner -->
                 <div id="shapes-no-scores" class="row h-100 my-row d-flex justify-content-center align-items-center hidden">
@@ -400,12 +384,12 @@
 
               <!-- Up and down navigation arrows -->
               <div class="arrow-container">
-                <i id="shapes-up-arrow" class="material-icons up">keyboard_arrow_up</i>
-                <i id="shapes-down-arrow" class="material-icons down">keyboard_arrow_down</i>
+                <button id="shapes-up-arrow" type="button" class="arrow-button up" aria-label="Earlier Shapes in Rain scores"><i class="material-icons" aria-hidden="true">keyboard_arrow_up</i></button>
+                <button id="shapes-down-arrow" type="button" class="arrow-button down" aria-label="More Shapes in Rain scores"><i class="material-icons" aria-hidden="true">keyboard_arrow_down</i></button>
               </div>
 
               <!-- Back button to flip menu to front side -->
-              <i class="material-icons back-button" data-section="scores-menu">undo</i>
+              <button type="button" class="back-button" data-section="scores-menu" aria-label="Back"><i class="material-icons" aria-hidden="true">undo</i></button>
 
             </div>
 
@@ -425,26 +409,18 @@
 
               <!-- Buttons to toggle between user's created drawings and liked drawings -->
               <div class="menu-options">
-                <button id="mine" class="selected">Mine</button>
-                <button id="liked">Liked</button>
+                <button id="mine" class="selected" type="button" aria-pressed="true">Mine</button>
+                <button id="liked" type="button" aria-pressed="false">Liked</button>
               </div>
 
               <div id="gallery-container" class="content-container d-flex flex-row flex-wrap align-items-center justify-content-center">
                 <!-- Area where drawings are loaded -->
                 <div id="gallery" class="content-display d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
                 <!-- Left and right navigation arrows -->
-                <i id="drawings-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-                <i id="drawings-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+                <button id="drawings-left-arrow" type="button" class="arrow-button left" aria-label="Previous drawings"><i class="material-icons" aria-hidden="true">keyboard_arrow_left</i></button>
+                <button id="drawings-right-arrow" type="button" class="arrow-button right" aria-label="More drawings"><i class="material-icons" aria-hidden="true">keyboard_arrow_right</i></button>
               </div>
 
-              <!-- Error loading drawings banner -->
-              <div id="canvashare-link-error" class="canvashare-link-container row my-row d-flex flex-row flex-wrap align-items-center justify-content-center hidden">
-                <div class="col">
-                  There was an error loading the drawings. Please refresh the page.
-                  <br>
-                  <a class="canvashare-link" href="https://canvashare.crystalprism.io/" title="CanvaShare">CanvaShare</a>
-                </div>
-              </div>
 
               <!-- No created drawings to display banner -->
               <div id="canvashare-link-draw" class="canvashare-link-container row my-row d-flex flex-row flex-wrap align-items-center justify-content-center hidden">
@@ -465,7 +441,7 @@
               </div>
 
               <!-- Back button to flip menu to front side -->
-              <i class="material-icons back-button" data-section="drawings-menu">undo</i>
+              <button type="button" class="back-button" data-section="drawings-menu" aria-label="Back"><i class="material-icons" aria-hidden="true">undo</i></button>
 
             </div>
 
@@ -485,26 +461,18 @@
 
               <!-- Buttons to toggle between user's posts and comments -->
               <div class="menu-options">
-                <button id="posts" class="selected">Posts</button>
-                <button id="comments">Comments</button>
+                <button id="posts" class="selected" type="button" aria-pressed="true">Posts</button>
+                <button id="comments" type="button" aria-pressed="false">Comments</button>
               </div>
 
               <div id="post-list-container" class="content-container d-flex flex-row flex-wrap align-items-center justify-content-center">
                 <!-- Area where posts are loaded -->
                 <div id="post-list" class="content-display w-100 d-flex flex-row flex-wrap align-items-center justify-content-center"></div>
                 <!-- Left and right navigation arrows -->
-                <i id="posts-left-arrow" class="material-icons left">keyboard_arrow_left</i>
-                <i id="posts-right-arrow" class="material-icons right">keyboard_arrow_right</i>
+                <button id="posts-left-arrow" type="button" class="arrow-button left" aria-label="Previous page"><i class="material-icons" aria-hidden="true">keyboard_arrow_left</i></button>
+                <button id="posts-right-arrow" type="button" class="arrow-button right" aria-label="Next page"><i class="material-icons" aria-hidden="true">keyboard_arrow_right</i></button>
               </div>
 
-              <!-- Error loading posts banner -->
-              <div id="thought-writer-link-error" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
-                <div class="col">
-                  There was an error loading the posts. Please refresh the page.
-                  <br>
-                  <a class="thought-writer-link" href="https://thought-writer.crystalprism.io/" title="Thought Writer">Thought Writer</a>
-                </div>
-              </div>
 
               <!-- No posts to display banner -->
               <div id="thought-writer-link-editor" class="thought-writer-link-container row h-100 w-100 my-row d-flex justify-content-center align-items-center hidden">
@@ -525,7 +493,7 @@
               </div>
 
               <!-- Back button to flip menu to front side -->
-              <i class="material-icons back-button" data-section="posts-menu">undo</i>
+              <button type="button" class="back-button" data-section="posts-menu" aria-label="Back"><i class="material-icons" aria-hidden="true">undo</i></button>
 
             </div>
 
@@ -590,7 +558,7 @@
               </div>
 
               <!-- Back button to flip menu to front side -->
-              <i class="material-icons back-button" data-section="stats-menu">undo</i>
+              <button type="button" class="back-button" data-section="stats-menu" aria-label="Back"><i class="material-icons" aria-hidden="true">undo</i></button>
 
             </div>
 
@@ -599,7 +567,7 @@
         </div>
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

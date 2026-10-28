@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <meta name="description" content="Want to learn more about controlling your blood pressure? Move your heart to avoid blood pressure stressors and seek out relievers to stay healthy through this educational game.">
@@ -20,27 +20,27 @@
   </head>
   <body>
     <!-- Load main game piece (SVG heart) into object element -->
-    <object id="heart" height="0" width="0" type="image/svg+xml" data="images/heart.svg"></object>
+    <object id="heart" height="0" width="0" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/heart.svg"></object>
 
     <!-- Warnings for screens that are not the correct size/orientation -->
-    <div id="warning">Please switch to a larger window.</div>
+    <div id="warning">Please switch to a larger window.<a id="warning-home" href="https://crystalprism.io/">Back to Crystal Prism</a></div>
     <div id="warning-mobile">Please switch to landscape mode.</div>
 
     <!-- Main page container -->
-    <div id="page-container">
+    <main id="page-container">
 
       <!-- Game button controls -->
       <div class="control-buttons left">
-        <button id="pause" class="hidden">Pause</button>
-        <button id="restart" class="hidden">Start Over</button>
-        <button id="learn-more-desktop">Learn More</button>
-        <button id="sound"></button>
+        <button id="pause" class="hidden" type="button">Pause</button>
+        <button id="restart" class="hidden" type="button">Start Over</button>
+        <button id="learn-more-desktop" type="button">Learn More</button>
+        <button id="sound" type="button" aria-label="Mute heartbeat" aria-pressed="false"></button>
       </div>
 
       <!-- Additional game button controls for mobile only -->
       <div class="control-buttons right">
-        <button id="learn-more-mobile">Learn More</button>
-        <button id="display-leaders">Leaders</button>
+        <button id="learn-more-mobile" type="button">Learn More</button>
+        <button id="display-leaders" type="button">Leaders</button>
       </div>
 
       <!-- Blood pressure and lifespan score -->
@@ -61,20 +61,20 @@
               <tbody>
                 <tr>
                   <td>
-                    <object class="stressor" type="image/svg+xml" data="images/alcohol.svg"></object>
+                    <object class="stressor" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/alcohol.svg"></object>
                   </td>
                 </tr>
                   <td>
-                    <object class="stressor" type="image/svg+xml" data="images/salt.svg"></object>
+                    <object class="stressor" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/salt.svg"></object>
                   </td>
                 <tr>
                   <td>
-                    <object class="stressor" type="image/svg+xml" data="images/cigarette.svg"></object>
+                    <object class="stressor" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/cigarette.svg"></object>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <object class="stressor" type="image/svg+xml" data="images/stress.svg"></object>
+                    <object class="stressor" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/stress.svg"></object>
                   </td>
                 </tr>
               </tbody>
@@ -89,22 +89,22 @@
               <tbody>
                 <tr>
                   <td>
-                    <object class="reliever" type="image/svg+xml" data="images/bicycle.svg"></object>
+                    <object class="reliever" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/bicycle.svg"></object>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <object class="reliever" type="image/svg+xml" data="images/yoga.svg"></object>
+                    <object class="reliever" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/yoga.svg"></object>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <object class="reliever" type="image/svg+xml" data="images/fruit.svg"></object>
+                    <object class="reliever" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/fruit.svg"></object>
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <object class="reliever" type="image/svg+xml" data="images/pill.svg"></object>
+                    <object class="reliever" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/pill.svg"></object>
                   </td>
                 </tr>
               </tbody>
@@ -120,7 +120,7 @@
 
           <!-- Starting screen for desktop, with game instructions -->
           <div id="start-screen-desktop" class="screen">
-            <text id="start-title">Rhythm of Life</text>
+            <text id="start-title-desktop" class="start-title">Rhythm of Life</text>
             Use the arrow keys to move your heart.
             <br>
             Avoid stressors and seek relievers to keep your blood pressure low.
@@ -132,7 +132,7 @@
 
           <!-- Starting screen for mobile, with game instructions -->
           <div id="start-screen-mobile" class="screen">
-            <text id="start-title">Rhythm of Life</text>
+            <text id="start-title-mobile" class="start-title">Rhythm of Life</text>
             Swipe left, right, up or down to move your heart.
             <br>
             Avoid stressors and seek relievers to keep your blood pressure low.
@@ -148,20 +148,22 @@
             <br>
             <div>
               <text>Play again?</text>
-              <button id="replay">Restart</button>
+              <button id="replay" type="button">Restart</button>
             </div>
+            <!-- Saving, saved, failed, or sign in to save -->
+            <p id="score-status" role="status"></p>
           </div>
 
           <!-- Pause screen for desktop -->
           <div id="pause-screen-desktop" class="screen">
-            <text id="pause-title">Paused</text>
+            <text id="pause-title-desktop" class="pause-title">Paused</text>
             <br>
             Press Resume or an arrow to continue.
           </div>
 
           <!-- Pause screen for mobile -->
           <div id="pause-screen-mobile" class="screen">
-            <text id="pause-title">Paused</text>
+            <text id="pause-title-mobile" class="pause-title">Paused</text>
             <br>
             Press Resume or swipe to continue.
           </div>
@@ -181,7 +183,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/alcohol.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/alcohol.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -191,7 +193,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/salt.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/salt.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -201,7 +203,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/cigarette.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/cigarette.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -211,7 +213,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/stress.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/stress.svg"></object>
                   </td>
                 </tr>
               </tbody>
@@ -229,7 +231,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/bicycle.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/bicycle.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -239,7 +241,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/yoga.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/yoga.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -249,7 +251,7 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/fruit.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/fruit.svg"></object>
                   </td>
                 </tr>
                 <tr>
@@ -259,12 +261,12 @@
                     </div>
                   </td>
                   <td>
-                    <object class="description-image" type="image/svg+xml" data="images/pill.svg"></object>
+                    <object class="description-image" tabindex="-1" aria-hidden="true" type="image/svg+xml" data="images/pill.svg"></object>
                   </td>
                 </tr>
               </tbody>
             </table>
-            <button id="learn-more-close" class="close">X</button>
+            <button id="learn-more-close" class="close" type="button">X</button>
           </div>
 
           <!-- Leaders screen for mobile -->
@@ -286,7 +288,7 @@
                 <tr id="fifth-mobile" class="leaders-mobile"></tr>
               </tbody>
             </table>
-            <button id="leader-close" class="close">X</button>
+            <button id="leader-close" class="close" type="button">X</button>
           </div>
 
         </div>
@@ -350,7 +352,7 @@
 
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

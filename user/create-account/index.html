@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <meta charset="UTF-8">
     <script src="/slash.js"></script>
@@ -46,7 +46,7 @@
     </div>
 
     <!-- Main page container -->
-    <div id="main-container" class="d-flex flex-column align-items-center justify-content-center">
+    <main id="main-container" class="d-flex flex-column align-items-center justify-content-center">
 
       <!-- Create account container -->
       <div class="container">
@@ -58,19 +58,17 @@
           </div>
           <!-- Link to Sign in page -->
           <div class="col-4">
-            <a href="../sign-in/">
-              <h4>Already have an account?</h4>
-            </a>
+            <a class="account-switch" href="../sign-in/">Already have an account?</a>
           </div>
         </div>
 
         <!-- Username input -->
         <div class="row my-2 d-flex align-items-center justify-content-center">
           <div class="col-4">
-            <h2>Username: </h2>
+            <label for="username-input" class="field-label">Username:</label>
           </div>
           <div class="col-auto">
-            <input id="username-input" type="text" maxlength="50" spellcheck="false" autofocus>
+            <input id="username-input" type="text" maxlength="50" spellcheck="false" autocomplete="username" autofocus>
             <!-- Warnings that appear when user submits errored username -->
             <div id="user-blank" class="warning">Username cannot be blank</div>
             <div id="user-chars" class="warning">Use only letters, numbers, dashes and underscores</div>
@@ -81,10 +79,10 @@
         <!-- Password input -->
         <div class="row my-2 d-flex align-items-center justify-content-center">
           <div class="col-4">
-            <h2>Password: </h2>
+            <label for="password-input" class="field-label">Password:</label>
           </div>
           <div class="col-auto">
-            <input id="password-input" type="password" maxlength="70" spellcheck="false" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
+            <input id="password-input" type="password" maxlength="70" spellcheck="false" autocomplete="new-password" data-toggle="tooltip" data-placement="top" title="Password must be at least 8 characters long">
             <!-- Warnings that appear when user submits errored password -->
             <div id="pass-blank" class="warning">Password cannot be blank</div>
             <div id="pass-short" class="warning">Password too short</div>
@@ -94,10 +92,10 @@
         <!-- Confirm password input -->
         <div class="row my-2 d-flex align-items-center justify-content-center">
           <div class="col-4">
-            <h2>Confirm Password: </h2>
+            <label for="confirm-password-input" class="field-label">Confirm Password:</label>
           </div>
           <div class="col-auto">
-            <input id="confirm-password-input" type="password" spellcheck="false">
+            <input id="confirm-password-input" type="password" spellcheck="false" autocomplete="new-password">
             <!-- Warnings that appear when confirmation password does not match original password -->
             <div id="pass-mismatch" class="warning">Passwords do not match</div>
           </div>
@@ -106,13 +104,13 @@
         <!-- Submit button -->
         <div class="row my-3">
           <div class="col d-flex align-items-center justify-content-center">
-            <button id="submit" type="submit">Create</button>
+            <button id="submit" type="button">Create</button>
           </div>
         </div>
 
       </div>
 
-    </div>
+    </main>
 
     <!-- Fetch polyfill script -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

@@ -30,9 +30,6 @@ a:hover, .drawing-title:hover {
   color: #808080;
 }
 
-a:focus, button:focus {
-  outline: none;
-}
 
 #gallery-link {
   margin: auto;
@@ -156,29 +153,30 @@ a:focus, button:focus {
   animation-timing-function: linear;
 }
 
+/* Each step of the cycle holds 4.6:1 or more on the white page */
 @keyframes color {
   0% {
-    color: #ff0000;
+    color: #eb0000;
   }
 
   10% {
-    color: #ffb100;
+    color: #9c6c00;
   }
 
   20% {
-    color: #ffe000;
+    color: #857400;
   }
 
   30% {
-    color: #62ff00;
+    color: #338500;
   }
 
   40% {
-    color: #00ffad;
+    color: #00855a;
   }
 
   50% {
-    color: #00e7ff;
+    color: #00818f;
   }
 
   60% {
@@ -194,11 +192,11 @@ a:focus, button:focus {
   }
 
   90% {
-    color: #ff00bc;
+    color: #db00a2;
   }
 
   100% {
-    color: #ff0000;
+    color: #eb0000;
   }
 }
 
@@ -286,7 +284,7 @@ a:focus, button:focus {
   bottom: 10px;
   right: 10px;
   font-size: 60px;
-  color: #00cb96;
+  color: #00a67b; /* 3.1:1 on white, as a control needs */
   cursor: pointer;
   transition: all 0.4s;
   z-index: 201;
@@ -316,7 +314,7 @@ a:focus, button:focus {
 }
 
 .open {
-  color: #ffc0cb !important;
+  color: #d9577a !important; /* 3.75:1 on white */
   transition: all 0.4s;
 }
 
@@ -364,7 +362,7 @@ a:focus, button:focus {
   -webkit-justify-content: center;
   -ms-flex-pack: center;
   justify-content: center;
-  opacity: 0.7;
+  opacity: 1;
   cursor: pointer;
   transition: all 0.4s;
 }
@@ -408,8 +406,8 @@ a:focus, button:focus {
   -ms-flex-pack: center;
   justify-content: center;
   font-size: 30px !important;
-  color: #a5a5a5;
-  opacity: 0.5;
+  color: #595959;
+  opacity: 1;
   transition: all 0.4s;
 }
 
@@ -434,7 +432,6 @@ a:focus, button:focus {
 
 #drawing-title {
   border: none;
-  outline: none;
   font-family: 'Chathura', sans-serif;
   font-size: 36px;
   text-align: center;
@@ -452,7 +449,7 @@ a:focus, button:focus {
 
 #current-palette {
   height: 80%;
-  max-height: 40px;
+  max-height: 48px;
   width: 80%;
   max-width: 400px;
   margin-bottom: 1%;
@@ -484,7 +481,7 @@ button {
 }
 
 button:hover {
-  color: #ff8282;
+  color: #cf4242; /* 4.7:1 on white */
 }
 
 button:hover:disabled, button:disabled {
@@ -495,7 +492,7 @@ button:hover:disabled, button:disabled {
 
 button.selected, button:active {
   text-shadow: 0.1px -0.1px 0px #000000;
-  color: #ff8282;
+  color: #cf4242; /* 4.7:1 on white; #ff8282 was 2.4:1 */
 }
 
 .action {
@@ -580,4 +577,135 @@ button.selected, button:active {
     font-size: 30px;
     line-height: 1;
   }
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* Loading and failure rows span the gallery, below any drawings */
+#gallery > .slot-status {
+  flex-basis: 100%;
+  width: 100%;
+}
+
+/* Names for controls that show only an icon or a placeholder */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  padding: 0;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Palette tabs and easel actions: 44px tap targets */
+.palette {
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 4px;
+}
+
+.action {
+  min-height: 44px;
+  min-width: 44px;
+}
+
+#post-sign-in {
+  display: inline-block;
+  padding: 0 6px;
+  color: #808080;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+  cursor: pointer;
+}
+
+#post-sign-in:hover {
+  color: #cf4242;
+}
+
+#post-sign-in[hidden], #post[hidden] {
+  display: none;
+}
+
+/* Errors and confirmations beside the control they belong to (ui.js) */
+.inline-error, .inline-confirm {
+  margin: 4px auto 8px;
+  max-width: 400px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  line-height: 1.3;
+}
+
+.inline-error {
+  color: #b00020; /* 7.3:1 on white */
+}
+
+.inline-confirm {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  color: #000000;
+}
+
+.inline-confirm p {
+  margin: 0;
+}
+
+.inline-confirm button {
+  min-height: 44px;
+  padding: 0 12px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  color: #000000;
+  border: 1px solid #000000;
+  border-radius: 22px;
+}
+
+.inline-confirm .inline-confirm-yes {
+  background-color: #000000;
+  color: #ffffff;
+}
+
+.inline-confirm button:hover {
+  color: #cf4242;
+}
+
+.inline-confirm .inline-confirm-yes:hover {
+  color: #ffffff;
+  background-color: #cf4242;
+}
+
+/* A drawing with keyboard focus or an error message shows at full strength,
+so the message keeps its contrast */
+.drawing-container:focus-within, .drawing-container:has(.inline-error) {
+  opacity: 1;
+}
+
+.drawing-container .inline-error {
+  width: 240px;
+  margin: 4px 0 0;
+  text-align: left;
+}
+
+.paint-hit {
+  cursor: pointer;
+}
+
+/* Easel's gallery link and download: 44px tap targets */
+#gallery-link, #download-link {
+  min-height: 44px;
+  align-items: center;
+}
+
+#download-link {
+  display: inline-flex;
 }

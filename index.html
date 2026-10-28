@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
   <meta charset="UTF-8">
@@ -33,14 +33,14 @@
 
 <body>
   <!-- Modal that displays project overviews from Projects page -->
-  <div id="project-modal-background" class="modal-background hidden">
+  <div id="project-modal-background" class="modal-background hidden" role="dialog" aria-modal="true" inert>
     <div id="project-modal-body" class="modal-body">
-      <button id="project-close" class="close hidden">&times;</button>
+      <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
       <!-- Toile overview -->
       <div id="toile-overview" class="project-overview">
         <a class="modal-project-title" href="https://toile.crystalprism.io/">
-          <img class="project-icon-large" src="images/toile-icon.png">
+          <img class="project-icon-large" src="images/toile-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Toile</h2>
         </a>
         <!-- Toile repo -->
@@ -62,7 +62,7 @@
         </div>
         <!-- Toile video -->
         <div class="video-container" data-project="toile">
-          <video id="toile-video" type="video/mp4" preload="metadata" data-project="toile"></video>
+          <video id="toile-video" type="video/mp4" preload="none" data-project="toile"></video>
           <i id="toile-control" class="fas fa-play"></i>
         </div>
         <!-- Toile description -->
@@ -86,7 +86,7 @@
       <!-- Menagerie overview -->
       <div id="menagerie-overview" class="project-overview">
         <a class="modal-project-title" href="https://menagerie.crystalprism.io/">
-          <img class="project-icon-large" src="images/menagerie-icon.png">
+          <img class="project-icon-large" src="images/menagerie-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Menagerie</h2>
         </a>
         <!-- Menagerie repo -->
@@ -108,7 +108,7 @@
         </div>
         <!-- Menagerie video -->
         <div class="video-container" data-project="menagerie">
-          <video id="menagerie-video" type="video/mp4" preload="metadata" data-project="menagerie"></video>
+          <video id="menagerie-video" type="video/mp4" preload="none" data-project="menagerie"></video>
           <i id="menagerie-control" class="fas fa-play"></i>
         </div>
         <!-- Menagerie description -->
@@ -131,7 +131,7 @@
       <!-- Glimpse overview -->
       <div id="glimpse-overview" class="project-overview">
         <a class="modal-project-title" href="https://glimpse.crystalprism.io/">
-          <img class="project-icon-large" src="images/glimpse-icon.png">
+          <img class="project-icon-large" src="images/glimpse-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Glimpse</h2>
         </a>
         <!-- Glimpse repo -->
@@ -193,7 +193,7 @@
         </div>
         <!-- Glimpse video -->
         <div class="video-container" data-project="glimpse">
-          <video id="glimpse-video" type="video/mp4" preload="metadata" data-project="glimpse"></video>
+          <video id="glimpse-video" type="video/mp4" preload="none" data-project="glimpse"></video>
           <i id="glimpse-control" class="fas fa-play"></i>
         </div>
         <!-- Glimpse description -->
@@ -222,7 +222,7 @@
       <!-- flare overview -->
       <div id="flare-overview" class="project-overview">
         <a class="modal-project-title" href="https://flare.crystalprism.io/">
-          <img class="project-icon-large" src="images/flare-icon.png">
+          <img class="project-icon-large" src="images/flare-icon.png" loading="lazy" decoding="async" alt="">
           <h2>flare</h2>
         </a>
         <!-- flare dates (the repository is local-only, so there is nothing to link) -->
@@ -279,7 +279,7 @@
         </div>
         <!-- flare video -->
         <div class="video-container" data-project="flare">
-          <video id="flare-video" type="video/mp4" preload="metadata" data-project="flare"></video>
+          <video id="flare-video" type="video/mp4" preload="none" data-project="flare"></video>
           <i id="flare-control" class="fas fa-play"></i>
         </div>
         <!-- flare description -->
@@ -310,7 +310,7 @@
       <!-- Tide overview -->
       <div id="tide-overview" class="project-overview">
         <a class="modal-project-title" href="https://tide.crystalprism.io/">
-          <img class="project-icon-large" src="images/tide-icon.png">
+          <img class="project-icon-large" src="images/tide-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Tide</h2>
         </a>
         <!-- Tide repo -->
@@ -380,7 +380,7 @@
         </div>
         <!-- Tide video -->
         <div class="video-container" data-project="tide">
-          <video id="tide-video" type="video/mp4" preload="metadata" data-project="tide"></video>
+          <video id="tide-video" type="video/mp4" preload="none" data-project="tide"></video>
           <i id="tide-control" class="fas fa-play"></i>
         </div>
         <!-- Tide description -->
@@ -409,7 +409,7 @@
       <!-- Vitals overview -->
       <div id="vitals-overview" class="project-overview">
         <a class="modal-project-title" href="https://vitals.crystalprism.io/">
-          <img class="project-icon-large" src="images/vitals-icon.png">
+          <img class="project-icon-large" src="images/vitals-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Vitals</h2>
         </a>
         <!-- Vitals repo -->
@@ -483,7 +483,7 @@
         </div>
         <!-- Vitals video -->
         <div class="video-container" data-project="vitals">
-          <video id="vitals-video" type="video/mp4" preload="metadata" data-project="vitals"></video>
+          <video id="vitals-video" type="video/mp4" preload="none" data-project="vitals"></video>
           <i id="vitals-control" class="fas fa-play"></i>
         </div>
         <!-- Vitals description -->
@@ -511,7 +511,7 @@
       <!-- Vantage overview -->
       <div id="vantage-overview" class="project-overview">
         <a class="modal-project-title" href="https://vantage.crystalprism.io/">
-          <img class="project-icon-large" src="images/vantage-icon.png">
+          <img class="project-icon-large" src="images/vantage-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Vantage</h2>
         </a>
         <!-- Vantage repo -->
@@ -573,7 +573,7 @@
         </div>
         <!-- Vantage video -->
         <div class="video-container" data-project="vantage">
-          <video id="vantage-video" type="video/mp4" preload="metadata" data-project="vantage"></video>
+          <video id="vantage-video" type="video/mp4" preload="none" data-project="vantage"></video>
           <i id="vantage-control" class="fas fa-play"></i>
         </div>
         <!-- Vantage description -->
@@ -596,7 +596,7 @@
       <!-- Nexus overview -->
       <div id="nexus-overview" class="project-overview">
         <a class="modal-project-title" href="https://nexus.crystalprism.io/">
-          <img class="project-icon-large" src="images/nexus-icon.png">
+          <img class="project-icon-large" src="images/nexus-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Nexus</h2>
         </a>
         <!-- Nexus repo -->
@@ -650,7 +650,7 @@
         </div>
         <!-- Nexus video -->
         <div class="video-container" data-project="nexus">
-          <video id="nexus-video" type="video/mp4" preload="metadata" data-project="nexus"></video>
+          <video id="nexus-video" type="video/mp4" preload="none" data-project="nexus"></video>
           <i id="nexus-control" class="fas fa-play"></i>
         </div>
         <!-- Nexus description -->
@@ -669,7 +669,7 @@
       <!-- Space overview -->
       <div id="space-overview" class="project-overview">
         <a class="modal-project-title" href="https://space.crystalprism.io/">
-          <img class="project-icon-large" src="images/space-icon.png">
+          <img class="project-icon-large" src="images/space-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Space</h2>
         </a>
         <!-- Space repo -->
@@ -723,7 +723,7 @@
         </div>
         <!-- Space video -->
         <div class="video-container" data-project="space">
-          <video id="space-video" type="video/mp4" preload="metadata" data-project="space"></video>
+          <video id="space-video" type="video/mp4" preload="none" data-project="space"></video>
           <i id="space-control" class="fas fa-play"></i>
         </div>
         <!-- Space description -->
@@ -741,7 +741,7 @@
       <!-- Savor overview -->
       <div id="savor-overview" class="project-overview">
         <a class="modal-project-title" href="https://savor.crystalprism.io/">
-          <img class="project-icon-large" src="images/savor-icon.png">
+          <img class="project-icon-large" src="images/savor-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Savor</h2>
         </a>
         <!-- Savor repo -->
@@ -795,7 +795,7 @@
         </div>
         <!-- Savor video -->
         <div class="video-container" data-project="savor">
-          <video id="savor-video" type="video/mp4" preload="metadata" data-project="savor"></video>
+          <video id="savor-video" type="video/mp4" preload="none" data-project="savor"></video>
           <i id="savor-control" class="fas fa-play"></i>
         </div>
         <!-- Savor description -->
@@ -813,7 +813,7 @@
       <!-- Methods overview -->
       <div id="methods-overview" class="project-overview">
         <a class="modal-project-title" href="https://methods.crystalprism.io/">
-          <img class="project-icon-large" src="images/methods-icon.png">
+          <img class="project-icon-large" src="images/methods-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Methods</h2>
         </a>
         <!-- Methods repo -->
@@ -863,7 +863,7 @@
         </div>
         <!-- Methods video -->
         <div class="video-container" data-project="methods">
-          <video id="methods-video" type="video/mp4" preload="metadata" data-project="methods"></video>
+          <video id="methods-video" type="video/mp4" preload="none" data-project="methods"></video>
           <i id="methods-control" class="fas fa-play"></i>
         </div>
         <!-- Methods description -->
@@ -883,7 +883,7 @@
       <!-- GiftMe overview -->
       <div id="giftme-overview" class="project-overview">
         <a class="modal-project-title" href="https://giftme.crystalprism.io/">
-          <img class="project-icon-large" src="images/giftme-icon.png">
+          <img class="project-icon-large" src="images/giftme-icon.png" loading="lazy" decoding="async" alt="">
           <h2>GiftMe</h2>
         </a>
         <!-- GiftMe repo -->
@@ -937,7 +937,7 @@
         </div>
         <!-- GiftMe video -->
         <div class="video-container" data-project="giftme">
-          <video id="giftme-video" type="video/mp4" preload="metadata" data-project="giftme"></video>
+          <video id="giftme-video" type="video/mp4" preload="none" data-project="giftme"></video>
           <i id="giftme-control" class="fas fa-play"></i>
         </div>
         <!-- GiftMe description -->
@@ -955,7 +955,7 @@
       <!-- Passage overview -->
       <div id="passage-overview" class="project-overview">
         <a class="modal-project-title" href="https://passage.crystalprism.io/">
-          <img class="project-icon-large" src="images/passage-icon.png">
+          <img class="project-icon-large" src="images/passage-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Passage</h2>
         </a>
         <!-- Passage repo -->
@@ -1009,7 +1009,7 @@
         </div>
         <!-- Passage video -->
         <div class="video-container" data-project="passage">
-          <video id="passage-video" type="video/mp4" preload="metadata" data-project="passage"></video>
+          <video id="passage-video" type="video/mp4" preload="none" data-project="passage"></video>
           <i id="passage-control" class="fas fa-play"></i>
         </div>
         <!-- Passage description -->
@@ -1028,7 +1028,7 @@
       <!-- Restock overview -->
       <div id="restock-overview" class="project-overview">
         <a class="modal-project-title" href="https://restock.crystalprism.io/">
-          <img class="project-icon-large" src="images/restock-icon.png">
+          <img class="project-icon-large" src="images/restock-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Restock</h2>
         </a>
         <!-- Restock repo -->
@@ -1082,7 +1082,7 @@
         </div>
         <!-- Restock video -->
         <div class="video-container" data-project="restock">
-          <video id="restock-video" type="video/mp4" preload="metadata" data-project="restock"></video>
+          <video id="restock-video" type="video/mp4" preload="none" data-project="restock"></video>
           <i id="restock-control" class="fas fa-play"></i>
         </div>
         <!-- Restock description -->
@@ -1100,7 +1100,7 @@
       <!-- i dream of neon overview -->
       <div id="idreamofneon-overview" class="project-overview">
         <a class="modal-project-title" href="https://idreamofneon.com/">
-          <img class="project-icon-large" src="images/idreamofneon-icon.png">
+          <img class="project-icon-large" src="images/idreamofneon-icon.png" loading="lazy" decoding="async" alt="">
           <h2>i dream of neon</h2>
         </a>
         <!-- i dream of neon repo -->
@@ -1146,7 +1146,7 @@
         </div>
         <!-- i dream of neon video -->
         <div class="video-container" data-project="idreamofneon">
-          <video id="idreamofneon-video" type="video/mp4" preload="metadata" data-project="idreamofneon"></video>
+          <video id="idreamofneon-video" type="video/mp4" preload="none" data-project="idreamofneon"></video>
           <i id="idreamofneon-control" class="fas fa-play"></i>
         </div>
         <!-- i dream of neon description -->
@@ -1167,7 +1167,7 @@
       <!-- Vroom overview -->
       <div id="vroom-overview" class="project-overview">
         <a class="modal-project-title" href="https://vroom.crystalprism.io/">
-          <img class="project-icon-large" src="images/vroom-icon.png">
+          <img class="project-icon-large" src="images/vroom-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Vroom</h2>
         </a>
         <!-- Vroom repo -->
@@ -1217,7 +1217,7 @@
         </div>
         <!-- Vroom video -->
         <div class="video-container" data-project="vroom">
-          <video id="vroom-video" type="video/mp4" preload="metadata" data-project="vroom"></video>
+          <video id="vroom-video" type="video/mp4" preload="none" data-project="vroom"></video>
           <i id="vroom-control" class="fas fa-play"></i>
         </div>
         <!-- Vroom description -->
@@ -1241,7 +1241,7 @@
       <!-- Marian overview -->
       <div id="marian-overview" class="project-overview">
         <a class="modal-project-title" href="https://marian.crystalprism.io/">
-          <img class="project-icon-large" src="images/marian-icon.png">
+          <img class="project-icon-large" src="images/marian-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Marian</h2>
         </a>
         <!-- Marian repo -->
@@ -1271,7 +1271,7 @@
         </div>
         <!-- Marian video -->
         <div class="video-container" data-project="marian">
-          <video id="marian-video" type="video/mp4" preload="metadata" data-project="marian"></video>
+          <video id="marian-video" type="video/mp4" preload="none" data-project="marian"></video>
           <i id="marian-control" class="fas fa-play"></i>
         </div>
         <!-- Marian description -->
@@ -1294,7 +1294,7 @@
       <!-- Pause overview -->
       <div id="pause-overview" class="project-overview">
         <a class="modal-project-title" href="https://pause.crystalprism.io/">
-          <img class="project-icon-large" src="images/pause-icon.png">
+          <img class="project-icon-large" src="images/pause-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Pause</h2>
         </a>
         <!-- Pause repo -->
@@ -1336,7 +1336,7 @@
         </div>
         <!-- Pause video -->
         <div class="video-container" data-project="pause">
-          <video id="pause-video" type="video/mp4" preload="metadata" data-project="pause"></video>
+          <video id="pause-video" type="video/mp4" preload="none" data-project="pause"></video>
           <i id="pause-control" class="fas fa-play"></i>
         </div>
         <!-- Pause description -->
@@ -1364,7 +1364,7 @@
       <!-- Hacker News Stats overview -->
       <div id="hn-stats-overview" class="project-overview">
         <a class="modal-project-title" href="https://hn-stats.crystalprism.io/">
-          <img class="project-icon-large" src="images/hn-stats-icon.png">
+          <img class="project-icon-large" src="images/hn-stats-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Hacker News Stats</h2>
         </a>
         <!-- Hacker News Stats repo -->
@@ -1418,7 +1418,7 @@
         </div>
         <!-- Hacker News Stats video -->
         <div class="video-container" data-project="hn-stats">
-          <video id="hn-stats-video" type="video/mp4" preload="metadata" data-project="hn-stats"></video>
+          <video id="hn-stats-video" type="video/mp4" preload="none" data-project="hn-stats"></video>
           <i id="hn-stats-control" class="fas fa-play"></i>
         </div>
         <!-- Hacker News Stats description -->
@@ -1445,7 +1445,7 @@
       <!-- User accounts overview -->
       <div id="user-overview" class="project-overview">
         <a class="modal-project-title" href="https://account.crystalprism.io/sign-in/">
-          <img class="project-icon-large" src="images/homepage.png">
+          <img class="project-icon-large" src="images/homepage.png" loading="lazy" decoding="async" alt="">
           <h2>User Accounts</h2>
         </a>
         <!-- User accounts repo -->
@@ -1495,7 +1495,7 @@
         </div>
         <!-- User accounts video -->
         <div class="video-container" data-project="user">
-          <video id="user-video" type="video/mp4" preload="metadata" data-project="user"></video>
+          <video id="user-video" type="video/mp4" preload="none" data-project="user"></video>
           <i id="user-control" class="fas fa-play"></i>
         </div>
         <!-- User accounts description -->
@@ -1526,7 +1526,7 @@
       <!-- NoBugs! overview -->
       <div id="nobugs-overview" class="project-overview">
         <a class="modal-project-title" href="https://nobugsphilly.com/">
-          <img class="project-icon-large" src="images/nobugs-icon.png">
+          <img class="project-icon-large" src="images/nobugs-icon.png" loading="lazy" decoding="async" alt="">
           <h2>NoBugs!</h2>
         </a>
         <!-- NoBugs! repo -->
@@ -1568,7 +1568,7 @@
         </div>
         <!-- NoBugs! video -->
         <div class="video-container" data-project="nobugs">
-          <video id="nobugs-video" type="video/mp4" preload="metadata" data-project="nobugs"></video>
+          <video id="nobugs-video" type="video/mp4" preload="none" data-project="nobugs"></video>
           <i id="nobugs-control" class="fa fa-play"></i>
         </div>
         <!-- NoBugs! description -->
@@ -1588,7 +1588,7 @@
       <!-- Vicarious overview -->
       <div id="vicarious-overview" class="project-overview">
         <a class="modal-project-title" href="https://vicarious.crystalprism.io/">
-          <img class="project-icon-large" src="images/vicarious-icon.png">
+          <img class="project-icon-large" src="images/vicarious-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Vicarious</h2>
         </a>
         <!-- Vicarious repo -->
@@ -1618,7 +1618,7 @@
         </div>
         <!-- Vicarious video -->
         <div class="video-container" data-project="vicarious">
-          <video id="vicarious-video" type="video/mp4" preload="metadata" data-project="vicarious"></video>
+          <video id="vicarious-video" type="video/mp4" preload="none" data-project="vicarious"></video>
           <i id="vicarious-control" class="fa fa-play"></i>
         </div>
         <!-- Vicarious description -->
@@ -1636,7 +1636,7 @@
       <!-- Thought Writer overview -->
       <div id="thought-writer-overview" class="project-overview">
         <a class="modal-project-title" href="https://thought-writer.crystalprism.io/">
-          <img class="project-icon-large" src="images/thought-writer-icon.png">
+          <img class="project-icon-large" src="images/thought-writer-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Thought Writer</h2>
         </a>
         <!-- Thought Writer repo -->
@@ -1686,7 +1686,7 @@
         </div>
         <!-- Thought Writer video -->
         <div class="video-container" data-project="thought-writer">
-          <video id="thought-writer-video" type="video/mp4" preload="metadata" data-project="thought-writer"></video>
+          <video id="thought-writer-video" type="video/mp4" preload="none" data-project="thought-writer"></video>
           <i id="thought-writer-control" class="fa fa-play dark"></i>
         </div>
         <!-- Thought Writer description -->
@@ -1704,7 +1704,7 @@
       <!-- CanvaShare overview -->
       <div id="canvashare-overview" class="project-overview">
         <a class="modal-project-title" href="https://canvashare.crystalprism.io/">
-          <img class="project-icon-large" src="images/canvashare-icon.png">
+          <img class="project-icon-large" src="images/canvashare-icon.png" loading="lazy" decoding="async" alt="">
           <h2>CanvaShare</h2>
         </a>
         <!-- CanvaShare repo -->
@@ -1754,7 +1754,7 @@
         </div>
         <!-- CanvaShare video -->
         <div class="video-container" data-project="canvashare">
-          <video id="canvashare-video" type="video/mp4" preload="metadata" data-project="canvashare"></video>
+          <video id="canvashare-video" type="video/mp4" preload="none" data-project="canvashare"></video>
           <i id="canvashare-control" class="fa fa-play dark"></i>
         </div>
         <!-- CanvaShare description -->
@@ -1776,7 +1776,7 @@
       <!-- Rhythm of Life overview -->
       <div id="rhythm-of-life-overview" class="project-overview">
         <a class="modal-project-title" href="https://rhythm-of-life.crystalprism.io/">
-          <img class="project-icon-large" src="images/rhythm-of-life-icon.png">
+          <img class="project-icon-large" src="images/rhythm-of-life-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Rhythm of Life</h2>
         </a>
         <!-- Rhythm of Life repo -->
@@ -1826,7 +1826,7 @@
         </div>
         <!-- Rhythm of Life video -->
         <div class="video-container" data-project="rhythm-of-life">
-          <video id="rhythm-of-life-video" type="video/mp4" preload="metadata" data-project="rhythm-of-life"></video>
+          <video id="rhythm-of-life-video" type="video/mp4" preload="none" data-project="rhythm-of-life"></video>
           <i id="rhythm-of-life-control" class="fa fa-play dark"></i>
         </div>
         <!-- Rhythm of Life description -->
@@ -1846,7 +1846,7 @@
       <!-- Shapes in Rain overview -->
       <div id="shapes-in-rain-overview" class="project-overview">
         <a class="modal-project-title" href="https://shapes-in-rain.crystalprism.io/">
-          <img class="project-icon-large" src="images/shapes-in-rain-icon.png">
+          <img class="project-icon-large" src="images/shapes-in-rain-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Shapes in Rain</h2>
         </a>
         <!-- Shapes in Rain repo -->
@@ -1896,7 +1896,7 @@
         </div>
         <!-- Shapes in Rain video -->
         <div class="video-container" data-project="shapes-in-rain">
-          <video id="shapes-in-rain-video" type="video/mp4" preload="metadata" data-project="shapes-in-rain"></video>
+          <video id="shapes-in-rain-video" type="video/mp4" preload="none" data-project="shapes-in-rain"></video>
           <i id="shapes-in-rain-control" class="fa fa-play"></i>
         </div>
         <!-- Shapes in Rain description -->
@@ -1912,7 +1912,7 @@
       <!-- Timespace overview -->
       <div id="timespace-overview" class="project-overview">
         <a class="modal-project-title" href="https://timespace.crystalprism.io/">
-          <img class="project-icon-large" src="images/timespace-icon.png">
+          <img class="project-icon-large" src="images/timespace-icon.png" loading="lazy" decoding="async" alt="">
           <h2>Timespace</h2>
         </a>
         <!-- Timespace repo -->
@@ -1938,7 +1938,7 @@
         </div>
         <!-- Timespace video -->
         <div class="video-container" data-project="timespace">
-          <video id="timespace-video" type="video/mp4" preload="metadata" data-project="timespace"></video>
+          <video id="timespace-video" type="video/mp4" preload="none" data-project="timespace"></video>
           <i id="timespace-control" class="fa fa-play"></i>
         </div>
         <!-- Timespace description -->
@@ -1951,43 +1951,43 @@
       </div>
 
       <!-- Modal controls -->
-      <button id="project-previous" class="control previous hidden">
-        <span>&#60;</span>
+      <button type="button" id="project-previous" class="control previous hidden" aria-label="Previous project">
+        <span aria-hidden="true">&#60;</span>
       </button>
-      <button id="project-next" class="control next hidden">
-        <span>&#62;</span>
+      <button type="button" id="project-next" class="control next hidden" aria-label="Next project">
+        <span aria-hidden="true">&#62;</span>
       </button>
 
     </div>
   </div>
 
   <!-- Modal that displays photos from Photos page -->
-  <div id="photo-modal-background" class="modal-background hidden">
+  <div id="photo-modal-background" class="modal-background hidden" role="dialog" aria-modal="true" aria-label="Photo" inert>
     <div id="photo-modal-body" class="modal-body">
-      <button id="photo-close" class="close hidden">&times;</button>
+      <button type="button" id="photo-close" class="close hidden" aria-label="Close">&times;</button>
 
       <!-- Image tag for larger photo to display -->
-      <img id="larger-photo">
+      <img id="larger-photo" alt="Enlarged photo">
 
       <!-- Modal controls -->
-      <button id="photo-previous" class="control previous hidden">
-        <span>&#60;</span>
+      <button type="button" id="photo-previous" class="control previous hidden" aria-label="Previous photo">
+        <span aria-hidden="true">&#60;</span>
       </button>
-      <button id="photo-next" class="control next hidden">
-        <span>&#62;</span>
+      <button type="button" id="photo-next" class="control next hidden" aria-label="Next photo">
+        <span aria-hidden="true">&#62;</span>
       </button>
 
     </div>
   </div>
 
   <!-- Day/night theme changer -->
-  <div id="theme-container" title="Toggle night/day view">
-    <i id="sky-icon" class="ionicons ion-ios-moon-outline"></i>
+  <div id="theme-container" title="Toggle night/day view" role="button" tabindex="0" aria-label="Toggle night view">
+    <i id="sky-icon" class="ionicons ion-ios-moon-outline" aria-hidden="true"></i>
   </div>
 
   <!-- Homepage link -->
   <a id="front-page-link" href=".">
-    <img id="front-page-icon" class="hidden" src="images/homepage.png">
+    <img id="front-page-icon" class="hidden" src="images/homepage.png" alt="">
     <h1>Esther Hoffman</h1>
   </a>
 
@@ -2000,11 +2000,11 @@
   </div>
 
   <!-- Main container for individual pages -->
-  <div id="pages-container">
+  <main id="pages-container">
     <div id="pages">
 
       <!-- Splash page that displays on load -->
-      <div id="splash-page" class="page hidden">
+      <div id="splash-page" class="page hidden" inert>
         <div id="menu">
           <!-- Diamond SVG -->
           <svg id="diamond-large" class="menu-shape" xmlns="https://www.w3.org/2000/svg/" viewBox="5 15 90 70">
@@ -2017,376 +2017,384 @@
           <svg id="circles">
             <!-- Photos page circle -->
             <svg id="purple" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 356 356">
+              <a class="nav-link" href="#photos-page" aria-label="Photos">
               <g>
                 <circle cx="96px" cy="153px" r="50px" fill="#8551ff"></circle>
                 <text class="nav-text" data-page="photos-page" x="96px" y="153px">Photos</text>
               </g>
+              </a>
             </svg>
             <!-- About page circle -->
             <svg id="green" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 445 445">
+              <a class="nav-link" href="#about-page" aria-label="About">
               <g>
                 <circle cx="58px" cy="257px" r="50px" fill="#7fd13b"></circle>
                 <text class="nav-text" data-page="about-page" x="58px" y="257px">About</text>
               </g>
+              </a>
             </svg>
             <!-- Ideas page circle -->
             <svg id="pink" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 198 198">
+              <a class="nav-link" href="#ideas-page" aria-label="Ideas">
               <g>
                 <circle cx="99px" cy="108px" r="50px" fill="#d24cff"></circle>
                 <text class="nav-text" data-page="ideas-page" x="99px" y="108px">Ideas</text>
               </g>
+              </a>
             </svg>
             <!-- Projects page circle -->
             <svg id="teal" class="menu-shape nav-circle" xmlns="https://www.w3.org/2000/svg/" viewBox="0 0 297 297">
+              <a class="nav-link" href="#projects-page" aria-label="Projects">
               <g>
                 <circle cx="96px" cy="196px" r="50px" fill="#1ebfe8"></circle>
                 <text class="nav-text" data-page="projects-page" x="96px" y="196px">Projects</text>
               </g>
+              </a>
             </svg>
           </svg>
         </div>
       </div>
 
       <!-- Projects page -->
-      <div id="projects-page" class="page hidden fade">
+      <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
           <!-- Toile image and icon -->
           <li>
-            <div class="project-listing" data-project="toile" data-displayed="false">
-              <img class="project-image" src="images/toile.png">
+            <button type="button" class="project-listing" data-project="toile" data-displayed="false">
+              <img class="project-image" src="images/toile.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/toile-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/toile-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Toile</span>
-            </div>
+            </button>
           </li>
           <!-- Menagerie image and icon -->
           <li>
-            <div class="project-listing" data-project="menagerie" data-displayed="false">
-              <img class="project-image" src="images/menagerie.png">
+            <button type="button" class="project-listing" data-project="menagerie" data-displayed="false">
+              <img class="project-image" src="images/menagerie.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/menagerie-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/menagerie-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Menagerie</span>
-            </div>
+            </button>
           </li>
           <!-- Glimpse image and icon -->
           <li>
-            <div class="project-listing" data-project="glimpse" data-displayed="false">
-              <img class="project-image" src="images/glimpse.png">
+            <button type="button" class="project-listing" data-project="glimpse" data-displayed="false">
+              <img class="project-image" src="images/glimpse.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/glimpse-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/glimpse-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Glimpse</span>
-            </div>
+            </button>
           </li>
           <!-- flare image and icon -->
           <li>
-            <div class="project-listing" data-project="flare" data-displayed="false">
-              <img class="project-image" src="images/flare.png">
+            <button type="button" class="project-listing" data-project="flare" data-displayed="false">
+              <img class="project-image" src="images/flare.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/flare-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/flare-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">flare</span>
-            </div>
+            </button>
           </li>
           <!-- Tide image and icon -->
           <li>
-            <div class="project-listing" data-project="tide" data-displayed="false">
-              <img class="project-image" src="images/tide.png">
+            <button type="button" class="project-listing" data-project="tide" data-displayed="false">
+              <img class="project-image" src="images/tide.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/tide-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/tide-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Tide</span>
-            </div>
+            </button>
           </li>
           <!-- Vitals image and icon -->
           <li>
-            <div class="project-listing" data-project="vitals" data-displayed="false">
-              <img class="project-image" src="images/vitals.png">
+            <button type="button" class="project-listing" data-project="vitals" data-displayed="false">
+              <img class="project-image" src="images/vitals.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/vitals-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/vitals-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Vitals</span>
-            </div>
+            </button>
           </li>
           <!-- Vantage image and icon -->
           <li>
-            <div class="project-listing" data-project="vantage" data-displayed="false">
-              <img class="project-image" src="images/vantage.png">
+            <button type="button" class="project-listing" data-project="vantage" data-displayed="false">
+              <img class="project-image" src="images/vantage.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/vantage-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/vantage-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Vantage</span>
-            </div>
+            </button>
           </li>
           <!-- Nexus image and icon -->
           <li>
-            <div class="project-listing" data-project="nexus" data-displayed="false">
-              <img class="project-image" src="images/nexus.png">
+            <button type="button" class="project-listing" data-project="nexus" data-displayed="false">
+              <img class="project-image" src="images/nexus.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/nexus-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/nexus-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Nexus</span>
-            </div>
+            </button>
           </li>
           <!-- Space image and icon -->
           <li>
-            <div class="project-listing" data-project="space" data-displayed="false">
-              <img class="project-image" src="images/space.png">
+            <button type="button" class="project-listing" data-project="space" data-displayed="false">
+              <img class="project-image" src="images/space.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/space-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/space-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Space</span>
-            </div>
+            </button>
           </li>
           <!-- Savor image and icon -->
           <li>
-            <div class="project-listing" data-project="savor" data-displayed="false">
-              <img class="project-image" src="images/savor.png">
+            <button type="button" class="project-listing" data-project="savor" data-displayed="false">
+              <img class="project-image" src="images/savor.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/savor-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/savor-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Savor</span>
-            </div>
+            </button>
           </li>
           <!-- Methods image and icon -->
           <li>
-            <div class="project-listing" data-project="methods" data-displayed="false">
-              <img class="project-image" src="images/methods.png">
+            <button type="button" class="project-listing" data-project="methods" data-displayed="false">
+              <img class="project-image" src="images/methods.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/methods-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/methods-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Methods</span>
-            </div>
+            </button>
           </li>
           <!-- GiftMe image and icon -->
           <li>
-            <div class="project-listing" data-project="giftme" data-displayed="false">
-              <img class="project-image" src="images/giftme.png">
+            <button type="button" class="project-listing" data-project="giftme" data-displayed="false">
+              <img class="project-image" src="images/giftme.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/giftme-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/giftme-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">GiftMe</span>
-            </div>
+            </button>
           </li>
           <!-- Passage image and icon -->
           <li>
-            <div class="project-listing" data-project="passage" data-displayed="false">
-              <img class="project-image" src="images/passage.png">
+            <button type="button" class="project-listing" data-project="passage" data-displayed="false">
+              <img class="project-image" src="images/passage.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/passage-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/passage-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Passage</span>
-            </div>
+            </button>
           </li>
           <!-- Restock image and icon -->
           <li>
-            <div class="project-listing" data-project="restock" data-displayed="false">
-              <img class="project-image" src="images/restock.png">
+            <button type="button" class="project-listing" data-project="restock" data-displayed="false">
+              <img class="project-image" src="images/restock.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/restock-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/restock-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Restock</span>
-            </div>
+            </button>
           </li>
           <!-- i dream of neon image and icon -->
           <li>
-            <div class="project-listing" data-project="idreamofneon" data-displayed="false">
-              <img class="project-image" src="images/idreamofneon.png">
+            <button type="button" class="project-listing" data-project="idreamofneon" data-displayed="false">
+              <img class="project-image" src="images/idreamofneon.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/idreamofneon-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/idreamofneon-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">i dream of neon</span>
-            </div>
+            </button>
           </li>
           <!-- Vroom image and icon -->
           <li>
-            <div class="project-listing" data-project="vroom" data-displayed="false">
-              <img class="project-image" src="images/vroom.png">
+            <button type="button" class="project-listing" data-project="vroom" data-displayed="false">
+              <img class="project-image" src="images/vroom.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img id="vroom-icon" class="project-icon" src="images/vroom-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img id="vroom-icon" class="project-icon" src="images/vroom-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Vroom</span>
-            </div>
+            </button>
           </li>
           <!-- Marian image and icon -->
           <li>
-            <div class="project-listing" data-project="marian" data-displayed="false">
-              <img class="project-image" src="images/marian.png">
+            <button type="button" class="project-listing" data-project="marian" data-displayed="false">
+              <img class="project-image" src="images/marian.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img id="marian-icon" class="project-icon" src="images/marian-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img id="marian-icon" class="project-icon" src="images/marian-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Marian</span>
-            </div>
+            </button>
           </li>
           <!-- Pause image and icon -->
           <li>
-            <div class="project-listing" data-project="pause" data-displayed="false">
-              <img class="project-image" src="images/pause.png">
+            <button type="button" class="project-listing" data-project="pause" data-displayed="false">
+              <img class="project-image" src="images/pause.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img id="pause-icon" class="project-icon" src="images/pause-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img id="pause-icon" class="project-icon" src="images/pause-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Pause</span>
-            </div>
+            </button>
           </li>
           <!-- Hacker News Stats image and icon -->
           <li>
-            <div class="project-listing" data-project="hn-stats" data-displayed="false">
-              <img class="project-image" src="images/hn-stats.png">
+            <button type="button" class="project-listing" data-project="hn-stats" data-displayed="false">
+              <img class="project-image" src="images/hn-stats.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/hn-stats-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/hn-stats-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Hacker News Stats</span>
-            </div>
+            </button>
           </li>
           <!-- User accounts image and icon -->
           <li>
-            <div class="project-listing" data-project="user" data-displayed="false">
-              <img class="project-image" src="images/user.png">
+            <button type="button" class="project-listing" data-project="user" data-displayed="false">
+              <img class="project-image" src="images/user.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/homepage.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/homepage.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">User Accounts</span>
-            </div>
+            </button>
           </li>
           <!-- NoBugs! image and icon -->
           <li>
-            <div class="project-listing" data-project="nobugs" data-displayed="false">
-              <img class="project-image" src="images/nobugs.png">
+            <button type="button" class="project-listing" data-project="nobugs" data-displayed="false">
+              <img class="project-image" src="images/nobugs.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/nobugs-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/nobugs-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">NoBugs!</span>
-            </div>
+            </button>
           </li>
           <!-- Vicarious image and icon -->
           <li>
-            <div class="project-listing" data-project="vicarious" data-displayed="false">
-              <img class="project-image" src="images/vicarious.png">
+            <button type="button" class="project-listing" data-project="vicarious" data-displayed="false">
+              <img class="project-image" src="images/vicarious.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/vicarious-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/vicarious-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Vicarious</span>
-            </div>
+            </button>
           </li>
           <!-- Thought Writer image and icon -->
           <li>
-            <div class="project-listing" data-project="thought-writer" data-displayed="false">
-              <img class="project-image" src="images/thought-writer.png">
+            <button type="button" class="project-listing" data-project="thought-writer" data-displayed="false">
+              <img class="project-image" src="images/thought-writer.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/thought-writer-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/thought-writer-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Thought Writer</span>
-            </div>
+            </button>
           </li>
           <!-- CanvaShare image and icon -->
           <li>
-            <div class="project-listing" data-project="canvashare" data-displayed="false">
-              <img class="project-image" src="images/canvashare.png">
+            <button type="button" class="project-listing" data-project="canvashare" data-displayed="false">
+              <img class="project-image" src="images/canvashare.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/canvashare-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/canvashare-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">CanvaShare</span>
-            </div>
+            </button>
           </li>
           <!-- Rhythm of Life image and icon -->
           <li>
-            <div class="project-listing" data-project="rhythm-of-life" data-displayed="false">
-              <img class="project-image" src="images/rhythm-of-life.png">
+            <button type="button" class="project-listing" data-project="rhythm-of-life" data-displayed="false">
+              <img class="project-image" src="images/rhythm-of-life.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/rhythm-of-life-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/rhythm-of-life-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Rhythm of Life</span>
-            </div>
+            </button>
           </li>
           <!-- Shapes in Rain image and icon -->
           <li>
-            <div class="project-listing" data-project="shapes-in-rain" data-displayed="false">
-              <img class="project-image" src="images/shapes-in-rain.png">
+            <button type="button" class="project-listing" data-project="shapes-in-rain" data-displayed="false">
+              <img class="project-image" src="images/shapes-in-rain.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/shapes-in-rain-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/shapes-in-rain-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Shapes in Rain</span>
-            </div>
+            </button>
           </li>
           <!-- Timespace image and icon -->
           <li>
-            <div class="project-listing" data-project="timespace" data-displayed="false">
-              <img class="project-image" src="images/timespace.png">
+            <button type="button" class="project-listing" data-project="timespace" data-displayed="false">
+              <img class="project-image" src="images/timespace.png" loading="lazy" decoding="async" alt="">
               <span class="project-overlay">
-                <div class="project-preview">
-                  <img class="project-icon" src="images/timespace-icon.png">
-                </div>
+                <span class="project-preview">
+                  <img class="project-icon" src="images/timespace-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
               </span>
               <span class="project-title">Timespace</span>
-            </div>
+            </button>
           </li>
         </ul>
       </div>
 
       <!-- Photos page -->
-      <div id="photos-page" class="page hidden fade">
+      <div id="photos-page" class="page hidden fade" inert>
         <ul id="photos-list"></ul>
       </div>
 
       <!-- Ideas page -->
-      <div id="ideas-page" class="page hidden fade"></div>
+      <div id="ideas-page" class="page hidden fade" inert></div>
 
       <!-- About page -->
-      <div id="about-page" class="page hidden fade">
+      <div id="about-page" class="page hidden fade" inert>
         <!-- About me overview -->
         <div id="about-me">
           Full-stack engineer with nine years building production software, the last seven leading high-impact
@@ -2585,7 +2593,7 @@
             <td class="section-header">
               <object class="section-icon" type="image/svg+xml" data-header="work"></object>
               <h2 class="section-header-title">Work Experience</h2>
-              <div class="chevron-text expand-parent" data-start="0" data-end="7" data-expanded="false">
+              <div class="chevron-text expand-parent" role="button" tabindex="0" aria-expanded="false" data-start="0" data-end="7" data-expanded="false">
                 <span class="small-icon fas fa-chevron-right"></span>
                 <text class="expand-all">Expand All</text>
               </div>
@@ -2769,7 +2777,7 @@
             <td class="section-header">
               <object class="section-icon" type="image/svg+xml" data-header="education"></object>
               <h2 class="section-header-title">Education</h2>
-              <div class="chevron-text expand-parent" data-start="7" data-end="8" data-expanded="false">
+              <div class="chevron-text expand-parent" role="button" tabindex="0" aria-expanded="false" data-start="7" data-end="8" data-expanded="false">
                 <span class="small-icon fas fa-chevron-right"></span>
                 <text class="expand-all">Expand All</text>
               </div>
@@ -2797,7 +2805,7 @@
             <td class="section-header">
               <object class="section-icon" type="image/svg+xml" data-header="awards"></object>
               <h2 class="section-header-title">Awards &#38; Publications</h2>
-              <div class="chevron-text expand-parent" data-start="8" data-end="11" data-expanded="false">
+              <div class="chevron-text expand-parent" role="button" tabindex="0" aria-expanded="false" data-start="8" data-end="11" data-expanded="false">
                 <span class="small-icon fas fa-chevron-right"></span>
                 <text class="expand-all">Expand All</text>
               </div>
@@ -2922,7 +2930,7 @@
       </div>
 
     </div>
-  </div>
+  </main>
 
   <!-- Fetch polyfill script -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/fetch/2.0.3/fetch.min.js"></script>

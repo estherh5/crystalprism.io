@@ -20,10 +20,13 @@
   --fleet-line: #3a3a3a;
 }
 
+/* Off screen and out of the tab order: visibility keeps a hidden button from
+taking focus where no one can see it, and leaves layout reads untouched */
 .hidden {
   position: absolute !important;
   top: -9999px !important;
   left: -9999px !important;
+  visibility: hidden !important;
 }
 
 #header {
@@ -46,6 +49,7 @@
 }
 
 #banner {
+  padding: 4px 8px;
   background-color: #ffd105;
   font-size: 12px;
   font-style: italic;
@@ -53,9 +57,132 @@
   text-align: center;
 }
 
+/* While the server-down banner shows (pingServer, common.js), it sits on top
+of the header and both the header and the page move down by its height, so it
+covers nothing */
+body.has-banner {
+  padding-top: var(--banner-height, 0px);
+  box-sizing: border-box;
+}
+
+body.has-banner #header {
+  padding-top: var(--banner-height, 0px);
+  box-sizing: content-box;
+}
+
+/* The soundtrack button's -7px margin tucks its padding under the header;
+under the banner it would tuck under that instead */
+body.has-banner #audio-container {
+  margin-top: 0px;
+}
+
+body.has-banner #banner {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+}
+
+/* Inline in the sentence whatever a page does to bare buttons (Thought
+Writer makes every button a block-level flex box) */
 #retry {
+  display: inline-flex;
+  align-items: center;
+  vertical-align: middle;
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0 4px;
+  min-height: 24px;
   text-decoration: underline;
   cursor: pointer;
+}
+
+/* slotLoading / slotFailure (common.js): a fetch's own status, in its slot */
+.slot-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 24px auto;
+  padding: 0 16px;
+  font-family: 'Rajdhani', sans-serif;
+  font-size: 16px;
+  font-style: normal;
+  color: var(--fleet-muted);
+  text-align: center;
+}
+
+.slot-status p {
+  margin: 0;
+}
+
+.slot-spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid var(--fleet-line);
+  border-top-color: var(--fleet-muted);
+  border-radius: 50%;
+  animation: slot-spin 0.8s linear infinite;
+}
+
+@keyframes slot-spin {
+  to { transform: rotate(360deg); }
+}
+
+.slot-failure {
+  color: var(--fleet-ink);
+}
+
+/* inline-flex centers the label in the 44px band, also on an <a> (post/'s
+"See all posts") that a page rule would otherwise make a block */
+.slot-retry {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font: inherit;
+  font-weight: 600;
+  min-height: 44px;
+  min-width: 44px;
+  padding: 0 18px;
+  color: var(--fleet-ink);
+  background: var(--fleet-surface);
+  border: 1px solid var(--fleet-ink);
+  border-radius: 22px;
+  cursor: pointer;
+}
+
+.slot-retry:hover {
+  background: var(--fleet-line);
+}
+
+.slot-retry:focus-visible {
+  outline: 2px solid var(--fleet-ink);
+  outline-offset: 2px;
+}
+
+/* The banner is always yellow, so its Retry keeps a black ring */
+#retry:focus-visible {
+  outline: 2px solid #000000;
+  outline-offset: 2px;
+}
+
+/* A Loading status takes focus only to hold the keyboard's place during a
+retry; it is not a control, so it draws no ring */
+html body .slot-status[tabindex="-1"]:focus {
+  outline: none;
+}
+
+.is-busy {
+  cursor: progress !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .slot-spinner {
+    animation-duration: 2.4s;
+  }
 }
 
 #header-container {
@@ -194,4 +321,12 @@ html body .fleet-panel {
 html body .fleet-panel ul {
   margin: 0;
   padding: 0;
+}
+
+/* The banner's Retry is a 44px target where fingers press it */
+@media (pointer: coarse), (max-width: 600px) {
+  #retry {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }

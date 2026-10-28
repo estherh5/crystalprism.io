@@ -31,17 +31,21 @@ a:hover, button:hover {
   opacity: 1;
 }
 
-a:focus, button:focus {
-  outline: none;
-}
 
 .hidden {
   height: 0px;
 }
 
 #audio-container {
-  height: 30px;
-  width: 30px;
+  height: 44px;
+  width: 44px;
+  margin: -7px 0px; /* the 44px target keeps the 30px icon where it was */
+  padding: 0px;
+  border: 0px;
+  border-radius: 0px;
+  background: none;
+  display: grid;
+  place-items: center;
   -webkit-align-self: center;
   -ms-flex-item-align: center;
   -ms-grid-row-align: center;
@@ -50,12 +54,22 @@ a:focus, button:focus {
 }
 
 #audio-icon {
+  width: 30px;
+  height: 30px;
   opacity: 0.5;
   cursor: pointer;
 }
 
-#audio-icon:hover {
+#audio-container:hover #audio-icon, #audio-container:focus-visible #audio-icon {
   opacity: 1;
+}
+
+/* The hidden player stays out of the button's layout */
+#audio-player, #audio-container iframe {
+  position: absolute;
+  width: 0px;
+  height: 0px;
+  border: 0px;
 }
 
 #container {
@@ -86,6 +100,13 @@ a:focus, button:focus {
   position: absolute;
   top: 5px;
   z-index: 2;
+}
+
+/* Restart and End: 44px targets, the same pill */
+#controls button {
+  min-height: 44px;
+  min-width: 64px;
+  font-size: 18px;
 }
 
 button {
@@ -129,7 +150,15 @@ button:disabled {
   bottom: 0px;
   left: 0px;
   right: 0px;
+  border: 2px solid #000000; /* the card it had as a <button> */
   border-radius: 20px;
+  background-color: #b9b9b9ad;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: 'Bangers', cursive;
+  font-size: 15px;
+  color: #000000;
+  text-align: center;
   display: -webkit-box;
   display: -webkit-flex;
   display: -ms-flexbox;
@@ -227,4 +256,58 @@ table a {
 footer had (token defaults in common.css) */
 :root {
   --fleet-muted: #000000;
+}
+
+/* Keyboard focus: every control shows a ring (the fleet kit draws its own) */
+body :focus-visible:not([class*="fleet-"]) {
+  outline: 2px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Start / play again is a real button now, in the controls' pill */
+.start.start {
+  width: auto;
+  min-height: 44px;
+  padding: 4px 18px;
+}
+
+.start.hidden {
+  display: none;
+}
+
+#leaders-slot {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* On the light game card: dark status text, 4.5:1 or more */
+#game-screen .slot-status {
+  color: #000000;
+}
+
+#score-status {
+  margin: 16px 0 0;
+  font-family: 'Bangers', cursive;
+  font-size: 18px;
+  color: #000000;
+  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+#score-status:empty {
+  display: none;
+}
+
+#score-status a {
+  color: #000000;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
 }

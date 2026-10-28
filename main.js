@@ -24,6 +24,23 @@ var aboutSVGsLoaded = false;
 var parentSections = document.getElementsByClassName('expand-parent');
 var childSections = document.getElementsByClassName('expand-child');
 var sectionDetails = document.getElementsByClassName('subsection-details');
+var modalOpener = null; // Element that opened the current modal (gets focus back on close)
+var navFocusPending = false; // Keyboard opened a page from the splash menu
+
+
+/* Enter/Space on an element given role="button" runs its click handler, as
+they would on a real button */
+function activateOnKey(element) {
+  element.addEventListener('keydown', function(e) {
+    if (e.target == element && (e.key == 'Enter' || e.key == ' ')) {
+      e.preventDefault();
+      element.click();
+    }
+    return;
+  }, false);
+
+  return;
+}
 
 
 // Define load functions
@@ -36,6 +53,7 @@ window.onload = function() {
   // Otherwise, load splash page
   else {
     document.getElementById('splash-page').classList.remove('hidden');
+    document.getElementById('splash-page').removeAttribute('inert');
   }
 
   // Create page header (from common.js script)
@@ -82,6 +100,7 @@ function retryFunctions() {
 /* Set page theme to night view or Day View when page is loaded or theme button
 is clicked */
 themeContainer.onclick = setTheme;
+activateOnKey(themeContainer);
 
 function setTheme() {
   // Change view to opposite of current view if theme button is clicked
@@ -127,6 +146,7 @@ function addNightView() {
   // Set sky icon to a sun shape for day view setting
   skyIcon.classList.remove('ion-ios-moon-outline');
   skyIcon.classList.add('ion-ios-sunny');
+  themeContainer.setAttribute('aria-pressed', 'true');
   sessionStorage.setItem('theme', 'night');
 
   return;
@@ -140,6 +160,7 @@ function removeNightView() {
   // Set sky icon to a moon shape for night view setting
   skyIcon.classList.remove('ion-ios-sunny');
   skyIcon.classList.add('ion-ios-moon-outline');
+  themeContainer.setAttribute('aria-pressed', 'false');
   sessionStorage.setItem('theme', 'day');
 
   return;
@@ -174,6 +195,25 @@ for (var i = 0; i < navCircles.length; i++) {
   }, false);
 }
 
+/* The splash circles are SVG links (Enter follows them); Space opens the page
+too, as it would on a button */
+var navLinks = document.getElementsByClassName('nav-link');
+for (var i = 0; i < navLinks.length; i++) {
+  navLinks[i].addEventListener('keydown', function(e) {
+    /* Following a fragment link drops focus to the body, so remember that
+    the keyboard asked for this page and hand focus to its nav button */
+    if (e.key == 'Enter' || e.key == ' ') {
+      navFocusPending = true;
+    }
+
+    if (e.key == ' ') {
+      e.preventDefault();
+      window.location.hash = this.getAttribute('href').split('#')[1];
+    }
+    return;
+  }, false);
+}
+
 
 /* Display requested page when window's URL hash changes (when navigating pages
 in SPA) */
@@ -199,7 +239,12 @@ function togglePage() {
 
     // Only run navigation function once, after first transition
     if (transitions == 1) {
+      // Keyboard focus inside the page being hidden moves to the new page's nav
+      var focusWasInPage = navFocusPending || previousPage
+        .contains(document.activeElement);
+      navFocusPending = false;
       previousPage.classList.add('hidden');
+      previousPage.setAttribute('inert', '');
 
       // Unhide page header if navigating away from splash page
       if (selectedPage.id == 'splash-page') {
@@ -220,6 +265,7 @@ function togglePage() {
       }
 
       selectedPage.classList.remove('hidden');
+      selectedPage.removeAttribute('inert');
       selectedPage.classList.remove('fade');
 
       /* Load videos to Projects page if user toggles to this page and they
@@ -264,6 +310,7 @@ function togglePage() {
 
       // Remove bold/color style of button for the previous page
       selectedButton.classList.remove('selected');
+      selectedButton.removeAttribute('aria-current');
 
       // Set button for the requested page based on URL hash
       if (window.location.hash) {
@@ -277,6 +324,12 @@ function togglePage() {
 
       // Add bold/color style of button for the requested page
       selectedButton.classList.add('selected');
+      if (selectedPage.id != 'splash-page') {
+        selectedButton.setAttribute('aria-current', 'page');
+        if (focusWasInPage) {
+          selectedButton.focus();
+        }
+      }
 
       // Set previous page as currently selected page for future toggling
       previousPage = selectedPage;
@@ -317,9 +370,32 @@ for (var i = 0; i < projects.length; i++) {
   }, false);
 }
 
+/* Name each project overview's heading so the open dialog can be labelled by
+the project it shows */
+for (var i = 0; i < projectOverviews.length; i++) {
+  projectOverviews[i].getElementsByTagName('h2')[0].id = projectOverviews[i]
+    .id + '-title';
+}
+
+function labelProjectModal() {
+  // Each project starts from its top
+  document.getElementById('project-modal-body').scrollTop = 0;
+
+  var open = document.querySelector('.project-overview.open');
+  if (open) {
+    document.getElementById('project-modal-background')
+      .setAttribute('aria-labelledby', open.id + '-title');
+  }
+  return;
+}
+
 /* Open modal of passed type (e.g., 'project', 'photo') based on item (e.g.,
 project on Projects page) clicked */
 function openModal(item, type) {
+  // Focus returns to the item that opened the modal when it closes
+  modalOpener = item;
+  document.getElementById(type + '-modal-background').removeAttribute('inert');
+
   // Add grayscale style to elements behind modal
   document.getElementById('front-page-link').classList.add('grayscale');
   document.getElementById('nav-buttons').classList.add('grayscale');
@@ -351,14 +427,29 @@ function openModal(item, type) {
     item.dataset.displayed = 'true';
   }
 
+  if (type == 'project') {
+    labelProjectModal();
+  }
+
+  // Move focus into the dialog
+  document.getElementById(type + '-close').focus();
+
   return;
 }
 
 
 /* Display next/previous project in project modal when next/previous buttons
 are clicked */
-document.getElementById('project-next').onclick = toggleProject;
-document.getElementById('project-previous').onclick = toggleProject;
+document.getElementById('project-next').onclick = function() {
+  toggleProject.call(this);
+  labelProjectModal();
+  return;
+};
+document.getElementById('project-previous').onclick = function() {
+  toggleProject.call(this);
+  labelProjectModal();
+  return;
+};
 
 function toggleProject() {
   // Get index of and hide project currently being displayed
@@ -415,6 +506,16 @@ function toggleProject() {
 // Toggle video play/pause state when video is clicked in modal
 for (var i = 0; i < videoContainers.length; i++) {
   videoContainers[i].addEventListener('click', toggleVideo, false);
+
+  // Reachable and operable by keyboard, named for its project
+  videoContainers[i].setAttribute('role', 'button');
+  videoContainers[i].tabIndex = 0;
+  videoContainers[i].setAttribute('aria-label', 'Play or pause the ' +
+    videoContainers[i].parentNode.getElementsByTagName('h2')[0].textContent +
+    ' demo video');
+  document.getElementById(videoContainers[i].dataset.project + '-control')
+    .setAttribute('aria-hidden', 'true');
+  activateOnKey(videoContainers[i]);
 }
 
 function toggleVideo() {
@@ -568,6 +669,14 @@ function closeModal(type) {
   document.getElementById(type + '-modal-body').classList.remove('open');
   document.getElementById(type + '-modal-background').classList.remove('open');
 
+  /* Take the closed modal out of the tab order and accessibility tree, and
+  return focus to the item that opened it */
+  document.getElementById(type + '-modal-background').setAttribute('inert', '');
+  if (modalOpener) {
+    modalOpener.focus();
+    modalOpener = null;
+  }
+
   // Hide modal from screen after fade out
   document.getElementById(type + '-modal-background')
     .addEventListener('transitionend', function hideModal() {
@@ -584,10 +693,58 @@ function closeModal(type) {
 }
 
 
+/* Keep Tab inside an open modal: wrap from its last focusable control to its
+first and back */
+function trapFocus(modal, e) {
+  var candidates = modal.querySelectorAll('a[href], button, [tabindex="0"]');
+  var items = [];
+  for (var i = 0; i < candidates.length; i++) {
+    var item = candidates[i];
+    if (item.closest('.project-overview:not(.open)') || item.getClientRects()
+      .length == 0 || getComputedStyle(item).visibility == 'hidden') {
+        continue;
+      }
+    items.push(item);
+  }
+
+  if (items.length == 0) {
+    e.preventDefault();
+    return;
+  }
+
+  var first = items[0];
+  var last = items[items.length - 1];
+  var inside = items.indexOf(document.activeElement) != -1;
+
+  if (e.shiftKey && (document.activeElement == first || !inside)) {
+    e.preventDefault();
+    last.focus();
+  }
+  else if (!e.shiftKey && (document.activeElement == last || !inside)) {
+    e.preventDefault();
+    first.focus();
+  }
+
+  return;
+}
+
 // Define keyboard shortcuts for modal controls
 window.addEventListener('keydown', function(e) {
   for (var i = 0; i < document.getElementsByClassName('modal-background')
     .length; i++) {
+      if (document.getElementsByClassName('modal-background')[i].classList
+        .contains('open') && e.key == 'Tab') {
+          trapFocus(document.getElementsByClassName('modal-background')[i], e);
+          return;
+        }
+
+      /* Space on a focused control presses that control; the modal's own
+      Space shortcut is for when nothing in it is focused */
+      if (e.keyCode == 32 && e.target.closest &&
+        e.target.closest('a, button, [role="button"]')) {
+          return;
+        }
+
       // Click next button when modal is open and right arrow is clicked
       if (document.getElementsByClassName('modal-background')[i].classList
         .contains('open') && e.key == 'ArrowRight') {
@@ -648,22 +805,105 @@ window.addEventListener('keydown', function(e) {
 
 // Load photos from Amazon S3 bucket
 function loadPhotos() {
-  return fetch(api + '/homepage/photos?start=' + photoRequestStart + '&end=' +
-    photoRequestEnd)
+  var slot = document.getElementById('photos-page');
+  var serverReached = false;
 
-      /* Display error message if server is down and error isn't already
-      displayed (i.e., prevent multiple errors when scrolling to load more
-      photos) */
+  // Remove an earlier "no photos" message before asking again
+  if (photosError && photosError.parentNode == slot) {
+    slot.removeChild(photosError);
+  }
+
+  /* Hold infinite scroll until this request settles, so scrolling doesn't
+  send the same range twice */
+  morePhotosToDisplay = false;
+
+  // Show the request in the Photos page from the first frame
+  slotLoading(slot, 'Loading photos…');
+
+  return fetchWithTimeout(api + '/homepage/photos?start=' +
+    photoRequestStart + '&end=' + photoRequestEnd)
+
+      .then(function(response) {
+        serverReached = true;
+
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (!response.ok) {
+          throw new Error('Photos request failed: ' + response.status);
+        }
+
+        return response.json();
+      })
+
+      // Display photos in gallery if server responds without error
+      .then(function(photos) {
+        clearSlotStatus(slot);
+
+        if (photos.length != 0) {
+          /* Assess if there are more than requested photos - 1 (number of
+          photos that will be displayed) on server */
+          if (photos.length > (photoRequestEnd - photoRequestStart - 1)) {
+            morePhotosToDisplay = true;
+            var loadNumber = photoRequestEnd - photoRequestStart - 1;
+          }
+
+          // If there are not, load all photos sent from server
+          else {
+            morePhotosToDisplay = false;
+            var loadNumber = photos.length;
+          }
+
+          displayPhotos(photos.slice(0, loadNumber));
+
+          /* Remove locally stored photos if this is the initial request to
+          replace with latest photos from server */
+          if (photoRequestStart == 0) {
+            localStorage.removeItem('homepage-photos');
+            var localPhotos = [];
+          }
+
+          // Otherwise, get locally stored photos list
+          else {
+            var localPhotos = JSON.parse(localStorage
+              .getItem('homepage-photos')) || [];
+          }
+
+          /* Add each photo to locally stored photos list based on
+          photoRequestStart and photoRequestEnd values */
+          for (var i = 0; i < photos.length; i++) {
+            localPhotos[photoRequestStart + i] = photos[i];
+          }
+
+          // Store photos in localStorage for offline loading
+          localStorage.setItem('homepage-photos', JSON
+            .stringify(localPhotos));
+        }
+
+        // Display message if no photos are sent from server on initial load
+        else if (photoRequestStart == 0) {
+          photosError = document.createElement('text');
+          photosError.id = 'photos-error';
+          photosError.textContent = 'There are no photos right now.';
+          slot.appendChild(photosError);
+        }
+
+        return;
+      })
+
       .catch(function(error) {
         // Add server down banner to page (from common.js script)
-        pingServer(retryFunctions);
+        if (!serverReached) {
+          pingServer(retryFunctions);
+        }
 
         // Display cached photos if they are stored in localStorage
         if (localStorage.getItem('homepage-photos')) {
+          clearSlotStatus(slot);
           var photos = JSON.parse(localStorage.getItem('homepage-photos'));
 
-          /* Assess if there are more than requested photos - 1 (number
-          of photos that will be displayed) */
+          /* Assess if there are more than requested photos - 1 (number of
+          photos that will be displayed) */
           if (photos.length > (photoRequestEnd - 1)) {
             morePhotosToDisplay = true;
             var loadNumber = photoRequestEnd - 1;
@@ -676,107 +916,13 @@ function loadPhotos() {
           }
 
           displayPhotos(photos.slice(photoRequestStart, loadNumber));
+          return;
         }
 
-        else if (!photosError || photosError.parentNode != document
-          .getElementById('photos-page')) {
-            photosError = document.createElement('text');
-            photosError.id = 'photos-error';
-            photosError.innerHTML = 'There was an error loading the photos. ' +
-              'Please refresh the page.';
-            document.getElementById('photos-page').appendChild(photosError);
-          }
+        // Otherwise say so in the Photos page, with a Retry for this request
+        slotFailure(slot, 'The photos could not be loaded.', loadPhotos);
 
         return;
-      })
-
-      .then(function(response) {
-        if (response) {
-          // Remove server down banner from page (from common.js script)
-          pingServer();
-
-          // Display drawings in gallery if server responds without error
-          if (response.ok) {
-            response.json().then(function(photos) {
-              if (photos.length != 0) {
-
-                // Remove error message from Photos page if it is displayed
-                if (photosError && photosError.parentNode == document
-                  .getElementById('photos-page')) {
-                    document.getElementById('photos-page')
-                      .removeChild(photosError);
-                  }
-
-                /* Assess if there are more than requested photos - 1 (number
-                of photos that will be displayed) on server */
-                if (photos.length > (photoRequestEnd - photoRequestStart -
-                  1)) {
-                    morePhotosToDisplay = true;
-                    var loadNumber = photoRequestEnd - photoRequestStart - 1;
-                  }
-
-                // If there are not, load all photos sent from server
-                else {
-                  morePhotosToDisplay = false;
-                  var loadNumber = photos.length;
-                }
-
-                displayPhotos(photos.slice(0, loadNumber));
-
-                /* Remove locally stored photos if this is the initial request
-                to replace with latest photos from server */
-                if (photoRequestStart == 0) {
-                  localStorage.removeItem('homepage-photos');
-                  var localPhotos = [];
-                }
-
-                // Otherwise, get locally stored photos list
-                else {
-                  var localPhotos = JSON.parse(localStorage
-                    .getItem('homepage-photos'));
-                }
-
-                /* Add each photo to locally stored photos list based on
-                photoRequestStart and photoRequestEnd values */
-                for (var i = 0; i < photos.length; i++) {
-                  localPhotos[photoRequestStart + i] = photos[i];
-                }
-
-                // Store photos in localStorage for offline loading
-                localStorage.setItem('homepage-photos', JSON
-                  .stringify(localPhotos));
-              }
-
-              /* Display message if no photos are sent from server on initial
-              load */
-              else {
-                if (photoRequestStart == 0 && (!photosError || photosError
-                  .parentNode != document.getElementById('photos-page'))) {
-                    photosError = document.createElement('text');
-                    photosError.id = 'photos-error';
-                    photosError.innerHTML = 'There are no photos right now. ' +
-                      'Please check later.';
-                    document.getElementById('photos-page')
-                      .appendChild(photosError);
-                    return;
-                  }
-              }
-            });
-
-            return;
-          }
-
-          // Display error message if server returned error
-          if (!photosError || photosError.parentNode != document
-            .getElementById('photos-page')) {
-              photosError = document.createElement('text');
-              photosError.id = 'photos-error';
-              photosError.innerHTML = 'There was an error loading the ' +
-                'photos. Please refresh the page.';
-              document.getElementById('photos-page').appendChild(photosError);
-              return;
-            }
-        }
       });
 }
 
@@ -787,13 +933,15 @@ function displayPhotos(photos) {
     if (photos[i].includes('thumb')) {
       // Create containers for photo
       var photoContainer = document.createElement('li');
-      var photoListing = document.createElement('div');
+      var photoListing = document.createElement('button');
+      photoListing.type = 'button';
       photoListing.classList.add('photo-listing');
       photoListing.dataset.displayed = 'false';
 
       // Add photo to Photos page
       var photo = document.createElement('img');
       photo.classList.add('photo');
+      photo.alt = 'Photo';
       photo.src = photos[i];
       photoContainer.appendChild(photoListing);
       photoListing.appendChild(photo);
@@ -814,18 +962,100 @@ function displayPhotos(photos) {
 
 // Load Thought Writer posts written by webpage owner
 function loadPosts() {
-  return fetch(api + '/homepage/ideas?start=' + postRequestStart + '&end=' +
-    postRequestEnd)
+  var slot = document.getElementById('ideas-page');
+  var serverReached = false;
 
-      /* Display error message if server is down and error isn't already
-      displayed (i.e., prevent multiple errors when scrolling to load more
-      posts) */
+  // Remove an earlier "no posts" message before asking again
+  if (postsError && postsError.parentNode == slot) {
+    slot.removeChild(postsError);
+  }
+
+  /* Hold infinite scroll until this request settles, so scrolling doesn't
+  send the same range twice */
+  morePostsToDisplay = false;
+
+  // Show the request in the Ideas page from the first frame
+  slotLoading(slot, 'Loading posts…');
+
+  return fetchWithTimeout(api + '/homepage/ideas?start=' + postRequestStart +
+    '&end=' + postRequestEnd)
+
+      .then(function(response) {
+        serverReached = true;
+
+        // Remove server down banner from page (from common.js script)
+        pingServer();
+
+        if (!response.ok) {
+          throw new Error('Ideas request failed: ' + response.status);
+        }
+
+        return response.json();
+      })
+
+      // Display posts if server responds without error
+      .then(function(posts) {
+        clearSlotStatus(slot);
+
+        if (posts.length != 0) {
+          /* Assess if there are more than requested posts - 1 (number of
+          loaded posts) on server */
+          if (posts.length > (postRequestEnd - postRequestStart - 1)) {
+            morePostsToDisplay = true;
+            var loadNumber = postRequestEnd - postRequestStart - 1;
+          }
+
+          // If there are not, load all posts sent from server
+          else {
+            morePostsToDisplay = false;
+            var loadNumber = posts.length;
+          }
+
+          displayPosts(posts.slice(0, loadNumber));
+
+          /* Remove locally stored posts if this is the initial request to
+          replace with latest posts from server */
+          if (postRequestStart == 0) {
+            localStorage.removeItem('homepage-ideas');
+            var localPosts = [];
+          }
+
+          // Otherwise, get locally stored posts list
+          else {
+            var localPosts = JSON.parse(localStorage
+              .getItem('homepage-ideas')) || [];
+          }
+
+          /* Add each post to locally stored posts list based on
+          postRequestStart and postRequestEnd values */
+          for (var i = 0; i < posts.length; i++) {
+            localPosts[postRequestStart + i] = posts[i];
+          }
+
+          // Store posts in localStorage for offline loading
+          localStorage.setItem('homepage-ideas', JSON.stringify(localPosts));
+        }
+
+        // Display message if no posts are sent from server on initial load
+        else if (postRequestStart == 0) {
+          postsError = document.createElement('text');
+          postsError.id = 'posts-error';
+          postsError.textContent = 'There are no posts right now.';
+          slot.appendChild(postsError);
+        }
+
+        return;
+      })
+
       .catch(function(error) {
         // Add server down banner to page (from common.js script)
-        pingServer(retryFunctions);
+        if (!serverReached) {
+          pingServer(retryFunctions);
+        }
 
         // Display cached posts if they are stored in localStorage
         if (localStorage.getItem('homepage-ideas')) {
+          clearSlotStatus(slot);
           var posts = JSON.parse(localStorage.getItem('homepage-ideas'));
 
           /* Assess if there are more than requested posts - 1 (number of
@@ -842,106 +1072,13 @@ function loadPosts() {
           }
 
           displayPosts(posts.slice(postRequestStart, loadNumber));
+          return;
         }
 
-        else if (!postsError || postsError.parentNode != document
-          .getElementById('ideas-page')) {
-            postsError = document.createElement('text');
-            postsError.id = 'posts-error';
-            postsError.innerHTML = 'There was an error loading the Ideas ' +
-              'posts. Please refresh the page.';
-            document.getElementById('ideas-page').appendChild(postsError);
-          }
+        // Otherwise say so in the Ideas page, with a Retry for this request
+        slotFailure(slot, 'The posts could not be loaded.', loadPosts);
 
         return;
-      })
-
-      .then(function(response) {
-        if (response) {
-          // Remove server down banner from page (from common.js script)
-          pingServer();
-
-          // Display posts if server responds without error
-          if (response.ok) {
-            response.json().then(function(posts) {
-              if (posts.length != 0) {
-
-                // Remove error message from Ideas page if it is displayed
-                if (postsError && postsError.parentNode == document
-                  .getElementById('ideas-page')) {
-                    document.getElementById('ideas-page')
-                      .removeChild(postsError);
-                  }
-
-                /* Assess if there are more than requested posts - 1 (number of
-                loaded posts) on server */
-                if (posts.length > (postRequestEnd - postRequestStart - 1)) {
-                  morePostsToDisplay = true;
-                  var loadNumber = postRequestEnd - postRequestStart - 1;
-                }
-
-                // If there are not, load all posts sent from server
-                else {
-                  morePostsToDisplay = false;
-                  var loadNumber = posts.length;
-                }
-
-                displayPosts(posts.slice(0, loadNumber));
-
-                /* Remove locally stored posts if this is the initial request
-                to replace with latest posts from server */
-                if (postRequestStart == 0) {
-                  localStorage.removeItem('homepage-ideas');
-                  var localPosts = [];
-                }
-
-                // Otherwise, get locally stored posts list
-                else {
-                  var localPosts = JSON.parse(localStorage
-                    .getItem('homepage-ideas'));
-                }
-
-                /* Add each post to locally stored posts list based on
-                postRequestStart and postRequestEnd values */
-                for (var i = 0; i < posts.length; i++) {
-                  localPosts[postRequestStart + i] = posts[i];
-                }
-
-                // Store posts in localStorage for offline loading
-                localStorage.setItem('homepage-ideas', JSON
-                  .stringify(localPosts));
-              }
-
-              /* Display message if no posts are sent from server on initial
-              load */
-              else {
-                if (postRequestStart == 0 && (!postsError || postsError
-                  .parentNode != document.getElementById('ideas-page'))) {
-                    postsError = document.createElement('text');
-                    postsError.id = 'posts-error';
-                    postsError.innerHTML = 'There are no posts right now. ' +
-                      'Please check later.';
-                    document.getElementById('ideas-page')
-                      .appendChild(postsError);
-                    return;
-                  }
-              }
-            });
-
-            return;
-          }
-
-          // Display error message if server returned error
-          if (!postsError || postsError.parentNode != document
-            .getElementById('ideas-page')) {
-              postsError = document.createElement('text');
-              postsError.id = 'posts-error';
-              postsError.innerHTML = 'There was an error loading the Ideas ' +
-                'posts. Please refresh the page.';
-              document.getElementById('ideas-page').appendChild(postsError);
-              return;
-            }
-        }
       });
 }
 
@@ -1099,10 +1236,22 @@ function requestMorePosts() {
 on About page */
 for (var i = 0; i < parentSections.length; i++) {
   parentSections[i].addEventListener('click', toggleSection, false);
+  parentSections[i].addEventListener('click', syncExpandedState, false);
+  activateOnKey(parentSections[i]);
 }
 
 for (var i = 0; i < childSections.length; i++) {
   childSections[i].addEventListener('click', toggleSection, false);
+  childSections[i].addEventListener('click', syncExpandedState, false);
+}
+
+// Mirror each Expand All control's state into aria-expanded
+function syncExpandedState() {
+  for (var i = 0; i < parentSections.length; i++) {
+    parentSections[i].setAttribute('aria-expanded',
+      parentSections[i].dataset.expanded == 'true' ? 'true' : 'false');
+  }
+  return;
 }
 
 function toggleSection() {

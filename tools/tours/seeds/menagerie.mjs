@@ -5,7 +5,9 @@
 // ~/Developer/menagerie/public/uploads/photos/demo-*.jpg (gitignored there).
 import { createClient } from '@libsql/client';
 import { chromium } from 'playwright';
-import { mkdir } from 'node:fs/promises';
+import { copyFile, mkdir } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { fileURLToPath } from 'node:url';
 import os from 'node:os';
 import path from 'node:path';
 
@@ -16,6 +18,20 @@ const OUT = path.join(os.homedir(), 'Developer/menagerie/public/uploads/photos')
 await mkdir(OUT, { recursive: true });
 
 const OWNER = 'demo@crystalprism.io';
+const PERSONALITY = 'Invented for this demo. Loves naps in sunny windows.';
+// Real Gemini clips (the app's own model and prompt), made once on 2026-11-02 from the
+// drawings below, so the tour shows a card coming to life. Committed beside this seed:
+// regenerating costs ~41c each. Keyed by animal index; ids are v4 uuids like the app's.
+const CLIPS = {
+  0: '0f3c2a1e-6b7d-4c58-9a21-5d4e8f7a1b01',
+  5: '0f3c2a1e-6b7d-4c58-9a21-5d4e8f7a1b06',
+};
+const CLIP_SRC = fileURLToPath(new URL('./menagerie-clips/', import.meta.url));
+const CLIP_OUT = path.join(os.homedir(), 'Developer/menagerie/public/uploads/clips');
+await mkdir(CLIP_OUT, { recursive: true });
+// lib/clip-prompt.ts#clipSourceHash for default framing, no likes, no note: a matching hash
+// keeps the clip current, so nothing on the edit page offers to remake it.
+const sourceHash = (photoId) => createHash('sha256').update(JSON.stringify([photoId, 0, 1, 0, 0, PERSONALITY, '', ''])).digest('hex');
 // name, nicknames, species, maker, year, card ink, frame ink, body colour, ground, kind
 const ANIMALS = [
   ['Juniper', 'Juju', 'Bear', 'Jellycat', 2021, 'sun', 'keyline', '#b07a4f', '#f4e3c3', 'bear'],
@@ -70,12 +86,22 @@ for (const [i, a] of ANIMALS.entries()) {
     sql: `insert into animals (id, slug, name, nicknames, species, maker, acquired_year, card_ink, frame_ink,
       portrait_photo_id, personality, created_by, created_at, updated_at) values (?,?,?,?,?,?,?,?,?,?,?,?,?,?)`,
     args: [id, slug, name, nicknames, species, maker, year, cardInk, frameInk, photoId,
-      'Invented for this demo. Loves naps in sunny windows.', OWNER, now - i * day, now - i * day],
+      PERSONALITY, OWNER, now - i * day, now - i * day],
   });
   await db.execute({
     sql: 'insert into tags (id, photo_id, animal_id, x, y, created_by) values (?,?,?,?,?,?)',
     args: [`demo-tag-${i}`, photoId, id, 0.5, 0.55, OWNER],
   });
+  const clipId = CLIPS[i];
+  if (clipId) {
+    for (const ext of ['mp4', 'jpg']) await copyFile(path.join(CLIP_SRC, `${clipId}.${ext}`), path.join(CLIP_OUT, `${clipId}.${ext}`));
+    await db.execute({
+      sql: `insert into clips (id, animal_id, status, photo_id, video_key, poster_key, prompt, source_hash, attempt,
+        requested_by, created_at, finished_at) values (?,?,?,?,?,?,?,?,?,?,?,?)`,
+      args: [clipId, id, 'ready', photoId, `clips/${clipId}.mp4`, `clips/${clipId}.jpg`, `(demo) ${name}`, sourceHash(photoId), 1, OWNER, now - i * day, now - i * day],
+    });
+    await db.execute({ sql: 'update animals set clip_id = ? where id = ?', args: [clipId, id] });
+  }
 }
 // One untagged photo, so the roster shows the untagged link.
 await render(ANIMALS[1], 'demo-untagged.jpg', 1200);
@@ -90,4 +116,4 @@ await browser.close();
 
 const { rows } = await db.execute("select count(*) as n from photos where full_key not like 'photos/demo-%'");
 if (Number(rows[0].n) !== 0) throw new Error('a photo row points somewhere other than the local demo drawings');
-console.log(`seeded ${ANIMALS.length} invented animals, ${ANIMALS.length + 1} drawn photos, 1 relationship`);
+console.log(`seeded ${ANIMALS.length} invented animals, ${ANIMALS.length + 1} drawn photos, ${Object.keys(CLIPS).length} clips, 1 relationship`);

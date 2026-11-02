@@ -327,6 +327,20 @@ reads like a broken cookie rather than a wrong address.
 With `R2_PUBLIC_BASE` empty the drawings are served from the app's own
 `public/uploads/photos/`, which is gitignored in menagerie.
 
+Juniper and Octavia have real clips: Gemini output from their drawings, made
+once (2026-11-02, ~41c each) and committed in `seeds/menagerie-clips/`. The seed
+copies them to `public/uploads/clips/` and writes ready `clips` rows with the
+app's own source hash, so nothing offers to remake them. Never regenerate them
+by running `scripts/photo-scan.mts --clips-only` against the demo: it loads
+`.env.scan.local`, whose R2 credentials are production. `capture-tile.mjs`
+hovers a clip card (`hover`/`hoverMs`) so the tile catches Juniper mid-blink, and
+the tour is budgeted to `run.mjs`'s hard 15s cut — add a beat and the photo
+pins fall off the end.
+
+Building in `~/Developer/menagerie` itself works, but a `git archive HEAD` copy
+with `cp -cR node_modules` keeps its `.next` untouched; copy
+`public/uploads/{photos,clips}` into the copy after seeding.
+
 Pins reveal on HOVER (`onMouseEnter`), so the tour glides onto `.photo-frame`
 and holds — it must not click, because on a hover-capable device the click
 toggles the reveal straight back off.

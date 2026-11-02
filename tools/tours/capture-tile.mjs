@@ -139,6 +139,10 @@ const APPS = {
     // 1024 is the first width where the Roster runs 4 columns: the crown, the headline,
     // the chip rail and a full row of cards fit the 458x376 frame.
     cssWidth: 1024,
+    // A card with a clip, caught mid-blink (the clips are ~4s; the eyes close
+    // around 1.5s in), so the tile shows the wall coming to life, not a poster.
+    hover: '.roster-grid .card:has(video[data-clip-src])',
+    hoverMs: 1500,
   },
   toile: {
     dir: 'Developer/toile', appPort: 3320, proxyPort: 3321,
@@ -237,6 +241,13 @@ if (cfg.scrollY) {
   await new Promise((r) => setTimeout(r, 400));
 }
 await new Promise((r) => setTimeout(r, 1200));
+// An app may set `hover` to rest the pointer on an element before the shot, and
+// `hoverMs` to wait that long after: menagerie's wall plays a card's clip on
+// hover, so the tile catches a frame from the middle of it, not the poster.
+if (cfg.hover) {
+  await page.hover(cfg.hover);
+  await new Promise((r) => setTimeout(r, cfg.hoverMs ?? 1000));
+}
 await page.screenshot({ path: raw });
 
 await browser.close();

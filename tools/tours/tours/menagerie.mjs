@@ -37,20 +37,19 @@ export default async function run() {
         });
         // The roster wall is the thumbnail: a patchwork of inks.
         await page.waitForSelector('.roster-grid .card img');
-        await beat(1800);
-        await glideTo(page, '.chip-rail .chip:nth-child(2)', { click: true });
-        await beat(1200);
-        await glideTo(page, '.chip-rail .chip:first-child', { click: true });
-        await beat(600);
-        await glideScroll(page, 360);
-        await beat(700);
-        // A profile: the card as a header, the character sheet, the photos.
-        await glideTo(page, '.roster-grid li:first-child .card', { click: true });
+        await beat(1000);
+        // Rest on a card that has a clip: hover plays it, one card at a time.
+        // run.mjs cuts at 15s, so the beats are budgeted: one full ~4s loop here,
+        // the blink (~1.5s in) on the profile, then the pins.
+        await glideTo(page, '.roster-grid .card:has(video[data-clip-src])');
+        await beat(3600);
+        // A profile with a clip: the card as a header (playing), the character sheet, the photos.
+        await glideTo(page, '.roster-grid li:has(video[data-clip-src]) .card', { click: true });
         await page.waitForURL(/\/a\//, { timeout: 10000 });
-        await page.waitForSelector('.card-hero img');
-        await beat(1500);
+        await page.waitForSelector('.card-hero video');
+        await beat(2400);
         await glideScroll(page, 420);
-        await beat(900);
+        await beat(500);
         // A photo, pins revealed by a tap.
         await glideTo(page, '.photo-grid li:first-child a', { click: true });
         await page.waitForURL(/\/p\//, { timeout: 10000 });
@@ -58,9 +57,7 @@ export default async function run() {
         // Hover reveals the pins; a CLICK would toggle them straight back off on a
         // hover-capable device, which is the whole point of the reveal.
         await glideTo(page, '.photo-frame');
-        await beat(2600);
-        await glideScroll(page, 340);
-        await beat(1300);
+        await beat(3000);
         if (offbox > 0) throw new Error(`${offbox} off-box request(s) attempted — the demo must stay local.`);
       },
     });

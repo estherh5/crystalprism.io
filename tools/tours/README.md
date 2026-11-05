@@ -97,9 +97,9 @@ TURSO_DATABASE_URL="file:$(pwd)/demo.db" TURSO_AUTH_TOKEN="" AUTH_TRUST_HOST=tru
 TURSO_DATABASE_URL="file:$(pwd)/demo.db" TURSO_AUTH_TOKEN="" AUTH_TRUST_HOST=true PORT=3250 npm run start
 ```
 
-Note vitals is **not** on the crystalprism SSO ring: its cookie is
-`authjs.session-token` with no `__Secure-` prefix over http, and the token needs
-`role` and `checkedAt` claims.
+vitals is on the crystalprism SSO ring (2026-11), so the default ring cookie
+applies, not `authjs.session-token`. The token needs a `role` claim; the claims
+`capture-tile.mjs`'s `APPS.vitals` mints are the authority.
 
 ### tide
 
@@ -273,8 +273,8 @@ there is no way to invent one, so this is the vantage case and gets vantage's
 answer: genuine clips, invented account. The fifth sample is deliberately not
 seeded; `seeds/glimpse.mjs` says why in its header.
 
-Not on the crystalprism SSO ring, and like flare it therefore uses the plain
-`authjs.session-token` cookie. Its own difference is the gate: `ADMIN_EMAIL` is
+On the crystalprism SSO ring (2026-11), so the default ring cookie applies, not
+`authjs.session-token`. Its own difference is the gate: `ADMIN_EMAIL` is
 the **owner** check, not an admission list, and every screen except `/s/[token]`
 calls `notFound()` for anyone else (`web/lib/admin.ts:isAdminEmail`). So the
 inline `ADMIN_EMAIL` above must equal the address `seeds/glimpse.mjs` writes.

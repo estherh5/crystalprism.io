@@ -144,8 +144,8 @@ const APPS = {
     dir: 'Developer/toile', appPort: 3320, proxyPort: 3321,
     userId: 'demo@crystalprism.io', route: '/', wait: '.home-hero-stage svg',
     // On the crystalprism SSO ring (2026-11): the default ring cookie applies.
-    // ADMIN_EMAIL must equal demo@crystalprism.io; toile keeps no .env.local, so
-    // the server and this script share an AUTH_SECRET exported inline.
+    // ADMIN_EMAIL must equal demo@crystalprism.io. Export the demo AUTH_SECRET
+    // inline for both the server and this script: it wins over toile/.env.local.
     // The cutting table: hero card, four ways in, then Designs / Swatches /
     // Inspiration. Tried 1374, 1180, 1140, 1100, 1024 and 860. Below ~1150 the
     // ways go 2x2 and the columns stack, so the tile ends mid-Swatches with no

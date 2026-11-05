@@ -58,8 +58,7 @@ const APPS = {
     // only as a client-side redirect — capturing it races the redirect against
     // the `wait` selector. Must match the slug seeds/vitals.mjs writes.
     userId: 'demo-user-vitals', route: '/rosemary/labs', wait: 'svg',
-    cookieName: 'authjs.session-token',
-    extraClaims: { role: 'admin', checkedAt: Date.now() },
+    extraClaims: { role: 'admin' },
   },
   tide: {
     dir: 'Developer/tide', appPort: 3260, proxyPort: 3261,
@@ -93,11 +92,9 @@ const APPS = {
   glimpse: {
     dir: 'Developer/glimpse/web', appPort: 3290, proxyPort: 3291,
     userId: 'demo-user-glimpse', route: '/', wait: '.sheet[data-packed="1"]',
-    // Not on the crystalprism SSO ring — same shape as flare: default @auth/core
-    // cookie name, which loses its `__Secure-` prefix over http. The email has to
-    // equal the ADMIN_EMAIL the server was started with, because every screen but
-    // `/s/[token]` is owner-only and 404s anyone else.
-    cookieName: 'authjs.session-token',
+    // On the crystalprism SSO ring (2026-11): the default ring cookie applies. The
+    // email has to equal the ADMIN_EMAIL the server was started with, because every
+    // screen but `/s/[token]` is owner-only and 404s anyone else.
     extraClaims: { 'checkedAt:glimpse': Date.now() },
     // TUNED FOR O2, 2026-09-01. The hero-and-inserts backglass this used to be
     // framed for is gone: the gallery is now a pink-hour sky over a brick
@@ -133,9 +130,8 @@ const APPS = {
   menagerie: {
     dir: 'Developer/menagerie', appPort: 3310, proxyPort: 3311,
     userId: 'demo@crystalprism.io', route: '/', wait: '.roster-grid .card img',
-    // Not on the crystalprism SSO ring: default @auth/core cookie name over http.
+    // On the crystalprism SSO ring (2026-11): the default ring cookie applies.
     // ADMIN_EMAIL must equal demo@crystalprism.io or every page 307s to /login?removed=1.
-    cookieName: 'authjs.session-token',
     // 1024 is the first width where the Roster runs 4 columns: the crown, the headline,
     // the chip rail and a full row of cards fit the 458x376 frame.
     cssWidth: 1024,
@@ -147,10 +143,9 @@ const APPS = {
   toile: {
     dir: 'Developer/toile', appPort: 3320, proxyPort: 3321,
     userId: 'demo@crystalprism.io', route: '/', wait: '.home-hero-stage svg',
-    // Not on the crystalprism SSO ring: default @auth/core cookie name over http.
+    // On the crystalprism SSO ring (2026-11): the default ring cookie applies.
     // ADMIN_EMAIL must equal demo@crystalprism.io; toile keeps no .env.local, so
     // the server and this script share an AUTH_SECRET exported inline.
-    cookieName: 'authjs.session-token',
     // The cutting table: hero card, four ways in, then Designs / Swatches /
     // Inspiration. Tried 1374, 1180, 1140, 1100, 1024 and 860. Below ~1150 the
     // ways go 2x2 and the columns stack, so the tile ends mid-Swatches with no

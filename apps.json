@@ -222,5 +222,13 @@
     "icon": "https://crystalprism.io/images/ration-icon.png",
     "tagline": "A local dashboard for Claude Code weekly quota.",
     "status": "hidden"
+  },
+  {
+    "key": "robey",
+    "name": "Robey",
+    "url": "https://robey.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/robey-icon.png",
+    "tagline": "A control panel for a desk robot companion.",
+    "status": "hidden"
   }
 ]

@@ -376,6 +376,39 @@ thread busy for seconds. So the tour scrolls with one in-page smooth
 `scrollBy` per move instead of `glideScroll`. Queued wheel events crawl, and
 any that land on a map zoom the map instead of scrolling the page.
 
+### yayday
+
+**Every idea is invented.** Esther's lists are private, so `seeds/yayday.mjs`
+writes made-up ideas across the three lists (Little bit of yay, Better me,
+Bucket list), four Did it ✶ memories and a fixed pick for today, so the
+thumbnail is the same sun on every run. Run yayday's OWN migrator to build the
+file; the seed refuses anything but a `file:` DATABASE_URL.
+
+```sh
+cd ~/Developer/yayday
+rm -f demo.db
+DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN= node scripts/migrate.mjs
+DATABASE_URL="file:$(pwd)/demo.db" node ~/Developer/crystalprism.io/tools/tours/seeds/yayday.mjs
+export AUTH_SECRET="$(openssl rand -base64 32)"
+export DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN= ADMIN_EMAIL=demo@crystalprism.io \
+  AUTH_TRUST_HOST=true RING_SERVICE_SECRET= RESEND_API_KEY=
+npx next build && (npx next start -p 3269 & ~/.claude/hooks/dev-servers.sh track $!)
+```
+
+Building in `~/Developer/yayday` is safe: it is Vercel-hosted, with no launchd
+job serving its `.next`. Delete `demo.db` when done.
+
+Items are keyed on `users.id`, which `lib/guard.ts#currentUser` looks up by the
+session's email. The minted session carries a fresh `checkedAt:yayday` (plus
+`signedInAt` and `ringCheckedAt`, so nothing asks auth.crystalprism.io), so
+admission never re-runs and never writes that row itself. The seed writes it.
+Without it, Home renders as a brand-new account: an empty sun and no tallies.
+
+R2 is unset, so the shelf shows its sparkle stubs, not photos. The tour types
+one idea into Add an idea, which writes to `demo.db`; re-seed before a second
+take. The Plausible script is aborted quietly; any other off-box request fails
+the tour.
+
 ### then
 
 ```sh

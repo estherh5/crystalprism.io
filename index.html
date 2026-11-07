@@ -37,6 +37,53 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Yayday overview -->
+      <div id="yayday-overview" class="project-overview">
+        <a class="modal-project-title" href="https://yayday.crystalprism.io/">
+          <img class="project-icon-large" src="images/yayday-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Yayday</h2>
+        </a>
+        <!-- Yayday repo -->
+        <a class="github-repo" href="https://github.com/estherh5/yayday/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Yayday skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-bell"></i><text class="text-small">&nbsp;Web Push</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Cloudflare R2</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Yayday video -->
+        <div class="video-container" data-project="yayday">
+          <video id="yayday-video" type="video/mp4" preload="none" data-project="yayday"></video>
+          <i id="yayday-control" class="fas fa-play"></i>
+        </div>
+        <!-- Yayday description -->
+        <text>
+          <a href="https://yayday.crystalprism.io/">Yayday</a> is a private home for small joys, built around the idea
+          of living as though every day is your birthday. Ideas for things you want in your life tend to show up while
+          you are out walking, so capturing one takes a few words and a tap, sorted into three lists: Little bit of
+          yay for small treats you can have again and again, Better me for life upgrades that take some effort, and
+          Bucket list for once-in-a-lifetime experiences. Each day Yayday hands one idea back, shown in a big sun on
+          Home and offered at most once a day as a web-push nudge inside the hours you choose, with &ldquo;Another
+          day&rdquo; always a fine answer. Doing something is a celebration rather than a checkbox: finished ideas land
+          on a Did it &#10038; shelf with the date, a note and a photo. There are no streaks, no counts of what is
+          left, and nothing framed as a to-do. It is built with Next.js and React in TypeScript, with <a
+            href="https://authjs.dev/" rel="noopener noreferrer" target="_blank">Auth.js</a> and <a
+            href="https://orm.drizzle.team/" rel="noopener noreferrer" target="_blank">Drizzle ORM</a> over a <a
+            href="https://turso.tech/" rel="noopener noreferrer" target="_blank">Turso</a> (libSQL) database, the Web
+          Push API for the daily nudge, and photos kept in <a href="https://developers.cloudflare.com/r2/"
+            rel="noopener noreferrer" target="_blank">Cloudflare R2</a>.
+        </text>
+      </div>
+
       <!-- Toile overview -->
       <div id="toile-overview" class="project-overview">
         <a class="modal-project-title" href="https://toile.crystalprism.io/">
@@ -2060,6 +2107,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Yayday image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="yayday" data-displayed="false">
+              <img class="project-image" src="images/yayday.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/yayday-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Yayday</span>
+            </button>
+          </li>
           <!-- Toile image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="toile" data-displayed="false">

@@ -173,6 +173,20 @@ const APPS = {
     cssWidth: 1100,
     scrollY: 110,
   },
+  yayday: {
+    dir: 'Developer/yayday', appPort: 3269, proxyPort: 3268,
+    userId: 'demo@crystalprism.io', route: '/', wait: '.sun-title',
+    // On the SSO ring: the default ring cookie applies, and ADMIN_EMAIL must equal
+    // demo@crystalprism.io. Identity is the EMAIL (auth.config.ts), never `sub`.
+    // Stamping all three of yayday's claims keeps every session read local: without
+    // `ringCheckedAt` the server asks auth.crystalprism.io about an invented session.
+    extraClaims: { 'checkedAt:yayday': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    // 1100 keeps the desktop two-column Home (the sun and terraces left, Add an idea
+    // right) and fills the frame down to the footer. 1374 left the bottom quarter empty
+    // pink; 1000 and 860 drop to the phone layout, where the fixed Feedback pill and the
+    // capture bar land on the Bucket list terrace.
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];

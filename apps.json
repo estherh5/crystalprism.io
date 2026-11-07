@@ -120,6 +120,14 @@
     "status": "live"
   },
   {
+    "key": "yayday",
+    "name": "Yayday",
+    "url": "https://yayday.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/yayday-icon.png",
+    "tagline": "Small joys, and one sunny pick a day from three lists.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

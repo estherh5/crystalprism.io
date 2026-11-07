@@ -151,7 +151,7 @@ var FLEET_FALLBACK = [
   ['savor', 'Savor'], ['idreamofneon', 'i dream of neon'],
   ['vantage', 'Vantage'], ['vitals', 'Vitals'], ['tide', 'Tide'],
   ['flare', 'flare'], ['glimpse', 'Glimpse'], ['menagerie', 'Menagerie'],
-  ['toile', 'Toile'], ['yayday', 'Yayday'], ['timespace', 'Timespace'],
+  ['toile', 'Toile'], ['yayday', 'Yayday'], ['aerie', 'Aerie'], ['timespace', 'Timespace'],
   ['shapes-in-rain', 'Shapes In Rain'], ['rhythm-of-life', 'Rhythm of Life'],
   ['canvashare', 'CanvaShare'], ['thought-writer', 'Thought Writer'],
   ['vicarious', 'Vicarious'], ['hn-stats', 'Hacker News Stats'],

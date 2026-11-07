@@ -37,6 +37,53 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Aerie overview -->
+      <div id="aerie-overview" class="project-overview">
+        <a class="modal-project-title" href="https://aerie.crystalprism.io/">
+          <img class="project-icon-large" src="images/aerie-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Aerie</h2>
+        </a>
+        <!-- Aerie repo -->
+        <a class="github-repo" href="https://github.com/estherh5/aerie/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Aerie skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-cube"></i><text class="text-small">&nbsp;SVG 3D</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Cloudflare R2</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Aerie video -->
+        <div class="video-container" data-project="aerie">
+          <video id="aerie-video" type="video/mp4" preload="none" data-project="aerie"></video>
+          <i id="aerie-control" class="fas fa-play"></i>
+        </div>
+        <!-- Aerie description -->
+        <text>
+          <a href="https://aerie.crystalprism.io/">Aerie</a> is a living, true-to-scale model of a home, named for a
+          nest built up high. It answers two questions: &ldquo;will this fit?&rdquo; and &ldquo;where is my X?&rdquo;
+          The home is drawn as a painted 3D dollhouse cutaway, built from the floor plan, that you can drag, tilt and
+          zoom, or flatten into a top-down plan, with a tape-measure and a tool for placing a piece of furniture by its
+          dimensions. The lighting follows the real sun and weather: night is lamplit, dusk goes coral, and sun patches
+          cross the floor. Every cabinet, drawer and shelf can become a spot with its own permanent address, and every
+          belonging is pinned to one, with a photo, notes, a price and warranty, and a short history of where it used
+          to live. Typing &ldquo;Where&rsquo;s my&hellip;&rdquo; finds an item, then the model zooms to its spot and
+          lights it up. A household shares one inventory, and a Just mine filter narrows it to your own things. It is
+          built with Next.js and React in TypeScript, with <a href="https://authjs.dev/" rel="noopener noreferrer"
+            target="_blank">Auth.js</a> and <a href="https://orm.drizzle.team/" rel="noopener noreferrer"
+            target="_blank">Drizzle ORM</a> over a <a href="https://turso.tech/" rel="noopener noreferrer"
+            target="_blank">Turso</a> (libSQL) database, the 3D model rendered as SVG, and photos kept in <a
+            href="https://developers.cloudflare.com/r2/" rel="noopener noreferrer" target="_blank">Cloudflare R2</a>.
+        </text>
+      </div>
+
       <!-- Yayday overview -->
       <div id="yayday-overview" class="project-overview">
         <a class="modal-project-title" href="https://yayday.crystalprism.io/">
@@ -2107,6 +2154,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Aerie image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="aerie" data-displayed="false">
+              <img class="project-image" src="images/aerie.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/aerie-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Aerie</span>
+            </button>
+          </li>
           <!-- Yayday image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="yayday" data-displayed="false">

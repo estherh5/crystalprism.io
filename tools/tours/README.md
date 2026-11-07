@@ -409,6 +409,29 @@ one idea into Add an idea, which writes to `demo.db`; re-seed before a second
 take. The Plausible script is aborted quietly; any other off-box request fails
 the tour.
 
+### aerie
+
+**Everything is invented.** Aerie's own `db/seed/demo.ts` (`npm run seed:demo`) writes an
+invented household, spots, items and generated photos onto the floor plan: no unit number,
+street address or building name appears on any screen. It refuses anything but a `file:`
+(or `aerie-demo`) DATABASE_URL. `STORAGE_DISK=1` serves the photos from `public/uploads`.
+
+```sh
+cd ~/Developer/aerie
+export DATABASE_URL="file:$(pwd)/demo.db"
+npx drizzle-kit migrate && npm run seed:demo
+export AUTH_SECRET="$(openssl rand -base64 32)"
+export DATABASE_AUTH_TOKEN= ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true STORAGE_DISK=1 \
+  R2_ACCOUNT_ID= R2_ACCESS_KEY_ID= R2_SECRET_ACCESS_KEY= R2_PUBLIC_BASE= RESEND_API_KEY= \
+  NEXT_DIST_DIR=.next-demo
+npm run build && git checkout -- tsconfig.json
+(PORT=3418 npm run start & ~/.claude/hooks/dev-servers.sh track $!)
+```
+
+`NEXT_DIST_DIR=.next-demo` keeps the demo build out of `.next`. The seed's user id is
+`demo-user-aerie`; the minted session stamps all three of aerie's claims. Restart the server
+after re-seeding. Delete `demo.db` when done.
+
 ### then
 
 ```sh

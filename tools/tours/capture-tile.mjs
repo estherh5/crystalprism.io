@@ -187,6 +187,19 @@ const APPS = {
     // capture bar land on the Bucket list terrace.
     cssWidth: 1100,
   },
+  aerie: {
+    dir: 'Developer/aerie', appPort: 3418, proxyPort: 3419,
+    userId: 'demo-user-aerie', route: '/', wait: '.model-stage svg',
+    // On the SSO ring: the default ring cookie applies, and ADMIN_EMAIL must equal
+    // demo@crystalprism.io. All three of aerie's claims keep every session read local.
+    // The server runs with NEXT_DIST_DIR=.next-demo, STORAGE_DISK=1 and AUTH_SECRET exported
+    // here too (see the aerie block in README.md).
+    extraClaims: { 'checkedAt:aerie': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    // 860 keeps the whole Home card (title, 3D/Flat toggle, the lit apartment) in one
+    // frame at the tile's ratio; scrollY lifts the search row off the top.
+    cssWidth: 860,
+    scrollY: 170,
+  },
 };
 
 const name = process.argv[2];

@@ -128,6 +128,14 @@
     "status": "live"
   },
   {
+    "key": "aerie",
+    "name": "Aerie",
+    "url": "https://aerie.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/aerie-icon.png",
+    "tagline": "A true-to-scale model of home: will it fit, and where is my X?",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

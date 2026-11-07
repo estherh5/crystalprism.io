@@ -432,6 +432,33 @@ npm run build && git checkout -- tsconfig.json
 `demo-user-aerie`; the minted session stamps all three of aerie's claims. Restart the server
 after re-seeding. Delete `demo.db` when done.
 
+### tastebuds
+
+**Everything is invented.** `seeds/tastebuds.mjs` writes invented places, visits, reviews and delivery
+orders for two invented people (the owner is `demo@crystalprism.io`, the partner `sam@example.com`)
+and refuses anything but a `file:` DATABASE_URL. Taste Buds' `.env.local` holds the PRODUCTION Turso
+token and a Google Maps key, so every variable below is overridden inline, including the
+`NEXT_PUBLIC_` flare pair that is baked in at build time. No R2 and no Maps key means no photos and no
+Google calls. Build in place (the app has no `NEXT_DIST_DIR`), then restore `tsconfig.json` if it changed.
+
+```sh
+cd ~/Developer/tastebuds
+export DATABASE_URL="file:$(pwd)/demo.db" DATABASE_AUTH_TOKEN= TURSO_PROD_URL= TURSO_PROD_AUTH_TOKEN=
+export AUTH_SECRET="$(openssl rand -base64 32)" ADMIN_EMAIL=demo@crystalprism.io ANKUR_EMAIL= AUTH_TRUST_HOST=true
+export R2_ACCOUNT_ID= R2_ACCESS_KEY_ID= R2_SECRET_ACCESS_KEY= R2_BUCKET= R2_PUBLIC_BASE= RESEND_API_KEY= \
+  GOOGLE_MAPS_API_KEY= CRON_SECRET= FLARE_URL= FLARE_KEY= NEXT_PUBLIC_FLARE_URL= NEXT_PUBLIC_FLARE_KEY= \
+  AUTH_GOOGLE_ID= AUTH_GOOGLE_SECRET= RING_SERVICE_SECRET= APP_URL=http://localhost:3478 \
+  FEEDBACK_REPLY_SECRET= RESEND_WEBHOOK_SECRET= FEEDBACK_EMAIL_TO= FEEDBACK_REPLY_DOMAIN=
+rm -f demo.db && node scripts/migrate.mjs
+node ~/Developer/crystalprism.io/tools/tours/seeds/tastebuds.mjs
+npm run build
+(PORT=3478 npm run start & ~/.claude/hooks/dev-servers.sh track $!)
+```
+
+The tour and `capture-tile.mjs` read `AUTH_SECRET` from the environment, so export the same value
+there. The seed's user id is `demo-user-tastebuds`; the minted session stamps all three claims.
+Delete `demo.db` when done.
+
 ### then
 
 ```sh

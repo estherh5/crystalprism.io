@@ -200,6 +200,17 @@ const APPS = {
     cssWidth: 860,
     scrollY: 170,
   },
+  tastebuds: {
+    dir: 'Developer/tastebuds', appPort: 3478, proxyPort: 3479,
+    userId: 'demo-user-tastebuds', route: '/', wait: '.place',
+    // On the SSO ring: the default ring cookie applies, and ADMIN_EMAIL must equal
+    // demo@crystalprism.io. All three of tastebuds' claims keep every session read local.
+    // AUTH_SECRET is exported inline for the demo server (see the tastebuds block in README.md).
+    extraClaims: { 'checkedAt:tastebuds': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    // 1100 keeps the wordmark, the sun and two columns of place cards in one frame at the tile's ratio
+    // (900 pushed the cards below the fold behind the stacked filters; 1374 made the text tiny).
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];

@@ -136,6 +136,14 @@
     "status": "live"
   },
   {
+    "key": "tastebuds",
+    "name": "Taste Buds",
+    "url": "https://tastebuds.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/tastebuds-icon.png",
+    "tagline": "A shared log of restaurants, cafes and delivery orders for two.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

@@ -37,6 +37,46 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Taste Buds overview -->
+      <div id="tastebuds-overview" class="project-overview">
+        <a class="modal-project-title" href="https://tastebuds.crystalprism.io/">
+          <img class="project-icon-large" src="images/tastebuds-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Taste Buds</h2>
+        </a>
+        <!-- Taste Buds repo -->
+        <a class="github-repo" href="https://github.com/estherh5/tastebuds/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Taste Buds skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-map-marked-alt"></i><text class="text-small">&nbsp;Google Maps APIs</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Cloudflare R2</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Taste Buds video -->
+        <div class="video-container" data-project="tastebuds">
+          <video id="tastebuds-video" type="video/mp4" preload="none" data-project="tastebuds"></video>
+          <i id="tastebuds-control" class="fas fa-play"></i>
+        </div>
+        <!-- Taste Buds description -->
+        <text>
+          <a href="https://tastebuds.crystalprism.io/">Taste Buds</a> is a shared log of the restaurants, cafes and
+          delivery orders two people have tried. Every place carries what it is good for (a date, a day of coworking),
+          whether it is open now, and each person&rsquo;s take at a glance: would go back, maybe, been, or pass. Each
+          visit or order gets its own review with half-step scores, the dishes that were loved or skipped, and photos.
+          The log fills itself from a Notion export, delivery receipts and a followed Google Maps list, and anything it
+          cannot match waits in a queue to be sorted out by hand. The page is a hot-pink sunset over indigo water,
+          set in Anton, with every place on a square peach card.
+        </text>
+      </div>
+
       <!-- Aerie overview -->
       <div id="aerie-overview" class="project-overview">
         <a class="modal-project-title" href="https://aerie.crystalprism.io/">
@@ -2154,6 +2194,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Taste Buds image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="tastebuds" data-displayed="false">
+              <img class="project-image" src="images/tastebuds.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/tastebuds-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Taste Buds</span>
+            </button>
+          </li>
           <!-- Aerie image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="aerie" data-displayed="false">

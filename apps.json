@@ -144,6 +144,14 @@
     "status": "live"
   },
   {
+    "key": "palette",
+    "name": "Palette",
+    "url": "https://palette.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/palette-icon.png",
+    "tagline": "An inspiration wall where every picture comes with its color palette.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

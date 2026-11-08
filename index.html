@@ -37,6 +37,49 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Palette overview -->
+      <div id="palette-overview" class="project-overview">
+        <a class="modal-project-title" href="https://palette.crystalprism.io/">
+          <img class="project-icon-large" src="images/palette-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Palette</h2>
+        </a>
+        <!-- Palette repo -->
+        <a class="github-repo" href="https://github.com/estherh5/palette/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Palette skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-palette"></i><text class="text-small">&nbsp;OKLab color</text></div>
+          <div class="skill"><i class="small-icon fas fa-images"></i><text class="text-small">&nbsp;sharp</text></div>
+          <div class="skill"><i class="small-icon fas fa-magic"></i><text class="text-small">&nbsp;OpenAI API</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fas fa-cloud"></i><text class="text-small">&nbsp;Cloudflare R2</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Palette video -->
+        <div class="video-container" data-project="palette">
+          <video id="palette-video" type="video/mp4" preload="none" data-project="palette"></video>
+          <i id="palette-control" class="fas fa-play"></i>
+        </div>
+        <!-- Palette description -->
+        <text>
+          <a href="https://palette.crystalprism.io/">Palette</a> is an inspiration board where every picture arrives
+          with its palette. Pictures land on a masonry wall from an upload, an iPhone Shortcut, or a daily sync of a
+          Mac folder and Photos album, and each one is read into six named paint chips, hex in hand, by k-means in the
+          OKLab color space. The wall filters by color, sorts by color, and offers one picture at random; any palette
+          can be saved, pictures gather into collections, and &ldquo;Mix a new one&rdquo; asks an image model to paint
+          a new picture from a handful of chosen ones. A saved palette can go to an idea in Space, and Toile reads them
+          to match outfits and fabrics. The page is cream under a huge Gravitas One wordmark and a pastel
+          &ldquo;Random!&rdquo; starburst, with hot-pink buttons.
+        </text>
+      </div>
+
       <!-- Taste Buds overview -->
       <div id="tastebuds-overview" class="project-overview">
         <a class="modal-project-title" href="https://tastebuds.crystalprism.io/">
@@ -2194,6 +2237,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Palette image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="palette" data-displayed="false">
+              <img class="project-image" src="images/palette.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/palette-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Palette</span>
+            </button>
+          </li>
           <!-- Taste Buds image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="tastebuds" data-displayed="false">

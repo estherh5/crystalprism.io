@@ -211,6 +211,16 @@ const APPS = {
     // (900 pushed the cards below the fold behind the stacked filters; 1374 made the text tiny).
     cssWidth: 1100,
   },
+  palette: {
+    // Minting runs against the real checkout's next-auth (read-only); the SERVER runs
+    // from a copy (see the palette block in README.md), so a demo build never lands in
+    // ~/Developer/palette/.next. On the SSO ring: the default ring cookie applies, and
+    // ADMIN_EMAIL must equal demo@crystalprism.io. All three claims keep session reads local.
+    dir: 'Developer/palette', appPort: 3488, proxyPort: 3489,
+    userId: 'demo@crystalprism.io', route: '/', wait: '.pcard img',
+    extraClaims: { 'checkedAt:palette': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];

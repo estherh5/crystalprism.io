@@ -459,6 +459,44 @@ The tour and `capture-tile.mjs` read `AUTH_SECRET` from the environment, so expo
 there. The seed's user id is `demo-user-tastebuds`; the minted session stamps all three claims.
 Delete `demo.db` when done.
 
+### palette
+
+**Every picture is invented.** Esther's board is ~1,100 private inspiration pictures, so
+`seeds/palette.mjs` draws 30 abstract pictures with sharp (gradients, stripes, dots, color blocks)
+and sends them through the app's own `POST /api/ingest`, so each gets its real six-chip palette and
+swatch rows; then it writes six saved palettes and three collections. It refuses anything but a
+`file:` DATABASE_URL. palette's `.env.local` holds the PRODUCTION Turso token and R2 keys, so
+**build in a COPY** (`git archive` leaves every env file behind) and blank everything inline. With
+no R2 env the server writes pictures to the copy's `public/uploads`.
+
+```sh
+C=<scratch>/palette-demo && mkdir -p $C
+git -C ~/Developer/palette archive HEAD | tar -x -C $C
+cp -cR ~/Developer/palette/node_modules $C/node_modules     # APFS clone, ~free
+cd $C && cat > demo.env <<EOF
+export DATABASE_URL="file:$C/demo.db" DATABASE_AUTH_TOKEN=
+export AUTH_SECRET="$(openssl rand -base64 32)" ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true
+export USER_API_KEY_ENCRYPTION_KEY="$(openssl rand -base64 32)"
+export R2_ACCOUNT_ID= R2_ACCESS_KEY_ID= R2_SECRET_ACCESS_KEY= R2_BUCKET= R2_PUBLIC_BASE= RESEND_API_KEY= \
+  AUTH_GOOGLE_ID= AUTH_GOOGLE_SECRET= RING_SERVICE_SECRET= APP_URL=http://localhost:3488 \
+  FEEDBACK_REPLY_SECRET= RESEND_WEBHOOK_SECRET= FEEDBACK_EMAIL_TO= FEEDBACK_REPLY_DOMAIN= \
+  FLARE_URL= FLARE_KEY= NEXT_PUBLIC_FLARE_URL= NEXT_PUBLIC_FLARE_KEY= \
+  RENDER_BACKEND= CODEX_BIN= OPENAI_API_KEY= SPACE_LINK_KEY= SPACE_URL= PALETTE_LINK_KEY= CRON_SECRET=
+EOF
+source demo.env && node scripts/migrate.mjs && npm run build
+(npx next start -p 3488 & ~/.claude/hooks/dev-servers.sh track $!)
+(cd ~/Developer/crystalprism.io/tools/tours && PALETTE_APP_DIR=$C APP_PORT=3488 node seeds/palette.mjs)
+# restart the server once after seeding: pictures written after start are not served until then
+```
+
+Keep `demo.env` sourced for `capture-tile.mjs palette` and `run.mjs palette`: the session is
+minted with its `AUTH_SECRET` by the real checkout's `next-auth` (read-only), carrying all three of
+palette's claims. The seed encrypts an invented OpenAI key under the demo
+`USER_API_KEY_ENCRYPTION_KEY` so the wall's setup panel is done and stays out of the frame.
+
+A client-side click on the Saved tab landed back on the Wall in the demo build (2026-11-08), while
+a direct load of `/saved` rendered, so the tour rests the cursor on the tab and loads the page.
+
 ### then
 
 ```sh

@@ -152,6 +152,14 @@
     "status": "live"
   },
   {
+    "key": "latent",
+    "name": "Latent",
+    "url": "https://latent.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/latent-icon.png",
+    "tagline": "Catch a thought; get it back as its own page.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

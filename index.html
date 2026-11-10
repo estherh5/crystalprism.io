@@ -37,6 +37,45 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Latent overview -->
+      <div id="latent-overview" class="project-overview">
+        <a class="modal-project-title" href="https://latent.crystalprism.io/">
+          <img class="project-icon-large" src="images/latent-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Latent</h2>
+        </a>
+        <!-- Latent repo -->
+        <a class="github-repo" href="https://github.com/estherh5/latent/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository</text>
+        </a>
+        <!-- Latent skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-magic"></i><text class="text-small">&nbsp;Anthropic API</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Latent video -->
+        <div class="video-container" data-project="latent">
+          <video id="latent-video" type="video/mp4" preload="none" data-project="latent"></video>
+          <i id="latent-control" class="fas fa-play"></i>
+        </div>
+        <!-- Latent description -->
+        <text>
+          <a href="https://latent.crystalprism.io/">Latent</a> is where I catch a thought the moment it comes to me
+          and get it back as its own page. A thought takes a few seconds and one hand to keep, with an optional source
+          like &ldquo;Nox, Telegram&rdquo;, and my old Apple Notes come in once. Each thought is set as a designed page
+          in loud, flat color: one of fifteen original layouts, or a new one that Claude draws for the words from my
+          slide inspiration, always shown exactly as I wrote them. The app opens on one of seven different homes,
+          brings thoughts back one at a time, and sets two side by side to find the connection between them. A thought
+          can also become an idea in Space.
+        </text>
+      </div>
+
       <!-- Palette overview -->
       <div id="palette-overview" class="project-overview">
         <a class="modal-project-title" href="https://palette.crystalprism.io/">
@@ -2237,6 +2276,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Latent image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="latent" data-displayed="false">
+              <img class="project-image" src="images/latent.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/latent-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Latent</span>
+            </button>
+          </li>
           <!-- Palette image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="palette" data-displayed="false">

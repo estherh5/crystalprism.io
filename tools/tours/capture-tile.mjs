@@ -221,6 +221,16 @@ const APPS = {
     extraClaims: { 'checkedAt:palette': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
     cssWidth: 1100,
   },
+  latent: {
+    // Minting runs against the real checkout's next-auth (read-only); the SERVER runs from a COPY
+    // (see the latent block in README.md), so a demo build never lands in ~/Developer/latent/.next.
+    // On the SSO ring: the default ring cookie applies, and ADMIN_EMAIL must equal
+    // demo@crystalprism.io. All three claims keep session reads local.
+    dir: 'Developer/latent', appPort: 3498, proxyPort: 3499,
+    userId: 'demo-user-latent', route: '/t/demo-thought-01', wait: '.pgframe',
+    extraClaims: { 'checkedAt:latent': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];

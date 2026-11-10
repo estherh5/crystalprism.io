@@ -497,6 +497,37 @@ palette's claims. The seed encrypts an invented OpenAI key under the demo
 A client-side click on the Saved tab landed back on the Wall in the demo build (2026-11-08), while
 a direct load of `/saved` rendered, so the tour rests the cursor on the tab and loads the page.
 
+### latent
+
+**Every thought is invented.** `seeds/latent.mjs` writes 16 invented thoughts for `demo@crystalprism.io`,
+each already `ready` with a plain original layout and no generated design, so the demo never calls a model
+(leave `ANTHROPIC_API_KEY` empty), and refuses anything but a `file:` DATABASE_URL. latent's `.env.local`
+holds production secrets, so **build in a COPY** (`git archive` leaves every env file behind) and blank
+everything inline.
+
+```sh
+C=<scratch>/latent-demo && mkdir -p $C
+git -C ~/Developer/latent archive HEAD | tar -x -C $C
+cp -cR ~/Developer/latent/node_modules $C/node_modules     # APFS clone, ~free
+cd $C && cat > demo.env <<EOF
+export DATABASE_URL="file:$C/demo.db" DATABASE_AUTH_TOKEN=
+export AUTH_SECRET="$(openssl rand -base64 32)" ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true INVITE_ONLY=
+export USER_API_KEY_ENCRYPTION_KEY="$(openssl rand -base64 32)" ENCRYPTION_KEY=
+export ANTHROPIC_API_KEY= DESIGN_BACKEND=api RESEND_API_KEY= EMAIL_FROM= AUTH_GOOGLE_ID= AUTH_GOOGLE_SECRET= \
+  RING_SERVICE_SECRET= APP_URL=http://localhost:3498 CRON_SECRET= FEEDBACK_REPLY_SECRET= RESEND_WEBHOOK_SECRET= \
+  FEEDBACK_EMAIL_TO= FEEDBACK_REPLY_DOMAIN= FLARE_URL= FLARE_KEY= FLARE_ROSTER_KEY= NEXT_PUBLIC_FLARE_URL= \
+  NEXT_PUBLIC_FLARE_KEY= VITALS_URL= INTEGRATION_TOKEN_LATENT= SPACE_URL= SPACE_LINK_KEY_LATENT= \
+  PALETTE_URL= PALETTE_LINK_KEY_LATENT= LATENT_SLIDES_BUCKET=
+EOF
+source demo.env && node scripts/migrate.mjs && npm run build
+(npx next start -p 3498 & ~/.claude/hooks/dev-servers.sh track $!)
+(cd ~/Developer/crystalprism.io/tools/tours && node seeds/latent.mjs)
+```
+
+Keep `demo.env` sourced for `capture-tile.mjs latent` and `run.mjs latent`. The tile is the first
+thought's own page (`/t/demo-thought-01`); the tour opens one thought from whichever home the app
+picks, then Another and Set beside. Delete the copy when done.
+
 ### then
 
 ```sh

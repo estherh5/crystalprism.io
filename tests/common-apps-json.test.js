@@ -55,7 +55,7 @@ async function appNames(page) {
 
 const FALLBACK_NAMES = ['Methods', 'GiftMe', 'Passage', 'Restock', 'Nexus', 'Space', 'Savor',
   'i dream of neon', 'Vantage', 'Vitals', 'Tide', 'flare', 'Glimpse', 'Menagerie', 'Toile',
-  'Yayday', 'Aerie', 'Timespace', 'Shapes In Rain', 'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
+  'Yayday', 'Aerie', 'Taste Buds', 'Palette', 'Latent', 'Timespace', 'Shapes In Rain', 'Rhythm of Life', 'CanvaShare', 'Thought Writer', 'Vicarious',
   'Hacker News Stats', 'Pause', 'Marian', 'Vroom'];
 
 test('the fallback copy lists every live app in apps.json, in order', () => {

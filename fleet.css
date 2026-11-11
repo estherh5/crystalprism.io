@@ -21,7 +21,17 @@
   position: fixed; z-index: 1001;
   inline-size: min(360px, calc(100% - 32px)); max-block-size: min(80dvh, 640px); overflow: auto;
   padding: 16px; border-radius: var(--fleet-radius);
-  background: var(--fleet-surface); color: var(--fleet-ink);
+  /* Scroll cue: a shade at an edge only while there is more past it. The shades ride the
+     panel's edges (scroll); the surface-colored covers ride the content's ends (local), so
+     at either end its cover sits over the shade and the shade goes. */
+  --fleet-shade: color-mix(in srgb, var(--fleet-ink) 24%, transparent);
+  background:
+    linear-gradient(var(--fleet-surface) 40%, transparent) top / 100% 40px no-repeat local,
+    linear-gradient(transparent, var(--fleet-surface) 60%) bottom / 100% 40px no-repeat local,
+    radial-gradient(farthest-side at 50% 0, var(--fleet-shade), transparent) top / 100% 16px no-repeat scroll,
+    radial-gradient(farthest-side at 50% 100%, var(--fleet-shade), transparent) bottom / 100% 16px no-repeat scroll,
+    var(--fleet-surface);
+  color: var(--fleet-ink);
   border: 1px solid var(--fleet-line); box-shadow: 0 12px 40px rgb(0 0 0 / 0.18);
   font-family: var(--fleet-font);
 }
@@ -43,7 +53,7 @@
   border-radius: 8px; cursor: pointer;
 }
 .fleet-row:hover, .fleet-row:focus-visible { background: color-mix(in srgb, var(--fleet-accent) 12%, transparent); }
-.fleet-row[aria-disabled="true"] { cursor: progress; }
+.fleet-row[aria-disabled="true"], .fleet-row:disabled { cursor: progress; }
 /* Sign out in flight; a still ring where motion is reduced, the label carries the state */
 .fleet-spinner {
   flex: none; inline-size: 1em; block-size: 1em; margin-inline-end: 8px; box-sizing: border-box;

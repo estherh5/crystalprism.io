@@ -415,8 +415,8 @@ test('renderFooter appends the kit footer with only the Crystal Prism link', asy
       sep: el.querySelector('span[aria-hidden="true"]'), text: el.textContent };
   });
   const year = new Date().getFullYear();
-  assert.deepStrictEqual(f, { tag: 'FOOTER', cls: 'fleet-footer', sep: null, text: '© 2017–' + year + ' Crystal Prism', links: [
-    ['© 2017–' + year + ' Crystal Prism', 'https://crystalprism.io/']] });
+  assert.deepStrictEqual(f, { tag: 'FOOTER', cls: 'fleet-footer', sep: null, text: '© ' + year + ' Crystal Prism', links: [
+    ['© ' + year + ' Crystal Prism', 'https://crystalprism.io/']] });
   await page.close();
 });
 

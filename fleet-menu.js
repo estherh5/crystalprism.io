@@ -266,7 +266,7 @@
 
   function renderFooter(parent) {
     var footer = el("footer", "fleet-footer");
-    var home = el("a", null, "© 2017–" + new Date().getFullYear() + " Crystal Prism");
+    var home = el("a", null, "© " + new Date().getFullYear() + " Crystal Prism");
     home.href = "https://crystalprism.io";
     footer.appendChild(home);
     parent.appendChild(footer);

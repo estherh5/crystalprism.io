@@ -37,6 +37,46 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Reference overview -->
+      <div id="reference-overview" class="project-overview">
+        <a class="modal-project-title" href="https://reference.crystalprism.io/">
+          <img class="project-icon-large" src="images/reference-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Reference</h2>
+        </a>
+        <!-- Reference repo -->
+        <a class="github-repo" href="https://github.com/estherh5/reference/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Reference skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fab fa-wikipedia-w"></i><text class="text-small">&nbsp;Wikipedia API</text></div>
+          <div class="skill"><i class="small-icon fas fa-book-open"></i><text class="text-small">&nbsp;Open Library API</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Reference video -->
+        <div class="video-container" data-project="reference">
+          <video id="reference-video" type="video/mp4" preload="none" data-project="reference"></video>
+          <i id="reference-control" class="fas fa-play"></i>
+        </div>
+        <!-- Reference description -->
+        <text>
+          <a href="https://reference.crystalprism.io/">Reference</a> is a private place for the things people tell me
+          about: a book, an opera, an album, an event. When someone mentions one, I look it up right there, read a short
+          summary from Wikipedia or Open Library, and tap who told me, so looking it up and keeping it are the same act.
+          Every thing remembers who mentioned it and when, and the things from one conversation are kept together like a
+          drawer in a card catalog. I can browse what I have saved or already tried, see everything one person has told
+          me about, mark when I told them I finally tried it, and add an upcoming event to my calendar. It opens in one
+          of nine palettes each time.
+        </text>
+      </div>
+
       <!-- Latent overview -->
       <div id="latent-overview" class="project-overview">
         <a class="modal-project-title" href="https://latent.crystalprism.io/">
@@ -2276,6 +2316,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Reference image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="reference" data-displayed="false">
+              <img class="project-image" src="images/reference.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/reference-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Reference</span>
+            </button>
+          </li>
           <!-- Latent image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="latent" data-displayed="false">

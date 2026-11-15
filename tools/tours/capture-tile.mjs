@@ -231,6 +231,19 @@ const APPS = {
     extraClaims: { 'checkedAt:latent': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
     cssWidth: 1100,
   },
+  reference: {
+    // Minting runs against the real checkout's next-auth (read-only); the SERVER runs from a COPY
+    // (see the reference block in README.md), so a demo build never lands in
+    // ~/Developer/reference/.next. On the SSO ring: the default ring cookie applies, and
+    // ADMIN_EMAIL must equal demo@crystalprism.io. All three claims keep session reads local.
+    dir: 'Developer/reference', appPort: 3508, proxyPort: 3509,
+    userId: 'demo-user-reference', route: '/home', wait: '.cab-list h3',
+    extraClaims: { 'checkedAt:reference': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    // E4 Sage & Coral is the app's fixed identity (its icon and wordmark); without this the tile
+    // would land on whichever of the nine palettes the launch picked.
+    initScript: "try{localStorage.setItem('reference:palette:keep','E4')}catch(e){}",
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];
@@ -278,6 +291,9 @@ const context = await browser.newContext({
   deviceScaleFactor: CAPTURE_W / cssWidth,
   colorScheme: name === 'nexus' || name === 'vantage' ? 'dark' : 'light',
 });
+// An app may set `initScript` to run before any page script: reference picks one of
+// nine palettes at random on each launch, so the tile pins its fixed identity palette.
+if (cfg.initScript) await context.addInitScript(cfg.initScript);
 const page = await context.newPage();
 
 const raw = path.join(HERE, 'raw', `tile-${name}.png`);

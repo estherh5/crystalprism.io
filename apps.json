@@ -160,6 +160,14 @@
     "status": "live"
   },
   {
+    "key": "reference",
+    "name": "Reference",
+    "url": "https://reference.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/reference-icon.png",
+    "tagline": "The things people tell you about, saved by who told you.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

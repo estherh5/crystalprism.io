@@ -73,6 +73,8 @@ export async function glideScroll(page, distance, { steps = 26, pause = 22 } = {
  *   legibility — the players on the projects page are 345px wide at their widest,
  *   so a text-dense app recorded at 1280 CSS pixels is unreadable there. Keep the
  *   aspect ratio at 16:9 or ffmpeg letterboxes the result.
+ * @param {string} [opts.initScript]  Extra script run before any page script, e.g. to
+ *                                  pin a per-viewer choice kept in localStorage.
  * @param {(page: import('playwright').Page) => Promise<void>} opts.tour
  */
 export async function recordTour({
@@ -81,6 +83,7 @@ export async function recordTour({
   cookies = [],
   colorScheme = 'dark',
   viewport = { width: WIDTH, height: HEIGHT },
+  initScript,
   tour,
 }) {
   await mkdir(RAW_DIR, { recursive: true });
@@ -110,6 +113,7 @@ export async function recordTour({
 
   if (cookies.length) await context.addCookies(cookies);
   await context.addInitScript(cursorSource);
+  if (initScript) await context.addInitScript(initScript);
 
   // Capture starts the moment the page exists, so the head of every recording is
   // blank-then-loading. We timestamp the handover to tour() and cut everything

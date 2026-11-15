@@ -528,6 +528,43 @@ Keep `demo.env` sourced for `capture-tile.mjs latent` and `run.mjs latent`. The 
 thought's own page (`/t/demo-thought-01`); the tour opens one thought from whichever home the app
 picks, then Another and Set beside. Delete the copy when done.
 
+### reference
+
+**Every person and occasion is invented**; the works are real but generic (a novel, an opera, an
+album). `seeds/reference.mjs` writes five invented people, four occasions and eleven things for
+`demo@crystalprism.io`, and refuses anything but a `file:` DATABASE_URL. It also fills `lookupCache`
+for the one search the tour types ("Tosca") and its summary, so the lookup is answered from the cache
+and never reaches Wikipedia or Open Library; every `imageUrl` is null, because a remote thumbnail would
+be an off-box request. Both Nexus and giftme tokens stay EMPTY, so a save sends nothing anywhere.
+Build in a COPY, like latent, so a demo build never lands in `~/Developer/reference/.next`.
+
+```sh
+C=<scratch>/reference-demo && mkdir -p $C
+git -C ~/Developer/reference archive HEAD | tar -x -C $C
+cp -cR ~/Developer/reference/node_modules $C/node_modules     # APFS clone, ~free
+cd $C && cat > demo.env <<EOF
+export DATABASE_URL="file:$C/demo.db" DATABASE_AUTH_TOKEN=
+export AUTH_SECRET="$(openssl rand -base64 32)" ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true INVITE_ONLY=
+export AUTH_GOOGLE_ID= AUTH_GOOGLE_SECRET= RING_SERVICE_SECRET= APP_URL=http://localhost:3508 CRON_SECRET= \
+  REFERENCE_NEXUS_TOKEN= REFERENCE_GIFTME_TOKEN= NEXUS_URL= GIFTME_URL= \
+  RESEND_API_KEY= RESEND_WEBHOOK_SECRET= EMAIL_FROM= FEEDBACK_REPLY_SECRET= FEEDBACK_REPLY_DOMAIN= FEEDBACK_EMAIL_TO= \
+  FLARE_URL= FLARE_KEY= FLARE_ROSTER_KEY= NEXT_PUBLIC_FLARE_URL= NEXT_PUBLIC_FLARE_KEY=
+EOF
+source demo.env && node scripts/migrate.mjs
+(cd ~/Developer/crystalprism.io/tools/tours && node seeds/reference.mjs)
+npm run build
+(npx next start -p 3508 & ~/.claude/hooks/dev-servers.sh track $!)
+```
+
+Keep `demo.env` sourced for `capture-tile.mjs reference` and `run.mjs reference`. Both pin the
+palette to E4 Sage & Coral (the app's fixed identity) through an init script, since the app otherwise
+picks one of nine at random on each launch. The tile is `/home` (the cabinet of occasions); the tour
+types "Tosca", opens the opera, taps Walter, then opens Walter's page. Record at 1100 CSS wide or
+wider: at 960 the fixed Feedback button covers the left edge of the content column. **The tour SAVES
+Tosca**, so before a second take remove it:
+`sqlite3 demo.db "delete from mentions where thingId in (select id from things where title='Tosca'); delete from things where title='Tosca'; delete from occasions where id not like 'demo-occ-%'"`.
+Delete the copy when done.
+
 ### then
 
 ```sh

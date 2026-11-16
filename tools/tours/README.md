@@ -565,6 +565,40 @@ Tosca**, so before a second take remove it:
 `sqlite3 demo.db "delete from mentions where thingId in (select id from things where title='Tosca'); delete from things where title='Tosca'; delete from occasions where id not like 'demo-occ-%'"`.
 Delete the copy when done.
 
+### pigeonhole
+
+**Every link is invented** (sites, titles and summaries). `seeds/pigeonhole.mjs` writes 22 made-up links
+for `demo@crystalprism.io` across the queue, the bookmarks pile, the Research shelf (with full summaries
+already written) and a few already sorted, so her most-used apps rank first. Every `iconUrl` is null, so
+the stamps show initials and nothing is fetched off the box, and `ANTHROPIC_API_KEY` stays empty: the
+demo never runs the harvest or calls a model. The seed clears and rewrites the demo user's links, so
+re-run it before every take (the tour sorts two of them). It refuses anything but a `file:` DATABASE_URL.
+pigeonhole's checkout holds `.env.harvest` with production credentials, so **build in a COPY**
+(`git archive` leaves every ignored file behind).
+
+```sh
+C=<scratch>/pigeonhole-demo && mkdir -p $C
+git -C ~/Developer/pigeonhole archive HEAD | tar -x -C $C
+cp -cR ~/Developer/pigeonhole/node_modules $C/node_modules     # APFS clone, ~free
+cd $C && cat > demo.env <<EOF
+export DATABASE_URL="file:$C/demo.db" DATABASE_AUTH_TOKEN=
+export AUTH_SECRET="$(openssl rand -base64 32)" ADMIN_EMAIL=demo@crystalprism.io AUTH_TRUST_HOST=true INVITE_ONLY=
+export AUTH_GOOGLE_ID= AUTH_GOOGLE_SECRET= RING_SERVICE_SECRET= APP_URL=http://localhost:3518 CRON_SECRET= \
+  ANTHROPIC_API_KEY= RESEND_API_KEY= RESEND_WEBHOOK_SECRET= EMAIL_FROM= FEEDBACK_REPLY_SECRET= FEEDBACK_REPLY_DOMAIN= \
+  FEEDBACK_EMAIL_TO= FLARE_URL= FLARE_KEY= FLARE_ROSTER_KEY= NEXT_PUBLIC_FLARE_URL= NEXT_PUBLIC_FLARE_KEY= \
+  VERCEL_ENV= NEXT_PUBLIC_VERCEL_ENV=
+EOF
+source demo.env && node scripts/migrate.mjs && npm run build
+(cd ~/Developer/crystalprism.io/tools/tours && node seeds/pigeonhole.mjs)
+(npx next start -p 3518 & ~/.claude/hooks/dev-servers.sh track $!)
+```
+
+Keep `demo.env` sourced for `capture-tile.mjs pigeonhole` and `run.mjs pigeonhole`. The tile is the
+queue (`/home`): the top envelope beside the sorting case. The tour files the top envelope to Research,
+the next as Done (both are the suggested cubby), then opens the Research shelf and one link's full
+summary. It never taps an app cubby, which would open another Crystal Prism app in a new tab. Delete the
+copy when done.
+
 ### then
 
 ```sh

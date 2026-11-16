@@ -37,6 +37,46 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Pigeonhole overview -->
+      <div id="pigeonhole-overview" class="project-overview">
+        <a class="modal-project-title" href="https://pigeonhole.crystalprism.io/">
+          <img class="project-icon-large" src="images/pigeonhole-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Pigeonhole</h2>
+        </a>
+        <!-- Pigeonhole repo -->
+        <a class="github-repo" href="https://github.com/estherh5/pigeonhole/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Pigeonhole skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-typescript-plain"></i><text class="text-small">&nbsp;TypeScript</text></div>
+          <div class="skill"><i class="small-icon fab fa-react"></i><text class="text-small">&nbsp;React</text></div>
+          <div class="skill"><i class="small-icon fas fa-server"></i><text class="text-small">&nbsp;Next.js</text></div>
+          <div class="skill"><i class="small-icon fas fa-magic"></i><text class="text-small">&nbsp;Claude Agent SDK</text></div>
+          <div class="skill"><i class="small-icon fab fa-apple"></i><text class="text-small">&nbsp;macOS launchd</text></div>
+          <div class="skill"><i class="small-icon fas fa-database"></i><text class="text-small">&nbsp;Turso (libSQL)</text></div>
+          <div class="skill"><i class="small-icon fab fa-css3"></i><text class="text-small">&nbsp;CSS</text></div>
+          <div class="skill"><i class="small-icon fab fa-html5"></i><text class="text-small">&nbsp;HTML5</text></div>
+        </div>
+        <!-- Pigeonhole video -->
+        <div class="video-container" data-project="pigeonhole">
+          <video id="pigeonhole-video" type="video/mp4" preload="none" data-project="pigeonhole"></video>
+          <i id="pigeonhole-control" class="fas fa-play"></i>
+        </div>
+        <!-- Pigeonhole description -->
+        <text>
+          <a href="https://pigeonhole.crystalprism.io/">Pigeonhole</a> sends every link I meant to deal with somewhere.
+          Each night a job on my Mac gathers what I have saved &mdash; Firefox and Safari bookmarks, the Safari Reading
+          List and the tabs left open on my phone &mdash; and a model writes a short summary of each one and suggests
+          where it belongs. The links come to me one at a time as envelopes in a mail sorting case, and I file each into a
+          pigeonhole: Done, the Research shelf (where a long read gets a full summary overnight), Send to someone, or
+          another Crystal Prism app like Giftme or Space, pre-filled. Anything I put off comes back later, and once a phone
+          tab is sorted, the next harvest closes it on my phone.
+        </text>
+      </div>
+
       <!-- Reference overview -->
       <div id="reference-overview" class="project-overview">
         <a class="modal-project-title" href="https://reference.crystalprism.io/">
@@ -2316,6 +2356,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Pigeonhole image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="pigeonhole" data-displayed="false">
+              <img class="project-image" src="images/pigeonhole.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/pigeonhole-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Pigeonhole</span>
+            </button>
+          </li>
           <!-- Reference image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="reference" data-displayed="false">

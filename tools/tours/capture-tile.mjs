@@ -244,6 +244,16 @@ const APPS = {
     initScript: "try{localStorage.setItem('reference:palette:keep','E4')}catch(e){}",
     cssWidth: 1100,
   },
+  pigeonhole: {
+    // Minting runs against the real checkout's next-auth (read-only); the SERVER runs from a COPY
+    // (see the pigeonhole block in README.md), so a demo build never lands in
+    // ~/Developer/pigeonhole/.next. On the SSO ring: the default ring cookie applies, and
+    // ADMIN_EMAIL must equal demo@crystalprism.io. All three claims keep session reads local.
+    dir: 'Developer/pigeonhole', appPort: 3518, proxyPort: 3519,
+    userId: 'demo-user-pigeonhole', route: '/home', wait: '.env-title',
+    extraClaims: { 'checkedAt:pigeonhole': Date.now(), signedInAt: Date.now(), ringCheckedAt: Date.now() },
+    cssWidth: 1100,
+  },
 };
 
 const name = process.argv[2];

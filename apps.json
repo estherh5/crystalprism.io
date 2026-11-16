@@ -168,6 +168,14 @@
     "status": "live"
   },
   {
+    "key": "pigeonhole",
+    "name": "Pigeonhole",
+    "url": "https://pigeonhole.crystalprism.io/",
+    "icon": "https://crystalprism.io/images/pigeonhole-icon.png",
+    "tagline": "Every link you meant to deal with, sent somewhere.",
+    "status": "live"
+  },
+  {
     "key": "timespace",
     "name": "Timespace",
     "url": "https://timespace.crystalprism.io/",

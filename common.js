@@ -153,6 +153,7 @@ var FLEET_FALLBACK = [
   ['flare', 'flare'], ['glimpse', 'Glimpse'], ['menagerie', 'Menagerie'],
   ['toile', 'Toile'], ['yayday', 'Yayday'], ['aerie', 'Aerie'], ['tastebuds', 'Taste Buds'],
   ['palette', 'Palette'], ['latent', 'Latent'], ['reference', 'Reference'],
+  ['pigeonhole', 'Pigeonhole'],
   ['timespace', 'Timespace'],
   ['shapes-in-rain', 'Shapes In Rain'], ['rhythm-of-life', 'Rhythm of Life'],
   ['canvashare', 'CanvaShare'], ['thought-writer', 'Thought Writer'],

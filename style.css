@@ -368,6 +368,7 @@ a:hover, button:hover {
   font-family: 'logos';
   font-style: normal;
   display: inline-block;
+  line-height: 1;
   text-decoration: inherit;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;

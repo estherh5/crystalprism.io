@@ -37,6 +37,43 @@
     <div id="project-modal-body" class="modal-body">
       <button type="button" id="project-close" class="close hidden" aria-label="Close">&times;</button>
 
+      <!-- Silly overview -->
+      <div id="silly-overview" class="project-overview">
+        <a class="modal-project-title" href="https://github.com/estherh5/silly/tree/main/" rel="noopener noreferrer" target="_blank">
+          <img class="project-icon-large" src="images/silly-icon.png" loading="lazy" decoding="async" alt="">
+          <h2>Silly</h2>
+        </a>
+        <!-- Silly repo -->
+        <a class="github-repo" href="https://github.com/estherh5/silly/tree/main/" rel="noopener noreferrer"
+          target="_blank">
+          <i class="small-icon fab fa-github"></i>
+          <text>GitHub Repository: Nov 2026 - Present</text>
+        </a>
+        <!-- Silly skills -->
+        <div class="project-skills">
+          <div class="skill"><i class="small-icon devicon-c-plain"></i><text class="text-small">&nbsp;C</text></div>
+          <div class="skill"><i class="small-icon devicon-objectivec-plain"></i><text class="text-small">&nbsp;Objective-C</text></div>
+          <div class="skill"><i class="small-icon fab fa-apple"></i><text class="text-small">&nbsp;AppKit</text></div>
+          <div class="skill"><i class="small-icon fab fa-apple"></i><text class="text-small">&nbsp;macOS Accessibility API</text></div>
+          <div class="skill"><i class="small-icon fas fa-magic"></i><text class="text-small">&nbsp;Codex CLI</text></div>
+        </div>
+        <!-- Silly video -->
+        <div class="video-container" data-project="silly">
+          <video id="silly-video" type="video/mp4" preload="none" data-project="silly"></video>
+          <i id="silly-control" class="fas fa-play"></i>
+        </div>
+        <!-- Silly description -->
+        <text>
+          Silly is a macOS menu-bar app that dresses up my desktop. It frames every window in a band of pattern, and
+          one of my stuffed animals sits on top of whichever window I am using, hopping over when I switch windows and
+          dozing off when I leave it alone. The pattern is made from a picture I choose from
+          <a href="https://palette.crystalprism.io/">Palette</a>, and the animal is a plush drawing of one of the
+          animals in <a href="https://menagerie.crystalprism.io/">Menagerie</a>, each drawn on my Mac by a model.
+          Every pattern is kept, so I can switch back to an old favorite. It started as a fork of Window Sweaters,
+          which gives windows knitted borders.
+        </text>
+      </div>
+
       <!-- Pigeonhole overview -->
       <div id="pigeonhole-overview" class="project-overview">
         <a class="modal-project-title" href="https://pigeonhole.crystalprism.io/">
@@ -2356,6 +2393,18 @@
       <!-- Projects page -->
       <div id="projects-page" class="page hidden fade" inert>
         <ul id="projects-list">
+          <!-- Silly image and icon -->
+          <li>
+            <button type="button" class="project-listing" data-project="silly" data-displayed="false">
+              <img class="project-image" src="images/silly.png" loading="lazy" decoding="async" alt="">
+              <span class="project-overlay">
+                <span class="project-preview">
+                  <img class="project-icon" src="images/silly-icon.png" loading="lazy" decoding="async" alt="">
+                </span>
+              </span>
+              <span class="project-title">Silly</span>
+            </button>
+          </li>
           <!-- Pigeonhole image and icon -->
           <li>
             <button type="button" class="project-listing" data-project="pigeonhole" data-displayed="false">

@@ -47,6 +47,15 @@ export default async function run() {
           return route.abort();
         });
         // Home: whichever of the seven homes the app picks, with the thoughts laid out on it.
+        // AX (the question home) lays out no patches, only a Bring back button, so a random pick of
+        // AX would leave nothing to open. Reload until the rotation lands on a home with patches.
+        for (let tries = 0; ; tries++) {
+          await page.waitForSelector('main.home:not([data-home="none"])');
+          const hasPatch = await page.waitForSelector('main.home button[class*="patch"]', { timeout: 5000 }).then(() => true, () => false);
+          if (hasPatch) break;
+          if (tries >= 6) throw new Error('no home with patches after 7 loads');
+          await page.reload();
+        }
         await page.waitForSelector('main.home:not([data-home="none"]) button[class*="patch"]');
         await beat(3600);
         // Open a thought: it comes back as its own page.
